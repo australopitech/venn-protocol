@@ -2,8 +2,8 @@ import Image from 'next/image'
 import { Inter } from 'next/font/google'
 
 import { ethers } from 'ethers';
-import { config } from './_app';
-import { useEthers, useEtherBalance } from '@usedapp/core';
+// import { config } from './_app';
+import { useEthers, useEtherBalance, useConfig } from '@usedapp/core';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -15,6 +15,7 @@ const ConnectButton = () => {
 }
 
 export default function Home() {
+  const config = useConfig();
   if(!config.readOnlyUrls) throw new Error('network config error');
   const { account, chainId } = useEthers();
   const etherBalance = useEtherBalance(account);
