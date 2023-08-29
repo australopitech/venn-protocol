@@ -19,7 +19,7 @@ export default {
     chainID: String(networkID),
     family: 'EVM',
     name: network,
-    provider: provider || "https://mainnet.base.org/",
+    provider: provider || "https://goerli.base.org/",
     entryPointAddress: entryPointAddress,
     bundler: bundler,
     baseAsset: {
