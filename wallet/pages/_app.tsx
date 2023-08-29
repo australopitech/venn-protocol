@@ -7,14 +7,17 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const baseTestProvider = process.env.BASE_GOERLI_PROVIDER
-const provider = new ethers.providers.JsonRpcProvider(baseTestProvider);
+const provider = new ethers.providers.JsonRpcProvider(
+  baseTestProvider? baseTestProvider 
+  : "https://goerli.base.org/"
+);
 
 export const config: Config = {
   readOnlyChainId: BaseGoerli.chainId,
   readOnlyUrls: {
-    // [BaseGoerli.chainId]: provider,
-    [Mainnet.chainId]: getDefaultProvider('mainnet'),
-    [Goerli.chainId]: getDefaultProvider('goerli'),
+    [BaseGoerli.chainId]: provider,
+    // [Mainnet.chainId]: getDefaultProvider('mainnet'),
+    // [Goerli.chainId]: getDefaultProvider('goerli'),
   },
 }
 
