@@ -4,6 +4,7 @@ import { Inter } from 'next/font/google'
 import { ethers } from 'ethers';
 // import { config } from './_app';
 import { useEthers, useEtherBalance, useConfig } from '@usedapp/core';
+import { fetchNFTData } from '../src/utils'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -14,6 +15,8 @@ const ConnectButton = () => {
   else return <button className='px-4 py-2 rounded bg-blue-500'onClick={() => activateBrowserWallet()}>Connect</button>
 }
 
+var dataFetched : boolean = false;
+
 export default function Home() {
   const config = useConfig();
   if(!config.readOnlyUrls) throw new Error('network config error');
@@ -22,6 +25,16 @@ export default function Home() {
   if (chainId && !config.readOnlyUrls[chainId]) {
     return <p>Please use either Mainnet or Goerli testnet.</p>
   }
+
+  if (!dataFetched && process.env.NEXT_PUBLIC_EXAMPLE_ADDRESS) {
+    fetchNFTData('base-mainnet', process.env.NEXT_PUBLIC_EXAMPLE_ADDRESS)
+    .then( data => {
+      dataFetched = true;
+      console.log(data);
+    });
+  }
+  
+  
   return (
     
     <div>
