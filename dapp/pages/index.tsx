@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google'
 import { ethers } from 'ethers';
 // import { config } from './_app';
 import { useEthers, useEtherBalance, useConfig } from '@usedapp/core';
-import { fetchNFTData } from '../src/utils'
+import { fetchAddressData } from '../src/frontendUtils'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -27,7 +27,8 @@ export default function Home() {
   }
 
   if (!dataFetched && process.env.NEXT_PUBLIC_EXAMPLE_ADDRESS) {
-    fetchNFTData('base-mainnet', process.env.NEXT_PUBLIC_EXAMPLE_ADDRESS)
+    // fetchNFTData('base-mainnet', process.env.NEXT_PUBLIC_EXAMPLE_ADDRESS)
+    fetchAddressData('eth-mainnet', process.env.NEXT_PUBLIC_EXAMPLE_ADDRESS)
     .then( data => {
       dataFetched = true;
       console.log(data);
