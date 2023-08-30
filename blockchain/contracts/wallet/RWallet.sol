@@ -15,6 +15,24 @@ import "../core/BaseAccount.sol";
 import "../samples/callback/TokenCallbackHandler.sol";
 import "./RestrictedSignatureCalls.sol";
 
+/**
+ * gas limit chokepoint:
+ * -> _isloan chamada em approve and transfer calls
+ * -> _isloan usa for loop em _loansByContract list
+ * -> _loansByContract.length cresce e transfer e approve tx's ficam caras
+ * -> a partir de certo ponto block gasLimit pode ser estourado para essas tx's
+ * 
+ * ======> solution <======
+ * => o que precisamos de _loansByContract?
+ * 1. checar se wallet tem loans de dado nft contract
+ * 2. checar se dada nft (contract + tokenId) é uma loan
+ * 
+ * (i) 1 pode usar um mapping: (contract => counter);
+ * (ii) 2 pode usar um mapping: (contract => (tokenId => bool));
+ * 
+ * i é incrementado em uponNFTLoan e decrementado em _removeFromList (precisa de contract_address)
+ * ii é updated em uponNFTLoan e _removeFromList (needs contract_address, tokenId)
+ */
 
 contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initializable {
     using ECDSA for bytes32;
@@ -41,6 +59,10 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
     mapping(address => bool) private _contractApproved;
 
     mapping(address =>  NFT[]) private _loansByContract;
+
+    mapping(address => uint256) private _loanCounterByContract;
+
+    mapping(address => mapping(uint256 => bool)) _isLoan;
 
     mapping(address => uint256) private _operatorCount;
 
@@ -129,14 +151,14 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
      * @dev this function is run before every call
      * it returns a bool indicating weather or not the call is authorized
      * if there are enough assets marked in the _loansByContract list 
-     * every op will reach gas limit
+     * every approve and transfer op will reach gas limit
      * in such cases releaseAsset methods should be called
      */
     function _beforeCallCheck(address target, bytes memory data) private returns(bool) {
         if (data.length < 4) return true;
         bytes4 funcSel = _extractFunctionSignature(data);
         if(funcSel == APPROVE_ALL_SEL){
-            if(_loansByContract[target].length > 0) return false;
+            if(_loanCounterByContract[target] > 0) return false;
             bool approved;
             assembly {
                 approved := mload(add(data, 68))
@@ -165,7 +187,7 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
 	            tokenId := mload(add(data, 100))
 	        }
             if(from == address(this)){
-                return !_isLoan(target, tokenId);
+                return !_isLoan[target][tokenId];
             }
         }
         if(funcSel == APPROVE_SEL) {
@@ -173,20 +195,20 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
             assembly{
                 tokenId := mload(add(data, 68))
             }
-            return !_isLoan(target, tokenId);
+            return !_isLoan[target][tokenId];
         }
         
         return true;
     }
 
-    function _isLoan(address contract_, uint256 tokenId) private view returns(bool){
-        NFT[] memory loans_ = _loansByContract[contract_];
-        for(uint i=0; i<loans_.length; i++){
-            if(loans_[i].id == tokenId){
-                return true;
-            }
-        }
-        return false;
+    function isLoan(address contract_, uint256 tokenId) public view returns(bool){
+        // NFT[] memory loans_ = _loansByContract[contract_];
+        // for(uint i=0; i<loans_.length; i++){
+        //     if(loans_[i].id == tokenId){
+        //         return true;
+        //     }
+        // }
+        return _isLoan[contract_][tokenId];
     }
     
     function _extractFunctionSignature(bytes memory data) private pure returns (bytes4) {
@@ -205,6 +227,10 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
 
     function getLoansByContract(address contract_) external view returns(NFT[] memory) {
         return _loansByContract[contract_];
+    }
+
+    function getLoanCounterByContract(address contract_) external view returns(uint256) {
+        return _loanCounterByContract[contract_];
     }
 
     function getOperatorCount(address contract_) public view returns(uint256) {
@@ -227,7 +253,9 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
             block.timestamp + duration
         );
         _loans.push(newAsset);
-        _loansByContract[_contract].push(newAsset);
+        // _loansByContract[_contract].push(newAsset);
+        _loanCounterByContract[_contract]++;
+        _isLoan[_contract][id] = true;
     }
 
     /**
@@ -236,44 +264,48 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
      * should be called by owner in case loans make operations reach gas limit.
      * this might happen because `_isLoan` needs to be called at every userOp
      */
-    function releaseSingleAsset(address contract_, uint256 index) public onlyOwner {
-        _releaseAsset(contract_, index);
+    function releaseSingleAsset(uint256 index) public onlyOwner {
+        require(_loans.length > index, "invalid index");
+        _releaseAsset(index);
     }
 
     // function releaseMultipleAssets(uint256[] memory indexes) public onlyOwner {}
 
     function _releaseAsset(uint256 index) private {
-        IERC721 nftContract = IERC721(_loans[index].contract_);
+        address _contract = _loans[index].contract_;
+        uint256 id = _loans[index].id;
+        IERC721 nftContract = IERC721(_contract);
         nftContract.safeTransferFrom(
             address(this),
             _loans[index].lender,
-            _loans[index].id
+            id
         );
-        _subAssetFromList(contract_, index);
+        _subAssetFromList(index);
+        _loanCounterByContract[_contract]--;
+        _isLoan[_contract][id] = false;
     }
     
-    function _subAssetFromList(uint256 index) private returns(uint256) {
-        uint256 lastIndex = _loans.length;  
+    function _subAssetFromList(uint256 index) private {
+        uint256 lastIndex = _loans.length - 1;
         uint256 indexByContract = _loans[index].indexByContract;
         address contract_ = _loans[index].contract_;
         _loans[index] = _loans[lastIndex];
         _loans.pop();
-        lastIndex = _loansByContract[contract_].length -1;
-        _loansByContract[contract_][indexByContract] = _loansByContract[contract_][lastIndex];
-        _loansByContract[contract_].pop();
-        
+        // // lastIndex = _loansByContract[contract_].length - 1;
+        // _loansByContract[contract_][indexByContract] = _loansByContract[contract_][lastIndex];
+        // _loansByContract[contract_].pop();
     }
 
     /**
      * @dev allows any caller to pull asset back to original owner in exchange for a fee
      * checks if assest is a loan and if loan end time was reached
      */
-    function pullAsset(address contract_, uint256 index) external {
+    function pullAsset(uint256 index) external {
         require(
-            block.timestamp > _loansByContract[contract_][index].endTime,
+            block.timestamp > _loans[index].endTime,
             "Loan duration not reached"
         );
-        _releaseAsset(contract_, index);
+        _releaseAsset(index);
     }
 
     // check: gas efficient alternatives
