@@ -13,33 +13,19 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "../samples/MarketPlace.sol";
 import "../core/BaseAccount.sol";
 import "../samples/callback/TokenCallbackHandler.sol";
+import "./RestrictedSignatureCalls.sol";
 
-/**
-  * minimal account.
-  *  this is sample minimal account.
-  *  has execute, eth handling methods
-  *  has a single signer that can send requests through the entryPoint.
-  */
+
 contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initializable {
     using ECDSA for bytes32;
 
     address public owner;
 
-    bytes4 private constant TRANSFER_SEL = bytes4(keccak256(bytes("transferFrom(address,address,uint256)")));
-
-    bytes4 private constant SAFE_TRANSFER_SEL = bytes4(keccak256(bytes("safeTransferFrom(address,address,uint256)")));
-
-    bytes4 private constant SAFE_TRANSFER_DATA_SEL = bytes4(keccak256(bytes("safeTransferFrom(address,address,uint256,bytes)")));
-
-    bytes4 private constant APPROVE_SEL = bytes4(keccak256(bytes("approve(address,uint256)")));
-
-    bytes4 private constant APPROVE_ALL_SEL = bytes4(keccak256(bytes("setApprovalForAll(address,bool)")));
-    
-    bytes private constant EMPTY = bytes("");
-    
     IEntryPoint private immutable _entryPoint;
 
     struct NFT {
+        uint256 index;
+        uint256 indexByContract;
         address contract_;
         uint256 id;
         address lender;
@@ -51,6 +37,8 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
     event SimpleAccountInitialized(IEntryPoint indexed entryPoint, address indexed owner);
 
     NFT[] private _loans;
+
+    mapping(address => bool) private _contractApproved;
 
     mapping(address =>  NFT[]) private _loansByContract;
 
@@ -140,7 +128,8 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
     /**
      * @dev this function is run before every call
      * it returns a bool indicating weather or not the call is authorized
-     * if there are enough assets marked in the _loansByContract list will reach gas limit
+     * if there are enough assets marked in the _loansByContract list 
+     * every op will reach gas limit
      * in such cases releaseAsset methods should be called
      */
     function _beforeCallCheck(address target, bytes memory data) private returns(bool) {
@@ -211,7 +200,7 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
 
 
     function getLoans() external view returns(NFT[] memory) {
-        // return _loans;
+        return _loans;
     }
 
     function getLoansByContract(address contract_) external view returns(NFT[] memory) {
@@ -228,6 +217,8 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
      */
     function uponNFTLoan(address _contract, uint256 id, address owner_, uint256 duration) external {
         NFT memory newAsset = NFT(
+            _loans.length,
+            _loansByContract[_contract].length,
             _contract,
             id,
             owner_,
@@ -235,7 +226,7 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
             block.timestamp,
             block.timestamp + duration
         );
-        // _loans.push(newAsset);
+        _loans.push(newAsset);
         _loansByContract[_contract].push(newAsset);
     }
 
@@ -249,26 +240,28 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
         _releaseAsset(contract_, index);
     }
 
-    // function releaseMultipleAssets(uint256[] memory indexes) public onlyOwner {
-    //     for(uint256 i=0; i<indexes.length; i++) {
-    //         _releaseAsset(indexes[i]);
-    //     }
-    // }
+    // function releaseMultipleAssets(uint256[] memory indexes) public onlyOwner {}
 
-    function _releaseAsset(address contract_, uint256 index) private {
-        IERC721 nftContract = IERC721(_loansByContract[contract_][index].contract_);
+    function _releaseAsset(uint256 index) private {
+        IERC721 nftContract = IERC721(_loans[index].contract_);
         nftContract.safeTransferFrom(
             address(this),
-            _loansByContract[contract_][index].lender,
-            _loansByContract[contract_][index].id);
+            _loans[index].lender,
+            _loans[index].id
+        );
         _subAssetFromList(contract_, index);
     }
     
-    function _subAssetFromList(address contract_, uint256 index) private returns(uint256) {
-        uint256 lastIndex = _loansByContract[contract_].length -1;
-        _loansByContract[contract_][index] = _loansByContract[contract_][lastIndex];
+    function _subAssetFromList(uint256 index) private returns(uint256) {
+        uint256 lastIndex = _loans.length;  
+        uint256 indexByContract = _loans[index].indexByContract;
+        address contract_ = _loans[index].contract_;
+        _loans[index] = _loans[lastIndex];
+        _loans.pop();
+        lastIndex = _loansByContract[contract_].length -1;
+        _loansByContract[contract_][indexByContract] = _loansByContract[contract_][lastIndex];
         _loansByContract[contract_].pop();
-        return lastIndex;
+        
     }
 
     /**

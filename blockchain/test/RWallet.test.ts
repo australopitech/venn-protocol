@@ -39,7 +39,7 @@ describe("Testing Wallet", function () {
         console.log(`\nnft ${tokenId} minted to ${lender.address}\n`);
     });
 
-    it("should be owned by owner/entryPoint", async () => {
+    it("should be owned by owner(entryPoint)", async () => {
         const ownerFromGetter = await wallet.entryPoint();
         expect(ownerFromGetter).to.eq(owner.address);
     });
