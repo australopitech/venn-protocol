@@ -11,3 +11,6 @@ bytes4 constant SAFE_TRANSFER_DATA_SEL = bytes4(keccak256(bytes("safeTransferFro
 bytes4 constant APPROVE_SEL = bytes4(keccak256(bytes("approve(address,uint256)")));
 
 bytes4 constant APPROVE_ALL_SEL = bytes4(keccak256(bytes("setApprovalForAll(address,bool)")));
+
+bytes4 constant RENT_FUNC_SEL = bytes4(keccak256(bytes("rentNFT(address, uint256, address, uint256)")));
+

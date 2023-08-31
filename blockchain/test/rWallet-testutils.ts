@@ -1,8 +1,9 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "hardhat";
-import { RWalletFactory__factory, RWalletFactory, NFT__factory, MarketPlace__factory } from "../typechain";
+import { RWalletFactory__factory, RWalletFactory, RWallet, NFT__factory, MarketPlace__factory } from "../typechain";
 import { expect } from "chai";
 import * as walletData from "../artifacts/contracts/wallet/RWallet.sol/RWallet.json"
+
 const provider = ethers.provider;
 
 export const deployFactory = async (signer: SignerWithAddress, entryPoint: string) => {
@@ -55,6 +56,6 @@ export const createWallet = async (factory: RWalletFactory, ownerAddress: string
             (event: any) => event.event === 'WalletCreated'
     );
     const walletAddress = newAccountEvent?.args?.account;
-    const wallet = new ethers.Contract(walletAddress, walletData.abi, provider);
+    const wallet = new ethers.Contract(walletAddress, walletData.abi, provider) as RWallet;
     return wallet;
 }
