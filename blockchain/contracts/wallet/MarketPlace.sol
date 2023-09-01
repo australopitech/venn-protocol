@@ -72,7 +72,7 @@ contract MarketPlace is IMarketPlace {
         return factoryContract.isWallet(account);
     }
 
-    function ListNFT(address contract_, uint256 tokenId, uint256 price, uint256 maxDuration) public {
+    function listNFT(address contract_, uint256 tokenId, uint256 price, uint256 maxDuration) public {
         require(_isApproved(contract_, tokenId), "Operator not approved");
         require(msg.sender == _getNFTowner(contract_, tokenId), "caller is not NFT owner");
         uint256 index = _assets.length;
@@ -116,11 +116,15 @@ contract MarketPlace is IMarketPlace {
     }
 
     function _removeListing(uint256 index) private {
+        // if(_assets.length < 2) {
+        //     _assets.pop();
+        //     return
+        // }
         uint256 lastIndex = _assets.length - 1;
         _assets[index] = _assets[lastIndex];
-        _assets.pop();
         _assets[index].index = index;
         _tokenIndex[_assets[index].contract_][_assets[index].id] = index;
+        _assets.pop();
     }
 
     function withdraw() public {

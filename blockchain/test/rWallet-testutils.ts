@@ -1,6 +1,6 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "hardhat";
-import { RWalletFactory__factory, RWalletFactory, RWallet, NFT__factory, MarketPlace__factory } from "../typechain";
+import { RWalletFactory__factory, RWalletFactory, RWallet, NFT__factory, MarketPlace__factory, MarketPlace } from "../typechain";
 import { expect } from "chai";
 import * as walletData from "../artifacts/contracts/wallet/RWallet.sol/RWallet.json"
 
@@ -58,4 +58,32 @@ export const createWallet = async (factory: RWalletFactory, ownerAddress: string
     const walletAddress = newAccountEvent?.args?.account;
     const wallet = new ethers.Contract(walletAddress, walletData.abi, provider) as RWallet;
     return wallet;
+}
+
+export const rentNFT = async (
+    wallet: RWallet, owner: SignerWithAddress,
+    mktPlace: MarketPlace, nftAddr: string,
+    tokenId: number, nftOwner: string,
+    duration: number, price: number
+) => {
+    
+    let abi= [
+        "function rentNFT (address contract_, uint256 tokenId, address nftOwner, uint256 duration)"
+    ];
+    let iface = new ethers.utils.Interface(abi);
+    const calldata_ = iface.encodeFunctionData("rentNFT", [
+        nftAddr,
+        tokenId,
+        nftOwner,
+        duration
+    ]);
+    // console.log(calldata_);
+
+    const feeBase = (await mktPlace.feeBase()).toNumber();
+    const feeMul = (await mktPlace.feeMultiplier()).toNumber();
+    const fee = (price*duration*feeMul) / feeBase;
+    const value = price*duration + fee;
+    const tx = await wallet.connect(owner).execute(mktPlace.address, value, calldata_);
+    await tx.wait();
+    return tx;
 }

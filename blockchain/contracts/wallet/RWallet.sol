@@ -15,25 +15,6 @@ import "../core/BaseAccount.sol";
 import "../samples/callback/TokenCallbackHandler.sol";
 import "./RestrictedSignatureCalls.sol";
 
-/**
- * gas limit chokepoint:
- * -> _isloan chamada em approve and transfer calls
- * -> _isloan usa for loop em _loansByContract list
- * -> _loansByContract.length cresce e transfer e approve tx's ficam caras
- * -> a partir de certo ponto block gasLimit pode ser estourado para essas tx's
- * 
- * ======> solution <======
- * => o que precisamos de _loansByContract?
- * 1. checar se wallet tem loans de dado nft contract
- * 2. checar se dada nft (contract + tokenId) é uma loan
- * 
- * (i) 1 pode usar um mapping: (contract => counter);
- * (ii) 2 pode usar um mapping: (contract => (tokenId => bool));
- * 
- * i é incrementado em uponNFTLoan e decrementado em _removeFromList (precisa de contract_address)
- * ii é updated em uponNFTLoan e _removeFromList (needs contract_address, tokenId)
- */
-
 contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initializable {
     using ECDSA for bytes32;
 
@@ -47,7 +28,6 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
         address contract_;
         uint256 id;
         address lender;
-        bool borrowed;
         uint256 startTime;
         uint256 endTime;
     }
@@ -138,8 +118,8 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
     }
 
     function _call(address target, uint256 value, bytes memory data) internal {
-        // require(_authorizedCall(target, data), "Unauthorized operation");
-        // _beforeCallRentalCheck(data);
+        require(_authorizedCall(target, data), "Unauthorized operation");
+        _beforeCallRentalCheck(data);
         (bool success, bytes memory result) = target.call{value : value}(data);
         if (!success) {
             assembly {
@@ -276,7 +256,6 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
             nftContract,
             tokenId,
             owner_,
-            true,
             block.timestamp,
             block.timestamp + duration
         );
@@ -316,8 +295,8 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
     function _subAssetFromList(uint256 index) private {
         uint256 lastIndex = _loans.length - 1;
         _loans[index] = _loans[lastIndex];
-        _loans.pop();
         _loans[index].index = index;
+        _loans.pop();
         // // lastIndex = _loansByContract[contract_].length - 1;
         // _loansByContract[contract_][indexByContract] = _loansByContract[contract_][lastIndex];
         // _loansByContract[contract_].pop();
