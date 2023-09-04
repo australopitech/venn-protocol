@@ -38,6 +38,11 @@ contract MarketPlace is IMarketPlace {
         address indexed nftContract,
         uint256 tokenId
     );
+
+    event Delisting (
+        address indexed contract_,
+        uint256 tokenId
+    );
     
     event Rental (
         address indexed nftOwner,
@@ -45,6 +50,8 @@ contract MarketPlace is IMarketPlace {
         address indexed nftContract,
         uint256 tokenId
     );
+
+    error EmptyList();
 
     constructor(
         address factoryAddress,
@@ -54,6 +61,15 @@ contract MarketPlace is IMarketPlace {
         factoryContract = RWalletFactory(factoryAddress);
         feeBase = _feeBase;
         feeMultiplier = _feeMultiplier;
+        NFT memory dummyAsset = NFT(
+            0,
+            address(this),
+            address(this),
+            0,
+            0,
+            0
+        );
+        _assets.push(dummyAsset);
     }
 
     function getAssets() public view returns(NFT[] memory) {
@@ -95,6 +111,7 @@ contract MarketPlace is IMarketPlace {
     ) external payable override {
         require(isWallet(msg.sender), "caller is not a renter wallet contract");
         uint256 index = _tokenIndex[contract_][tokenId];
+        require(index > 0, "NFT not listed");
         require(duration <= _assets[index].maxDuration, "loan period set too long");
         uint256 price = _assets[index].price;
         uint256 serviceFee = (price * duration * feeMultiplier) / feeBase;
@@ -116,10 +133,8 @@ contract MarketPlace is IMarketPlace {
     }
 
     function _removeListing(uint256 index) private {
-        // if(_assets.length < 2) {
-        //     _assets.pop();
-        //     return
-        // }
+        if(_assets.length < 2) revert EmptyList();
+
         uint256 lastIndex = _assets.length - 1;
         _assets[index] = _assets[lastIndex];
         _assets[index].index = index;
