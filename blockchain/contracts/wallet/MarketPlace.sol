@@ -2,35 +2,58 @@
 pragma solidity ^0.8.12;
 
 import './IMarketPlace.sol';
+import './IReceiptNFT.sol';
+import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
+/* implementar a interface */
 import './RWalletFactory.sol';
 import './RWallet.sol';
-import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+
+/* TODO:
+- Implentar a inteface da wallet e da factory
+
+- implementar a taxa mev
+    - variavel publica pullFee
+    - mapping receipt => pullFee (atualizado na rentNFT calculado em cima do valor rent)
+    - metodo admin pra ajustar as fees
+
+*/
 
 contract MarketPlace is IMarketPlace {
 
+    error NoReceipts(address, uint256);
+
     RWalletFactory public immutable factoryContract;
+
+    IReceiptNFT public immutable receiptsContract;
 
     uint256 public treasury;
 
-    uint256 public feeBase;
+    uint32 public feeBase;
 
-    uint256 public feeMultiplier;
+    uint16 public feeMultiplier;
 
-    struct NFT {
-        uint256 index;
-        address nftOwner;
-        address contract_;
-        uint256 id;
-        uint256 price;
-        uint256 maxDuration;
-    }
+    uint32 public pullFeeBase;
 
-    // NFT[] private _assets;
-    mapping(address => NFT[]) _assetsByOwner;
+    uint16 public pullFeeMultiplier;
 
-    mapping(address => mapping(uint256 => uint256)) private _tokenIndex;
+    address public admin;
+    
+    /* maps NFT to listed price */
+    mapping(address => mapping(uint256 => uint256)) private _prices;
 
-    // mapping (address => NFT[]) private _assetsByOwner;
+    /* maps NFT to maximum rent duration */
+    mapping(address => mapping(uint256 => uint256)) private _maxDuration;
+    
+    /* maps NFT to receiptId */
+    mapping(address => mapping(uint256 => uint256)) private _receipts;
+
+    /* maps receiptId to rent expiration timestamp */ 
+    mapping(uint256 => uint256) private _expiration;
+
+    /* maps receiptIt to pull fee
+       pull fee is paid to the caller of `pullAsset` wich is permissionless 
+    */
+    mapping(uint256 => uint256) private _pullFee;
 
     mapping(address => uint256) private _balances;
 
@@ -52,36 +75,59 @@ contract MarketPlace is IMarketPlace {
         uint256 tokenId
     );
 
-    error EmptyList();
+    modifier onlyAdmin {
+        require(msg.sender == admin, "only admin");
+        _;
+    }
 
     constructor(
         address factoryAddress,
-        uint256 _feeBase,
-        uint256 _feeMultiplier
+        address receiptsContractAddr,
+        uint32 _feeBase,
+        uint16 _feeMultiplier,
+        uint32 _pullFeeBase,
+        uint16 _pullFeeMultiplier,
+        address _admin
         ) {
         factoryContract = RWalletFactory(factoryAddress);
+        receiptsContract = IReceiptNFT(receiptsContractAddr);
         feeBase = _feeBase;
         feeMultiplier = _feeMultiplier;
-        // NFT memory dummyAsset = NFT(
-        //     0,
-        //     address(this),
-        //     address(this),
-        //     0,
-        //     0,
-        //     0
-        // );
-        // _assets.push(dummyAsset);
+        pullFeeBase = _pullFeeBase;
+        pullFeeMultiplier = _pullFeeMultiplier;
+        admin = _admin;
     }
 
     // function getAssets() public view returns(NFT[] memory) {
     //     return _assets;
     // }
 
-    function getAssetsByOwner(address nftOwner) public view returns(NFT[] memory) {
-        return _assetsByOwner[nftOwner];
+    // function getAssetsByOwner(address nftOwner) public view returns(NFT[] memory) {
+    //     return _assetsByOwner[nftOwner];
+    // }
+
+
+    function getPrice(address contract_, uint256 tokenId) external view returns(uint256) {
+        return _prices[contract_][tokenId];
     }
 
-    function getBalance(address account) public view returns(uint256) {
+    function getMaxDuration(address contract_, uint256 tokenId) external view returns(uint256) {
+        return _maxDuration[contract_][tokenId];
+    }
+
+    function getReceipt(address contract_, uint256 tokenId ) external view returns(uint256) {
+        return _receipts[contract_][tokenId];
+    }
+
+    function getPullFee(uint256 receiptId) external view returns(uint256) {
+        return _pullFee[receiptId];
+    }
+
+    // function getExpiration(uint256 receiptId) external view returns(uint256) {
+    //     return _expiration[receiptId];
+    // }
+
+    function getBalance(address account) external view returns(uint256) {
         return _balances[account];
     }
 
@@ -89,72 +135,122 @@ contract MarketPlace is IMarketPlace {
         return factoryContract.isWallet(account);
     }
 
+    function setMaxDuration(address contract_, uint256 tokenId, uint256 maxDuration) external {
+        require(
+            receiptsContract.ownerOf( _receipts[contract_][tokenId] ) == msg.sender,
+            "error: token not listed or caller not owner of receipt-token"
+        );
+        _maxDuration[contract_][tokenId] = maxDuration;
+    }
+
+    function setPrice(address contract_, uint256 tokenId, uint256 price) external {
+        require(
+            receiptsContract.ownerOf( _receipts[contract_][tokenId] ) == msg.sender,
+            "error: token not listed or caller not owner of receipt-token"
+        );
+        _prices[contract_][tokenId] = price;
+    }
+
+
+
     function listNFT(address contract_, uint256 tokenId, uint256 price, uint256 maxDuration) public {
         require(_isApproved(contract_, tokenId), "Operator not approved");
         require(msg.sender == _getNFTowner(contract_, tokenId), "caller is not NFT owner");
         
-        uint256 index;
-        uint256 len = _assetsByOwner[msg.sender].length;
-        if(len < 1) {
-            /* index 0 is a filler-object */
-            _assetsByOwner[msg.sender].push(_dummyAsset());
-            index = 1;
-        } else index = len;
- 
-        NFT memory newAsset = NFT(
-            index,
-            msg.sender,
-            contract_,
-            tokenId,
-            price,
-            maxDuration
-        );
-        // _assets.push(newAsset);
-        // _tokenIndex[contract_][tokenId] = index;
-        _assetsByOwner[msg.sender].push(newAsset);
-        IERC721 nftContract = IERC721(contract_);
+        IERC721Metadata nftContract = IERC721Metadata(contract_);
         nftContract.transferFrom(msg.sender, address(this), tokenId);
+        string memory uri = nftContract.tokenURI(tokenId);
+
+        _prices[contract_][tokenId] = price;
+        _maxDuration[contract_][tokenId] = maxDuration;
+
+        (bool success, bytes memory data) = address(receiptsContract).call(
+            abi.encodeWithSignature("mint(address,string)", msg.sender, uri )
+        );
+        require(success, "receipt mint failed");
+
+        _receipts[contract_][tokenId] = abi.decode(data, (uint256));
         emit Listing(msg.sender, contract_, tokenId);
     }
 
     function rentNFT (
-        address contract_, uint256 tokenId, address nftOwner, uint256 duration
+        address contract_, uint256 tokenId, uint256 duration
     ) external payable override {
         require(isWallet(msg.sender), "caller is not a renter wallet contract");
         require(_operatorCount(msg.sender, contract_) <= 0, "error: operator count greater than zero" );
-        require(_isApproved(contract_, tokenId), "error: token approval was revoked");
-        uint256 index = _tokenIndex[contract_][tokenId];
-        /* index 0 is always a filler object in the list and uninitiated in mapping */
-        require(_assetsByOwner[nftOwner].length > 0, "NFT not listed");
-        require(duration <= _assetsByOwner[nftOwner][index].maxDuration, "loan period set too long");
-        uint256 rent = _assetsByOwner[nftOwner][index].price * duration;
+        require(_maxDuration[contract_][tokenId] > 0, "this NFT is not listed");
+        require(duration <= _maxDuration[contract_][tokenId], "rental period set too long");
+        uint256 rent = _prices[contract_][tokenId] * duration;
         uint256 serviceFee = (rent * feeMultiplier) / feeBase;
         require(msg.value >= rent + serviceFee, "not enough funds");
         
+        uint256 receiptId = _receipts[contract_][tokenId];
+        _expiration[receiptId] = block.timestamp + duration;
+        uint256 pullFee =  (serviceFee * pullFeeMultiplier) / pullFeeBase;
+        _pullFee[receiptId] = pullFee;
+
+        address nftOwner = receiptsContract.ownerOf(receiptId);
         _balances[nftOwner] += rent;
-        treasury += serviceFee;
-        _removeListing(nftOwner, index);
-        IERC721 nftContract = IERC721(contract_);
+        treasury += (serviceFee - pullFee) ;
+    
+        IERC721Metadata nftContract = IERC721Metadata(contract_);
         nftContract.transferFrom(address(this), msg.sender, tokenId);
         emit Rental(nftOwner, msg.sender, contract_, tokenId);
     }
 
-    function deList(uint256 index) external {
-        _removeListing(msg.sender, index);
+    function deList(address contract_, uint256 tokenId) external {
+        uint256 receiptId = _receipts[contract_][tokenId];
+        require(msg.sender == _getNFTowner(address(receiptsContract), receiptId), "only owner of receipt");
+        _removeListing(contract_, tokenId );
+        emit Delisting(contract_, tokenId);
+
+        address owner = _getNFTowner(contract_, tokenId);
+        if(owner ==  address(this)) { /* not rented out */
+            // _expiration[receiptId] = 0;
+            _release(contract_, tokenId, msg.sender);
+            return;    
+        }
+        if(_expiration[receiptId] <= block.timestamp) {
+            pullAsset(contract_, tokenId);
+            // _release(contract_, tokenId, msg.sender);
+        }
+        
     }
 
-    function _removeListing(address nftOwner, uint256 index) private {
-        //ver o que acontece se chamar .pop() numa lista vazia
-        if(_assetsByOwner[nftOwner].length < 2) revert EmptyList();
-        if(_assetsByOwner[nftOwner].length < 3) _assetsByOwner[nftOwner].pop();
+    // METODO MEV:
+    function pullAsset(address contract_, uint256 tokenId) public {
+        uint256 receiptId = _receipts[contract_][tokenId];
+        if( receiptId <= 0 )
+          revert NoReceipts(contract_, tokenId);
+        
+        _expiration[receiptId] = 0;
+        IERC721 nftContract = IERC721(contract_);
+        address from = nftContract.ownerOf(tokenId);
+        RWallet rwallet = RWallet(payable(from));
+        rwallet.pullAsset(rwallet.getTokenIndex(contract_, tokenId));
 
-        uint256 lastIndex = _assetsByOwner[nftOwner].length - 1;
-        _assetsByOwner[nftOwner][index] = _assetsByOwner[nftOwner][lastIndex];
-        _assetsByOwner[nftOwner][index].index = index;
-        _tokenIndex[_assetsByOwner[nftOwner][index].contract_][_assetsByOwner[nftOwner][index].id] = index;
-        _assetsByOwner[nftOwner].pop();
+        if(_maxDuration[contract_][tokenId] == 0) { /* was de-listed */
+          address to = receiptsContract.ownerOf(receiptId);
+          _release(contract_, tokenId, to);
+        }
+
+        (bool success, ) = payable(msg.sender).call{value: _pullFee[ receiptId]}("");
+        require(success, "failed transfer of funds");
     }
 
+
+    function _removeListing(address contract_, uint256 tokenId) private {
+        _prices[contract_][tokenId] = 0;
+        _maxDuration[contract_][tokenId] = 0;
+    }
+
+    function _release(address contract_, uint256 tokenId, address to) private {
+        receiptsContract.burn(_receipts[contract_][tokenId]);
+        _receipts[contract_][tokenId] = 0;
+        IERC721Metadata nftContract = IERC721Metadata(contract_);
+        nftContract.transferFrom(address(this), to, tokenId);
+    }
+    
     function withdraw() public {
         uint256 bal = _balances[msg.sender];
         require( bal > 0, "there is no balance for caller address");
@@ -183,15 +279,20 @@ contract MarketPlace is IMarketPlace {
         return nftContract.ownerOf(tokenId);
     }
 
-    function _dummyAsset() private pure returns(NFT memory) {
-        return NFT (
-            0,
-            address(0),
-            address(0),
-            0,
-            0,
-            0
-        );
+    /* only admin */
+    function withdrawTreasury(uint256 value) external onlyAdmin {
+        (bool success, ) = payable(msg.sender).call{value: value}("");
+        require(success, "transfer failed ");
+    }
+
+    function setServiceFee(uint32 _feeBase, uint16 _feeMultiplier) external onlyAdmin {
+        feeBase = _feeBase;
+        feeMultiplier = _feeMultiplier;
+    }
+
+    function setPullFee(uint32 _feeBase, uint16 _feeMultipler) external onlyAdmin {
+        pullFeeBase = _feeBase;
+        pullFeeMultiplier = _feeMultipler;
     }
 
 }

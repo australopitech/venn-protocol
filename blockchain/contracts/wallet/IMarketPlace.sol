@@ -28,6 +28,6 @@ interface IMarketPlace {
      *  Reference can be seen at MarketPlace.sol
      * 
      */
-    function rentNFT (address contract_, uint256 tokenId, address nftOwner, uint256 duration) external payable;
+    function rentNFT (address contract_, uint256 tokenId, uint256 duration) external payable;
 
 }
