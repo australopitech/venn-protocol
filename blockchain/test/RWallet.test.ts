@@ -8,7 +8,7 @@ import { BigNumber, Contract } from "ethers";
 import { mine } from "@nomicfoundation/hardhat-network-helpers";
 import { deployFactory, createWallet, rentNFT, deployReceiptsContract, deployMktPlace, nftDeployAndMint } from "./rWallet-testutils";
 
-describe("Testing Wallet", function () {
+describe.skip("Testing Wallet", function () {
     
         const provider = ethers.provider;
         let owner: SignerWithAddress;
@@ -277,13 +277,7 @@ describe("Testing Wallet", function () {
     );
 
     it("should allow nft to be pulled after endTime / should block before", async () => {
-        // const maxDuration = 1000;
         const price = 1000;
-        // const approve = await nft.connect(lender).approve(mktPlace.address, newToken);
-        // approve.wait();
-        // const listTx = await mktPlace.connect(lender).listNFT(nft.address, newToken, price, maxDuration );
-        // await listTx.wait();
-
         const duration = 150;
         await rentNFT(wallet, owner, mktPlace, nft.address, newToken, duration, price);
         

@@ -3,21 +3,19 @@ import { expect } from "chai";
 import { mine } from "@nomicfoundation/hardhat-network-helpers";
 import { 
     RWalletFactory,
-    RWalletFactory__factory,
-    NFT__factory,
     NFT,
     ReceiptNFT,
-    MarketPlace__factory,
     MarketPlace,
     RWallet
 } from "../typechain";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { BigNumber, Contract } from "ethers";
 import { 
-    deployFactory, nftDeployAndMint, deployMktPlace, createWallet, deployReceiptsContract, listNFT, rentNFT 
+    deployFactory, nftDeployAndMint, deployMktPlace, createWallet,
+    deployReceiptsContract, listNFT, rentNFT, mint
 } from "./rWallet-testutils";
 
-describe.skip("Testing MarketPlace", function () {
+describe("Testing MarketPlace", function () {
     let factory: RWalletFactory;
     let nft: NFT;
     let receiptContract: ReceiptNFT;
@@ -249,6 +247,35 @@ describe.skip("Testing MarketPlace", function () {
         const txfee = txReceipt.gasUsed.mul(txReceipt.effectiveGasPrice);
         const account_bal_after = await provider.getBalance(dummy.address);
         expect(account_bal_after).to.eq(account_bal.add(user_bal).sub(txfee));
+    });
+
+    it("underflow test", async () => {
+        const newToken = await mint(nft, dummy, lender.address);
+        // if price and duration are low enough the fees calculations underflows
+        const price = 1;
+        await listNFT(lender, mktPlace, nft, newToken, price, 10 );
+        const duration = 1;
+        // await rentNFT(wallet, owner, mktPlace, nft.address, newToken, duration, price);
+        let abi= [
+            "function rentNFT (address contract_, uint256 tokenId, uint256 duration)"
+        ];
+        let iface = new ethers.utils.Interface(abi);
+        const calldata_ = iface.encodeFunctionData("rentNFT", [
+            nft.address,
+            newToken,
+            duration
+        ]);
+        // console.log(calldata_);
+    
+        const value = BigNumber.from(price*duration ).add(ethers.utils.parseEther('1'));
+        await owner.sendTransaction({to: wallet.address, value: value })
+        
+        await wallet.connect(owner).execute(mktPlace.address, value, calldata_);
+        
+        // pullFee = (((price*duration*feeMul)/feeBase)*pullFeeMul)/pullFeeBase
+        //         = ((1*1*3)/1000)*1/3 = 3/3000 = 1/1000
+        const pullFee = await mktPlace.getPullFee(await mktPlace.getReceipt(nft.address, newToken))
+        console.log('pullFee', pullFee);
     });
 
 });

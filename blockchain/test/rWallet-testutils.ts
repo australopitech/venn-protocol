@@ -32,6 +32,18 @@ export const nftDeployAndMint = async (signer: SignerWithAddress, mintTo: string
     return [nftContract, tokenId];
 }
 
+export const mint = async (contract: NFT, owner: SignerWithAddress, mintTo: string) : Promise<BigNumber> => {
+    const mintTx = await contract.connect(owner).safeMint(mintTo, "uri");
+    const mintReceipt = await mintTx.wait();
+    const mintEvent = mintReceipt.events?.find(
+            (event: any) => event.event === 'Transfer'
+        );
+    const token = mintEvent?.args?.tokenId;
+    expect(await contract.ownerOf(token)).to.eq(mintTo);
+    console.log(`\nnft ${token} minted to ${mintTo}\n`);
+    return token;
+}
+
 export const deployMktPlace = async (
     signer: SignerWithAddress,
     factoryAddress: string,
