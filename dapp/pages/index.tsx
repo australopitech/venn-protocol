@@ -5,6 +5,8 @@ import { ethers } from 'ethers';
 // import { config } from './_app';
 import { useEthers, useEtherBalance, useConfig } from '@usedapp/core';
 import { fetchAddressData } from '../src/frontendUtils'
+import { useSigner } from '@usedapp/core';
+import send from '../src/send';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -23,8 +25,10 @@ export default function Home() {
   const { account, chainId } = useEthers();
   const etherBalance = useEtherBalance(account);
   if (chainId && !config.readOnlyUrls[chainId]) {
-    return <p>Please use either Mainnet or Goerli testnet.</p>
+    return <p>Please use Base Goerli testnet.</p>
   }
+  
+  const signer = useSigner();
 
   if (!dataFetched && process.env.NEXT_PUBLIC_EXAMPLE_ADDRESS) {
     // fetchNFTData('base-mainnet', process.env.NEXT_PUBLIC_EXAMPLE_ADDRESS)
@@ -35,12 +39,18 @@ export default function Home() {
     });
   }
   
-  
+  const sendHandler = async () => {
+    const value = 0.001;
+    const to = "0x099A294Bffb99Cb2350A6b6cA802712D9C96676A";
+    await send(signer, value, to);
+  }
+
   return (
     
     <div>
       <div className='p-2'>
       <ConnectButton />
+      <div className='py-4'> <button className='py-2 px-4 bg-green-500 rounded' onClick={sendHandler}>send</button></div>
       </div>
       {etherBalance && (
         <div className="balance">

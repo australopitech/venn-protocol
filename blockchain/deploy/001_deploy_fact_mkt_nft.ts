@@ -10,9 +10,10 @@ const apikey = process.env.INFURA_API_KEY;
 const walletAddress = '0x6711645aB591f86B31CC97667f393A78d01f5Ca0';
 const feeBase = 1000;
 const feeMul = 3;
-const entryPoint = '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'; // sepolia
+const entryPoint = process.env.ENTRY_POINT_STACKUP;
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+  if(!entryPoint) throw new Error('missing env');
   const {deployments, getNamedAccounts} = hre;
   const {deploy} = deployments;
 
@@ -34,24 +35,24 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   // });
 
   // const RWalletFactory = await deployments.get('RWalletFactory');
-  // const RWalletFactoryAddress = '0x8fA7D1434A90ad1d5FDf461395fA92f69Dc5C9E3';
+  const RWalletFactoryAddress = '0x684705F4A1C7cF696aD45e62Ea9E28e37a94b530';
 
-  // await deploy('BaseMarketPlace', {
-  //   from: deployer,
-  //   args: [
-  //     RWalletFactory.address,
-  //     feeBase,
-  //     feeMul
-  //   ],
-  //   log: true
-  // });
+  await deploy('MarketPlace', {
+    from: deployer,
+    args: [
+      RWalletFactoryAddress,
+      feeBase,
+      feeMul
+    ],
+    log: true
+  });
 
   // if(!pkey || !apikey) throw new Error('missing enviroment');
-  await deploy('NFT', {
-    from: deployer,
-    args: [],
-    log: true,
-  });
+  // await deploy('NFT', {
+  //   from: deployer,
+  //   args: [],
+  //   log: true,
+  // });
 
   // const [owner] = await ethers.getSigners();
   // const provider = new ethers.providers.InfuraProvider("sepolia", apikey);
