@@ -249,6 +249,8 @@ describe("Testing MarketPlace", function () {
         expect(account_bal_after).to.eq(account_bal.add(user_bal).sub(txfee));
     });
 
+    it("should allow pulling when NFT was de-listed via set maxDuration")
+
     it("underflow test", async () => {
         const newToken = await mint(nft, dummy, lender.address);
         // if price and duration are low enough the fees calculations underflows

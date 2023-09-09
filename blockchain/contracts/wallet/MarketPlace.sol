@@ -28,13 +28,11 @@ contract MarketPlace is IMarketPlace {
 
     uint256 public treasury;
 
-    uint32 public feeBase;
+    /* aliquots measured in basis points */
+    uint32 public serviceAliquot;
 
-    uint16 public feeMultiplier;
-
-    uint32 public pullFeeBase;
-
-    uint16 public pullFeeMultiplier;
+    uint32 public pullAliquot;
+    /***/
 
     address public admin;
     
@@ -58,21 +56,55 @@ contract MarketPlace is IMarketPlace {
     mapping(address => uint256) private _balances;
 
     event Listing (
-        address indexed nftOwner,
+        uint256 indexed receiptId,
         address indexed nftContract,
         uint256 tokenId
     );
 
     event Delisting (
+        uint256 indexed receiptId,
         address indexed contract_,
         uint256 tokenId
     );
     
     event Rental (
-        address indexed nftOwner,
+        uint256 indexed receiptId,
         address indexed rentee,
         address indexed nftContract,
         uint256 tokenId
+    );
+
+    event PriceUpdate (
+        uint256 indexed receiptId,
+        address indexed nftContract,
+        uint256 tokenId,
+        uint256 price
+    );
+
+    event MaxDurationUpdate (
+        uint256 indexed receiptId,
+        address indexed nftContract,
+        uint256 tokenId,
+        uint256 maxDuration
+    );
+
+    event Withdraw (
+        address indexed user,
+        uint256 value
+    );
+
+    event TreasuryWithdraw (
+        uint256 value
+    );
+
+    event ServiceFeeUpdate (
+        uint256 oldValue,
+        uint256 newValue
+    );
+
+    event PullFeeUpdate (
+        uint256 oldValue,
+        uint256 newValue
     );
 
     modifier onlyAdmin {
@@ -83,29 +115,16 @@ contract MarketPlace is IMarketPlace {
     constructor(
         address factoryAddress,
         address receiptsContractAddr,
-        uint32 _feeBase,
-        uint16 _feeMultiplier,
-        uint32 _pullFeeBase,
-        uint16 _pullFeeMultiplier,
-        address _admin
+        uint32 serviceAliq_,
+        uint32 pullAliq_,
+        address admin_
         ) {
         factoryContract = RWalletFactory(factoryAddress);
         receiptsContract = IReceiptNFT(receiptsContractAddr);
-        feeBase = _feeBase;
-        feeMultiplier = _feeMultiplier;
-        pullFeeBase = _pullFeeBase;
-        pullFeeMultiplier = _pullFeeMultiplier;
-        admin = _admin;
+        serviceAliquot = serviceAliq_;
+        pullAliquot = pullAliq_;
+        admin = admin_;
     }
-
-    // function getAssets() public view returns(NFT[] memory) {
-    //     return _assets;
-    // }
-
-    // function getAssetsByOwner(address nftOwner) public view returns(NFT[] memory) {
-    //     return _assetsByOwner[nftOwner];
-    // }
-
 
     function getPrice(address contract_, uint256 tokenId) external view returns(uint256) {
         return _prices[contract_][tokenId];
@@ -136,24 +155,29 @@ contract MarketPlace is IMarketPlace {
     }
 
     function setMaxDuration(address contract_, uint256 tokenId, uint256 maxDuration) external {
+        uint256 receiptId =_receipts[contract_][tokenId];
         require(
-            receiptsContract.ownerOf( _receipts[contract_][tokenId] ) == msg.sender,
+            receiptsContract.ownerOf(receiptId) == msg.sender,
             "error: token not listed or caller not owner of receipt-token"
         );
+        require(maxDuration > 0, "cannot set to zero, use deList");
         _maxDuration[contract_][tokenId] = maxDuration;
+        emit MaxDurationUpdate(receiptId, contract_, tokenId, maxDuration);
     }
 
     function setPrice(address contract_, uint256 tokenId, uint256 price) external {
+        uint256 receiptId = _receipts[contract_][tokenId];
         require(
-            receiptsContract.ownerOf( _receipts[contract_][tokenId] ) == msg.sender,
+            receiptsContract.ownerOf( receiptId ) == msg.sender,
             "error: token not listed or caller not owner of receipt-token"
         );
         _prices[contract_][tokenId] = price;
+        emit PriceUpdate(receiptId, contract_, tokenId, price);
     }
 
 
 
-    function listNFT(address contract_, uint256 tokenId, uint256 price, uint256 maxDuration) public {
+    function listNFT(address contract_, uint256 tokenId, uint256 price, uint256 maxDuration) external {
         require(_isApproved(contract_, tokenId), "Operator not approved");
         require(msg.sender == _getNFTowner(contract_, tokenId), "caller is not NFT owner");
         
@@ -170,7 +194,7 @@ contract MarketPlace is IMarketPlace {
         require(success, "receipt mint failed");
 
         _receipts[contract_][tokenId] = abi.decode(data, (uint256));
-        emit Listing(msg.sender, contract_, tokenId);
+        emit Listing(_receipts[contract_][tokenId], contract_, tokenId);
     }
 
     function rentNFT (
@@ -181,12 +205,12 @@ contract MarketPlace is IMarketPlace {
         require(_maxDuration[contract_][tokenId] > 0, "this NFT is not listed");
         require(duration <= _maxDuration[contract_][tokenId], "rental period set too long");
         uint256 rent = _prices[contract_][tokenId] * duration;
-        uint256 serviceFee = (rent * feeMultiplier) / feeBase;
+        uint256 serviceFee = (rent * serviceAliquot) / 10000;
         require(msg.value >= rent + serviceFee, "not enough funds");
         
         uint256 receiptId = _receipts[contract_][tokenId];
         _expiration[receiptId] = block.timestamp + duration;
-        uint256 pullFee =  (serviceFee * pullFeeMultiplier) / pullFeeBase;
+        uint256 pullFee =  (serviceFee * pullAliquot) / 10000;
         _pullFee[receiptId] = pullFee;
 
         address nftOwner = receiptsContract.ownerOf(receiptId);
@@ -195,14 +219,14 @@ contract MarketPlace is IMarketPlace {
     
         IERC721Metadata nftContract = IERC721Metadata(contract_);
         nftContract.transferFrom(address(this), msg.sender, tokenId);
-        emit Rental(nftOwner, msg.sender, contract_, tokenId);
+        emit Rental(receiptId, msg.sender, contract_, tokenId);
     }
 
     function deList(address contract_, uint256 tokenId) external {
         uint256 receiptId = _receipts[contract_][tokenId];
         require(msg.sender == _getNFTowner(address(receiptsContract), receiptId), "only owner of receipt");
         _removeListing(contract_, tokenId );
-        emit Delisting(contract_, tokenId);
+        emit Delisting(receiptId, contract_, tokenId);
 
         address owner = _getNFTowner(contract_, tokenId);
         if(owner ==  address(this)) { /* not rented out */
@@ -223,9 +247,10 @@ contract MarketPlace is IMarketPlace {
         if( receiptId <= 0 )
           revert NoReceipts(contract_, tokenId);
         
-        _expiration[receiptId] = 0;
+        // _expiration[receiptId] = 0;
         IERC721 nftContract = IERC721(contract_);
         address from = nftContract.ownerOf(tokenId);
+
         RWallet rwallet = RWallet(payable(from));
         rwallet.pullAsset(rwallet.getTokenIndex(contract_, tokenId));
 
@@ -255,6 +280,7 @@ contract MarketPlace is IMarketPlace {
         uint256 bal = _balances[msg.sender];
         require( bal > 0, "there is no balance for caller address");
         _balances[msg.sender] = 0;
+        emit Withdraw(msg.sender, bal);
 
         (bool success,) = payable(msg.sender).call{value: bal}("");
         require(success, "transfer of funds failed");
@@ -285,14 +311,13 @@ contract MarketPlace is IMarketPlace {
         require(success, "transfer failed ");
     }
 
-    function setServiceFee(uint32 _feeBase, uint16 _feeMultiplier) external onlyAdmin {
-        feeBase = _feeBase;
-        feeMultiplier = _feeMultiplier;
+    /* set aliquot values in basis points */
+    function setServiceAliquot(uint32 value) external onlyAdmin {
+        serviceAliquot = value;
     }
 
-    function setPullFee(uint32 _feeBase, uint16 _feeMultipler) external onlyAdmin {
-        pullFeeBase = _feeBase;
-        pullFeeMultiplier = _feeMultipler;
+    function setPullAliquot(uint32 value) external onlyAdmin {
+        pullAliquot = value;
     }
 
 }

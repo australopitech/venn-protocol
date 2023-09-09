@@ -37,9 +37,9 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
 
     mapping(address => mapping(uint256 => uint256)) private _tokenIndex;
 
-    mapping(address => uint256) private _loanCounterByContract;
+    mapping(address => uint256) private _rentalCounterByContract;
 
-    mapping(address => mapping(uint256 => bool)) _isLoan;
+    mapping(address => mapping(uint256 => bool)) _isRental;
 
     mapping(address => uint256) private _operatorCount;
 
@@ -139,7 +139,7 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
         if (data.length < 4) return true;
         bytes4 funcSel = _extractFunctionSignature(data);
         if(funcSel == APPROVE_ALL_SEL){
-            if(_loanCounterByContract[target] > 0) return false;
+            if(_rentalCounterByContract[target] > 0) return false;
             bool approved;
             assembly {
                 approved := mload(add(data, 68))
@@ -168,7 +168,7 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
 	            tokenId := mload(add(data, 100))
 	        }
             if(from == address(this)){
-                return !_isLoan[target][tokenId];
+                return !_isRental[target][tokenId];
             }
         }
         if(funcSel == APPROVE_SEL) {
@@ -176,7 +176,7 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
             assembly{
                 tokenId := mload(add(data, 68))
             }
-            return !_isLoan[target][tokenId];
+            return !_isRental[target][tokenId];
         }
         
         return true;
@@ -206,14 +206,14 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
         return;
     }
 
-    function isLoan(address contract_, uint256 tokenId) public view returns(bool){
+    function isRental(address contract_, uint256 tokenId) external view returns(bool){
         // NFT[] memory loans_ = _rentalsByContract[contract_];
         // for(uint i=0; i<loans_.length; i++){
         //     if(loans_[i].id == tokenId){
         //         return true;
         //     }
         // }
-        return _isLoan[contract_][tokenId];
+        return _isRental[contract_][tokenId];
     }
     
     function _extractFunctionSignature(bytes memory data) private pure returns (bytes4) {
@@ -226,7 +226,7 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
     }
 
 
-    function getLoans() external view returns(NFT[] memory) {
+    function getRentals() external view returns(NFT[] memory) {
         return _rentals;
     }
 
@@ -238,8 +238,8 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
     //     return _rentalsByContract[contract_];
     // }
 
-    function getLoanCounterByContract(address contract_) external view returns(uint256) {
-        return _loanCounterByContract[contract_];
+    function getRentalCounterByContract(address contract_) external view returns(uint256) {
+        return _rentalCounterByContract[contract_];
     }
 
     function getOperatorCount(address contract_) public view returns(uint256) {
@@ -262,15 +262,15 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
         );
         _rentals.push(newAsset);
         // _rentalsByContract[_contract].push(newAsset);
-        _loanCounterByContract[nftContract]++;
-        _isLoan[nftContract][tokenId] = true;
+        _rentalCounterByContract[nftContract]++;
+        _isRental[nftContract][tokenId] = true;
     }
 
     /**
      * releaseAsset methods
      * releases asset(s) from wallet.
      * should be called by owner in case loans make operations reach gas limit.
-     * this might happen because `_isLoan` needs to be called at every userOp
+     * this might happen because `_isRental` needs to be called at every userOp
      */
     function releaseSingleAsset(uint256 index) public onlyOwner {
         require(_rentals.length > index, "invalid index");
@@ -289,8 +289,8 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
             id
         );
         _subAssetFromList(index);
-        _loanCounterByContract[_contract]--;
-        _isLoan[_contract][id] = false;
+        _rentalCounterByContract[_contract]--;
+        _isRental[_contract][id] = false;
     }
     
     function _subAssetFromList(uint256 index) private {
