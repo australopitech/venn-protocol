@@ -8,12 +8,22 @@ export interface NftCardProps {
   price?: number; 
   isRented?: boolean;
   expireDate?: string;
+  currentPage?: string | '';
+  onClick: any;
 }
 
-export default function NftCard ({ imageURI, name, price, isRented, expireDate }: NftCardProps) {
+export default function NftCard ({ 
+  imageURI, 
+  name, 
+  price, 
+  isRented, 
+  expireDate, 
+  currentPage,
+  onClick
+}: NftCardProps) {
   return (
-    <div className={styles.nftCardContainer}>
-      <div className={styles.nftCardImageContainer}>
+    <div className={classNames(styles.nftCardContainer, currentPage === 'market' ? styles.nftCardMarketContainer : '')}>
+      <div className={styles.nftCardImageContainer} onClick={onClick}>
         <img width="100%" height="100%" src={imageURI} alt='NFT Image'/>
       </div>
       <div className={styles.nftCardInfo}>

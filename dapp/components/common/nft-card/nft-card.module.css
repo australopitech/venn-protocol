@@ -17,6 +17,10 @@
   font-weight: 600;
 }
 
+.nftCardMarketContainer {
+  margin: 16px 8px 24px 8px;
+}
+
 .nftCardImageContainer {
   width: 240px;
   height: 240px;
