@@ -4,11 +4,12 @@ import classNames from 'classnames';
 import { useState } from 'react';
 
 import { useAddressData, useAddressNfts } from '../../../hooks/address-data';
+import { NftItem, FetchNftDataResponse } from '../../../types/types';
 import { fetchAddressData } from '@/utils/frontendUtils';
 
 export interface NftAreaProps {
   nftAreaGridTemplate?: string;
-  address?: string;
+  nftFetchData?: FetchNftDataResponse;
 }
 
 interface ToggleSwitchProps {
@@ -66,7 +67,7 @@ const ToggleSwitch = ({ onToggle }: ToggleSwitchProps) => {
   )
 }
 
-export default function NftArea ({ nftAreaGridTemplate, address}: NftAreaProps) {
+export default function NftArea ({ nftFetchData}: NftAreaProps) {
   const [toggleState, setToggleState] = useState<boolean>(false);
 
   const handleToggle = (state: boolean) => {
@@ -74,7 +75,7 @@ export default function NftArea ({ nftAreaGridTemplate, address}: NftAreaProps) 
     console.log('Toggle state:', state);
   };
 
-  const userData = useAddressNfts(address);
+  // const userData = useAddressNfts(address);
   // console.log('userData:', userData);
 
   // const nftsData = [
@@ -100,10 +101,10 @@ export default function NftArea ({ nftAreaGridTemplate, address}: NftAreaProps) 
       <div className={styles.invisibleDivider}></div>
       <div className={styles.nftGridContent}>
         <div className={styles.cardGrid}>
-          {userData.nfts ? 
-           userData.nfts.length == 0 ?
+          {nftFetchData?.nfts ? 
+           nftFetchData?.nfts.length == 0 ?
            "No nfts" :
-           userData.nfts.map(nft =>
+           nftFetchData.nfts.map(nft =>
             <NftCard
               imageURI={
                 nft.nftData?.external_data?.image_1024 ?
@@ -116,7 +117,7 @@ export default function NftArea ({ nftAreaGridTemplate, address}: NftAreaProps) 
               expireDate={'0'}
               key={nft.contractAddress + nft.nftData?.token_id}
             />) :
-            userData.error ? "Error" + userData.error : "Loading"
+            nftFetchData?.isLoading ? "Loading..." : "Error" + nftFetchData?.error
           }
 
         </div>

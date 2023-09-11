@@ -6,13 +6,15 @@ import NftArea from '@/components/dashboard/nft-area/nft-area'
 import { useSigner } from '@usedapp/core';
 import { useEffect, useState } from 'react';
 import { ConnectButton } from '@/components/common/navbar/navbar';
+import { NFTDialog } from '@/components/common/nft-dialog/nft-dialog';
+import { useAddressData, useAddressNfts } from '../../../hooks/address-data';
 
 export interface DashboardLayoutProps {
   address?: string;
 }
 
 export default function DashboardLayout ({ address }: DashboardLayoutProps) {
-
+  const [isNFTOpen, setIsNFTOpen] = useState(true);
   // const isWalletConnected = true; //temp
   const signer = useSigner();
   const [signerAddress, setSignerAddress] = useState<string>();
@@ -23,13 +25,28 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
     }
   }, [signer]);
 
+  const userData = useAddressNfts(address? address : signerAddress);
+
   return (
+    <>
+    {isNFTOpen && 
+      <NFTDialog
+        // contract={contract}
+        // id={tokenId}
+        // index={index}
+        setIsNFTOpen={setIsNFTOpen} 
+        // context={context}
+        // activeAccount={activeAccount}
+        // isOwned={isOwned}
+        // isBorrowed={isBorrowed}
+      />
+    }
     <div className={styles.dashboard} >
       <NavBar navbarGridTemplate={styles.navbarGridTemplate} currentPage='dashboard' />
       { (signer || address)
         ? <div className={styles.contentGridTemplate}> 
             <SideBar address={address? address : signerAddress}/>
-            <NftArea  address={address? address : signerAddress}/> 
+            <NftArea nftFetchData={userData}/> 
           </div>
         : <div className={styles.notConnectedTemplate}>
             <div className={styles.notConnectedContainer}>
@@ -44,5 +61,6 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
           </div>
       }
     </div>
+    </>
   );
 }
