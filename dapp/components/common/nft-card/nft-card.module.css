@@ -1,0 +1,108 @@
+.nftCardContainer {
+  width: fit-content;
+  height: auto;
+  /* background-color: rgba(223, 0, 255, 1); */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  /* margin-right: 8px;
+  margin-bottom: 24px; */
+  /* margin: 8px 8px 24px 8px; */
+
+  /* margin-right: 1.5%; */
+
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.nftCardImageContainer {
+  width: 240px;
+  height: 240px;
+  border-radius: 25px;
+  overflow: hidden;
+  /* background-color: rgb(184, 190, 221); */
+  background-color: #F08700;
+  background: linear-gradient(to left top, #f3bf7b, #f7a2cb); /* Your gradient */
+
+  /* box-shadow: 0 4px 6px rgba(0,0,0,0.1); */
+  transition: all 0.125s ease 0s;
+  cursor: pointer;
+  /* margin-right: 1.5%; */
+}
+
+ @media (max-width: 1500px){ 
+  .nftCardImageContainer { 
+    height: calc(((100vw - 400px) - 90px) / 4); 
+    width: calc(((100vw - 400px) - 90px) / 4);
+  } 
+}
+
+@media (max-width: 1404px){ 
+  .nftCardImageContainer { 
+    height: calc(((100vw - 403px) - 60px) / 3); 
+    width: calc(((100vw - 403px) - 60px) / 3);
+  } 
+}  
+
+@media (max-width: 1148px){ 
+  .nftCardImageContainer { 
+    height: calc((100vw - 429px) / 2); 
+    width: calc((100vw - 429px) / 2);
+  } 
+}  
+
+.nftCardImageContainer:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transform: scale(1.05); 
+}
+
+.nftCardImageContainer:active {
+  transform: scale(0.95); 
+}
+
+.nftCardImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nftCardInfo {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 16px 8px;
+  flex-wrap: nowrap;
+}
+
+.listed,
+.rented,
+.notListed {
+  width: 100%;
+  /* padding-right: 16px; */
+  opacity: 0.8;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  /* justify-content: space-between; */
+  justify-content: flex-start;
+  gap: 8px;
+  letter-spacing: 0.6px;
+}
+
+.listed {
+  /* color: #519052; */
+}
+
+.rented {
+  color: #E54B4B;
+}
+
+.notListed {
+  opacity: 0.5;
+}

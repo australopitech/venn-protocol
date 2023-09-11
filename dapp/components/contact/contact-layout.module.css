@@ -1,0 +1,34 @@
+.contact {
+  box-sizing: border-box;
+  width: 100%;
+  height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr 9fr;
+  background-color:rgb(240, 230, 239);
+}
+
+.navbarGridTemplate { 
+  grid-area: 1 / 1 / 2 / 2; 
+  background-color:rgb(240, 230, 239);
+}
+
+.contentGridTemplate { 
+  height: 100%;
+  width: 100vw;
+  grid-area: 2 / 1 / 3 / 2; 
+  padding: 56px 32px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 32px;
+  background-color:rgb(240, 230, 239);
+  background-color:#f0e6ef;
+
+  font-family: 'SFRounded', sans-serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: #000;
+}

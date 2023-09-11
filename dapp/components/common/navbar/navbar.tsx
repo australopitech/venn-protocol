@@ -1,0 +1,95 @@
+import classNames from 'classnames';
+import { Logo } from '../logo/logo';
+import { SearchBox } from '../search-box/search-box';
+import styles from './navbar.module.css';
+import { useState, useRef, useEffect } from 'react';
+
+export interface NavBarProps {
+  navbarGridTemplate?: string;
+  currentPage?: string;
+}
+
+//to-do: pegar a info de qual pagina está, para saber qual botão está ativo
+
+const MenuIcon = () => {
+  return (
+    <svg width="36px" height="36px" viewBox="0 0 1.08 1.08" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.18 0.315a0.045 0.045 0 0 1 0.045 -0.045h0.63a0.045 0.045 0 1 1 0 0.09H0.225a0.045 0.045 0 0 1 -0.045 -0.045zm0 0.225a0.045 0.045 0 0 1 0.045 -0.045h0.63a0.045 0.045 0 1 1 0 0.09H0.225a0.045 0.045 0 0 1 -0.045 -0.045zm0 0.225a0.045 0.045 0 0 1 0.045 -0.045h0.63a0.045 0.045 0 1 1 0 0.09H0.225a0.045 0.045 0 0 1 -0.045 -0.045z" fill="#5E5E5E"/></svg>
+  )
+}
+
+interface DropdownProps {
+  items: string[];
+  onItemSelect: (item: string) => void;
+}
+
+
+const DropdownMenu = ({ items, onItemSelect } : DropdownProps ) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    // Function to check if clicked outside of the dropdown menu
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    // Attach the listeners on component mount
+    document.addEventListener('mousedown', handleClickOutside);
+
+    // Detach the listeners on component unmount
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  return (
+    <div className={styles.dropdown} ref={dropdownRef}>
+      <div onClick={() => setIsOpen(!isOpen)}><MenuIcon /></div>
+
+      {isOpen && (
+        <ul className={styles.dropdownMenu}>
+          {items.map((item, index) => (
+            <li key={index} onClick={() => onItemSelect(item)}>
+              {item}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
+
+export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps) {
+  const items = ['About the project', 'Contact Us'];
+
+  const handleItemSelect = (item: string) => {
+    console.log(`Selected: ${item}`);
+  };
+
+  return (
+    <div className={classNames(styles.navbar, navbarGridTemplate)}>
+      <div className={styles.logoContainer}>
+        <Logo />
+      </div>
+      <div className={styles.functionalitiesContainer}>
+        <div className={styles.searchBoxContainer}>
+          <SearchBox />
+        </div>
+        <div className={styles.menuButtonsContainer}>
+          {/* <div className={currentPage === 'market'? styles.secondaryButtonSelected : styles.secondaryButton}>Market</div>
+          <div className={currentPage === 'dashboard'? styles.secondaryButtonSelected : styles.secondaryButton}>Dashboard</div> */}
+          <div className={classNames(styles.secondaryButton, currentPage === 'market'? styles.active : '')}>Market</div>
+          <div className={classNames(styles.secondaryButton, currentPage === 'dashboard'? styles.active : '')}>Dashboard</div>
+          {/* <div className={styles.secondaryButton}>Market</div>
+          <div className={styles.secondaryButton}>Dashboard</div> */}
+          {/* TO-DO: colocar primary <div className={styles.primaryButton}>Connect Wallet</div> */}
+          <div className={styles.primaryButton}>Connect Wallet</div>
+          {/* <div className={styles.iconButton}><MenuIcon /></div> */}
+          <div className={styles.iconButton}><DropdownMenu items={items} onItemSelect={handleItemSelect} /></div>
+        </div>
+      </div>
+    </div>
+  );
+}

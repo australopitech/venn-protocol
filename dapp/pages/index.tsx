@@ -2,6 +2,7 @@ import Image from 'next/image'
 import { Inter } from 'next/font/google'
 
 import { ethers } from 'ethers';
+<<<<<<< HEAD
 import React, {useState, useEffect} from 'react';
 import { useEthers, useEtherBalance, useConfig, useSigner } from '@usedapp/core';
 import { fetchAddressData } from '../src/frontendUtils'
@@ -10,14 +11,19 @@ import { isApproved, isListed } from '@/src/utils';
 import { approve, list, delist, pull, rent } from '../src/call';
 import nft from '../src/contractData/NFT.json';
 import mktPlace from '../src/contractData/MarketPlace.json';
+=======
+// import { config } from './_app';
+import { useEthers, useEtherBalance, useConfig } from '@usedapp/core';
+import { fetchAddressData } from '../utils/frontendUtils'
+>>>>>>> db345bd2909e897d6b2557534c64244079f107e7
 
 const inter = Inter({ subsets: ['latin'] })
 
 const ConnectButton = () => {
   const { account, deactivate, activateBrowserWallet } = useEthers()
   // 'account' being undefined means that we are not connected.
-  if (account) return <button className='px-4 py-2 rounded bg-blue-500' onClick={() => deactivate()}>Disconnect</button>
-  else return <button className='px-4 py-2 rounded bg-blue-500'onClick={() => activateBrowserWallet()}>Connect</button>
+  if (account) return <button onClick={() => deactivate()}>Disconnect</button>
+  else return <button onClick={() => activateBrowserWallet()}>Connect</button>
 }
 
 var dataFetched : boolean = false;
@@ -81,7 +87,7 @@ export default function Home() {
   return (
     
     <div>
-      <div className='p-2'>
+      <div>
       <ConnectButton />
       <div className='py-4'> <button className='py-2 px-4 bg-green-500 rounded' onClick={sendHandler}>send</button></div>
       </div>
