@@ -11,8 +11,8 @@ const inter = Inter({ subsets: ['latin'] })
 const ConnectButton = () => {
   const { account, deactivate, activateBrowserWallet } = useEthers()
   // 'account' being undefined means that we are not connected.
-  if (account) return <button className='px-4 py-2 rounded bg-blue-500' onClick={() => deactivate()}>Disconnect</button>
-  else return <button className='px-4 py-2 rounded bg-blue-500'onClick={() => activateBrowserWallet()}>Connect</button>
+  if (account) return <button onClick={() => deactivate()}>Disconnect</button>
+  else return <button onClick={() => activateBrowserWallet()}>Connect</button>
 }
 
 var dataFetched : boolean = false;
@@ -39,7 +39,7 @@ export default function Home() {
   return (
     
     <div>
-      <div className='p-2'>
+      <div>
       <ConnectButton />
       </div>
       {etherBalance && (
