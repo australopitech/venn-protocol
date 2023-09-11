@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import NavBar from '@/components/common/navbar/navbar'
 import SideBar from '@/components/dashboard/sidebar/sidebar'
 import NftArea from '@/components/dashboard/nft-area/nft-area'
-
+import { useSigner } from '@usedapp/core';
 
 export interface DashboardLayoutProps {
   address?: string;
@@ -11,12 +11,13 @@ export interface DashboardLayoutProps {
 
 export default function DashboardLayout ({ address }: DashboardLayoutProps) {
 
-  const isWalletConnected = true; //temp
-  
+  // const isWalletConnected = true; //temp
+  const signer = useSigner();
+
   return (
     <div className={styles.dashboard} >
       <NavBar navbarGridTemplate={styles.navbarGridTemplate} currentPage='dashboard' />
-      { (isWalletConnected && address)
+      { (signer && address)
         ? <div className={styles.contentGridTemplate}> 
             <SideBar address={address}/>
             <NftArea  /> 
