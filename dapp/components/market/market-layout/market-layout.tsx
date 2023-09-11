@@ -5,10 +5,18 @@ import CollectionCard from '@/components/common/collection-card/collection-card'
 import React, { useRef, useState } from 'react';
 import NftCard from '@/components/common/nft-card/nft-card';
 import { NFTDialog } from '@/components/common/nft-dialog/nft-dialog';
+import { CollectionDialog } from '@/components/common/collection-dialog/collection-dialog';
 // import Swipe from 'react-swipe';
 
-interface TrendingCollectionsSlider {
+interface TrendingCollectionsSliderProps {
   collectionsData?: Array<any> | [];
+}
+
+interface ContentSliderProps {
+  title: string;
+  contentType: string;
+  contentSliderData?: Array<any> | [];
+  setIsOpen: any;
 }
 
 interface MarketLayoutProps {
@@ -37,10 +45,14 @@ const HeroSection = () => {
   )
 }
 
-const TrendingCollectionsSlider = ({ collectionsData }: TrendingCollectionsSlider) => {
+const ContentSlider = ({ title, contentType, contentSliderData, setIsOpen }: ContentSliderProps) => {
   const [isDragging, setDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
+
+  const handleOnCardClick = () => {
+    setIsOpen(true)
+  }
 
   const sliderRef = useRef<HTMLDivElement | null>(null);
 
@@ -68,27 +80,40 @@ const TrendingCollectionsSlider = ({ collectionsData }: TrendingCollectionsSlide
 
   return (
     <div 
-      className={styles.trending}
+      className={styles.slider}
     >
-      <h1 className={styles.trendingTitle}>
-        Trending Collections
+      <h1 className={styles.sliderTitle}>
+        {title}
       </h1>
       <div>
         <div
-          className={styles.trendingContent}
+          // className={contentType === "nft" ? styles.nftSliderContent : styles.sliderContent}
+          className={contentType === "nft" ? styles.nftSliderContent : styles.sliderContent}
           ref={sliderRef}
           onPointerDown={startDrag}
           onPointerMove={doDrag}
           onPointerUp={stopDrag}
           onPointerCancel={stopDrag}
         >
-          {collectionsData?.map(data => 
-            <CollectionCard 
-              uri={data.uri} 
-              name={data.name} 
-              floor={data.floor} 
-              key={data.uri}
-            />
+          {contentSliderData?.map(data => 
+            contentType === "nft" 
+            ? <NftCard 
+                imageURI={data.uri} 
+                name={data.name} 
+                price={data.price}
+                isRented={data.isRented}
+                expireDate={data.expireDate}
+                currentPage='market'
+                key={data.uri}
+                onClick={handleOnCardClick}
+              />
+            : <CollectionCard 
+                uri={data.uri} 
+                name={data.name} 
+                floor={data.floor} 
+                key={data.uri}
+                onClick={handleOnCardClick}
+              />
           )}
         </div>
       </div>
@@ -98,6 +123,7 @@ const TrendingCollectionsSlider = ({ collectionsData }: TrendingCollectionsSlide
 
 export default function MarketLayout ({ somePropHere }: MarketLayoutProps) {
   const [isNFTOpen, setIsNFTOpen] = useState(false);
+  const [isCollectionOpen, setIsCollectionOpen] = useState(false);
 
   const collectionsData = [
     {name: "Super Ultra Awesome Collection", floor: 0.02,  uri: "https://dl.openseauserdata.com/cache/originImage/files/a0e0ab6a2841ae56d4ba63f833ebbca2.png"},
@@ -112,24 +138,14 @@ export default function MarketLayout ({ somePropHere }: MarketLayoutProps) {
   const nftsData = [
     {name: "Awesome NFT #0", price: 0.01, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/2944.png"},
     {name: "Awesome NFT #1", price: 0.02, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3808.png"},
-    {name: "Awesome NFT #1.2", price: 0.125, isRented: true, expireDate: '2 days', uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3371.png"},
     {name: "Awesome NFT #2", price: 0.1, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/6020.png"},
     {name: "Awesome NFT #3", price: 0.012, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/8488.png"},
     {name: "Awesome NFT #4", price: 0.016, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3913.png"},
-    {name: "Awesome NFT #5", uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3370.png"},
+    {name: "Awesome NFT #5", price: 0.0123, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3370.png"},
     {name: "Awesome NFT #0", price: 0.01, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/2944.png"},
     {name: "Awesome NFT #1", price: 0.02, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3808.png"},
-    {name: "Awesome NFT #1.2", price: 0.125, isRented: true, expireDate: '2 days', uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3371.png"},
     {name: "Awesome NFT #2", price: 0.1, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/6020.png"},
     {name: "Awesome NFT #3", price: 0.012, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/8488.png"},
-    {name: "Awesome NFT #4", price: 0.016, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3913.png"},
-    {name: "Awesome NFT #5", uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3370.png"},
-    {name: "Awesome NFT #5", uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3370.png"},
-    {name: "Awesome NFT #5", uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3370.png"},
-    {name: "Awesome NFT #5", uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3370.png"},
-    {name: "Awesome NFT #5", uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3370.png"},
-    {name: "Awesome NFT #5", uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3370.png"},
-    {name: "Awesome NFT #5", uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3370.png"},
   ]
 
   return (
@@ -146,37 +162,18 @@ export default function MarketLayout ({ somePropHere }: MarketLayoutProps) {
           // isBorrowed={isBorrowed}
         />
       }
+      {
+        isCollectionOpen &&
+        <CollectionDialog
+          setIsCollectionOpen={setIsCollectionOpen} 
+        />
+      }
       <div className={styles.market} >
         <NavBar navbarGridTemplate={styles.navbarGridTemplate} currentPage='market' />
         <div className={styles.contentGridTemplate}> 
           <HeroSection />
-          <TrendingCollectionsSlider collectionsData={collectionsData} />
-          <div className={styles.latest}>
-            <h1>
-              Latest NFTs
-            </h1>
-            <div className={styles.nftGridContent}>
-              <div className={styles.cardGrid}>
-                {nftsData.map(data => 
-                  <NftCard 
-                    imageURI={data.uri} 
-                    name={data.name} 
-                    price={data.price}
-                    isRented={data.isRented}
-                    expireDate={data.expireDate}
-                    key={data.uri}
-                  />
-                )}
-              </div>
-              {/** BEGIN ghost cards to maintain grid proportions: width is the same as NftCard component */}
-              {/** IMPORTANT: do not remove the next 3 rows! */}
-              {/* <div className={styles.ghostCard} /> */}
-              {/* <div className={styles.ghostCard} /> 
-              <div className={styles.ghostCard} /> */}
-              {/* <div className={styles.ghostCard} /> */}
-              {/** END */}
-            </div>
-          </div>
+          <ContentSlider title={"Latest NFTs"} contentType={"nft"} contentSliderData={nftsData} setIsOpen={setIsNFTOpen} />
+          <ContentSlider title={"Trending Collections"} contentType={"collection"} contentSliderData={collectionsData} setIsOpen={setIsCollectionOpen} />
         </div>
       </div>
     </>

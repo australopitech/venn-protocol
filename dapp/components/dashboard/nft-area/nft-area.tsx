@@ -9,6 +9,7 @@ import { fetchAddressData } from '@/utils/frontendUtils';
 
 export interface NftAreaProps {
   nftAreaGridTemplate?: string;
+  setIsNFTOpen: any;
   nftFetchData?: FetchNftDataResponse;
 }
 
@@ -67,7 +68,7 @@ const ToggleSwitch = ({ onToggle }: ToggleSwitchProps) => {
   )
 }
 
-export default function NftArea ({ nftFetchData}: NftAreaProps) {
+export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchData}: NftAreaProps) {
   const [toggleState, setToggleState] = useState<boolean>(false);
 
   const handleToggle = (state: boolean) => {
@@ -75,6 +76,19 @@ export default function NftArea ({ nftFetchData}: NftAreaProps) {
     console.log('Toggle state:', state);
   };
 
+  const handleOnCardClick = () => {
+    setIsNFTOpen(true);
+  }
+
+  const nftsData = [
+    {name: "Awesome NFT #0", price: 0.01, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/2944.png"},
+    {name: "Awesome NFT #1", price: 0.02, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3808.png"},
+    {name: "Awesome NFT #1.2", price: 0.125, isRented: true, expireDate: '2 days', uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3371.png"},
+    {name: "Awesome NFT #2", price: 0.1, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/6020.png"},
+    {name: "Awesome NFT #3", price: 0.012, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/8488.png"},
+    {name: "Awesome NFT #4", price: 0.016, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3913.png"},
+    {name: "Awesome NFT #5", uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3370.png"},
+  ]
   // const userData = useAddressNfts(address);
   // console.log('userData:', userData);
 
@@ -116,6 +130,7 @@ export default function NftArea ({ nftFetchData}: NftAreaProps) {
               isRented={false}
               expireDate={'0'}
               key={nft.contractAddress + nft.nftData?.token_id}
+              onClick={handleOnCardClick}
             />) :
             nftFetchData?.isLoading ? "Loading..." : "Error" + nftFetchData?.error
           }

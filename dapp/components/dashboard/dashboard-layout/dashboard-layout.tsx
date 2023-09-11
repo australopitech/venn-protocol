@@ -14,7 +14,8 @@ export interface DashboardLayoutProps {
 }
 
 export default function DashboardLayout ({ address }: DashboardLayoutProps) {
-  const [isNFTOpen, setIsNFTOpen] = useState(true);
+  const [isNFTOpen, setIsNFTOpen] = useState(false);
+  const [isCollectionOpen, setIsCollectionOpen] = useState(false);
   // const isWalletConnected = true; //temp
   const signer = useSigner();
   const [signerAddress, setSignerAddress] = useState<string>();
@@ -46,7 +47,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
       { (signer || address)
         ? <div className={styles.contentGridTemplate}> 
             <SideBar address={address? address : signerAddress}/>
-            <NftArea nftFetchData={userData}/> 
+            <NftArea nftFetchData={userData} setIsNFTOpen={setIsNFTOpen}/> 
           </div>
         : <div className={styles.notConnectedTemplate}>
             <div className={styles.notConnectedContainer}>
