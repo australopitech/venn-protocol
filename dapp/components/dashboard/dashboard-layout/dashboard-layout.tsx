@@ -28,7 +28,6 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
       <NavBar navbarGridTemplate={styles.navbarGridTemplate} currentPage='dashboard' />
       { (signer || address)
         ? <div className={styles.contentGridTemplate}> 
-            <SideBar address={address}/>
             <SideBar address={address? address : signerAddress}/>
             <NftArea  address={address}/> 
           </div>
