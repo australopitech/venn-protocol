@@ -29,7 +29,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
       { (signer || address)
         ? <div className={styles.contentGridTemplate}> 
             <SideBar address={address? address : signerAddress}/>
-            <NftArea  address={address}/> 
+            <NftArea  address={address? address : signerAddress}/> 
           </div>
         : <div className={styles.notConnectedTemplate}>
             <div className={styles.notConnectedContainer}>
