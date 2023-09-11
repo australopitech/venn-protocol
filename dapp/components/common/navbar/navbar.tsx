@@ -80,6 +80,24 @@ const DropdownMenu = ({ items, onItemSelect } : DropdownProps ) => {
 
 
 export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps) {
+  // const [scrolled, setScrolled] = useState(false);
+
+  // useEffect(() => {
+  //   const handleScroll = () => {
+  //     setScrolled(window.scrollY > 0);
+  //   };
+
+  //   // Attach the event listener
+  //   window.addEventListener('scroll', handleScroll);
+
+  //   // Cleanup - remove the event listener
+  //   return () => {
+  //     window.removeEventListener('scroll', handleScroll);
+  //   };
+  // }, []);
+
+  // console.log('scrolled ', scrolled)
+
   const items = ['About the project', 'Contact Us'];
 
   const handleItemSelect = (item: string) => {
@@ -87,7 +105,8 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
   };
 
   return (
-    <div className={classNames(styles.navbar, navbarGridTemplate)}>
+    // <div className={classNames(styles.navbar, styles.navbarGridTemplate, scrolled ? styles.navbarScrolled : '')}>
+    <div className={classNames(styles.navbar, styles.navbarGridTemplate)}>
       <div className={styles.logoContainer}>
         <Logo />
       </div>

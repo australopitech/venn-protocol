@@ -24,7 +24,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 32px;
+  gap: 36px;
   background-color:rgb(240, 230, 239);
   background-color:#f0e6ef;
   /* background-color:rgb(255, 0, 230); */
@@ -298,4 +298,72 @@
   .cardGrid { 
     gap: 2% 3%;
   } 
-}  
+}
+
+
+.slider {
+  width: 100%;
+  height: fit-content;
+  padding: 4% 0% 4% 4.5%;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: left;
+  gap: 40px;
+
+  border-radius: 25px;
+  /* background-color: rgb(253, 246, 252); */
+  background-color: rgb(253, 246, 252);
+  color: rgba(93, 93, 93, 1);
+  overflow: hidden;
+}
+
+.sliderTitle {
+  padding-left: 8px;
+}
+
+.sliderContent {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: grab;
+  display: flex;
+  flex-direction: row;
+  align-items: left;
+  justify-content: left;
+  overflow-x: scroll;
+  gap: 16px;  /* Space between the cards */
+  cursor: grab;
+  scrollbar-width: none;
+  padding-right: 8px;
+  -ms-overflow-style: none;
+}
+
+.nftSliderContent {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  cursor: grab;
+  display: flex;
+  flex-direction: row;
+  align-items: left;
+  justify-content: left;
+  overflow-x: scroll;
+  gap: 28px;  /* Space between the cards */
+  cursor: grab;
+  scrollbar-width: none;
+  padding-right: 8px;
+  -ms-overflow-style: none;
+}
+
+.sliderContent:active,
+.nftSliderContent:active {
+    cursor: grabbing;
+}
+
+/* For Webkit browsers */
+.sliderContent::-webkit-scrollbar,
+.nftSliderContent::-webkit-scrollbar {
+  display: none;
+}

@@ -1,5 +1,5 @@
 
-import { BalancesResponse, BalanceItem, NftData } from '../types/types';
+import { BalancesResponse, BalanceItem, NftData, NftItem, FetchNftDataResponse } from '../types/types';
 import { fetchAddressData } from '../utils/frontendUtils'
 import { useEffect, useState, useRef } from "react";
 
@@ -33,11 +33,7 @@ export function useAddressData(address: string | undefined) {
   return { data, error, isLoading };
 }
 
-export function useAddressNfts (address: string | undefined) : {
-  nfts: { nftData: NftData; contractAddress: string }[] | undefined;
-  error: string | null;
-  isLoading: boolean;
-} {
+export function useAddressNfts (address: string | undefined) : FetchNftDataResponse {
   const userData = useAddressData(address);
 
   const data = userData.data;
