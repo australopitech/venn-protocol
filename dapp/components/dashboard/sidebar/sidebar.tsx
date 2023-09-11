@@ -3,6 +3,7 @@ import classNames from 'classnames';
 
 export interface SideBarProps {
   sidebarGridTemplate?: string;
+  address?: string;
 }
 
 const CopyIcon = () => {
@@ -14,7 +15,7 @@ const CopyIcon = () => {
   )
 }
 
-const Profile = () => {
+const Profile = ({ address }: {address?: string}) => {
   return (
     <div className={styles.userInfoContainer}>
       <div className={styles.avatar}>
@@ -22,7 +23,8 @@ const Profile = () => {
       </div>
       <div className={styles.addressContainer}>
         <span className={styles.address}>
-          0x123..4567
+          {/* 0x123..4567 */}
+          {address}
         </span>
         <div className={styles.copyIcon}>
           <CopyIcon />
@@ -186,14 +188,14 @@ const YourBalance = () => {
   )
 }
 
-export default function SideBar ({ sidebarGridTemplate }: SideBarProps) {
+export default function SideBar ({ sidebarGridTemplate, address }: SideBarProps) {
   const nftsContext: string =  "owned"
 
   return (
     <div className={sidebarGridTemplate}>
       <div className={styles.sidebar}>
         <div className={styles.profileInfo}>
-          <Profile />
+          <Profile address={address} />
         </div>
         <div className={styles.profileInfo}>
           <YourNfts nftsContext={nftsContext} />

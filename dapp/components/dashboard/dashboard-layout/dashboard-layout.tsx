@@ -6,19 +6,19 @@ import NftArea from '@/components/dashboard/nft-area/nft-area'
 
 
 export interface DashboardLayoutProps {
-  somePropHere?: string;
+  address?: string;
 }
 
-export default function DashboardLayout ({ somePropHere }: DashboardLayoutProps) {
+export default function DashboardLayout ({ address }: DashboardLayoutProps) {
 
   const isWalletConnected = true; //temp
   
   return (
     <div className={styles.dashboard} >
       <NavBar navbarGridTemplate={styles.navbarGridTemplate} currentPage='dashboard' />
-      { isWalletConnected
+      { (isWalletConnected && address)
         ? <div className={styles.contentGridTemplate}> 
-            <SideBar  />
+            <SideBar address={address}/>
             <NftArea  /> 
           </div>
         : <div className={styles.notConnectedTemplate}>
