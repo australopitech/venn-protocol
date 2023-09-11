@@ -5,6 +5,7 @@ import { useState } from 'react';
 
 export interface NftAreaProps {
   nftAreaGridTemplate?: string;
+  setIsNFTOpen: any;
 }
 
 interface ToggleSwitchProps {
@@ -62,13 +63,17 @@ const ToggleSwitch = ({ onToggle }: ToggleSwitchProps) => {
   )
 }
 
-export default function NftArea ({ nftAreaGridTemplate }: NftAreaProps) {
+export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen }: NftAreaProps) {
   const [toggleState, setToggleState] = useState<boolean>(false);
 
   const handleToggle = (state: boolean) => {
     setToggleState(state);
     console.log('Toggle state:', state);
   };
+
+  const handleOnCardClick = () => {
+    setIsNFTOpen(true);
+  }
 
   const nftsData = [
     {name: "Awesome NFT #0", price: 0.01, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/2944.png"},
@@ -101,6 +106,7 @@ export default function NftArea ({ nftAreaGridTemplate }: NftAreaProps) {
               isRented={data.isRented}
               expireDate={data.expireDate}
               key={data.uri}
+              onClick={handleOnCardClick}
             />
           )}
         </div>
