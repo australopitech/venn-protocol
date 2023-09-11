@@ -1,9 +1,6 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
 pragma solidity ^0.8.12;
 
-import '../wallet/RWalletFactory.sol';
-import '../wallet/RWallet.sol';
-
 interface IMarketPlace {
     
     /**
@@ -22,12 +19,12 @@ interface IMarketPlace {
      *  
      *  Implementations SHOULD:
      * 
-     *  - REQUIRE `duration` is less then or equal to maximum duration especified by NFT owner.
+     *  - REQUIRE `duration` is less then or equal to maximum duration specified by NFT owner.
      *  - REQUIRE `msg.value` be enough to cover the rent value and any outstanding service fee.
      * 
      *  Reference can be seen at MarketPlace.sol
      * 
      */
-    function rentNFT (address contract_, uint256 tokenId, address nftOwner, uint256 duration) external payable;
+    function rentNFT (address contract_, uint256 tokenId, uint256 duration) external payable;
 
 }

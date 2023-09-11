@@ -2,11 +2,14 @@ import Image from 'next/image'
 import { Inter } from 'next/font/google'
 
 import { ethers } from 'ethers';
-// import { config } from './_app';
-import { useEthers, useEtherBalance, useConfig } from '@usedapp/core';
+import React, {useState, useEffect} from 'react';
+import { useEthers, useEtherBalance, useConfig, useSigner } from '@usedapp/core';
 import { fetchAddressData } from '../src/frontendUtils'
-import { useSigner } from '@usedapp/core';
-import send from '../src/send';
+import send from '../src/call/send';
+import { isApproved, isListed } from '@/src/utils';
+import { approve, list, delist, pull, rent } from '../src/call';
+import nft from '../src/contractData/NFT.json';
+import mktPlace from '../src/contractData/MarketPlace.json';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,15 +23,22 @@ const ConnectButton = () => {
 var dataFetched : boolean = false;
 
 export default function Home() {
+  const provider = new ethers.providers.JsonRpcProvider('https://base-goerli.gateway.tenderly.co/6jlPleyGSLqQIAsz1uTkSg');
+  const signer = useSigner();
   const config = useConfig();
+  const [listed, setListed] = useState<boolean>();
+  const [listIsLoading, setlistIsLoading] = useState<boolean>();
+  
   if(!config.readOnlyUrls) throw new Error('network config error');
   const { account, chainId } = useEthers();
   const etherBalance = useEtherBalance(account);
   if (chainId && !config.readOnlyUrls[chainId]) {
     return <p>Please use Base Goerli testnet.</p>
   }
+
+  const tokenId = 0;
+  // console.log(signer)
   
-  const signer = useSigner();
 
   if (!dataFetched && process.env.NEXT_PUBLIC_EXAMPLE_ADDRESS) {
     // fetchNFTData('base-mainnet', process.env.NEXT_PUBLIC_EXAMPLE_ADDRESS)
@@ -40,10 +50,33 @@ export default function Home() {
   }
   
   const sendHandler = async () => {
-    const value = 0.001;
-    const to = "0x099A294Bffb99Cb2350A6b6cA802712D9C96676A";
+    const value = 0.000085;
+    // const to = "0x099A294Bffb99Cb2350A6b6cA802712D9C96676A";
+    const to = "0x49e75CB7Ff22F1B4E41f382cA4B5e6D349dDDc36";
     await send(signer, value, to);
   }
+
+  const listHandler = async () => {
+    if(!signer) { 
+      alert('connect a wallet');
+      return;
+    }
+    if(listIsLoading) return
+    
+    const price = 100;
+    const maxDuration = 10000;
+    
+    setlistIsLoading(true);
+    const tokenOwner = await signer.getAddress();
+    const appr = await isApproved(provider, nft.address, tokenId, tokenOwner, mktPlace.address);
+    if(!appr) await approve(signer, nft.address, tokenId, mktPlace.address);
+    await list(signer, nft.address, tokenId, price, maxDuration);
+    setlistIsLoading(false)
+  }
+
+  useEffect(() => {
+    isListed(provider, nft.address, tokenId).then((r) => setListed(r));
+  }, [listIsLoading, signer]);
 
   return (
     
@@ -62,6 +95,12 @@ export default function Home() {
           <p className="bold">{ethers.utils.formatEther(etherBalance)}</p>
         </div>
       )}
+      <div className='px-2 py-4'>
+        <button className='py-2 px-4 bg-blue-800' onClick={listHandler}>
+          {listIsLoading? 'loading...' : 'List token 0'}
+        </button>
+        <p className='p-4'>{listed && "token Listed!"}</p>
+      </div>
     </div>
     // <main
     //   className={`flex min-h-screen flex-col items-center justify-between p-24 ${inter.className}`}

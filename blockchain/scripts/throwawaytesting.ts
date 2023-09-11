@@ -5,6 +5,8 @@ import * as dotenv from 'dotenv';
 // import * as mktPlace from '../deployments/sepolia/BaseMarketPlace.json';
 // import * as nft from '../deployments/sepolia/NFT.json';
 // import uri from "../../nft/URI.json"
+import * as nft from '../deployments/base_goerli/NFT.json';
+
 dotenv.config();
 
 const pkey = process.env.PRIVATE_KEY;
@@ -23,7 +25,21 @@ const balCheck = async () => {
     console.log(ethers.utils.formatEther(bal));
 }
 
-balCheck();
+// balCheck();
+
+const base_rpc = process.env.BASE_GOERLI_PROVIDER;
+
+const ownerCheck = async () => {
+    if(!base_rpc) throw new Error('missing env');
+
+    const tokenId = 0;
+    const provider = new ethers.providers.JsonRpcProvider(base_rpc);
+    const contract = new ethers.Contract(nft.address, nft.abi, provider);
+    console.log(await contract.ownerOf(tokenId));
+
+}
+
+ownerCheck();
 
 // const main = async () => {
 //     if(!pkey || !apikey) throw new Error('missing env');
