@@ -10,13 +10,21 @@ export interface NavBarProps {
   currentPage?: string;
 }
 
+interface ConnectButtonProps {
+  connectText?: string;
+}
+
 //to-do: pegar a info de qual pagina está, para saber qual botão está ativo
 
-const ConnectButton = () => {
+export const ConnectButton = ({connectText} : ConnectButtonProps) => {
   const { account, deactivate, activateBrowserWallet } = useEthers()
   // 'account' being undefined means that we are not connected.
   if (account) return <div className={styles.primaryButton} onClick={() => deactivate()}>Disconnect</div>
-  else return <div className={styles.primaryButton} onClick={() => activateBrowserWallet()}>Connect Wallet</div>
+  else return (
+    <div className={styles.primaryButton} onClick={() => activateBrowserWallet()}>
+    {connectText? connectText : 'Connect Wallet'}
+    </div>
+  )
 }
 
 const MenuIcon = () => {
