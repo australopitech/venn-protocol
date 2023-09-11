@@ -13,7 +13,8 @@ export function useAddressData(address: string | undefined) {
       setIsLoading(true);
       const fetchData = async () => {
         try {
-          const data = await fetchAddressData('base-mainnet', address);
+          // const data = await fetchAddressData('base-mainnet', address);
+          const data = await fetchAddressData("base-testnet", address);
           setData(data);
         } catch (err) {
           if (err instanceof Error) {
