@@ -10,49 +10,36 @@ import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
-import "../samples/MarketPlace.sol";
+import "./IMarketPlace.sol";
 import "../core/BaseAccount.sol";
 import "../samples/callback/TokenCallbackHandler.sol";
+import "./FunctionSignatures.sol";
 
-/**
-  * minimal account.
-  *  this is sample minimal account.
-  *  has execute, eth handling methods
-  *  has a single signer that can send requests through the entryPoint.
-  */
 contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initializable {
     using ECDSA for bytes32;
 
     address public owner;
 
-    bytes4 private constant TRANSFER_SEL = bytes4(keccak256(bytes("transferFrom(address,address,uint256)")));
-
-    bytes4 private constant SAFE_TRANSFER_SEL = bytes4(keccak256(bytes("safeTransferFrom(address,address,uint256)")));
-
-    bytes4 private constant SAFE_TRANSFER_DATA_SEL = bytes4(keccak256(bytes("safeTransferFrom(address,address,uint256,bytes)")));
-
-    bytes4 private constant APPROVE_SEL = bytes4(keccak256(bytes("approve(address,uint256)")));
-
-    bytes4 private constant APPROVE_ALL_SEL = bytes4(keccak256(bytes("setApprovalForAll(address,bool)")));
-    
-    bytes private constant EMPTY = bytes("");
-    
     IEntryPoint private immutable _entryPoint;
 
     struct NFT {
+        uint256 index;
         address contract_;
         uint256 id;
         address lender;
-        bool borrowed;
         uint256 startTime;
         uint256 endTime;
     }
 
     event SimpleAccountInitialized(IEntryPoint indexed entryPoint, address indexed owner);
 
-    NFT[] private _loans;
+    NFT[] private _rentals;
 
-    mapping(address =>  NFT[]) private _loansByContract;
+    mapping(address => mapping(uint256 => uint256)) private _tokenIndex;
+
+    mapping(address => uint256) private _rentalCounterByContract;
+
+    mapping(address => mapping(uint256 => bool)) _isRental;
 
     mapping(address => uint256) private _operatorCount;
 
@@ -73,6 +60,9 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
     constructor(IEntryPoint anEntryPoint) {
         _entryPoint = anEntryPoint;
         _disableInitializers();
+        NFT memory dummyAsset = NFT(0,address(0),0,address(0),0,0);
+        /* throw away index 0 */
+        _rentals.push(dummyAsset);
     }
 
     function _onlyOwner() internal view {
@@ -128,7 +118,8 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
     }
 
     function _call(address target, uint256 value, bytes memory data) internal {
-        require(_beforeCallCheck(target, data), "Unauthorized operation");
+        require(_authorizedCall(target, data), "Unauthorized operation");
+        _beforeCallRentalCheck(data);
         (bool success, bytes memory result) = target.call{value : value}(data);
         if (!success) {
             assembly {
@@ -140,14 +131,15 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
     /**
      * @dev this function is run before every call
      * it returns a bool indicating weather or not the call is authorized
-     * if there are enough assets marked in the _loansByContract list will reach gas limit
+     * if there are enough assets marked in the _rentalsByContract list 
+     * every approve and transfer op will reach gas limit
      * in such cases releaseAsset methods should be called
      */
-    function _beforeCallCheck(address target, bytes memory data) private returns(bool) {
+    function _authorizedCall(address target, bytes memory data) private returns(bool) {
         if (data.length < 4) return true;
         bytes4 funcSel = _extractFunctionSignature(data);
         if(funcSel == APPROVE_ALL_SEL){
-            if(_loansByContract[target].length > 0) return false;
+            if(_rentalCounterByContract[target] > 0) return false;
             bool approved;
             assembly {
                 approved := mload(add(data, 68))
@@ -176,7 +168,7 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
 	            tokenId := mload(add(data, 100))
 	        }
             if(from == address(this)){
-                return !_isLoan(target, tokenId);
+                return !_isRental[target][tokenId];
             }
         }
         if(funcSel == APPROVE_SEL) {
@@ -184,20 +176,44 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
             assembly{
                 tokenId := mload(add(data, 68))
             }
-            return !_isLoan(target, tokenId);
+            return !_isRental[target][tokenId];
         }
         
         return true;
     }
 
-    function _isLoan(address contract_, uint256 tokenId) private view returns(bool){
-        NFT[] memory loans_ = _loansByContract[contract_];
-        for(uint i=0; i<loans_.length; i++){
-            if(loans_[i].id == tokenId){
-                return true;
+    function _beforeCallRentalCheck(bytes memory data) private {
+
+        bytes4 funcSel = _extractFunctionSignature(data);
+        if(funcSel == RENT_FUNC_SEL) {
+            // dada args = [address contract_, uint256 tokenId, address nftOwner, uint 256 duration]
+            address tokenContract;
+            uint256 tokenId;
+            address nftOwner;
+            uint256 duration;
+            assembly {
+            tokenContract := mload(add(data, 36))
+            tokenId := mload(add(data, 68))
+            duration := mload(add(data, 100))
             }
+            IERC721 nftContract = IERC721(tokenContract);
+            nftOwner = nftContract.ownerOf(tokenId);
+
+            _uponNFTRental(tokenContract, tokenId, nftOwner, duration);
+            
         }
-        return false;
+
+        return;
+    }
+
+    function isRental(address contract_, uint256 tokenId) external view returns(bool){
+        // NFT[] memory loans_ = _rentalsByContract[contract_];
+        // for(uint i=0; i<loans_.length; i++){
+        //     if(loans_[i].id == tokenId){
+        //         return true;
+        //     }
+        // }
+        return _isRental[contract_][tokenId];
     }
     
     function _extractFunctionSignature(bytes memory data) private pure returns (bytes4) {
@@ -210,12 +226,20 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
     }
 
 
-    function getLoans() external view returns(NFT[] memory) {
-        // return _loans;
+    function getRentals() external view returns(NFT[] memory) {
+        return _rentals;
     }
 
-    function getLoansByContract(address contract_) external view returns(NFT[] memory) {
-        return _loansByContract[contract_];
+    function getTokenIndex(address contract_, uint256 tokenId) external view returns(uint256) {
+        return _tokenIndex[contract_][tokenId];
+    }
+
+    // function getLoansByContract(address contract_) external view returns(NFT[] memory) {
+    //     return _rentalsByContract[contract_];
+    // }
+
+    function getRentalCounterByContract(address contract_) external view returns(uint256) {
+        return _rentalCounterByContract[contract_];
     }
 
     function getOperatorCount(address contract_) public view returns(uint256) {
@@ -226,61 +250,69 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
      * To be called upon a rental tx by marketplace contract
      * this a requirement for marketplace to be used
      */
-    function uponNFTLoan(address _contract, uint256 id, address owner_, uint256 duration) external {
+    function _uponNFTRental(address nftContract, uint256 tokenId, address from, uint256 duration) private {
         NFT memory newAsset = NFT(
-            _contract,
-            id,
-            owner_,
-            true,
+            _rentals.length,
+            // _rentalsByContract[_contract].length,
+            nftContract,
+            tokenId,
+            from,
             block.timestamp,
             block.timestamp + duration
         );
-        // _loans.push(newAsset);
-        _loansByContract[_contract].push(newAsset);
+        _rentals.push(newAsset);
+        // _rentalsByContract[_contract].push(newAsset);
+        _rentalCounterByContract[nftContract]++;
+        _isRental[nftContract][tokenId] = true;
     }
 
     /**
      * releaseAsset methods
      * releases asset(s) from wallet.
      * should be called by owner in case loans make operations reach gas limit.
-     * this might happen because `_isLoan` needs to be called at every userOp
+     * this might happen because `_isRental` needs to be called at every userOp
      */
-    function releaseSingleAsset(address contract_, uint256 index) public onlyOwner {
-        _releaseAsset(contract_, index);
+    function releaseSingleAsset(uint256 index) public onlyOwner {
+        require(_rentals.length > index, "invalid index");
+        _releaseAsset(index);
     }
 
-    // function releaseMultipleAssets(uint256[] memory indexes) public onlyOwner {
-    //     for(uint256 i=0; i<indexes.length; i++) {
-    //         _releaseAsset(indexes[i]);
-    //     }
-    // }
+    // function releaseMultipleAssets(uint256[] memory indexes) public onlyOwner {}
 
-    function _releaseAsset(address contract_, uint256 index) private {
-        IERC721 nftContract = IERC721(_loansByContract[contract_][index].contract_);
-        nftContract.safeTransferFrom(
+    function _releaseAsset(uint256 index) private {
+        address _contract = _rentals[index].contract_;
+        uint256 id = _rentals[index].id;
+        IERC721 nftContract = IERC721(_contract);
+        nftContract.transferFrom(
             address(this),
-            _loansByContract[contract_][index].lender,
-            _loansByContract[contract_][index].id);
-        _subAssetFromList(contract_, index);
+            _rentals[index].lender,
+            id
+        );
+        _subAssetFromList(index);
+        _rentalCounterByContract[_contract]--;
+        _isRental[_contract][id] = false;
     }
     
-    function _subAssetFromList(address contract_, uint256 index) private returns(uint256) {
-        uint256 lastIndex = _loansByContract[contract_].length -1;
-        _loansByContract[contract_][index] = _loansByContract[contract_][lastIndex];
-        _loansByContract[contract_].pop();
-        return lastIndex;
+    function _subAssetFromList(uint256 index) private {
+        uint256 lastIndex = _rentals.length - 1;
+        _rentals[index] = _rentals[lastIndex];
+        _rentals[index].index = index;
+        _rentals.pop();
+        // // lastIndex = _rentalsByContract[contract_].length - 1;
+        // _rentalsByContract[contract_][indexByContract] = _rentalsByContract[contract_][lastIndex];
+        // _rentalsByContract[contract_].pop();
     }
 
     /**
      * @dev allows any caller to pull asset back to original owner in exchange for a fee
      * checks if assest is a loan and if loan end time was reached
      */
-    function pullAsset(address contract_, uint256 index) external {
+    function pullAsset(uint256 index) external {
         require(
-            block.timestamp > _loansByContract[contract_][index].endTime,
+            block.timestamp > _rentals[index].endTime,
             "Loan duration not reached"
         );
-        _releaseAsset(contract_, index);
+        _releaseAsset(index);
     }
 
     // check: gas efficient alternatives

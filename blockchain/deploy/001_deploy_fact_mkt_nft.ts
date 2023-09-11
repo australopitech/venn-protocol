@@ -5,19 +5,23 @@ import * as NFT from '../artifacts/contracts/samples/NFT.sol/NFT.json';
 import * as dotenv from 'dotenv';
 dotenv.config({ path: '../.env' });
 
-const pkey = process.env.PRIVATE_KEY;
-const apikey = process.env.INFURA_API_KEY;
-const walletAddress = '0x6711645aB591f86B31CC97667f393A78d01f5Ca0';
-const feeBase = 1000;
-const feeMul = 3;
-const entryPoint = '0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789'; // sepolia
+// const pkey = process.env.PRIVATE_KEY;
+// const apikey = process.env.INFURA_API_KEY;
+// const walletAddress = '0x6711645aB591f86B31CC97667f393A78d01f5Ca0';
+const factory_address = process.env.FACTORY_ADDRESS_OUTDATED;
+const base_provider = process.env.BASE_GOERLI_PROVIDER;
+const entryPoint = process.env.ENTRY_POINT_STACKUP;
 
 const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
+  if(!entryPoint) throw new Error('missing env');
   const {deployments, getNamedAccounts} = hre;
   const {deploy} = deployments;
 
   const {deployer} = await getNamedAccounts();
 
+  if(!base_provider) throw new Error('missing provider');
+  const provider = new ethers.providers.JsonRpcProvider(base_provider);
+  const gasPrice = (await provider.getGasPrice());
   // await deploy('EntryPoint', {
   //   from: deployer,
   //   args: [],
@@ -27,31 +31,44 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   // const entryPoint = (await deployments.get('EntryPoint')).address;
   // console.log('ep:',entryPoint);
   
-  // await deploy('RWalletFactory', {
-  //   from: deployer,
-  //   args: [entryPoint],
-  //   log: true,
-  // });
-
-  // const RWalletFactory = await deployments.get('RWalletFactory');
-  // const RWalletFactoryAddress = '0x8fA7D1434A90ad1d5FDf461395fA92f69Dc5C9E3';
-
-  // await deploy('BaseMarketPlace', {
-  //   from: deployer,
-  //   args: [
-  //     RWalletFactory.address,
-  //     feeBase,
-  //     feeMul
-  //   ],
-  //   log: true
-  // });
-
-  // if(!pkey || !apikey) throw new Error('missing enviroment');
-  await deploy('NFT', {
+  await deploy('RWalletFactory', {
     from: deployer,
-    args: [],
+    args: [entryPoint],
     log: true,
   });
+
+  const RWalletFactory = await deployments.get('RWalletFactory');
+  // const RWalletFactoryAddress = '0x684705F4A1C7cF696aD45e62Ea9E28e37a94b530';
+
+  await deploy('ReceiptNFT', {
+    from: deployer,
+    args:[],
+    log: true,
+    gasPrice: gasPrice
+  });
+
+  const receiptContract = await deployments.get('ReceiptNFT');
+
+  // if(!factory_address || !receiptContract) throw new Error('Market Place deploy: missing args');
+  await deploy('MarketPlace', {
+    from: deployer,
+    args: [
+      RWalletFactory.address,
+      receiptContract.address,
+      40,
+      2500,
+      deployer
+    ],
+    log: true,
+    gasPrice: gasPrice
+  });
+
+  // if(!pkey || !apikey) throw new Error('missing enviroment');
+  // await deploy('NFT', {
+  //   from: deployer,
+  //   args: [],
+  //   log: true,
+  // });
 
   // const [owner] = await ethers.getSigners();
   // const provider = new ethers.providers.InfuraProvider("sepolia", apikey);

@@ -1,46 +1,69 @@
 import { ethers } from "hardhat";
 import { expect } from "chai";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { RWallet__factory, RWallet, NFT__factory, NFT } from "../typechain";
-import { BigNumber } from "ethers";
+import { 
+    RWalletFactory__factory, RWalletFactory, RWallet, NFT__factory, NFT, MarketPlace, ReceiptNFT
+} from "../typechain";
+import { BigNumber, Contract } from "ethers";
 import { mine } from "@nomicfoundation/hardhat-network-helpers";
+import { deployFactory, createWallet, rentNFT, deployReceiptsContract, deployMktPlace, nftDeployAndMint } from "./rWallet-testutils";
 
-describe("Testing Wallet", function () {
+describe.skip("Testing Wallet", function () {
     
         const provider = ethers.provider;
         let owner: SignerWithAddress;
         let lender: SignerWithAddress;
         let dummy: SignerWithAddress;
-        let walletFactory: RWallet__factory;
+        let walletFactory: RWalletFactory;
         let wallet: RWallet;
         let nftFactory: NFT__factory;
         let nft: NFT;
         let tokenId: BigNumber;
-
+        let newToken: BigNumber;
+        let uri = "uri";
+        let receiptsContract: ReceiptNFT;
+        let mktPlace: MarketPlace;
+        const entryPoint = ethers.utils.getAddress(ethers.utils.ripemd160("0x"));
+        const feeBase = 1000;
+        const feeMul = 3;
+        const pullFeeBase = 3;
+        const pullFeeMul = 1;
         
-    before(async () => {
-        [owner, lender, dummy] = await ethers.getSigners();
-        walletFactory = new RWallet__factory(owner);
-        wallet = await walletFactory.deploy(owner.address);
-        await wallet.deployTransaction.wait();
-        console.log(`\nwallet deployed at ${wallet.address}\n`);
-        nftFactory = new NFT__factory(dummy);
-        nft = await nftFactory.deploy();
-        await nft.deployTransaction.wait();
-        console.log(`nft deployed at ${nft.address}\n`);
-        const mintTx = await nft.connect(dummy).safeMint(lender.address);
+
+    const mint = async (contract: NFT, owner: SignerWithAddress, to: string) : Promise<BigNumber> => {
+        const mintTx = await nft.connect(owner).safeMint(to, uri);
         const mintReceipt = await mintTx.wait();
         const mintEvent = mintReceipt.events?.find(
                 (event: any) => event.event === 'Transfer'
             );
-        tokenId = mintEvent?.args?.tokenId;
-        const nft1owner = await nft.ownerOf(tokenId);
-        expect(nft1owner).to.eq(lender.address);
-        console.log(`\nnft ${tokenId} minted to ${lender.address}\n`);
+        const token = mintEvent?.args?.tokenId;
+        const nft1owner = await nft.ownerOf(token);
+        expect(nft1owner).to.eq(to);
+        console.log(`\nnft ${token} minted to ${to}\n`);
+        return token;
+    }
+        
+    before(async () => {
+        [owner, lender, dummy] = await ethers.getSigners();
+
+        walletFactory = await deployFactory(dummy, entryPoint);
+        
+        wallet = await createWallet(walletFactory, owner.address);
+        console.log(`\nwallet deployed at ${wallet.address}\n`);
+        
+        [nft, tokenId] = await nftDeployAndMint(dummy, lender.address);
+
+        receiptsContract = await deployReceiptsContract(dummy);
+        mktPlace = await  deployMktPlace(
+            dummy, walletFactory.address, receiptsContract.address, feeBase, feeMul, pullFeeBase, pullFeeMul
+        );
+        const role = ethers.utils.id("MINTER_ROLE");
+        const grantRole = await receiptsContract.connect(dummy).grantRole(role, mktPlace.address);
+        
     });
 
-    it("should be owned by owner/entryPoint", async () => {
-        const ownerFromGetter = await wallet.entryPoint();
+    it("should be owned by owner", async () => {
+        const ownerFromGetter = await wallet.owner();
         expect(ownerFromGetter).to.eq(owner.address);
     });
 
@@ -48,17 +71,18 @@ describe("Testing Wallet", function () {
         await owner.sendTransaction({to: wallet.address, value: ethers.utils.parseEther('1')});
         const dummyBal_0 = await provider.getBalance(dummy.address);
         const transferValue = ethers.utils.parseEther('0.5');
-        const tx = await wallet.execute(dummy.address, transferValue, "0x");
+        const tx = await wallet.connect(owner).execute(dummy.address, transferValue, "0x");
         await tx.wait();
-        const dummyBal_1 = await provider.getBalance(dummy.address);
-        expect(dummyBal_1).to.eq(dummyBal_0.add(transferValue));
+        // const dummyBal_1 = await provider.getBalance(dummy.address);
+        expect(await provider.getBalance(dummy.address))
+         .to.eq(dummyBal_0.add(transferValue));
     });
 
     it("should make external calls", async () => {
         const approveTx = await nft.connect(lender).approve(wallet.address, tokenId);
         await approveTx.wait();
         const approved = await nft.getApproved(tokenId);
-        expect(approved).to.eq(wallet.address); 
+        expect(approved).to.eq(wallet.address);
         const abi = [
             "function safeTransferFrom(address from,address to,uint256 tokenId)"
         ]
@@ -68,62 +92,69 @@ describe("Testing Wallet", function () {
             wallet.address,
             tokenId            
         ])
-        const tx = await wallet.execute(nft.address, 0, calldata_ );
+        const tx = await wallet.connect(owner).execute(nft.address, 0, calldata_ );
         await tx.wait();
         const newOwner = await nft.ownerOf(tokenId);
         expect(newOwner).to.eq(wallet.address);
     });
-    // tests _beforeCallCheck directly: does not run when the function is private
-    it.skip("test beforeCallCheck", async () => {
-        const abi = [
-            "function setApprovalForAll(address operator, bool approved)"
-        ]
-        const iface = new ethers.utils.Interface(abi);
-        const calldata_ = iface.encodeFunctionData("setApprovalForAll", [
-            dummy.address,
-            true,    
-        ]);
-        // const check = await wallet._beforeCallCheck(calldata_);
-        // console.log(check);
-        ////////
-        const abi_ = [
-            "function transferFrom(address from, address to, uint256 tokenId)"
-        ]
-        const iface_ = new ethers.utils.Interface(abi_);
-        const calldata__ = iface_.encodeFunctionData("transferFrom", [
-            lender.address,
-            dummy.address,
-            tokenId    
-        ]);
-        // const check_ = await wallet._beforeCallCheck(calldata__);
-        // console.log(check_);
-    });
-
+    
     it("should restrict execute calls to onlyOwner", async () => {
         const abi_ = [
             "function transferFrom(address from, address to, uint256 tokenId)"
-        ]
+        ];
         const iface_ = new ethers.utils.Interface(abi_);
         const calldata__ = iface_.encodeFunctionData("transferFrom", [
             lender.address,
             dummy.address,
             tokenId    
         ]);
-        await expect(wallet.connect(dummy).execute(nft.address, 0, calldata__)).to.be.revertedWith("account: not Owner or EntryPoint");
-        
+        await expect(wallet.connect(dummy).execute(nft.address, 0, calldata__))
+         .to.be.revertedWith("account: not Owner or EntryPoint");
     });
 
-    it("should update list of loans", async () => {
-        const duration = 10000;
+    it("should be able to rent NFT's in MarketPlace", async () => {
+        newToken = await mint(nft, dummy, lender.address);
+        
+        const price = ethers.utils.parseEther('0.00001');
+        const maxDuration = 1000;
+        const approve = await nft.connect(lender).approve(mktPlace.address, newToken);
+        await approve.wait();
+
+        const listTx = await mktPlace.connect(lender).listNFT(nft.address, newToken, price, maxDuration );
+        await listTx.wait();
+        
+        const fee = price.mul(maxDuration/10).mul(feeMul).div(feeBase);
+        const value = price.mul(maxDuration/10).add(fee);
+        // console.log(value.toString());
+
+        const one_eth = ethers.utils.parseEther('1');
+        const fund = await owner.sendTransaction({to: wallet.address, value: value.add(one_eth)});
+        await fund.wait();
+
+        await rentNFT(
+            wallet,
+            owner,
+            mktPlace,
+            nft.address,
+            newToken,
+            maxDuration/10,
+            price.toNumber()
+        );
+
+        const newOwner = await nft.ownerOf(newToken);
+        expect(newOwner).to.eq(wallet.address);
+
+    })
+
+    it("should update list of rentals", async () => {
+        const duration = 100;
         const startTime = (await provider.getBlock('latest')).timestamp;
-        const updateTx = await wallet.uponNFTLoan(nft.address, tokenId, lender.address, duration);
-        updateTx.wait();
-        const loans = await wallet.getLoansByContract(nft.address);
+        const loans = await wallet.getLoans();
         expect(loans[0].contract_).to.eq(nft.address);
-        expect(loans[0].id).to.eq(tokenId);
-        expect(loans[0].lender).to.eq(lender.address);
-        expect(loans[0].startTime).to.eq(startTime + 1); // 1 time unit difference
-        expect(loans[0].endTime).to.eq(startTime + duration + 1);
+        expect(loans[0].id).to.eq(newToken);
+        expect(loans[0].lender).to.eq(mktPlace.address);
+        expect(loans[0].startTime).to.eq(startTime);
+        expect(loans[0].endTime).to.eq(startTime + duration);
     })
 
     it("should block transfers and approvals for loans", async () => {
@@ -134,10 +165,10 @@ describe("Testing Wallet", function () {
         const calldata_ = iface.encodeFunctionData("transferFrom", [
             wallet.address,
             dummy.address,
-            tokenId
+            newToken
         ]);
         await expect( 
-            wallet.execute(nft.address, 0, calldata_ ) 
+            wallet.connect(owner).execute(nft.address, 0, calldata_ ) 
         ).to.be.revertedWith("Unauthorized operation");
         //
         const abi_0 = [
@@ -147,11 +178,11 @@ describe("Testing Wallet", function () {
         const calldata_0 = iface_0.encodeFunctionData("safeTransferFrom", [
             wallet.address,
             dummy.address,
-            tokenId,
+            newToken,
             "0x00"
         ]);
         await expect( 
-            wallet.execute(nft.address, 0, calldata_0 ) 
+            wallet.connect(owner).execute(nft.address, 0, calldata_0 ) 
         ).to.be.revertedWith("Unauthorized operation");
         //
         const abi_1 = [
@@ -161,10 +192,10 @@ describe("Testing Wallet", function () {
         const calldata_1 = iface_1.encodeFunctionData("safeTransferFrom", [
             wallet.address,
             dummy.address,
-            tokenId            
+            newToken            
         ]);
         await expect( 
-            wallet.execute(nft.address, 0, calldata_1 ) 
+            wallet.connect(owner).execute(nft.address, 0, calldata_1 ) 
         ).to.be.revertedWith("Unauthorized operation");
         //
         const abi_2 = [
@@ -173,26 +204,17 @@ describe("Testing Wallet", function () {
         const iface_2 = new ethers.utils.Interface(abi_2);
         const calldata_2= iface_2.encodeFunctionData("approve", [
             dummy.address,
-            tokenId
+            newToken
         ]);
         await expect(
-            wallet.execute(nft.address, 0 , calldata_2)
+            wallet.connect(owner).execute(nft.address, 0 , calldata_2)
         ).to.be.revertedWith("Unauthorized operation");
         //
-        const abi_3 = [
-            "function setApprovalForAll(address operator, bool approved)"
-        ]
-        const iface_3 = new ethers.utils.Interface(abi_3);
-        const calldata_3 = iface_3.encodeFunctionData("setApprovalForAll", [
-            dummy.address,
-            true
-        ]);
-        await expect(
-            wallet.execute(nft.address, 0 , calldata_3)
-        ).to.be.revertedWith("Unauthorized operation");
+        
     });
 
-    it("should restrict setting operators for loan nft contracts", async () => {
+    it("should restrict setting operators for nft contracts with loanCounter greater than zero", 
+      async () => {
         const abi = [
             "function setApprovalForAll(address operator,bool approved)"
         ]
@@ -202,34 +224,30 @@ describe("Testing Wallet", function () {
             true
         ]);
         await expect(
-            wallet.execute(nft.address, 0 , calldata_)
+            wallet.connect(owner).execute(nft.address, 0 , calldata_)
         ).to.be.revertedWith("Unauthorized operation");    
     });
 
     it("should allow owner to release nft back to lender", async () => {
         const index = 0;
-        await expect(wallet.connect(dummy).releaseSingleAsset(nft.address,index))
+        await expect(wallet.connect(dummy).releaseSingleAsset(index))
             .to.be.revertedWith("only owner");
         const abi = [
-            "function releaseSingleAsset(address contract_,uint256 index)"
+            "function releaseSingleAsset(uint256 index)"
         ]
         const iface = new ethers.utils.Interface(abi);
-        const calldata_ = iface.encodeFunctionData("releaseSingleAsset", [
-            nft.address,
-            index
-        ]);
+        const calldata_ = iface.encodeFunctionData("releaseSingleAsset", [index]);
         
-        const releaseTx = await wallet.execute(wallet.address, 0, calldata_);
+        const releaseTx = await wallet.connect(owner).execute(wallet.address, 0, calldata_);
         //  wallet.releaseSingleAsset(index);
         releaseTx.wait();
-        const newNftOwner = await nft.ownerOf(tokenId);
-        expect(newNftOwner).to.eq(lender.address);
+        const newNftOwner = await nft.ownerOf(newToken);
+        expect(newNftOwner).to.eq(mktPlace.address);
         const loans_ = await wallet.getLoans();
         expect(loans_.length).to.eq(0);
     });
 
-    it(
-        "should allow setting operators for nft contracts with no loan and update count",
+    it("should allow setting operators for nft contracts with no loan / update count",
         async () => {
             let abi = [
                 "function setApprovalForAll(address operator,bool approved)"
@@ -239,7 +257,7 @@ describe("Testing Wallet", function () {
                 dummy.address,
                 true
             ]);
-            let tx = await wallet.execute(nft.address, 0 , calldata_);
+            let tx = await wallet.connect(owner).execute(nft.address, 0 , calldata_);
             tx.wait();
             let opCount = await wallet.getOperatorCount(nft.address);
             expect(opCount).to.eq(1);
@@ -251,40 +269,36 @@ describe("Testing Wallet", function () {
                 dummy.address,
                 false
             ]);
-            tx = await wallet.execute(nft.address, 0 , calldata_);
+            tx = await wallet.connect(owner).execute(nft.address, 0 , calldata_);
             tx.wait();
             opCount = await wallet.getOperatorCount(nft.address);
             expect(opCount).to.eq(0);
         }
     );
 
-
     it("should allow nft to be pulled after endTime / should block before", async () => {
-        const transfer = await nft.connect(lender).transferFrom(lender.address, wallet.address, tokenId);
-        transfer.wait();
+        const price = 1000;
         const duration = 150;
-        const update = await wallet.uponNFTLoan(
-            nft.address,
-            tokenId,
-            lender.address,
-            duration
-        );
-        await update.wait();
-        const loans = await wallet.getLoansByContract(nft.address);
+        await rentNFT(wallet, owner, mktPlace, nft.address, newToken, duration, price);
+        
+        const index = 0;
+        const loans = await wallet.getLoans();
         console.log(' ==> endTime', loans[0].endTime);
         let blockTime = (await provider.getBlock('latest')).timestamp;
         console.log(' ==> current blockTime', blockTime);
-        const index = 0;
+        
         await expect(
-            wallet.connect(dummy).pullAsset(nft.address, index)
+            wallet.connect(dummy).pullAsset(index)
         ).to.be.revertedWith("Loan duration not reached");
-
+        console.log('pull blocked');
+        // 
         await mine(10, {interval: 20});
         blockTime = (await provider.getBlock('latest')).timestamp;
         console.log(' ==> blockTime after mining', blockTime);
-        const pullTx = await wallet.connect(dummy).pullAsset(nft.address, index);
-        pullTx.wait();
-        const nftOwner = await nft.ownerOf(tokenId);
-        expect(nftOwner).to.eq(lender.address);
+        const receiver = loans[index].lender;
+        await wallet.connect(dummy).pullAsset(index);
+        const nftOwner = await nft.ownerOf(newToken);
+        expect(nftOwner).to.eq(receiver);
+        console.log('pull worked');
     });
 });

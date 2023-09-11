@@ -3,9 +3,14 @@ import styles from './nft-area.module.css';
 import classNames from 'classnames';
 import { useState } from 'react';
 
+import { useAddressData, useAddressNfts } from '../../../hooks/address-data';
+import { NftItem, FetchNftDataResponse } from '../../../types/types';
+import { fetchAddressData } from '@/utils/frontendUtils';
+
 export interface NftAreaProps {
   nftAreaGridTemplate?: string;
   setIsNFTOpen: any;
+  nftFetchData?: FetchNftDataResponse;
 }
 
 interface ToggleSwitchProps {
@@ -63,7 +68,7 @@ const ToggleSwitch = ({ onToggle }: ToggleSwitchProps) => {
   )
 }
 
-export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen }: NftAreaProps) {
+export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchData}: NftAreaProps) {
   const [toggleState, setToggleState] = useState<boolean>(false);
 
   const handleToggle = (state: boolean) => {
@@ -84,8 +89,20 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen }: NftAreaP
     {name: "Awesome NFT #4", price: 0.016, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3913.png"},
     {name: "Awesome NFT #5", uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3370.png"},
   ]
+  // const userData = useAddressNfts(address);
+  // console.log('userData:', userData);
 
-  const x = {name: "Awesome NFT #4", price: 0.016, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3913.png"}
+  // const nftsData = [
+  //   {name: "Awesome NFT #0", price: 0.01, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/2944.png"},
+  //   {name: "Awesome NFT #1", price: 0.02, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3808.png"},
+  //   {name: "Awesome NFT #1.2", price: 0.125, isRented: true, expireDate: '2 days', uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3371.png"},
+  //   {name: "Awesome NFT #2", price: 0.1, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/6020.png"},
+  //   {name: "Awesome NFT #3", price: 0.012, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/8488.png"},
+  //   {name: "Awesome NFT #4", price: 0.016, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3913.png"},
+  //   {name: "Awesome NFT #5", uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3370.png"},
+  // ]
+
+  // const x = {name: "Awesome NFT #4", price: 0.016, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3913.png"}
   
   return (
     <div className={styles.nftArea}>
@@ -98,17 +115,26 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen }: NftAreaP
       <div className={styles.invisibleDivider}></div>
       <div className={styles.nftGridContent}>
         <div className={styles.cardGrid}>
-          {nftsData.map(data => 
-            <NftCard 
-              imageURI={data.uri} 
-              name={data.name} 
-              price={data.price}
-              isRented={data.isRented}
-              expireDate={data.expireDate}
-              key={data.uri}
+          {nftFetchData?.nfts ? 
+           nftFetchData?.nfts.length == 0 ?
+           "No nfts" :
+           nftFetchData.nfts.map(nft =>
+            <NftCard
+              imageURI={
+                nft.nftData?.external_data?.image_1024 ?
+                nft.nftData?.external_data?.image_1024 :
+                nft.nftData?.external_data?.image
+              }
+              name={nft.nftData?.external_data?.name}
+              price={0}
+              isRented={false}
+              expireDate={'0'}
+              key={nft.contractAddress + nft.nftData?.token_id}
               onClick={handleOnCardClick}
-            />
-          )}
+            />) :
+            nftFetchData?.isLoading ? "Loading..." : "Error" + nftFetchData?.error
+          }
+
         </div>
         {/* <div className={styles.card}></div>
         <div className={styles.card}></div>

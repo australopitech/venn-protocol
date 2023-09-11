@@ -80,3 +80,12 @@ export declare class NftCollectionAttribute {
     value: string;
     constructor(data: NftCollectionAttribute);
 }
+export class NftItem {
+    nftData: NftData; 
+    contractAddress: string;
+}
+export class FetchNftDataResponse {
+    nfts: NftItem[] | undefined;
+    error: string | null;
+    isLoading: boolean;
+}

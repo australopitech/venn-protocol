@@ -19,28 +19,29 @@ const checkBal = async () => {
     const provider = new ethers.providers.JsonRpcProvider(rpc);
     const signer = new ethers.Wallet(pkey, provider);
     // console.log(signer.address);
-    // const bal = (await signer.getBalance()).toString();
-    const bal = await provider.getBalance(walletSignerAddr);
+    const bal = (await signer.getBalance()).toString();
+    // const bal = await provider.getBalance(walletSignerAddr);
     console.log(ethers.utils.formatEther(bal));
 }
 
-// checkBal().catch((error) => {
-//     console.error(error);
-//     process.exitCode = 1;
-// });
+checkBal().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+});
 
+const pubKey_2 = process.env.PUBLIC_KEY_2;
 const sendMoney = async () => {
-    if(!pkey || !rpc || !walletSignerKey || !walletSignerAddr) throw new Error('missing env');
+    if(!pkey || !rpc || !pubKey_2 || !walletSignerAddr) throw new Error('missing env');
     // const provider = new ethers.providers.InfuraProvider(network, apikey);
     const provider = new ethers.providers.JsonRpcProvider(rpc);
     // const signer = new ethers.Wallet(pkey, provider);
-    const signer = new ethers.Wallet(walletSignerKey, provider);
+    const signer = new ethers.Wallet(pkey, provider);
     // const addr = await signer.getAddress();
-    console.log('recAddr', wallet);
+    // console.log('recAddr', wallet);
     const tx = {
         from: signer.address,
-        to: wallet,
-        value: ethers.utils.parseEther('0.001'),
+        to: pubKey_2,
+        value: ethers.utils.parseEther('0.01'),
     }
     const send = await signer.sendTransaction(tx);
     const receipt = await send.wait();

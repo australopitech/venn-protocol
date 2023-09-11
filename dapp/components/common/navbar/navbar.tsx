@@ -3,13 +3,29 @@ import { Logo } from '../logo/logo';
 import { SearchBox } from '../search-box/search-box';
 import styles from './navbar.module.css';
 import { useState, useRef, useEffect } from 'react';
+import { useEthers, useEtherBalance, useConfig, useSigner } from '@usedapp/core';
 
 export interface NavBarProps {
   navbarGridTemplate?: string;
   currentPage?: string;
 }
 
+interface ConnectButtonProps {
+  connectText?: string;
+}
+
 //to-do: pegar a info de qual pagina está, para saber qual botão está ativo
+
+export const ConnectButton = ({connectText} : ConnectButtonProps) => {
+  const { account, deactivate, activateBrowserWallet } = useEthers()
+  // 'account' being undefined means that we are not connected.
+  if (account) return <div className={styles.primaryButton} onClick={() => deactivate()}>Disconnect</div>
+  else return (
+    <div className={styles.primaryButton} onClick={() => activateBrowserWallet()}>
+    {connectText? connectText : 'Connect Wallet'}
+    </div>
+  )
+}
 
 const MenuIcon = () => {
   return (
@@ -61,6 +77,8 @@ const DropdownMenu = ({ items, onItemSelect } : DropdownProps ) => {
   );
 }
 
+
+
 export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps) {
   // const [scrolled, setScrolled] = useState(false);
 
@@ -104,7 +122,7 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
           {/* <div className={styles.secondaryButton}>Market</div>
           <div className={styles.secondaryButton}>Dashboard</div> */}
           {/* TO-DO: colocar primary <div className={styles.primaryButton}>Connect Wallet</div> */}
-          <div className={styles.primaryButton}>Connect Wallet</div>
+          <ConnectButton />         
           {/* <div className={styles.iconButton}><MenuIcon /></div> */}
           <div className={styles.iconButton}><DropdownMenu items={items} onItemSelect={handleItemSelect} /></div>
         </div>

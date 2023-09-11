@@ -26,7 +26,7 @@ contract RWalletFactory {
     /**
      * checks weather or not an address is a wallet created via this contract
      */
-    function isWallet(address account) public view returns(bool) {
+    function isWallet(address account) external view returns(bool) {
         return _isWallet[account];
     }
 
