@@ -1,6 +1,6 @@
 import styles from './sidebar.module.css';
 import classNames from 'classnames';
-
+import compactString from '@/utils/compactString'
 export interface SideBarProps {
   sidebarGridTemplate?: string;
   address?: string;
@@ -23,8 +23,8 @@ const Profile = ({ address }: {address?: string}) => {
       </div>
       <div className={styles.addressContainer}>
         <span className={styles.address}>
-          {/* 0x123..4567 */}
-          {address}
+          {/* 0x123...4567 */}
+          {compactString(address)}
         </span>
         <div className={styles.copyIcon}>
           <CopyIcon />
