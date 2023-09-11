@@ -19,7 +19,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
       { (isWalletConnected && address)
         ? <div className={styles.contentGridTemplate}> 
             <SideBar address={address}/>
-            <NftArea  /> 
+            <NftArea  address={address}/> 
           </div>
         : <div className={styles.notConnectedTemplate}>
             <div className={styles.notConnectedContainer}>
