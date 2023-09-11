@@ -2,20 +2,14 @@ import Image from 'next/image'
 import { Inter } from 'next/font/google'
 
 import { ethers } from 'ethers';
-<<<<<<< HEAD
 import React, {useState, useEffect} from 'react';
 import { useEthers, useEtherBalance, useConfig, useSigner } from '@usedapp/core';
-import { fetchAddressData } from '../src/frontendUtils'
-import send from '../src/call/send';
-import { isApproved, isListed } from '@/src/utils';
-import { approve, list, delist, pull, rent } from '../src/call';
-import nft from '../src/contractData/NFT.json';
-import mktPlace from '../src/contractData/MarketPlace.json';
-=======
-// import { config } from './_app';
-import { useEthers, useEtherBalance, useConfig } from '@usedapp/core';
 import { fetchAddressData } from '../utils/frontendUtils'
->>>>>>> db345bd2909e897d6b2557534c64244079f107e7
+import send from '../utils/call/send';
+import { isApproved, isListed } from '@/utils/utils';
+import { approve, list, delist, pull, rent } from '../utils/call';
+import nft from '../utils/contractData/NFT.json';
+import mktPlace from '../utils/contractData/MarketPlace.json';
 
 const inter = Inter({ subsets: ['latin'] })
 
