@@ -1,0 +1,222 @@
+.sidebar {
+  /* margin-left: 36px; */
+  height: 100%;
+  width: fit-content;
+
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  /* justify-content: space-between; */
+  justify-content:flex-start;
+  gap: 20px;
+  /* flex-wrap: nowrap; */
+  /* background-color: yellow; */
+}
+
+.profileInfo {
+  /* width: 100%; */
+  max-width: 292px;
+  height: fit-content;
+  /* height: 100%; */
+  /* padding: 28px; */
+  /* padding: max(24px, calc((100vh - 593px) / 6)); */
+  padding: min(max(20px, calc((100vh - 593px) / 6)), 56px) 28px;
+
+  border-radius: 12px;
+  background-color: rgb(253, 246, 252);
+  font-family: 'SFRounded', sans-serif;
+  color: rgb(79, 79, 79);
+  font-size: 22px; 
+  font-weight: 700;
+}
+
+.userInfoContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: left;
+  gap: 28px 0px;
+  flex-wrap: nowrap;
+}
+
+.addressContainer {
+  position: relative;
+  width: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: left;
+  gap: 12px;
+  padding: 0px;
+  /* flex-wrap: nowrap; */
+  font-size: 32px;
+}
+
+.avatar {
+  width: 80px;
+  height: 80px;
+  border-radius: 50px;
+  /* background-color: rgb(184, 190, 221); */
+  /* background-color: #F0E5EE; */
+  background-color: #F0E5EE;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  /* flex-wrap: nowrap; */
+  color: rgb(109, 109, 109);
+}
+
+.profileSectionTitle {
+  margin-bottom: 24px;
+  font-size: 16px;
+  /* font-weight: 700; */
+  letter-spacing: 1.2px;
+  color: rgb(93, 93, 93, 0.5);
+}
+
+.profileSectionContent {
+}
+
+.yourNftsContainer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: space-between;
+  /* justify-content: center; */
+  /* gap: 32px; */
+  /* padding: 36px 0px 0px; */
+  flex-wrap: nowrap;
+}
+
+
+.menuItem {
+  cursor: pointer;
+  margin-left: -16px; 
+  padding: 12px 0px 12px 16px;
+  transition: all 0.125s ease 0s;
+  width: 100%;
+  color: rgba(37, 41, 46, 0.7); 
+}
+
+.menuItem:hover {
+  transform: scale(1.05); /* Scale down when active */
+}
+
+.menuItem:active { 
+  transform: scale(0.95); /* Scale down when active */
+}
+
+
+.menuItemSelected {
+  background: radial-gradient(100% 464.29% at 0% 50%, rgba(60, 66, 82, 0.1) 0%, rgba(60, 66, 82, 0) 100%);
+  /* background: radial-gradient(100% 464.29% at 0% 50%, rgba(255, 140, 198, 0.3) 0%, rgba(255, 140, 198, 0.1) 100%); */
+  border-radius: 18px; 
+  color: rgb(37, 41, 46); 
+  font-weight: 800; 
+  cursor: pointer; 
+  display: flex; 
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center; 
+  /* line-height: 24px;  */
+  /* min-height: 30px;  */
+  margin-left: -16px; 
+  padding: 12px 0px 12px 16px;
+  transition: all 0.125s ease 0s;
+  width: 100%;
+}
+
+.menuItemSelected:hover {
+  transform: scale(1.05);
+}
+
+.menuItemSelected:active { 
+  transform: scale(0.95);
+}
+
+.yourBalanceContainer {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: space-between;
+  /* gap: 32px; */
+  /* padding: 36px 0px 0px; */
+  flex-wrap: nowrap;
+}
+
+.balanceValueContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: left;
+  /* justify-content: space-between; */
+  justify-content: left;
+  gap: 16px;
+  letter-spacing: 0.8px;
+}
+
+.balanceValue {
+  font-size: 40px;
+}
+
+.balanceCurrency {
+  display: flex;
+  flex-direction: column-reverse;
+  padding-bottom: 4px;
+  color: rgba(79, 79, 79, 0.9);
+  font-size: 24px;
+}
+
+.balanceActionsContainer {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: right;
+  margin-top: 16px;
+  /* padding-right: 16px; */
+  gap: 12px;
+}
+
+.actionContainer {
+  width: 40px;
+  height: 40px;
+  padding: 8px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border-radius: 30px;
+  background-color: #F0E6EF;
+  transition: all 0.125s ease 0s;
+  cursor: pointer;
+}
+
+.actionContainer:hover {
+  transform: scale(1.1); 
+}
+
+.actionContainer:active { 
+  transform: scale(0.95); 
+}
+
+.sendIcon {
+  padding-left: 2px;
+  padding-top: 3px;
+  width: fit-content;
+  height: fit-content;
+}
+
+.copyIcon {
+  transition: all 0.125s ease 0s;
+  cursor: pointer;
+}
+
+.copyIcon:hover {
+  transform: scale(1.1); 
+}
+
+.copyIcon:active { 
+  transform: scale(0.95); 
+}

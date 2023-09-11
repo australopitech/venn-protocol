@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google'
 import { ethers } from 'ethers';
 // import { config } from './_app';
 import { useEthers, useEtherBalance, useConfig } from '@usedapp/core';
-import { fetchAddressData } from '../src/frontendUtils'
+import { fetchAddressData } from '../utils/frontendUtils'
 
 const inter = Inter({ subsets: ['latin'] })
 

@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { fetchBalancesData } from '../../src/covalentFetchData'; // Import your utility function
-import { BalancesResponse } from '../../src/types';
+import { fetchBalancesData } from '../../utils/covalentFetchData'; // Import your utility function
+import { BalancesResponse } from '../../types/types';
 
 export default async function handler(
   req: NextApiRequest,
