@@ -1,6 +1,14 @@
+import { ethers } from 'ethers';
+import { useRouter } from 'next/router';
+import { useEtherBalance } from '@usedapp/core';
 import styles from './sidebar.module.css';
 import classNames from 'classnames';
 import compactString from '@/utils/compactString'
+
+interface QueryParams {
+  address: string;
+}
+
 export interface SideBarProps {
   sidebarGridTemplate?: string;
   address?: string;
@@ -167,13 +175,17 @@ const SwapIcon =  () => {
 }
 
 const YourBalance = () => {
+  const router = useRouter()
+  const address = router.query.address as QueryParams['address'];
+  const bal = useEtherBalance(address);
+
   return (
     <div className={styles.yourBalanceContainer}>
-      <span className={styles.profileSectionTitle}>YOUR BALANCE</span>
+      <span className={styles.profileSectionTitle}>ACCOUNT BALANCE</span>
       <div>
         <div className={styles.balanceValueContainer}>
           <span className={styles.balanceValue}>
-            1234.56 
+            {bal && parseFloat(ethers.utils.formatEther(bal)).toFixed(4)} 
           </span>
           <span className={styles.balanceCurrency}>
             ETH
