@@ -131,6 +131,10 @@ export const NFTDialog = ({
     const [isRental, setIsRental] = useState<boolean>();
 
     const {account, library} = useEthers();
+    console.log('nft contract',nftItem?.contractAddress)
+    console.log('nft id', nftItem?.nftData.token_id)
+    console.log('nft_contract == receipts', nftItem?.contractAddress === receipts.address)
+    console.log('receipts_contract', receipts.address )
 
     const isReceipt = useMemo(() => {
       if(!nftItem) return
@@ -209,12 +213,12 @@ export const NFTDialog = ({
                 <p className={styles.nftDescription}>
                   {description}
                 </p>
-                {/* <DialogNotOwnedBorrowedDescription /> */}
-                <DialogNotOwnedListedDescription />
-                {/* <DialogNotOwnedNotListedDescription /> */}
-                {/* <DialogOwnedListedDescription /> */}
-                {/* <DialogOwnedNotListedDescription /> */}
-                {/* <DialogOwnedRentedDescription /> */}
+                {!isOwned&&isRental&&<DialogNotOwnedBorrowedDescription />}
+                {!isOwned&&isListed&&<DialogNotOwnedListedDescription />}
+                {!isOwned&&!isListed&&<DialogNotOwnedNotListedDescription />}
+                {isOwned&&isListed&&<DialogOwnedListedDescription />}
+                {isOwned&&!isListed&&!isReceipt&&<DialogOwnedNotListedDescription />}
+                {isOwned&&isReceipt&&<DialogOwnedRentedDescription />}
 
                 {/* {isOwned ? (
                   <DialogOwnedDescription 
