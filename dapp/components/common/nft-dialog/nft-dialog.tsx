@@ -34,10 +34,11 @@ export interface NFTDialogProps {
     isOwned?: boolean;
     isBorrowed?: boolean;
     setIsNFTOpen?: any;
+    image?: string;
 }
 
-let image: string | undefined;
-const propImage = "https://dl.openseauserdata.com/cache/originImage/files/9d6b9f6ef3d8b0b0f08481be0a0fd2f8.png";
+// let image: string | undefined;
+const propImage =  "https://dl.openseauserdata.com/cache/originImage/files/9d6b9f6ef3d8b0b0f08481be0a0fd2f8.png";
 
 
 /**
@@ -48,13 +49,15 @@ export const NFTDialog = ({
     context,
     isOwned,
     isBorrowed,
-    setIsNFTOpen
+    setIsNFTOpen,
+    image
 }: NFTDialogProps) => {
     // const [error, setError] = useState<string>();
     // const [isOwned, setIsOwned] = useState<boolean>(true);
     // const [isBorrowed, setIsBorrowed] = useState<boolean>(false);
     console.log('isOwned', isOwned);
     console.log('isBorrowed', isBorrowed);
+    image = image? image : propImage;
     
     const onCloseDialog = () => {
         setIsNFTOpen(false);
