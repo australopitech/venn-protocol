@@ -83,9 +83,10 @@ const SelectedIcon = () => {
 }
 
 const YourNfts = ({ nftsContext } : {nftsContext: string}) => {
+  const signer = useSigner();
   return (
     <div className={styles.yourNftsContainer}>
-      <span className={styles.profileSectionTitle}>YOUR NFTS</span>
+      <span className={styles.profileSectionTitle}>{signer && 'YOUR'} NFTS</span>
 
       <div>
         <div className={nftsContext === 'owned' ? styles.menuItemSelected : styles.menuItem}>
@@ -190,7 +191,7 @@ const YourBalance = () => {
 
   return (
     <div className={styles.yourBalanceContainer}>
-      <span className={styles.profileSectionTitle}>ACCOUNT BALANCE</span>
+      <span className={styles.profileSectionTitle}>{signer && 'YOUR'} BALANCE</span>
       <div>
         <div className={styles.balanceValueContainer}>
           <span className={styles.balanceValue}>
