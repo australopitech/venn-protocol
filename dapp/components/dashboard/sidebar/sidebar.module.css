@@ -25,7 +25,7 @@
   border-radius: 12px;
   background-color: rgb(253, 246, 252);
   font-family: 'SFRounded', sans-serif;
-  color: rgb(79, 79, 79);
+  color: #4f4f4f;
   font-size: 22px; 
   font-weight: 700;
 }
@@ -97,7 +97,8 @@
   padding: 12px 0px 12px 16px;
   transition: all 0.125s ease 0s;
   width: 100%;
-  color: rgba(37, 41, 46, 0.7); 
+  /* color: rgba(37, 41, 46, 0.7);  */
+  color: #5F5D5D;
 }
 
 .menuItem:hover {
@@ -110,10 +111,12 @@
 
 
 .menuItemSelected {
-  background: radial-gradient(100% 464.29% at 0% 50%, rgba(60, 66, 82, 0.1) 0%, rgba(60, 66, 82, 0) 100%);
+  background: radial-gradient(100% 464.29% at 0% 50%, rgba(240, 166, 202, 0.3) 0%, rgba(240, 166, 202, 0) 100%);
   /* background: radial-gradient(100% 464.29% at 0% 50%, rgba(255, 140, 198, 0.3) 0%, rgba(255, 140, 198, 0.1) 100%); */
   border-radius: 18px; 
-  color: rgb(37, 41, 46); 
+  /* color: rgb(37, 41, 46);  */
+  /* color: rgba(37, 41, 46, 0.7);  */
+  color: #5F5D5D; 
   font-weight: 800; 
   cursor: pointer; 
   display: flex; 

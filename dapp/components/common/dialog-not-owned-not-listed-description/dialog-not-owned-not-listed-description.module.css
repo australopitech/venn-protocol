@@ -1,0 +1,177 @@
+.title {
+  -webkit-line-clamp: 1;
+  color: rgb(37, 41, 46);
+  font-size: 26px;
+  font-style: normal;
+  font-weight: 800;
+  padding: 0px;
+  text-align: left;
+  text-overflow: ellipsis;
+  margin: 0px;
+  margin-bottom: 5px;
+}
+
+.descriptionContainer {
+  width: 100%;
+  display: flex;
+  padding: 0px;
+  align-items: center;
+  justify-content: flex-start;
+  flex-direction: column;
+
+  align-items: flex-start;
+  box-sizing: border-box;
+  padding: 24px 24px 30px;
+  width: 100%;
+}
+
+.bodyDescriptionContainer {
+  width: 100%;
+  display: flex;
+  padding: 0px;
+  align-items: flex-start;
+  -webkit-box-pack: justify;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.divider {
+  background-color: rgba(60, 66, 82, 0.08);
+  border-radius: 1px;
+  height: 2px;
+  margin-bottom: 19px;
+  margin-top: 0px;
+  width: 100%;
+}
+
+.bodyDescription {
+  color: rgb(37, 41, 46);
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  padding: 0px 0px 12px;
+  text-align: left;
+  text-overflow: ellipsis;
+}
+
+.priceDescription {
+  color: rgb(84, 91, 100);
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 700;
+  padding: 0px 0px 12px;
+  text-align: left;
+  text-overflow: ellipsis;
+}
+
+.priceCurrency {
+  color: rgba(84, 91, 100);
+}
+
+.priceInputContainer {
+  /* background: radial-gradient(
+    100% 100% at 0% 50%,
+    rgba(240, 166, 202, 0.1) 0%,
+    rgba(240, 166, 202, 0.2) 100%
+  ); */
+  border: 2px solid rgba(240, 166, 202, 0.5);
+  border-radius: 25px;
+  margin: 0px 10px 10px 0px;
+  padding: 8px 20px;
+  text-align: left;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+}
+
+.priceInputContainer:hover {
+  /* border-color: rgb(207, 70, 173); */
+  border-color: rgb(240, 166, 202);
+}
+
+.priceInputContainer:focus {
+  border-color: rgb(207, 70, 173);
+  /* border-color: rgb(240, 166, 202); */
+}
+
+.priceInput {
+  color: rgba(8, 8, 10, 0.8);
+  font-style: normal;
+  font-weight: 500;
+  width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  outline: none;
+  border: none;
+  background-color: transparent;
+  font-size: 28px;
+  appearance: textfield;
+  text-align: left;
+  display: flex;
+}
+
+.invalidDuration {
+  color:#D52941;
+}
+
+.priceInput::-webkit-inner-spin-button,
+.priceInput::-webkit-outer-spin-button {
+  /* -webkit-appearance: none; */
+  margin-right: 10px;
+}
+
+.eth {
+  font-size: 24px;
+  font-weight: 500;
+  color: rgba(8, 8, 10, 0.8);
+  font-style: normal;
+}
+
+.rentButton {
+  align-items: center;
+  background: radial-gradient(
+    100% 200% at 0% 50%,
+    rgba(240, 56, 107, 0.04) 0%,
+    rgba(240, 56, 107, 0.2) 100%
+  );
+  border-radius: 25px;
+  box-sizing: border-box;
+  color: #f0386b;
+  cursor: pointer;
+  display: flex;
+  font-size: 20px;
+  font-weight: 800;
+  height: 46px;
+  justify-content: center;
+  margin-top: 5px;
+  padding: 0px 15px 3px;
+  text-align: center;
+  transition: all 0.125s ease 0s;
+  user-select: none;
+  z-index: 5;
+}
+
+.rentButton:hover {
+  transform: scale(1.05);
+}
+
+.rentButton:active {
+  transform: scale(0.95);
+}
+
+.rentButton-container {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  justify-items: end;
+}
+
+.rentButtonWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  justify-items: end;
+}
