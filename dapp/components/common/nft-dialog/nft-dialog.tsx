@@ -89,30 +89,12 @@ export const NFTDialog = ({
                 <p className={styles.nftDescription}>
                   {description}
                 </p>
-                {/* <DialogNotOwnedBorrowedDescription /> */}
+                <DialogNotOwnedBorrowedDescription />
                 {/* <DialogNotOwnedListedDescription /> */}
                 {/* <DialogNotOwnedNotListedDescription /> */}
                 {/* <DialogOwnedListedDescription /> */}
-                <DialogOwnedNotListedDescription />
+                {/* <DialogOwnedNotListedDescription /> */}
                 {/* <DialogOwnedRentedDescription /> */}
-
-                {/* {isOwned ? (
-                  <DialogOwnedDescription 
-                  contract={contract}
-                  id={id}
-                  />
-                ) : isBorrowed ? (
-                  <DialogBorrowedDescription
-                  activeAccount={activeAccount}
-                  context={context}
-                  index={index}
-                  />
-                ) : (
-                  <DialogExploreDescription
-                  index={index}
-                  activeAccount={activeAccount}
-                  />
-                )} */}
               </div>
             </div>
           </dialog>
