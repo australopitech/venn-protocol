@@ -21,6 +21,8 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount }: Dialog
     const [duration, setDuration] = useState<number | undefined>();
     const [isDurationInvalid, setIsDurationInvalid] = useState<boolean | undefined>(false);
     
+    const nft = {maxDuration: 10, price: 0.01}
+
     const handleChange = (e: any) => {
       let numValue = parseInt(e.target.value);
 
@@ -29,7 +31,10 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount }: Dialog
       }
       console.log('numValue is ', numValue)
       // If value is negative or not a number, set it to 0
-      if ((numValue < 0 || isNaN(numValue)) ) {
+      if (numValue < 0 || isNaN(numValue)) {
+        setIsDurationInvalid(true);
+        setDuration(0);
+      } else if (numValue > nft.maxDuration) {
         setIsDurationInvalid(true);
         setDuration(0);
       } else {
@@ -38,20 +43,18 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount }: Dialog
       }
     }
 
-    const nft = {maxDuration: 30, price: 0.01}
-
     return (
         <div className={styles['bodyDescriptionContainer']}>
           <div className={styles.divider}></div>
           <h2 className={styles['bodyDescription']}>Borrow this NFT!</h2>
           <h3 className={styles['priceDescription']}>
-              Price: <span className={styles['priceCurrency']}>{nft ? nft.price.toString() : ""} wei/day</span>
+              Price: <span className={styles['priceCurrency']}>{nft ? nft.price.toString() : ""} ETH/day</span>
           </h3>
-          <div className={styles.priceDescription}>{`Max Loan Period: ${nft ? nft.maxDuration.toString() : ""} days`}</div>
-          <div>
-              <div className={styles['priceInputContainer']}>
+          <div className={styles.priceDescription}>{`Maximum loan period: ${nft?.maxDuration?.toString()} ${nft?.maxDuration === 1 ? 'day' : 'days'}`}</div>
+          <div className={styles.priceWrapper}>
+              <div className={styles.priceInputContainer}>
                   <input 
-                    className={styles['priceInput']}
+                    className={styles.priceInput}
                     placeholder="0"
                     type="number"
                     min="0"
@@ -62,9 +65,9 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount }: Dialog
                       <span className={styles.eth}>Days</span>
                   </div>
               </div>
-              {isDurationInvalid && <span className={styles.invalidDuration}>Set a valid duration. Value cannot be negative!</span>}
+              {isDurationInvalid && <span className={styles.invalidDuration}>{`Set a valid duration. Value cannot be negative and must respect the maximum loan period.`}</span>}
           </div>
-          <button> Borrow </button>
+          <button className={styles.borrowButton}> Borrow </button>
         </div>
     );
 };

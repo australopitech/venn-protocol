@@ -16,7 +16,7 @@
 
 .bodyDescription {
   color: rgb(37, 41, 46);
-  font-size: 20px;
+  font-size: 28px;
   font-style: normal;
   font-weight: 700;
   /* padding: 0px 0px 12px; */
@@ -25,7 +25,7 @@
   display: flex;
   flex-direction: column;
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 36px;
 }
 
 .priceDescription {
@@ -42,18 +42,24 @@
   color: rgba(84, 91, 100);
 }
 
+.priceWrapper {
+  width: 100%;
+  margin-bottom: 28px;
+}
+
 .priceInputContainer {
   /* background: radial-gradient(
     100% 100% at 0% 50%,
     rgba(240, 166, 202, 0.1) 0%,
     rgba(240, 166, 202, 0.2) 100%
   ); */
+  width: 100%;
   border: 2px solid rgba(240, 166, 202, 0.5);
   border-radius: 25px;
-  margin: 28px 10px 28px 0px;
+  margin: 28px 10px 8px 0px;
   padding: 8px 20px;
   text-align: left;
-  z-index: 1;
+  /* z-index: 1; */
   display: flex;
   align-items: center;
 }
@@ -87,8 +93,19 @@
   display: flex;
 }
 
+.priceInput::-webkit-inner-spin-button,
+.priceInput::-webkit-outer-spin-button {
+  /* -webkit-appearance: none; */
+  margin-right: 10px;
+}
+
 .invalidDuration {
+  display: flex;
   color:#D52941;
+  font-size: 14px;
+  padding: 0px 22px;
+  text-align: justify;
+  width: 100%;
 }
 
 .eth {
@@ -98,48 +115,36 @@
   font-style: normal;
 }
 
-.rentButton {
+.borrowButton {
   align-items: center;
   background: radial-gradient(
     100% 200% at 0% 50%,
-    rgba(240, 56, 107, 0.04) 0%,
-    rgba(240, 56, 107, 0.2) 100%
+    rgba(240, 166, 202, 0.8) 0%,
+    rgba(240, 166, 202, 0.5) 100%
   );
   border-radius: 25px;
   box-sizing: border-box;
-  color: #f0386b;
+  color: #3a3939;
   cursor: pointer;
   display: flex;
   font-size: 20px;
   font-weight: 800;
   height: 46px;
   justify-content: center;
-  margin-top: 5px;
-  padding: 0px 15px 3px;
+  /* margin-top: 20px; */
+  padding: 0px 15px;
   text-align: center;
   transition: all 0.125s ease 0s;
   user-select: none;
   z-index: 5;
+  border: none;
+  width: 100%
 }
 
-.rentButton:hover {
+.borrowButton:hover {
   transform: scale(1.05);
 }
 
-.rentButton:active {
+.borrowButton:active {
   transform: scale(0.95);
-}
-
-.rentButton-container {
-  display: flex;
-  flex-direction: column;
-  align-items: end;
-  justify-items: end;
-}
-
-.rentButtonWrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: end;
-  justify-items: end;
 }
