@@ -119,7 +119,7 @@
 }
 
 .nftDescription {
-  color: rgb(37, 41, 46);
+  color: rgb(67, 74, 79);
   font-size: 18px;
   font-style: normal;
   font-weight: 500;
@@ -128,7 +128,7 @@
   text-align: left;
   text-overflow: ellipsis;
   overflow-y: auto;
-  max-height: 150px;
+  max-height: 100px;
   scrollbar-width: thin;
   scrollbar-color: rgb(211, 199, 208, 0.6) rgb(240, 230, 239, 0.6);
 }
