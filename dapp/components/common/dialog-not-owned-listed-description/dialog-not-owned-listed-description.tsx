@@ -1,13 +1,22 @@
 import React, { useEffect } from 'react';
 import styles from './dialog-not-owned-listed-description.module.css';
 import { useState } from 'react';
-import { ethers } from 'ethers';
+import { ethers, BigNumber } from 'ethers';
 import { rent } from '@/utils/call';
-
+import { useSigner } from '@usedapp/core';
+import { NftItem } from '@/types/types';
+import { getListData } from '../nft-dialog/nft-dialog';
+import mktPlace from '../../../utils/contractData/MarketPlace.json';
 
 export interface DialogNotOwnedListedDescriptionProps {
   index?: number;
   activeAccount?: string;
+  nftItem?: NftItem;
+}
+
+async function getFee(provider: any) {
+  const contract = new ethers.Contract(mktPlace.address, mktPlace.abi, provider);
+  return await contract.serviceAliquot();
 }
 
 
@@ -19,10 +28,12 @@ export interface DialogNotOwnedListedDescriptionProps {
  * This component was created using Codux's Default new component template.
  * To create custom component templates, see https://help.codux.com/kb/en/article/kb16522
  */
-export const DialogNotOwnedListedDescription = ({ index, activeAccount }: DialogNotOwnedListedDescriptionProps) => {
+export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem }: DialogNotOwnedListedDescriptionProps) => {
     const [duration, setDuration] = useState<number | undefined>();
     const [isDurationInvalid, setIsDurationInvalid] = useState<boolean | undefined>(false);
-    
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const signer = useSigner();
+    // const 
     const nft = {maxDuration: 10, price: 0.01}
 
     const handleChange = (e: any) => {
@@ -45,8 +56,19 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount }: Dialog
       }
     }
 
-    // const handleClick = () => {
-      
+    // const handleClick = async() => {
+    //   if(!signer) {
+    //     alert('Connect your wallet!')
+    //     return
+    //   }
+    //   if(isLoading) return
+    //   if(!nftItem) {
+    //     console.log('no nft found');
+    //     return
+    //   }
+    //   const { price } = await getListData(signer, nftItem);
+    //   const fee = getFee(signer);
+    //   await rent(signer, nftItem.contractAddress, BigNumber.from(nftItem.nftData.token_id), duration , price   )
     // }
 
     return (
