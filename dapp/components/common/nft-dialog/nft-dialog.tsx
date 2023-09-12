@@ -53,7 +53,7 @@ export const NFTDialog = ({
     setIsNFTOpen,
     nftItem
 }: NFTDialogProps) => {
-    let  image = nftItem ? GetNftImage(nftItem) : propImage;
+    const image = nftItem ? GetNftImage(nftItem) : propImage;
 
     const onCloseDialog = () => {
         setIsNFTOpen(false);
