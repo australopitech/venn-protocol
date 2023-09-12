@@ -45,6 +45,7 @@ export const DialogOwnedRentedDescription = ({
 
   const name = "Awesome NFT #1"
   const description = "This is an awesome NFT uhul This is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhul."
+  // const description = "Bla blabla blablabla."
   // const timeLeft = 3
   
 
@@ -56,23 +57,25 @@ export const DialogOwnedRentedDescription = ({
         {description}
       </p>
       {/* </div> */}
-      <div className={styles['bodyDescriptionContainer']}>
+      <div className={styles.bodyDescriptionContainer}>
         <div className={styles.divider}></div>
-        <div className={styles['bodyDescription']}>
-          {`This NFT is currently rented to another user and will return to your wallet in `} 
-          <span className={styles.timeLeftValue}> {`${timeLeft} ${timeLeft === 1 ? 'day' : 'days'}`} </span>
-          {`.`}
-
-          <br />
-          <br />
-
-          <div className={styles.unlistContainer}>
-            <button className={styles.rentButton}> Unlist NFT</button>
-            <div className={styles.warning}>
-              <WarningIcon /><span className={styles.warningText}>{`If you choose to unlist, it'll be removed from the market after the current rental ends and won't be available for rent again until you relist it.`}</span>
-            </div>
+        <div className={styles.bodyDescription}>
+          <span>
+            This NFT is currently rented to another user and will return to your wallet in
+          </span>
+          <span className={styles.timeLeftValue}> 
+            {`${timeLeft} ${timeLeft === 1 ? 'day' : 'days'}`} 
+          </span>
+        </div>
+          
+        <br />
+        <br />
+        
+        <div className={styles.unlistContainer}>
+          <button className={styles.unlistButton}> Unlist NFT</button>
+          <div className={styles.warning}>
+            <WarningIcon /><span className={styles.warningText}>{`If you choose to unlist your NFT, it'll be removed from the market after the current rental ends and won't be available for rent again until you relist it.`}</span>
           </div>
-
         </div>
       </div>
       {/* <ReleaseAsset index={index} /> */}
