@@ -35,19 +35,17 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
             userData.nfts[selectedNFT].nftData.external_data.image;
   }
 
+  let nftItem = undefined;
+  if(userData.nfts) {
+    nftItem = userData.nfts[selectedNFT];
+  }
+
   return (
     <>
     {isNFTOpen && 
       <NFTDialog
-        // contract={contract}
-        // id={tokenId}
-        // index={index}
         setIsNFTOpen={setIsNFTOpen} 
-        // context={context}
-        // activeAccount={activeAccount}
-        // isOwned={isOwned}
-        // isBorrowed={isBorrowed}
-        image={image}
+        nftItem={nftItem}
       />
     }
     <div className={styles.dashboard} >
