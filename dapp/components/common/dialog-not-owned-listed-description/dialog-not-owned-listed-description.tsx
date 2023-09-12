@@ -38,45 +38,33 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount }: Dialog
       }
     }
 
-    const name = "Awesome NFT #1"
-    const description = "This is an awesome NFT uhul."
     const nft = {maxDuration: 30, price: 0.01}
 
     return (
-        <div className={styles['descriptionContainer']}>
-            <h1 className={styles.title}>{name}</h1>
-            <h2 className={styles.bodyDescription}>{description}</h2>
-            <div className={styles['bodyDescriptionContainer']}>
-                <div className={styles.divider}></div>
-                <h2 className={styles['bodyDescription']}>Borrow this NFT!</h2>
-                <h3 className={styles['priceDescription']}>
-                    Price: <span className={styles['priceCurrency']}>{nft ? nft.price.toString() : ""} wei/day</span>
-                </h3>
-                <div className={styles.priceDescription}>{`Max Loan Period: ${nft ? nft.maxDuration.toString() : ""} days`}</div>
-                <div>
-                    <div className={styles['priceInputContainer']}>
-                        <input 
-                          className={styles['priceInput']}
-                          placeholder="0"
-                          type="number"
-                          min="0"
-                          // value={duration}
-                          onChange={(e) => handleChange(e)}
-                        />
-                        <div>
-                            <span className={styles.eth}>Days</span>
-                        </div>
-                    </div>
-                    {isDurationInvalid && <span className={styles.invalidDuration}>Set a valid duration. Value cannot be negative!</span>}
-                </div>
-                <button> Borrow </button>
-                {/* <Borrow
-                  lender={nft? nft.lender : ethers.constants.AddressZero}
-                  index={index}
-                  duration={duration}
-                  price={nft? nft.price : 0}
-                /> */}
-            </div>
+        <div className={styles['bodyDescriptionContainer']}>
+          <div className={styles.divider}></div>
+          <h2 className={styles['bodyDescription']}>Borrow this NFT!</h2>
+          <h3 className={styles['priceDescription']}>
+              Price: <span className={styles['priceCurrency']}>{nft ? nft.price.toString() : ""} wei/day</span>
+          </h3>
+          <div className={styles.priceDescription}>{`Max Loan Period: ${nft ? nft.maxDuration.toString() : ""} days`}</div>
+          <div>
+              <div className={styles['priceInputContainer']}>
+                  <input 
+                    className={styles['priceInput']}
+                    placeholder="0"
+                    type="number"
+                    min="0"
+                    // value={duration}
+                    onChange={(e) => handleChange(e)}
+                  />
+                  <div>
+                      <span className={styles.eth}>Days</span>
+                  </div>
+              </div>
+              {isDurationInvalid && <span className={styles.invalidDuration}>Set a valid duration. Value cannot be negative!</span>}
+          </div>
+          <button> Borrow </button>
         </div>
     );
 };

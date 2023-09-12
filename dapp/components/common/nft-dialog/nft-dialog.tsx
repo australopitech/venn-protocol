@@ -69,6 +69,10 @@ export const NFTDialog = ({
         e.stopPropagation();
     };
 
+    const name = "Awesome NFT #1"
+    const description = "This is an awesome NFT uhul This is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhul."
+    // const description = "Bla blabla blablabla."
+
     return (
         <div className={styles.nftDialogBackdrop} onClick={onCloseDialog}>
           <dialog className={styles.nftDialog} open>
@@ -82,8 +86,12 @@ export const NFTDialog = ({
                 </div>
               </div>
               <div className={styles.nftDescriptionContainer} onClick={stopPropagation}>
-                <DialogNotOwnedBorrowedDescription />
-                {/* <DialogNotOwnedListedDescription /> */}
+                <h1 className={styles.title} title={name}>{name}</h1>
+                <p className={styles.nftDescription}>
+                  {description}
+                </p>
+                {/* <DialogNotOwnedBorrowedDescription /> */}
+                <DialogNotOwnedListedDescription />
                 {/* <DialogNotOwnedNotListedDescription /> */}
                 {/* <DialogOwnedListedDescription /> */}
                 {/* <DialogOwnedNotListedDescription /> */}
