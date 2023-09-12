@@ -101,11 +101,11 @@ const YourNfts = ({ nftsContext } : {nftsContext: string}) => {
           }
         </div>
         
-        <div className={nftsContext === 'borrowed' ? styles.menuItemSelected : styles.menuItem}>
+        <div className={nftsContext === 'rented' ? styles.menuItemSelected : styles.menuItem}>
           <span>
-            Borrowed
+            Rented
           </span>
-          {nftsContext === 'borrowed' 
+          {nftsContext === 'rented' 
             ? <SelectedIcon />
             : <></>
           }
