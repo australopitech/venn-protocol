@@ -1,12 +1,19 @@
-#
+title
+# NFT rentals using AA. NO COLATERAL and NO TRUST.
+
 
 tldr
-## Rent NFT's with no colateral and no trust! Unlock the value of NFT's!
+## This project implements a SC wallet/dapp to enable NFT rent tx's completely on-chain and trustless.
+Rent NFT's with no colateral and no trust! Unlock the value of NFT's!
 
 Our project is a wallet that uses account abstraction to enable users to rent NFT's without needing colateral in a completely trustless manner. We are currently in development phase, but have already a up and running POC that includes a browser extension wallet, a dashboard/market place dapp and fully functioning smart contracts.
 
+## About the project
+
 ### How does it work?
 NFT owner's can use our dapp to list their NFT's and wallet users can rent them for a predetermined amount of time. The asset owner's can rest assured that they are gonna get paid and receive their assets back at the end of the lease because our smart contracts are gonna make sure of it!
+
+We provide a very simple way to any market place dapp to make itself compatible with our wallet (check [here](link)).
 
 ### Main use cases
 1. Gaming
@@ -20,3 +27,12 @@ There are other cases in which NFT's are used as access control. People who hold
 
 ### Impact
 The impact of our project is very straight forward. It unlocks the real value of any asset that are or can be manifested an NFT. This means present and future cases. As soon as we launch, any owner of these assets are gonna be able to earn passive income on them if there is real demand for holding them.
+
+## Future developments
+- Improve smart contract efficiency (gas expenditure)
+- Smart contract audit (security)
+- Extend dapp functionalities 
+    - buying and selling
+    - updating Listing metadata
+- Improving UI: browser extension and dashboard/market place
+- Product idendity and design
