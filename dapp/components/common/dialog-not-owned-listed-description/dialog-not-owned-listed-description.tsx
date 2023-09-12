@@ -2,12 +2,14 @@ import React, { useEffect } from 'react';
 import styles from './dialog-not-owned-listed-description.module.css';
 import { useState } from 'react';
 import { ethers } from 'ethers';
+import { rent } from '@/utils/call';
 
 
 export interface DialogNotOwnedListedDescriptionProps {
   index?: number;
   activeAccount?: string;
 }
+
 
 // let nft: any;
 // let _title: string | undefined;
@@ -43,10 +45,14 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount }: Dialog
       }
     }
 
+    // const handleClick = () => {
+      
+    // }
+
     return (
         <div className={styles['bodyDescriptionContainer']}>
           <div className={styles.divider}></div>
-          <h2 className={styles['bodyDescription']}>Borrow this NFT!</h2>
+          <h2 className={styles['bodyDescription']}>Rernt this NFT!</h2>
           <h3 className={styles['priceDescription']}>
               Price: <span className={styles['priceCurrency']}>{nft ? nft.price.toString() : ""} ETH/day</span>
           </h3>
@@ -67,7 +73,7 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount }: Dialog
               </div>
               {isDurationInvalid && <span className={styles.invalidDuration}>{`Set a valid duration. Value cannot be negative and must respect the maximum loan period.`}</span>}
           </div>
-          <button className={styles.borrowButton}> Borrow </button>
+          <button className={styles.borrowButton}> Rent It! </button>
         </div>
     );
 };

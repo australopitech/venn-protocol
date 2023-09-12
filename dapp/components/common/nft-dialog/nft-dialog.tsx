@@ -215,11 +215,11 @@ export const NFTDialog = ({
                 </p>
                 {!isOwned&&isRental&&<DialogNotOwnedBorrowedDescription />}
                 {!isOwned&&isListed&&<DialogNotOwnedListedDescription />}
-                {!isOwned&&!isListed&&<DialogNotOwnedNotListedDescription />}
-                {isOwned&&isListed&&<DialogOwnedListedDescription />}
+                {!isOwned&&!isListed&&!isReceipt&&<DialogNotOwnedNotListedDescription />}
+                {isOwned&&isListed&&!isReceipt&&<DialogOwnedListedDescription />}
                 {isOwned&&!isListed&&!isReceipt&&<DialogOwnedNotListedDescription />}
                 {isOwned&&isReceipt&&<DialogOwnedRentedDescription />}
-
+                {!isOwned&&isReceipt&&<DialogOwnedRentedDescription />}
                 {/* {isOwned ? (
                   <DialogOwnedDescription 
                   contract={contract}
