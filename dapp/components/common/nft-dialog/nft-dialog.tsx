@@ -82,14 +82,12 @@ export const NFTDialog = ({
                 </div>
               </div>
               <div className={styles.nftDescriptionContainer} onClick={stopPropagation}>
-                {/* <DialogNotOwnedBorrowedDescription
-                  context={context}
-                /> */}
+                <DialogNotOwnedBorrowedDescription />
                 {/* <DialogNotOwnedListedDescription /> */}
                 {/* <DialogNotOwnedNotListedDescription /> */}
                 {/* <DialogOwnedListedDescription /> */}
                 {/* <DialogOwnedNotListedDescription /> */}
-                <DialogOwnedRentedDescription />
+                {/* <DialogOwnedRentedDescription /> */}
 
                 {/* {isOwned ? (
                   <DialogOwnedDescription 

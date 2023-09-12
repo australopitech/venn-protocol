@@ -1,15 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import styles from './dialog-owned-rented-description.module.css';
-// import { useProvider } from 'wagmi';
-// import ReleaseAsset from '../../wallet';
-// import { getNFTobj, useNFTname, useNFTtitle } from '../../../hooks/nfts';
 
 export interface DialogOwnedRentedDescriptionProps {
   someProp?: any;
-  // className?: string;
-  // index?: number;
-  // activeAccount?: string;
-  // context?: string;
 }
 
 const WarningIcon = () => {
@@ -29,11 +22,6 @@ const WarningIcon = () => {
   )
 }
 
-
-/**
- * This component was created using Codux's Default new component template.
- * To create custom component templates, see https://help.codux.com/kb/en/article/kb16522
- */
 export const DialogOwnedRentedDescription = ({ 
   someProp
 }: DialogOwnedRentedDescriptionProps) => {
@@ -51,12 +39,10 @@ export const DialogOwnedRentedDescription = ({
 
   return (
     <div className={styles['descriptionContainer']}>
-      {/* <div className={styles.nftInfoContainer}> */}
       <h1 className={styles.title} title={name}>{name}</h1>
       <p className={styles.nftDescription}>
         {description}
       </p>
-      {/* </div> */}
       <div className={styles.bodyDescriptionContainer}>
         <div className={styles.divider}></div>
         <div className={styles.bodyDescription}>
@@ -67,9 +53,6 @@ export const DialogOwnedRentedDescription = ({
             {`${timeLeft} ${timeLeft === 1 ? 'day' : 'days'}`} 
           </span>
         </div>
-          
-        <br />
-        <br />
         
         <div className={styles.unlistContainer}>
           <button className={styles.unlistButton}> Unlist NFT</button>
@@ -78,7 +61,6 @@ export const DialogOwnedRentedDescription = ({
           </div>
         </div>
       </div>
-      {/* <ReleaseAsset index={index} /> */}
     </div>
   );
 };
