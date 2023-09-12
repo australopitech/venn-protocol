@@ -126,8 +126,8 @@ interface IMarketPlace {
 #### Requirements
 Implementations MUST:
 - implement `IMarketPlace` and use `rentNFT` as its main method (outer most function) to execute rent transactions.
-- REQUIRE callers ARE wallet_name accounts ([click here](link) to see how).
-- REQUIRE caller's *operator count* for the NFT contract to be ZERO ([click here]() for instructions).
+- REQUIRE callers ARE rWallet smart accounts.
+- REQUIRE caller's *operator count* for the NFT contract to be ZERO.
 #### Prescriptions
 Implementations SHOULD:
 - REQUIRE `duration` is less then or equal to maximum duration specified by NFT owner.
@@ -146,6 +146,10 @@ We are currently in testing phase and not available for end users. As soon we la
 
 ## Guides
 
-### How to run the POC
-
-### How to be compatible
+### How to be fully compatible
+*soon*
+### How to check if an address is a rWallet smart account
+#### Using solidity
+*soon*
+#### Using ethers.js
+*soon*
