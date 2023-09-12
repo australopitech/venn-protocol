@@ -107,11 +107,8 @@ export const DialogOwnedNotListedDescription = ({
         </div>
         {isDurationInvalid && <span className={styles.invalidValue}>Set a valid duration. Value cannot be negative!</span>}
       </div>
-
       <br />
-
       <button className={styles.listButton}>List NFT!</button>
-
     </div>
   );
 };

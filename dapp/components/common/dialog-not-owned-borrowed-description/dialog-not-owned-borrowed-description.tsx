@@ -39,7 +39,7 @@ export const DialogNotOwnedBorrowedDescription = ({
       <div className={styles.divider}></div>
       <div className={styles.bodyDescription}>
         <span>
-        This NFT is a rental. The rent expires in
+        This NFT is a rental. The rent <span className={styles.textHilight}>expires in</span>
         </span>
         <span className={styles.timeLeftValue}> 
           {`${timeLeft} ${timeLeft === 1 ? 'day' : 'days'}`} 

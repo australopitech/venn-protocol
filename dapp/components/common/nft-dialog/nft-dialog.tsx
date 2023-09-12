@@ -220,23 +220,6 @@ export const NFTDialog = ({
                 {isOwned&&!isListed&&!isReceipt&&<DialogOwnedNotListedDescription />}
                 {isOwned&&isReceipt&&<DialogOwnedRentedDescription />}
                 {!isOwned&&isReceipt&&<DialogOwnedRentedDescription />}
-                {/* {isOwned ? (
-                  <DialogOwnedDescription 
-                  contract={contract}
-                  id={id}
-                  />
-                ) : isBorrowed ? (
-                  <DialogBorrowedDescription
-                  activeAccount={activeAccount}
-                  context={context}
-                  index={index}
-                  />
-                ) : (
-                  <DialogExploreDescription
-                  index={index}
-                  activeAccount={activeAccount}
-                  />
-                )} */}
               </div>
             </div>
           </dialog>
