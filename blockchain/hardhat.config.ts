@@ -85,9 +85,21 @@ const config: HardhatUserConfig = {
     timeout: 10000
   },
 
-  // etherscan: {
-  //   apiKey: process.env.ETHERSCAN_API_KEY
-  // }
+  etherscan: {
+   apiKey: {
+    "base-goerli": "PLACEHOLDER_STRING"
+   },
+   customChains: [
+     {
+       network: "base-goerli",
+       chainId: 84531,
+       urls: {
+        apiURL: "https://api-goerli.basescan.org/api",
+        browserURL: "https://goerli.basescan.org"
+       }
+     }
+   ]
+ },
 
 }
 

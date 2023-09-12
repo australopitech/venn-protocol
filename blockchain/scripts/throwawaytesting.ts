@@ -6,6 +6,7 @@ import * as dotenv from 'dotenv';
 // import * as nft from '../deployments/sepolia/NFT.json';
 // import uri from "../../nft/URI.json"
 import * as nft from '../deployments/base_goerli/NFT.json';
+import factory from '../deployments/base_goerli/RWalletFactory.json';
 
 dotenv.config();
 
@@ -39,7 +40,18 @@ const ownerCheck = async () => {
 
 }
 
-ownerCheck();
+// ownerCheck();
+
+const accImpl = async() => {
+    if(!base_rpc) throw new Error('missing env');
+
+    const tokenId = 0;
+    const provider = new ethers.providers.JsonRpcProvider(base_rpc);
+    const factContract = new ethers.Contract(factory.address, factory.abi, provider);
+    console.log(await factContract.accountImplementation());
+} 
+
+accImpl();
 
 // const main = async () => {
 //     if(!pkey || !apikey) throw new Error('missing env');
