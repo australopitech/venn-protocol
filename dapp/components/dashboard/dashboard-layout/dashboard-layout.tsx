@@ -28,24 +28,15 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   }, [signer]);
 
   const userData = useAddressNfts(address? address : signerAddress);
-  let image = undefined;
-  if (userData.nfts) {
-    image = userData.nfts[selectedNFT].nftData.external_data.image_1024 ? 
-            userData.nfts[selectedNFT].nftData.external_data.image_1024 :
-            userData.nfts[selectedNFT].nftData.external_data.image;
-  }
-
-  let nftItem = undefined;
-  if(userData.nfts) {
-    nftItem = userData.nfts[selectedNFT];
-  }
 
   return (
     <>
     {isNFTOpen && 
       <NFTDialog
         setIsNFTOpen={setIsNFTOpen} 
-        nftItem={nftItem}
+        nftItem={
+          userData.nfts ? userData.nfts[selectedNFT] : undefined
+        }
       />
     }
     <div className={styles.dashboard} >
