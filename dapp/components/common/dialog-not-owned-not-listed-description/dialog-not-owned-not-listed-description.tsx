@@ -41,18 +41,13 @@ export const DialogNotOwnedNotListedDescription = ({
   
 
   return (
-    <div className={styles['descriptionContainer']}>
-      <h1 className={styles.title}>{name}</h1>
-      <h2 className={styles.bodyDescription}>{description}</h2>
-      <div className={styles['bodyDescriptionContainer']}>
-        <div className={styles.divider}></div>
-        <div className={styles['bodyDescription']}>
-          {`This NFT is not listed and not available for loans at the moment.`}
-          {/* ${timeLeft && parseFloat((timeLeft > 86400? timeLeft/86400 : timeLeft>3600? timeLeft/3600 : timeLeft/60).toFixed(2))}
-          ${timeLeft && (timeLeft > 86400? "days" : timeLeft>3600? "hours" : "minutes")}.`}           */}
-        </div>
+    <div className={styles['bodyDescriptionContainer']}>
+      <div className={styles.divider}></div>
+      <div className={styles['bodyDescription']}>
+        {`This NFT is not listed and not available for loans at the moment.`}
+        {/* ${timeLeft && parseFloat((timeLeft > 86400? timeLeft/86400 : timeLeft>3600? timeLeft/3600 : timeLeft/60).toFixed(2))}
+        ${timeLeft && (timeLeft > 86400? "days" : timeLeft>3600? "hours" : "minutes")}.`}           */}
       </div>
-      {/* <ReleaseAsset index={index} /> */}
     </div>
   );
 };

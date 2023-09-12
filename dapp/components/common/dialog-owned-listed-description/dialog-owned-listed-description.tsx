@@ -91,25 +91,20 @@ export const DialogOwnedListedDescription = ({
   const maxDuration = 10
 
   return (
-    <div className={styles['descriptionContainer']}>
-      <h1 className={styles.title}>{name}</h1>
-      <h2 className={styles.bodyDescription}>{description}</h2>
-      <div className={styles['bodyDescriptionContainer']}>
-        <div className={styles.divider}></div>
-        <div className={styles['bodyDescription']}>
-          {`This NFT is listed!`}
-          <br />
-          {/* <span>Price: </span><EditableInput /> */}
-          {`Price: ${price} ETH/Day`}
-          <br />
-          {`Max duration: ${maxDuration} ${maxDuration === 1 ? 'Day' : 'Days'}`}
-          <br />
-          Would you like to unlist this NFT?
-          <button>Unlist</button>
-          <br />
-        </div>
+    <div className={styles['bodyDescriptionContainer']}>
+      <div className={styles.divider}></div>
+      <div className={styles['bodyDescription']}>
+        {`This NFT is listed!`}
+        <br />
+        {/* <span>Price: </span><EditableInput /> */}
+        {`Price: ${price} ETH/Day`}
+        <br />
+        {`Max duration: ${maxDuration} ${maxDuration === 1 ? 'Day' : 'Days'}`}
+        <br />
+        Would you like to unlist this NFT?
+        <button>Unlist</button>
+        <br />
       </div>
-      {/* <ReleaseAsset index={index} /> */}
     </div>
   );
 };

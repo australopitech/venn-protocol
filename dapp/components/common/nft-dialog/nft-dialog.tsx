@@ -90,10 +90,10 @@ export const NFTDialog = ({
                   {description}
                 </p>
                 {/* <DialogNotOwnedBorrowedDescription /> */}
-                <DialogNotOwnedListedDescription />
+                {/* <DialogNotOwnedListedDescription /> */}
                 {/* <DialogNotOwnedNotListedDescription /> */}
                 {/* <DialogOwnedListedDescription /> */}
-                {/* <DialogOwnedNotListedDescription /> */}
+                <DialogOwnedNotListedDescription />
                 {/* <DialogOwnedRentedDescription /> */}
 
                 {/* {isOwned ? (

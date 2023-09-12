@@ -39,14 +39,14 @@
   background-color: rgba(60, 66, 82, 0.08);
   border-radius: 1px;
   height: 2px;
-  margin-bottom: 19px;
-  margin-top: 0px;
+  margin-bottom: 24px;
+  margin-top: 24px;
   width: 100%;
 }
 
 .bodyDescription {
   color: rgb(37, 41, 46);
-  font-size: 20px;
+  font-size: 24px;
   font-style: normal;
   font-weight: 700;
   padding: 0px 0px 12px;
