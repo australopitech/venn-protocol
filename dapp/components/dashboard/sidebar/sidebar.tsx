@@ -1,7 +1,7 @@
 import { ethers } from 'ethers';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useEtherBalance, useSigner } from '@usedapp/core';
+import { useEtherBalance, useEthers, useSigner } from '@usedapp/core';
 import styles from './sidebar.module.css';
 import classNames from 'classnames';
 import compactString from '@/utils/compactString'
@@ -83,10 +83,12 @@ const SelectedIcon = () => {
 }
 
 const YourNfts = ({ nftsContext } : {nftsContext: string}) => {
-  const signer = useSigner();
+  const router = useRouter();
+  const address = router.query.address as QueryParams['address'];
+  const {account} = useEthers();
   return (
     <div className={styles.yourNftsContainer}>
-      <span className={styles.profileSectionTitle}>{signer && 'YOUR'} NFTS</span>
+      <span className={styles.profileSectionTitle}>{((address&&account&&address===account) || (account&&!address)) && 'YOUR'} NFTS</span>
 
       <div>
         <div className={nftsContext === 'owned' ? styles.menuItemSelected : styles.menuItem}>
@@ -180,22 +182,23 @@ const YourBalance = () => {
   const router = useRouter();
   const address = router.query.address as QueryParams['address'];
   const bal = useEtherBalance(address);
-  const signer = useSigner();
+  // const signer = useSigner();
+  const { account, library } = useEthers();
   const [signerBalance, setSignerBalance] = useState<any>();
 
   useEffect(() => {
-    if(signer) {
-      signer.getBalance().then((r) => setSignerBalance(ethers.utils.formatEther(r)))
+    if(account && library) {
+      library.getBalance(account).then((r) => setSignerBalance(ethers.utils.formatEther(r)))
     }
   })
 
   return (
     <div className={styles.yourBalanceContainer}>
-      <span className={styles.profileSectionTitle}>{signer && 'YOUR'} BALANCE</span>
+      <span className={styles.profileSectionTitle}>{((address&&account&&address===account) || (account&&!address))  && 'YOUR'} BALANCE</span>
       <div>
         <div className={styles.balanceValueContainer}>
           <span className={styles.balanceValue}>
-            {(bal || signer) && bal? parseFloat(ethers.utils.formatEther(bal)).toFixed(4)
+            {(bal || account) && bal? parseFloat(ethers.utils.formatEther(bal)).toFixed(4)
             : parseFloat(signerBalance).toFixed(4) } 
           </span>
           <span className={styles.balanceCurrency}>
