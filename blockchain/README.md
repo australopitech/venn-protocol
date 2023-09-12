@@ -112,7 +112,7 @@ To be fully compatible with our protocol, third party contracts need to follow a
 ### NFTs
 Wallets are compatible with any contract that implements `IERC721`. Our Market Place supports contracts that use `IERCMetadata` or `ERC721URIStorage`.
 ### Market Places
-As mentioned in the previous section, any Market Place easily can make itself compatible with our protocol. All it needs to do is implement the `IMarketPlace` interface shown bellow and follow a few requirements.
+As mentioned in the previous section, any Market Place can easily make itself compatible with our protocol. All it needs to do is implement the `IMarketPlace` interface shown bellow and follow a few requirements.
 
 ```solidity
 interface IMarketPlace {
