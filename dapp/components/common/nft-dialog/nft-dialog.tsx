@@ -4,7 +4,12 @@ import { useEthers, useSigner } from '@usedapp/core';
 // import { DialogExploreDescription } from '../dialog-explore-description/dialog-explore-description';
 // import { DialogOwnedDescription } from '../dialog-owned-description/dialog-owned-description';
 import styles from './nft-dialog.module.css';
-import { DialogBorrowedDescription } from '../dialog-borrowed-description/dialog-borrowed-description';
+import { DialogNotOwnedBorrowedDescription } from '../dialog-not-owned-borrowed-description/dialog-not-owned-borrowed-description';
+import { DialogNotOwnedListedDescription } from '../dialog-not-owned-listed-description/dialog-not-owned-listed-description';
+import { DialogOwnedListedDescription } from '../dialog-owned-listed-description/dialog-owned-listed-description';
+import { DialogOwnedNotListedDescription } from '../dialog-owned-not-listed-description/dialog-owned-not-listed-description';
+import { DialogOwnedRentedDescription } from '../dialog-owned-rented-description/dialog-owned-rented-description';
+import { DialogNotOwnedNotListedDescription } from '../dialog-not-owned-not-listed-description/dialog-not-owned-not-listed-description';
 // import classNames from 'classnames';
 // import { getNFTobj, useNFTtitle, useNFTname, useTokenImage, useTokenMetaData } from '../../../hooks/nfts';
 // import { Context } from 'wagmi';
@@ -183,11 +188,15 @@ export const NFTDialog = ({
     console.log('isRental', isRental)
     console.log('isReceipt', isReceipt)
 
+    const name = "Awesome NFT #1"
+    const description = "This is an awesome NFT uhul This is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhul."
+    // const description = "Bla blabla blablabla."
+
     return (
-        <div className={styles.nftDialogBackdrop} onClick={stopPropagation}>
-          <dialog className={styles.nftDialog} onClick={onCloseDialog} open>
+        <div className={styles.nftDialogBackdrop} onClick={onCloseDialog}>
+          <dialog className={styles.nftDialog} open>
             <div className={styles.nftDialogContent}>
-              <div className={styles.nftImageContainer}>
+              <div className={styles.nftImageContainer} onClick={stopPropagation}>
                 <div className={styles.nftImagePreview}>
                   <img
                     src={image? image : propImage}
@@ -195,9 +204,18 @@ export const NFTDialog = ({
                   />
                 </div>
               </div>
-              <div className={styles.nftDescriptionContainer}>
-                <DialogBorrowedDescription
-                />
+              <div className={styles.nftDescriptionContainer} onClick={stopPropagation}>
+                <h1 className={styles.title} title={name}>{name}</h1>
+                <p className={styles.nftDescription}>
+                  {description}
+                </p>
+                {/* <DialogNotOwnedBorrowedDescription /> */}
+                <DialogNotOwnedListedDescription />
+                {/* <DialogNotOwnedNotListedDescription /> */}
+                {/* <DialogOwnedListedDescription /> */}
+                {/* <DialogOwnedNotListedDescription /> */}
+                {/* <DialogOwnedRentedDescription /> */}
+
                 {/* {isOwned ? (
                   <DialogOwnedDescription 
                   contract={contract}
