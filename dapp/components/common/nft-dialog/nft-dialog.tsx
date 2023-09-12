@@ -1,4 +1,5 @@
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
+import { useEthers, useSigner } from '@usedapp/core';
 // import { DialogBorrowedDescription } from '../dialog-borrowed-description/dialog-borrowed-description';
 // import { DialogExploreDescription } from '../dialog-explore-description/dialog-explore-description';
 // import { DialogOwnedDescription } from '../dialog-owned-description/dialog-owned-description';
@@ -13,11 +14,67 @@ import { DialogNotOwnedNotListedDescription } from '../dialog-not-owned-not-list
 // import { getNFTobj, useNFTtitle, useNFTname, useTokenImage, useTokenMetaData } from '../../../hooks/nfts';
 // import { Context } from 'wagmi';
 import { NftItem } from '../../../types/types';
+import walletFactory from '../../../utils/contractData/RWalletFactory.json';
+import walletAbi from '../../../utils/contractData/RWallet.artifact.json';
+import erc721 from '../../../utils/contractData/ERC721.artifact.json';
+import mktPlace from '../../../utils/contractData/MarketPlace.json';
+import receipts from '../../../utils/contractData/ReceiptNFT.json';
+import { ethers, BigNumber } from 'ethers';
+// import dotenv from 'dotenv';
+// dotenv.config();
+
+// const provider = new ethers.providers.JsonRpcProvider(process.env.BASE_GOERLI_PROVIDER)
 
 function GetNftImage (nftItem: NftItem) {
   return nftItem.nftData.external_data.image_1024 ? 
          nftItem.nftData.external_data.image_1024 :
          nftItem.nftData.external_data.image;
+}
+
+async function isWallet(provider: any, address: string) {
+  if(!provider) {
+    console.log("error: no provider found");
+    return
+  }
+  const fact = new ethers.Contract(walletFactory.address, walletFactory.abi, provider );
+  const ret = await fact.isWallet(address);
+  console.log('isWallet ret', ret);
+  return ret
+}
+
+async function checkIsRental (provider: any, accountAddr: string | undefined, nftItem: NftItem | undefined) {
+  if(!accountAddr || !nftItem) return
+  if(!provider) {
+    console.log("error: no provider found");
+    return
+  }
+  if(await isWallet(provider, accountAddr)) {
+    const wallet = new ethers.Contract(accountAddr, walletAbi.abi, provider);
+    const ret = await wallet.isRental(nftItem.contractAddress, nftItem.nftData.token_id);
+    console.log('isRental', ret);
+    return ret
+  }
+  console.log('account is not a wallet');
+  return false
+}
+
+async function getOwner(provider: any, nftItem: NftItem) {
+  let ret;
+  const nftContract = new ethers.Contract(nftItem.contractAddress, erc721.abi, provider);
+  // console.log('nftContract', nftContract)
+  return await nftContract.ownerOf(nftItem.nftData.token_id);
+  console.log('getOwner ret', ret);
+  return ret;
+}
+
+async function getListData(
+  provider: any, nftItem: NftItem | undefined
+) : Promise<{price: BigNumber | undefined, maxDur: BigNumber | undefined}> {
+  if(!nftItem) return {price: undefined, maxDur: undefined};
+  const contract = new ethers.Contract(mktPlace.address, mktPlace.abi, provider);
+  const maxDur = await contract.getPrice(nftItem.contractAddress, nftItem.nftData.token_id);
+  const price = await contract.getMaxDuration (nftItem.contractAddress, nftItem.nftData.token_id);
+  return {price, maxDur};
 }
 
 const CloseButton = () => {
@@ -67,6 +124,73 @@ export const NFTDialog = ({
     const stopPropagation = (e: any) => {
         e.stopPropagation();
     };
+    
+    const [holder, setHolder] = useState<string>();
+    const [isListed, setIsListed] = useState<boolean>();
+    const [isOwned, setIsOwned] = useState<boolean>();
+    const [isRental, setIsRental] = useState<boolean>();
+
+    const {account, library} = useEthers();
+    console.log('nft contract',nftItem?.contractAddress)
+    console.log('nft id', nftItem?.nftData.token_id)
+    console.log('nft_contract == receipts', nftItem?.contractAddress === receipts.address)
+    console.log('receipts_contract', receipts.address )
+
+    const isReceipt = useMemo(() => {
+      if(!nftItem) return
+      if(nftItem.contractAddress === receipts.address) return true;
+      else return false;
+    }, [])
+
+    useEffect(() => {
+      const fetchHolder = async () => {
+        if(nftItem) setHolder(await getOwner(library, nftItem));
+      }
+
+      fetchHolder();
+
+    }, []);
+
+    useEffect(() => {
+      const resolveIsListed = async () => {
+        if(holder == mktPlace.address) { 
+          const { maxDur } : { maxDur: BigNumber | undefined } = await getListData(library, nftItem);
+          if(maxDur) setIsListed(true);
+          if(maxDur?.eq(0)) setIsListed(false);
+          return;
+        }
+        if(holder) setIsListed(false);
+      }
+
+      resolveIsListed();
+
+    }, [holder]);
+
+    useEffect(() => {
+      const resolveIsRental = async () => {
+        if(holder && account){
+          if(holder == account) {
+            setIsRental(await checkIsRental(library, account, nftItem));
+            return
+          }
+          setIsRental(false);
+        }
+      }
+
+      resolveIsRental();
+
+    }, [holder]);
+
+    useEffect(() => {
+      if(holder && holder === account && isRental !== undefined) setIsOwned(!isRental)
+    },[holder, isRental])
+
+
+    console.log('holder', holder)
+    console.log('isListed', isListed)
+    console.log('isOwned', isOwned)
+    console.log('isRental', isRental)
+    console.log('isReceipt', isReceipt)
 
     const name = "Awesome NFT #1"
     const description = "This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhul."
@@ -89,12 +213,12 @@ export const NFTDialog = ({
                 <p className={styles.nftDescription}>
                   {description}
                 </p>
-                {/* <DialogNotOwnedBorrowedDescription /> */}
-                <DialogNotOwnedListedDescription />
-                {/* <DialogNotOwnedNotListedDescription /> */}
-                {/* <DialogOwnedListedDescription /> */}
-                {/* <DialogOwnedNotListedDescription /> */}
-                {/* <DialogOwnedRentedDescription /> */}
+                {!isOwned&&isRental&&<DialogNotOwnedBorrowedDescription />}
+                {!isOwned&&isListed&&<DialogNotOwnedListedDescription />}
+                {!isOwned&&!isListed&&<DialogNotOwnedNotListedDescription />}
+                {isOwned&&isListed&&<DialogOwnedListedDescription />}
+                {isOwned&&!isListed&&!isReceipt&&<DialogOwnedNotListedDescription />}
+                {isOwned&&isReceipt&&<DialogOwnedRentedDescription />}
 
                 {/* {isOwned ? (
                   <DialogOwnedDescription 
