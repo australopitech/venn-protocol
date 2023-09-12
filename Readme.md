@@ -18,13 +18,13 @@ How? Our Smart Contract Wallet prevents the rented NFT from ever leaving the ren
 We provide a very simple way to any market place dapp to make itself compatible with our wallet (check [here](link)).
 
 ### Main use cases
-1. Gaming
+1. **Gaming**:
 With the growth of the gameFi scene this application becomes more and more relevant since most games use NFT's as in game assets. NFT owner's can rent their assets out when they are not playing and get paid for doing so.
 
-2. Metaverse items
+2. **Metaverse items**:
 Any metavers item manifested as an NFT is also greatly benefited from the use of our protocol. The metaverse economy is gonna get stirred!
 
-3. Access tokens
+3. **Access tokens**:
 There are other cases in which NFT's are used as access control. People who hold the NFT gain access to some good or some right/claim. An example is the BAYC which gives people who hold an NFT to engage in their private community and future access to their own metaverse.
 
 ### Impact
