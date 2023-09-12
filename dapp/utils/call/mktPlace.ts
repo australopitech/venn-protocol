@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { BigNumber, ethers } from "ethers";
 import mktPlaceData from "../contractData/MarketPlace.json";
 
 const success_msg = "tx successfull!!";
@@ -89,9 +89,9 @@ export const pull = async (
 export const rent = async (
     signer: any | undefined,
     nftContractAddr: string,
-    tokenId: number,
-    duration: number,
-    value: number
+    tokenId: BigNumber,
+    duration: BigNumber,
+    value: BigNumber
 ) => {
     if(!signer) {
         console.log('signer undefined');

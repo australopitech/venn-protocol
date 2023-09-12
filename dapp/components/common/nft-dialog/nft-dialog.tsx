@@ -67,7 +67,7 @@ async function getOwner(provider: any, nftItem: NftItem) {
   return ret;
 }
 
-async function getListData(
+export async function getListData(
   provider: any, nftItem: NftItem | undefined
 ) : Promise<{price: BigNumber | undefined, maxDur: BigNumber | undefined}> {
   if(!nftItem) return {price: undefined, maxDur: undefined};
