@@ -10,6 +10,7 @@ import { fetchAddressData } from '@/utils/frontendUtils';
 export interface NftAreaProps {
   nftAreaGridTemplate?: string;
   setIsNFTOpen: any;
+  setSelectedNFT: any;
   nftFetchData?: FetchNftDataResponse;
 }
 
@@ -68,7 +69,7 @@ const ToggleSwitch = ({ onToggle }: ToggleSwitchProps) => {
   )
 }
 
-export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchData}: NftAreaProps) {
+export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchData, setSelectedNFT}: NftAreaProps) {
   const [toggleState, setToggleState] = useState<boolean>(false);
 
   const handleToggle = (state: boolean) => {
@@ -76,7 +77,8 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
     console.log('Toggle state:', state);
   };
 
-  const handleOnCardClick = () => {
+  const handleOnCardClick = (i: any) => {
+    setSelectedNFT(i);
     setIsNFTOpen(true);
   }
 
@@ -118,7 +120,7 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
           {nftFetchData?.nfts ? 
            nftFetchData?.nfts.length == 0 ?
            "No nfts" :
-           nftFetchData.nfts.map(nft =>
+           nftFetchData.nfts.map((nft, i) =>
             <NftCard
               imageURI={
                 nft.nftData?.external_data?.image_1024 ?
@@ -130,7 +132,7 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
               isRented={false}
               expireDate={'0'}
               key={nft.contractAddress + nft.nftData?.token_id}
-              onClick={handleOnCardClick}
+              onClick={() => {handleOnCardClick(i)} }
             />) :
             nftFetchData?.isLoading ? "Loading..." : "Error" + nftFetchData?.error
           }

@@ -12,6 +12,13 @@ import { DialogNotOwnedNotListedDescription } from '../dialog-not-owned-not-list
 // import classNames from 'classnames';
 // import { getNFTobj, useNFTtitle, useNFTname, useTokenImage, useTokenMetaData } from '../../../hooks/nfts';
 // import { Context } from 'wagmi';
+import { NftItem } from '../../../types/types';
+
+function GetNftImage (nftItem: NftItem) {
+  return nftItem.nftData.external_data.image_1024 ? 
+         nftItem.nftData.external_data.image_1024 :
+         nftItem.nftData.external_data.image;
+}
 
 const CloseButton = () => {
   return (
@@ -35,14 +42,12 @@ const CloseButton = () => {
 }
 
 export interface NFTDialogProps {
-    context?: string;
-    isOwned?: boolean;
-    isBorrowed?: boolean;
     setIsNFTOpen?: any;
+    nftItem?: NftItem;
 }
 
-let image: string | undefined;
-const propImage = "https://dl.openseauserdata.com/cache/originImage/files/9d6b9f6ef3d8b0b0f08481be0a0fd2f8.png";
+// let image: string | undefined;
+const propImage =  "https://dl.openseauserdata.com/cache/originImage/files/9d6b9f6ef3d8b0b0f08481be0a0fd2f8.png";
 
 
 /**
@@ -50,17 +55,11 @@ const propImage = "https://dl.openseauserdata.com/cache/originImage/files/9d6b9f
  * To create custom component templates, see https://help.codux.com/kb/en/article/kb16522
  */
 export const NFTDialog = ({
-    context,
-    isOwned,
-    isBorrowed,
-    setIsNFTOpen
+    setIsNFTOpen,
+    nftItem
 }: NFTDialogProps) => {
-    // const [error, setError] = useState<string>();
-    // const [isOwned, setIsOwned] = useState<boolean>(true);
-    // const [isBorrowed, setIsBorrowed] = useState<boolean>(false);
-    console.log('isOwned', isOwned);
-    console.log('isBorrowed', isBorrowed);
-    
+    const image = nftItem ? GetNftImage(nftItem) : propImage;
+
     const onCloseDialog = () => {
         setIsNFTOpen(false);
     };

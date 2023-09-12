@@ -15,6 +15,7 @@ export interface DashboardLayoutProps {
 
 export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const [isNFTOpen, setIsNFTOpen] = useState(false);
+  const [selectedNFT, setSelectedNFT] = useState(0);
   const [isCollectionOpen, setIsCollectionOpen] = useState(false);
   // const isWalletConnected = true; //temp
   const signer = useSigner();
@@ -32,14 +33,10 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
     <>
     {isNFTOpen && 
       <NFTDialog
-        // contract={contract}
-        // id={tokenId}
-        // index={index}
         setIsNFTOpen={setIsNFTOpen} 
-        // context={context}
-        // activeAccount={activeAccount}
-        // isOwned={isOwned}
-        // isBorrowed={isBorrowed}
+        nftItem={
+          userData.nfts ? userData.nfts[selectedNFT] : undefined
+        }
       />
     }
     <div className={styles.dashboard} >
@@ -47,7 +44,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
       { (signer || address)
         ? <div className={styles.contentGridTemplate}> 
             <SideBar address={address? address : signerAddress}/>
-            <NftArea nftFetchData={userData} setIsNFTOpen={setIsNFTOpen}/> 
+            <NftArea nftFetchData={userData} setIsNFTOpen={setIsNFTOpen} setSelectedNFT={setSelectedNFT}/> 
           </div>
         : <div className={styles.notConnectedTemplate}>
             <div className={styles.notConnectedContainer}>

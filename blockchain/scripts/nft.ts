@@ -1,6 +1,6 @@
 import { BigNumber, ethers } from "ethers";
 import { UserOperationBuilder, Client } from "userop";
-import uri from "../../nft/URI.json";
+import uri from "../nft/uri.json";
 import dotenv from "dotenv";
 import nft from "../deployments/base_goerli/NFT.json";
 import walletAbi from "../artifacts/contracts/wallet/RWallet.sol/RWallet.json";
@@ -18,6 +18,13 @@ const walletSignerKey = process.env.WALLET_SIGNER_KEY;
 const entryPointAddress = "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789";
 const bundler = process.env.BUNDLER_API;
 const walletSignerAddr = process.env.WALLET_SIGNER_ADDR;
+
+const checkSupply = async () => {
+    const provider = new ethers.providers.JsonRpcProvider(rpc);
+    const contract  = new ethers.Contract(nft.address, nft.abi, provider);
+    console.log('supply', (await contract.totalSupply()).toString())
+}
+// checkSupply();
 
 const test = async () => {
     if(!rpc) throw new Error("missing env");
@@ -50,16 +57,18 @@ const mint = async () => {
 
     const tokenId = await contract.totalSupply();
     console.log(`\nminting token ${tokenId} ...`);
-
-    const mint = await contract.safeMint(walletAddress, uri.elf);
+    // 
+    const to = await signer.getAddress();
+    // 
+    const mint = await contract.safeMint(to, uri.helmet);
     const receipt = await mint.wait();
     console.log(receipt);
 
-    console.log(`\ntoken ${tokenId} minted to ${walletAddress} `);
+    console.log(`\ntoken ${tokenId} minted to ${to} `);
 
     console.log('\nchecking owner...')
     const owner = await contract.ownerOf(tokenId);
-    console.log('owner == wallet : ',owner == walletAddress);
+    console.log('owner == wallet : ',owner == to);
 }
 
 const eoaTransfer = async () =>{
@@ -195,6 +204,6 @@ const transfer = async () => {
 }
 
 // checkBal();
-// mint();
+mint();
 // eoaTransfer();
-transfer();
+// transfer();
