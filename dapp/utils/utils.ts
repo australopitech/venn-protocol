@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import erc721 from "./contractData/ERC721.json";
+import erc721 from "./contractData/ERC721.artifact.json";
 import mktplace from "./contractData/MarketPlace.json";
 
 const erc721abi = erc721.abi as any;

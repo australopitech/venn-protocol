@@ -64,17 +64,20 @@ async function getOwner(provider: any, nftItem: NftItem) {
   // console.log('nftContract', nftContract)
   return await nftContract.ownerOf(nftItem.nftData.token_id);
   console.log('getOwner ret', ret);
-  return ret;
 }
 
 export async function getListData(
-  provider: any, nftItem: NftItem | undefined
+  provider: any, nftItem?: NftItem
 ) : Promise<{price: BigNumber | undefined, maxDur: BigNumber | undefined}> {
   if(!nftItem) return {price: undefined, maxDur: undefined};
   const contract = new ethers.Contract(mktPlace.address, mktPlace.abi, provider);
   const maxDur = await contract.getPrice(nftItem.contractAddress, nftItem.nftData.token_id);
   const price = await contract.getMaxDuration (nftItem.contractAddress, nftItem.nftData.token_id);
   return {price, maxDur};
+}
+
+const checkIsListedByReceipt = async(provider: any, receiptId: BigNumber) => {
+  // TODO
 }
 
 const CloseButton = () => {
@@ -128,7 +131,8 @@ export const NFTDialog = ({
     const [holder, setHolder] = useState<string>();
     const [isListed, setIsListed] = useState<boolean>();
     const [isOwned, setIsOwned] = useState<boolean>();
-    const [isRental, setIsRental] = useState<boolean>();
+    const [isRental_signer, setIsRental_signer] = useState<boolean>();
+    const [isRented_Out, setIsRented_Out] = useState<boolean>()
 
     const {account, library} = useEthers();
     console.log('nft contract',nftItem?.contractAddress)
@@ -151,8 +155,25 @@ export const NFTDialog = ({
 
     }, []);
 
+    /** - verifica se eh receipt
+     *  - identifica o nft relacionado e verifica o holder
+     *  - verifica se o holder é o market place
+     *    - se sim, setIsRented_Out(false)
+     *    - se nao, setIdRented_Out(true)
+     */
+
+    // useEffect(() => { 
+    //   const resolveIsRented_Out = async() => {
+    //     if(holder == mktPlace.address) setIsRented_Out(false);
+    //   }
+    // })
+
     useEffect(() => {
       const resolveIsListed = async () => {
+        if(isReceipt) {
+          // needs fetchNftByReceipt
+        }
+        
         if(holder == mktPlace.address) { 
           const { maxDur } : { maxDur: BigNumber | undefined } = await getListData(library, nftItem);
           if(maxDur) setIsListed(true);
@@ -170,10 +191,10 @@ export const NFTDialog = ({
       const resolveIsRental = async () => {
         if(holder && account){
           if(holder == account) {
-            setIsRental(await checkIsRental(library, account, nftItem));
+            setIsRental_signer(await checkIsRental(library, account, nftItem));
             return
           }
-          setIsRental(false);
+          setIsRental_signer(false);
         }
       }
 
@@ -182,15 +203,19 @@ export const NFTDialog = ({
     }, [holder]);
 
     useEffect(() => {
-      if(holder && holder === account && isRental !== undefined) setIsOwned(!isRental)
-    },[holder, isRental])
+      if(holder && isRental_signer !== undefined) {
+        if(holder === account) setIsOwned(!isRental_signer);
+        else setIsOwned(false);
+      }
+    },[holder, isRental_signer])
 
 
     console.log('holder', holder)
     console.log('isListed', isListed)
     console.log('isOwned', isOwned)
-    console.log('isRental', isRental)
+    console.log('isRental_signer', isRental_signer)
     console.log('isReceipt', isReceipt)
+    console.log('signer', account)
 
     const name = nftItem ? nftItem.nftData.external_data.name : "Awesome NFT #1"
     const description = nftItem ? nftItem.nftData.external_data.description : "This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhul."
@@ -213,13 +238,20 @@ export const NFTDialog = ({
                 <p className={styles.nftDescription}>
                   {description}
                 </p>
-                {!isOwned&&isRental&&<DialogNotOwnedBorrowedDescription />}
-                {!isOwned&&isListed&&<DialogNotOwnedListedDescription />}
-                {!isOwned&&!isListed&&!isReceipt&&<DialogNotOwnedNotListedDescription />}
-                {isOwned&&isListed&&!isReceipt&&<DialogOwnedListedDescription />}
-                {isOwned&&!isListed&&!isReceipt&&<DialogOwnedNotListedDescription />}
-                {isOwned&&isReceipt&&<DialogOwnedRentedDescription />}
-                {!isOwned&&isReceipt&&<DialogOwnedRentedDescription />}
+                {!isOwned && isRental_signer &&
+                  <DialogNotOwnedBorrowedDescription />} {/* rented by signer */}
+                {!isOwned && isListed && 
+                  <DialogNotOwnedListedDescription />}   {/* available for rent */}
+                {!isOwned && !isListed && !isReceipt && 
+                  <DialogNotOwnedNotListedDescription />} {/* not available for rent*/}
+                {isOwned && isListed && isReceipt && 
+                  <DialogOwnedListedDescription />} {/* owned/listed by signer */}
+                {isOwned && !isListed && !isReceipt && 
+                  <DialogOwnedNotListedDescription nftItem={nftItem} />} {/* owned/not listed by signer */}
+                {/* {isOwned && isReceipt && 
+                  <DialogOwnedRentedDescription />} receipt held by signer */}
+                {!isOwned && isReceipt && 
+                  <DialogOwnedRentedDescription />} {/* receipt held by 3rd party; NFT available */}
               </div>
             </div>
           </dialog>

@@ -14,7 +14,7 @@ export interface DialogNotOwnedListedDescriptionProps {
   nftItem?: NftItem;
 }
 
-async function getFee(provider: any) {
+async function getFee(provider: any) : Promise<BigNumber> {
   const contract = new ethers.Contract(mktPlace.address, mktPlace.abi, provider);
   return await contract.serviceAliquot();
 }
@@ -56,20 +56,38 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem 
     }
   }
 
-    // const handleClick = async() => {
-    //   if(!signer) {
-    //     alert('Connect your wallet!')
-    //     return
-    //   }
-    //   if(isLoading) return
-    //   if(!nftItem) {
-    //     console.log('no nft found');
-    //     return
-    //   }
-    //   const { price } = await getListData(signer, nftItem);
-    //   const fee = getFee(signer);
-    //   await rent(signer, nftItem.contractAddress, BigNumber.from(nftItem.nftData.token_id), duration , price   )
-    // }
+    const handleClick = async() => {
+      if(!signer) {
+        alert('Connect your wallet!')
+        return
+      }
+      if(isLoading) return
+      if(!nftItem) {
+        console.log('error: no nft found');
+        return
+      }
+      if(!duration) {
+        alert('Enter a value for duration');
+        return
+      }
+      const { price } = await getListData(signer, nftItem);
+      if(price === undefined) {
+        console.log('could not get price');
+        return
+      }
+      setIsLoading(true);
+      const rentValue = price.mul(duration);
+      const aliq = await getFee(signer);
+      const fee = aliq.mul(rentValue).div(10000);
+      await rent(
+        signer,
+        nftItem.contractAddress,
+        BigNumber.from(nftItem.nftData.token_id), 
+        BigNumber.from(duration),
+        rentValue.add(fee) 
+      )
+      setIsLoading(false);
+    }
 
     return (
       <div className={styles['bodyDescriptionContainer']}>
@@ -95,7 +113,7 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem 
             </div>
             {isDurationInvalid && <span className={styles.invalidDuration}>{`Set a valid duration. Value cannot be negative and must respect the maximum loan period.`}</span>}
         </div>
-        <button className={styles.borrowButton}> Rent It! </button>
+        <button className={styles.borrowButton} onClick={handleClick}>{ isLoading? 'Loading...' : 'Rent It!' }</button>
       </div>
   );
 };

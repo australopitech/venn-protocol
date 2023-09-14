@@ -6,9 +6,9 @@ const success_msg = "tx successfull!!";
 export const list = async (
     signer: any | undefined,
     nftContractAddr: string,
-    tokenId: number,
-    price: number,
-    maxDuration: number
+    tokenId: BigNumber,
+    price: BigNumber,
+    maxDuration: BigNumber
 ) => {
     if(!signer) {
         console.log('signer undefined');

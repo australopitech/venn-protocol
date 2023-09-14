@@ -8,9 +8,11 @@
   align-items: center;
   justify-content: center;
   /* background-color: #B8BEDD; */
-  background-color: rgb(240, 166, 202);
+  background-color: rgb(240, 230, 239);
 
   font-family: 'SFRounded', sans-serif;
   font-weight: 700;
   color: rgb(255, 255, 255, 0.5);
+
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }

@@ -26,7 +26,7 @@ export const DialogNotOwnedBorrowedDescription = ({
   // const [name, setName] =  useState<string>();
   // const [endTime, setEndTime] = useState<number>();
   const { account, library, chainId } = useEthers();
-  const { timestamp } = useBlockMeta({ chainId });   
+  const { timestamp } = useBlockMeta({ chainId });   // timestamp is type <date> ; endTime is type <BigNumber>
 
   // useEffect(() => {
   //   const resolveTimeLeft = async() => {
@@ -44,6 +44,7 @@ export const DialogNotOwnedBorrowedDescription = ({
         <span className={styles.timeLeftValue}> 
           {`${timeLeft} ${timeLeft === 1 ? 'day' : 'days'}`} 
         </span>
+        {/** put a `Release NFT` button */}
       </div>
     </div>
   );

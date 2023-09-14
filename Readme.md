@@ -1,40 +1,37 @@
-title
-# NFT rentals using AA. NO COLATERAL and NO TRUST.
 
+# rWallet 
+## NFT Rentals Using Account Abstraction: NO COLLATERAL NEEDED
 
-tldr
-## This project implements a SC wallet/dapp to enable NFT rent tx's completely on-chain and trustless.
-Rent NFT's with no colateral and no trust! Unlock the value of NFT's!
+**TL;DR**
 
-Our project is a wallet that uses account abstraction to enable users to rent NFT's without needing colateral in a completely trustless manner. We are currently in development phase, but have already a up and running POC on Base Goerli that includes a browser extension wallet, a dashboard/market place dapp and fully functioning smart contracts.
+This is a SC wallet/dapp that enables NFT rentals entirely on-chain and in a trustless manner. No colateral needed.
 
-## About the project
+We are leveraging Acount Abstaction TO ENABLE users to rent NFTs without any collateral, operating in a fully trustless environment. While still in the development phase, we've successfully launched a proof of concept (POC) on Base Goerli. This includes a browser extension wallet, a dashboard/marketplace dapp, and fully operational smart contracts. Below we provide a guide on how to run the POC.
 
-### How does it work?
-NFT owner's can use our dapp to list their NFT's and our SC wallet users can rent them for a predetermined amount of time. The asset owner's can rest assured that they will get paid and receive their assets back at the end of the lease because our smart contracts will make sure of it!
+## About the Project
 
-How? Our Smart Contract Wallet prevents the rented NFT from ever leaving the renting account before the rent is due. Once the rent expires the only allowed destiny is the NFT's rightfull owner. 
+*How Does It Work?*
 
-We provide a very simple way to any market place dapp to make itself compatible with our wallet (check [here](link)).
+NFT owners can utilize our dapp to list their NFTs for rent. In turn, our SC wallet users can rent these for a specified duration. Asset owners can be confident in receiving payment and having their assets returned post-lease, all thanks to our robust smart contracts.
 
-### Main use cases
-1. **Gaming**:
-With the growth of the gameFi scene this application becomes more and more relevant since most games use NFT's as in game assets. NFT owner's can rent their assets out when they are not playing and get paid for doing so.
+How is this achieved? Our Smart Contract Wallet ensures the rented NFT remains within the renting account until the rental period concludes. When the rent is due, the NFT is directed solely to its rightful owner.
 
-2. **Metaverse items**:
-Any metavers item manifested as an NFT is also greatly benefited from the use of our protocol. The metaverse economy is gonna get stirred!
+We've also streamlined the process for any marketplace dapp to integrate seamlessly with our wallet. [Check here for details](https://github.com/pbfranceschin/r-wallet-base-3/tree/main/blockchain#compatibility).
 
-3. **Access tokens**:
-There are other cases in which NFT's are used as access control. People who hold the NFT gain access to some good or some right/claim. An example is the BAYC which gives people who hold an NFT to engage in their private community and future access to their own metaverse.
+## Main Use Cases
 
-### Impact
-The impact of our project is very straight forward. It unlocks the real value of any asset that are or can be manifested an NFT. This means present and future cases. As soon as we launch, any owner of these assets will be able to earn passive income on them if there is real demand for holding them.
+- **Gaming:** The burgeoning gameFi sector underscores the relevance of our application, especially as most games employ NFTs as in-game assets. NFT owners can monetize their assets during inactive periods.
 
-## Future developments
-- Improve smart contract efficiency (gas expenditure)
-- Smart contract audit (security)
-- Extend dapp functionalities 
-    - buying and selling
-    - updating Listing metadata
-- Improving UI: browser extension and dashboard/market place
-- Product idendity and design
+- **Metaverse Items:** Any item within the metaverse represented as an NFT can benefit immensely from our protocol. Anticipate a shakeup in the metaverse economy!
+
+- **Access Tokens:** In certain scenarios, NFTs serve as access control mechanisms. NFT holders gain privileges or rights, such as the BAYC, which grants its holders exclusive community access and future entry to their metaverse.
+
+## Impact
+
+The implications of our project are clear-cut. It unveils the inherent value of assets that are, or can be, represented as NFTs, encompassing both current and prospective cases. Upon our launch, any asset owner can potentially generate passive income, provided there's genuine demand for their assets.
+
+## To be done
+
+- Include buying and selling NFT's
+- Include methods for updating listing metadata
+- Start bulding mobile app
