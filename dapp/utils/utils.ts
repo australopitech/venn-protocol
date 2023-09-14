@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { ethers, BigNumber } from "ethers";
 import erc721 from "./contractData/ERC721.artifact.json";
 import mktplace from "./contractData/MarketPlace.json";
 
@@ -39,4 +39,14 @@ export const isListed = async (
         console.log(error)
     }
     if(maxDuration) return (maxDuration > 0);
+}
+
+export const ownerOf = async (
+    provider: any,
+    nftContractAddr: string,
+    tokenId: BigNumber
+) => {
+    const contract = new ethers.Contract(nftContractAddr, erc721.abi, provider);
+    return await contract.ownerOf(tokenId);
+    
 }
