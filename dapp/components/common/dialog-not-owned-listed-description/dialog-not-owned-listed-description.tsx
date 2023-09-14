@@ -56,7 +56,7 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem 
     }
   }
 
-    const handleClick = async() => {
+    const handleButtonClick = async() => {
       if(!signer) {
         alert('Connect your wallet!')
         return
@@ -113,7 +113,7 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem 
             </div>
             {isDurationInvalid && <span className={styles.invalidDuration}>{`Set a valid duration. Value cannot be negative and must respect the maximum loan period.`}</span>}
         </div>
-        <button className={styles.borrowButton} onClick={handleClick}>{ isLoading? 'Loading...' : 'Rent It!' }</button>
+        <button className={styles.borrowButton} onClick={handleButtonClick}>{ isLoading? 'Loading...' : 'Rent It!' }</button>
       </div>
   );
 };
