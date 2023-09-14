@@ -35,6 +35,11 @@ contract MarketPlace is IMarketPlace {
     /***/
 
     address public admin;
+
+    struct NFT {
+        address contractAddress;
+        uint256 tokenId;
+    }
     
     /* maps NFT to listed price */
     mapping(address => mapping(uint256 => uint256)) private _prices;
@@ -44,6 +49,8 @@ contract MarketPlace is IMarketPlace {
     
     /* maps NFT to receiptId */
     mapping(address => mapping(uint256 => uint256)) private _receipts;
+
+    mapping(uint256 => NFT) private _NFTbyReceipt;
 
     /* maps receiptId to rent expiration timestamp */ 
     mapping(uint256 => uint256) private _expiration;
@@ -138,6 +145,10 @@ contract MarketPlace is IMarketPlace {
         return _receipts[contract_][tokenId];
     }
 
+    function getNFTbyReceipt(uint256 receiptId) external view returns(NFT memory) {
+        return _NFTbyReceipt[receiptId];
+    }
+
     function getPullFee(uint256 receiptId) external view returns(uint256) {
         return _pullFee[receiptId];
     }
@@ -193,7 +204,9 @@ contract MarketPlace is IMarketPlace {
         );
         require(success, "receipt mint failed");
 
-        _receipts[contract_][tokenId] = abi.decode(data, (uint256));
+        uint256 receiptId = abi.decode(data, (uint256));
+        _receipts[contract_][tokenId] = receiptId;
+        _NFTbyReceipt[receiptId] = NFT(contract_, tokenId);
         emit Listing(_receipts[contract_][tokenId], contract_, tokenId);
     }
 

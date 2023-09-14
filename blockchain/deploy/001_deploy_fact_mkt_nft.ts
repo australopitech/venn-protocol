@@ -31,33 +31,35 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   // const entryPoint = (await deployments.get('EntryPoint')).address;
   // console.log('ep:',entryPoint);
   
-  await deploy('RWalletFactory', {
-    from: deployer,
-    args: [entryPoint],
-    log: true,
-  });
+  // await deploy('RWalletFactory', {
+  //   from: deployer,
+  //   args: [entryPoint],
+  //   log: true,
+  // });
 
-  const RWalletFactory = await deployments.get('RWalletFactory');
+  // const RWalletFactory = await deployments.get('RWalletFactory');
   // const RWalletFactoryAddress = '0x684705F4A1C7cF696aD45e62Ea9E28e37a94b530';
 
-  await deploy('ReceiptNFT', {
-    from: deployer,
-    args:[],
-    log: true,
-    gasPrice: gasPrice
-  });
+  // await deploy('ReceiptNFT', {
+  //   from: deployer,
+  //   args:[],
+  //   log: true,
+  //   gasPrice: gasPrice
+  // });
 
-  const receiptContract = await deployments.get('ReceiptNFT');
+  // const receiptContract = await deployments.get('ReceiptNFT');
 
   // if(!factory_address || !receiptContract) throw new Error('Market Place deploy: missing args');
+  const receiptsAddress = '0xd8049548906a53bc2a8431bd671e1e3f36790b76';
+  const factoryAddress = '0x470459A74DD5ace425A7bd52c537847DaDeF7F91';
   await deploy('MarketPlace', {
     from: deployer,
     args: [
-      RWalletFactory.address,
-      receiptContract.address,
+      factoryAddress,
+      receiptsAddress,
       40,
       2500,
-      deployer
+      '0x099A294Bffb99Cb2350A6b6cA802712D9C96676A'
     ],
     log: true,
     gasPrice: gasPrice

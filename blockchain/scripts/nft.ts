@@ -6,6 +6,7 @@ import nft from "../deployments/base_goerli/NFT.json";
 import walletAbi from "../artifacts/contracts/wallet/RWallet.sol/RWallet.json";
 import entrypoint from "../artifacts/contracts/core/EntryPoint.sol/EntryPoint.json";
 import mktplace from '../deployments/base_goerli/MarketPlace.json';
+import receipts from '../deployments/base_goerli/ReceiptNFT.json';
 import { arrayify } from "ethers/lib/utils";
 
 dotenv.config({ path: __dirname+'/../.env' });
@@ -30,10 +31,10 @@ const checkSupply = async () => {
 const getOwner = async() => {
     const provider = new ethers.providers.JsonRpcProvider(rpc)
     const contract  = new ethers.Contract(nft.address, nft.abi, provider);
-    const owner = await contract.ownerOf(1);
-    console.log(owner === mktplace.address);
+    const owner = await contract.ownerOf(2);
+    console.log(owner === dummy);
 }
-getOwner()
+// getOwner()
 
 const test = async () => {
     if(!rpc) throw new Error("missing env");
@@ -53,9 +54,10 @@ const checkBal = async () => {
     // console.log(signer.address);
     // const bal = (await signer.getBalance()).toString();
     // const bal = await provider.getBalance(walletSignerAddr);
-    const bal = await provider.getBalance(walletAddress);
+    const bal = await provider.getBalance('0x49e75CB7Ff22F1B4E41f382cA4B5e6D349dDDc36');
     console.log(ethers.utils.formatEther(bal));
 }
+checkBal();
 
 
 const mint = async () => {
@@ -80,19 +82,21 @@ const mint = async () => {
     console.log('owner == wallet : ',owner == to);
 }
 
-const eoaTransfer = async () =>{
+const PKEY_2 = process.env.PRIVATE_KEY_2;
+const eoaTransfer = async (tokenId: number) =>{
     if(!pkey || !rpc) throw new Error("missing env");
     const provider = new ethers.providers.JsonRpcProvider(rpc);
     const signer = new ethers.Wallet(pkey, provider);
-    const contract = new ethers.Contract(nft.address, nft.abi, signer);
+    const contract = new ethers.Contract(receipts.address, receipts.abi, signer);
+    // const contract = new ethers.Contract(nft.address, nft.abi, signer);
     // console.log(contract );
     // return
     // 
-    const tokenId = 0;
+    // const tokenId = 0;
     // 
-    const recipient = walletAddress;
+    const recipient = '0x49e75CB7Ff22F1B4E41f382cA4B5e6D349dDDc36';
     // 
-    console.log(`\nsending token ${tokenId} to ${recipient} ... `);
+    console.log(`\nsending token ${tokenId.toString()} to ${recipient} ... `);
 
     const tx = await contract.transferFrom(signer.address, recipient, tokenId);
     console.log(await tx.wait());
@@ -102,6 +106,16 @@ const eoaTransfer = async () =>{
     console.log('new owner == recipient', newOwner == recipient);
     
 }
+eoaTransfer(2);
+
+const batchEOAtransfer = async(nZero: number, n: number) => {
+    let i;
+    for(i=nZero; i<=n; i++ ) {
+        await eoaTransfer(i);
+    }
+}
+
+// batchEOAtransfer(2, 9);
 
 const transfer = async () => {
     if(!walletSignerKey || !rpc || !dummy || !bundler) throw new Error("missing env");

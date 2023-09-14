@@ -70,7 +70,7 @@ const config: HardhatUserConfig = {
     base_goerli: {
       chainId: 84531,
       url: process.env.BASE_GOERLI_ALCHEMY_PROVIDER,
-      accounts: [`${process.env.PRIVATE_KEY_2}`]
+      accounts: [`${process.env.PRIVATE_KEY}`]
     }
   },
 
