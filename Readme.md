@@ -6,7 +6,13 @@
 
 This is a SC wallet/dapp that enables NFT rentals entirely on-chain and in a trustless manner. No colateral needed.
 
-We are leveraging Acount Abstaction TO ENABLE users to rent NFTs without any collateral, operating in a fully trustless environment. While still in the development phase, we've successfully launched a proof of concept (POC) on Base Goerli. This includes a browser extension wallet, a dashboard/marketplace dapp, and fully operational smart contracts. Below we provide a guide on how to run the POC.
+We are leveraging Acount Abstaction TO ENABLE users to rent NFTs without any collateral, operating in a fully trustless environment. While still in the development phase, we've successfully launched a proof of concept (POC) on Base Goerli. This includes a browser extension wallet, a dashboard/marketplace dapp, and fully operational smart contracts. We will soon provide a guide on how to run the POC.
+
+## Contents
+- [About the Project](https://github.com/pbfranceschin/r-wallet-base-3/tree/main#about-the-project)
+- [Main Use Cases](https://github.com/pbfranceschin/r-wallet-base-3/tree/main#main-use-cases)
+- [Impact](https://github.com/pbfranceschin/r-wallet-base-3/tree/main#impact)
+- [To be Done](https://github.com/pbfranceschin/r-wallet-base-3/tree/main#to-be-done)
 
 ## About the Project
 
@@ -17,6 +23,8 @@ NFT owners can utilize our dapp to list their NFTs for rent. In turn, our SC wal
 How is this achieved? Our Smart Contract Wallet ensures the rented NFT remains within the renting account until the rental period concludes. When the rent is due, the NFT is directed solely to its rightful owner.
 
 We've also streamlined the process for any marketplace dapp to integrate seamlessly with our wallet. [Check here for details](https://github.com/pbfranceschin/r-wallet-base-3/tree/main/blockchain#compatibility).
+
+Checkout our documentation [here](https://github.com/pbfranceschin/r-wallet-base-3/blob/main/blockchain/README.md).
 
 ## Main Use Cases
 
