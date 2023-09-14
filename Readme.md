@@ -34,7 +34,7 @@ To build the app, run
 ```
 yarn start
 ```
-After the building process is done, open your chrome browser and click on config on the top right and select *Extensions*, *Manage Extensions*. In the extensions tab turn on *developer mode* on the top right. Then select *Load unpacked* in the top left. On the seleciton window, enter the root folder of this repo then 'browserExtension/build/' and hit select.
+After the building process is done, open your chrome browser and click on config on the top right and select *Extensions*, *Manage Extensions*. In the extensions tab turn on *developer mode* on the top right. Then select *Load unpacked* in the top left. On the seleciton window, enter the root folder of this repo then `browserExtension/build/` and hit select.
 
 After this you might be able to run the [trampoline](https://github.com/eth-infinitism/trampoline) extension. Now create an account, fund it and deploy it. After that, head to our [test account dashboard] and checkout some test NFTs for rent.
 
