@@ -18,6 +18,8 @@ How is this achieved? Our Smart Contract Wallet ensures the rented NFT remains w
 
 We've also streamlined the process for any marketplace dapp to integrate seamlessly with our wallet. [Check here for details](https://github.com/pbfranceschin/r-wallet-base-3/tree/main/blockchain#compatibility).
 
+Checkout our documentation [here](https://github.com/pbfranceschin/r-wallet-base-3/blob/main/blockchain/README.md).
+
 ## Main Use Cases
 
 - **Gaming:** The burgeoning gameFi sector underscores the relevance of our application, especially as most games employ NFTs as in-game assets. NFT owners can monetize their assets during inactive periods.
