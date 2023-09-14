@@ -8,6 +8,12 @@ This is a SC wallet/dapp that enables NFT rentals entirely on-chain and in a tru
 
 We are leveraging Acount Abstaction TO ENABLE users to rent NFTs without any collateral, operating in a fully trustless environment. While still in the development phase, we've successfully launched a proof of concept (POC) on Base Goerli. This includes a browser extension wallet, a dashboard/marketplace dapp, and fully operational smart contracts. Below we provide a guide on how to run the POC.
 
+## Contents
+- About the Project
+- Main Use Cases
+- Impact
+- To be Done
+
 ## About the Project
 
 *How Does It Work?*
