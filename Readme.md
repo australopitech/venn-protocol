@@ -9,25 +9,14 @@ This is a SC wallet/dapp that enables NFT rentals entirely on-chain and in a tru
 We are leveraging Acount Abstaction TO ENABLE users to rent NFTs without any collateral, operating in a fully trustless environment. While still in the development phase, we've successfully launched a proof of concept (POC) on Base Goerli. This includes a browser extension wallet, a dashboard/marketplace dapp, and fully operational smart contracts. We will soon provide a guide on how to run the POC.
 
 ## Contents
+- [Guide](https://github.com/pbfranceschin/r-wallet-base-3/tree/main#guide)
 - [About the Project](https://github.com/pbfranceschin/r-wallet-base-3/tree/main#about-the-project)
 - [Main Use Cases](https://github.com/pbfranceschin/r-wallet-base-3/tree/main#main-use-cases)
 - [Impact](https://github.com/pbfranceschin/r-wallet-base-3/tree/main#impact)
 - [To be Done](https://github.com/pbfranceschin/r-wallet-base-3/tree/main#to-be-done)
 
-## About the Project
-
-*How Does It Work?*
-
-NFT owners can utilize our dapp to list their NFTs for rent. In turn, our SC wallet users can rent these for a specified duration. Asset owners can be confident in receiving payment and having their assets returned post-lease, all thanks to our robust smart contracts.
-
-How is this achieved? Our Smart Contract Wallet ensures the rented NFT remains within the renting account until the rental period concludes. When the rent is due, the NFT is directed solely to its rightful owner.
-
-We've also streamlined the process for any marketplace dapp to integrate seamlessly with our wallet. [Check here for details](https://github.com/pbfranceschin/r-wallet-base-3/tree/main/blockchain#compatibility).
-
-Checkout our documentation [here](https://github.com/pbfranceschin/r-wallet-base-3/blob/main/blockchain/README.md).
-
-## Guides
-To run the POC 1st clone this repo runnning the command below,
+## Guide
+To run the POC, 1st clone this repo runnning the command below,
 ```
 git clone https://github.com/pbfranceschin/r-wallet-base-3.git
 ```
@@ -43,9 +32,21 @@ To build the app, run
 ```
 yarn start
 ```
-then open your browser (preferably chrome) and click on config on the top right and select *Extensions*, *Manage Extensions*. In the extensions tab turn on *developer mode* on the top right. Then select *Load unpacked*. Select enter the root folder of this repo then 'browserExtension/build' and hit select.
+then open your browser (preferably chrome) and click on config on the top right and select *Extensions*, *Manage Extensions*. In the extensions tab turn on *developer mode* on the top right. Then select *Load unpacked* in the top left. On the seleciton window, enter the root folder of this repo then 'browserExtension/build' and hit select.
 
-After this you might be able to run the trampoline extension. Now create a wallet, fund it and deploy it. After that, head to our [test account dashboard] and checkout some test NFTs for rent.
+After this you might be able to run the [trampoline] extension. Now create an account, fund it and deploy it. After that, head to our [test account dashboard] and checkout some test NFTs for rent.
+
+## About the Project
+
+*How Does It Work?*
+
+NFT owners can utilize our dapp to list their NFTs for rent. In turn, our SC wallet users can rent these for a specified duration. Asset owners can be confident in receiving payment and having their assets returned post-lease, all thanks to our robust smart contracts.
+
+How is this achieved? Our Smart Contract Wallet ensures the rented NFT remains within the renting account until the rental period concludes. When the rent is due, the NFT is directed solely to its rightful owner.
+
+We've also streamlined the process for any marketplace dapp to integrate seamlessly with our wallet. [Check here for details](https://github.com/pbfranceschin/r-wallet-base-3/tree/main/blockchain#compatibility).
+
+Checkout our documentation [here](https://github.com/pbfranceschin/r-wallet-base-3/blob/main/blockchain/README.md).
 
 ## Main Use Cases
 
