@@ -6,7 +6,7 @@
 
 This is a SC wallet/dapp that enables NFT rentals entirely on-chain and in a trustless manner. No colateral needed.
 
-We are leveraging Acount Abstaction TO ENABLE users to rent NFTs without any collateral, operating in a fully trustless environment. While still in the development phase, we've successfully launched a proof of concept (POC) on Base Goerli. This includes a browser extension wallet, a dashboard/marketplace dapp, and fully operational smart contracts. Below we provide a guide on how to run the POC.
+We are leveraging Acount Abstaction TO ENABLE users to rent NFTs without any collateral, operating in a fully trustless environment. While still in the development phase, we've successfully launched a proof of concept (POC) on Base Goerli. This includes a browser extension wallet, a dashboard/marketplace dapp, and fully operational smart contracts. We will soon provide a guide on how to run the POC.
 
 ## Contents
 - [About the Project](https://github.com/pbfranceschin/r-wallet-base-3/tree/main#about-the-project)
