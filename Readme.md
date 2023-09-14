@@ -26,6 +26,27 @@ We've also streamlined the process for any marketplace dapp to integrate seamles
 
 Checkout our documentation [here](https://github.com/pbfranceschin/r-wallet-base-3/blob/main/blockchain/README.md).
 
+## Guides
+To run the POC 1st clone this repo runnning the command below,
+```
+git clone https://github.com/pbfranceschin/r-wallet-base-3.git
+```
+then enter the `browserExtension` dir,
+```
+cd browserExtension
+```
+and install all dependencies.
+```
+yarn install
+```
+To build the app, run
+```
+yarn start
+```
+then open your browser (preferably chrome) and click on config on the top right and select *Extensions*, *Manage Extensions*. In the extensions tab turn on *developer mode* on the top right. Then select *Load unpacked*. Select enter the root folder of this repo then 'browserExtension/build' and hit select.
+
+After this you might be able to run the trampoline extension. Now create a wallet, fund it and deploy it. After that, head to our [test account dashboard] and checkout some test NFTs for rent.
+
 ## Main Use Cases
 
 - **Gaming:** The burgeoning gameFi sector underscores the relevance of our application, especially as most games employ NFTs as in-game assets. NFT owners can monetize their assets during inactive periods.

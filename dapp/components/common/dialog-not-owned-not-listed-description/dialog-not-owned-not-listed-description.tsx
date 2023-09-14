@@ -44,7 +44,7 @@ export const DialogNotOwnedNotListedDescription = ({
     <div className={styles['bodyDescriptionContainer']}>
       <div className={styles.divider}></div>
       <div className={styles['bodyDescription']}>
-        {`This NFT is not listed and not available for loans at the moment.`}
+        {`This NFT is not listed and not available for rent at the moment.`}
         {/* ${timeLeft && parseFloat((timeLeft > 86400? timeLeft/86400 : timeLeft>3600? timeLeft/3600 : timeLeft/60).toFixed(2))}
         ${timeLeft && (timeLeft > 86400? "days" : timeLeft>3600? "hours" : "minutes")}.`}           */}
       </div>

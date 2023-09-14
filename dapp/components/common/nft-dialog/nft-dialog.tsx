@@ -32,7 +32,7 @@ function GetNftImage (nftItem: NftItem) {
          nftItem.nftData.external_data.image;
 }
 
-async function isWallet(provider: any, address: string) {
+export async function isWallet(provider: any, address: string) {
   if(!provider) {
     console.log("error: no provider found");
     return
@@ -261,9 +261,9 @@ export const NFTDialog = ({
                 {!isOwned && isRental_signer &&
                   <DialogNotOwnedBorrowedDescription />} {/* rented by signer */}
                 {!isOwned && isListed && !isRented_Out &&
-                  <DialogNotOwnedListedDescription />}   {/* available for rent */}
-                {/* {!isOwned && isListed && !isRented_Out &&
-                 <DialogNotOwnedRentedDescription />} */}
+                  <DialogNotOwnedListedDescription nftItem={nftItem} />}   {/* available for rent */}
+                {!isOwned && isListed && isRented_Out &&
+                 <DialogNotOwnedBorrowedDescription/>}
                 {!isOwned && !isListed && 
                   <DialogNotOwnedNotListedDescription />} {/* not available for rent*/}
                 {isOwned && isListed && isReceipt && !isRented_Out && 

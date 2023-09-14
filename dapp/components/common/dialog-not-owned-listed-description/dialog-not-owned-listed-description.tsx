@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import styles from './dialog-not-owned-listed-description.module.css';
 import { useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
@@ -7,6 +7,7 @@ import { useSigner } from '@usedapp/core';
 import { NftItem } from '@/types/types';
 import { getListData } from '../nft-dialog/nft-dialog';
 import mktPlace from '../../../utils/contractData/MarketPlace.json';
+import { isWallet } from '../nft-dialog/nft-dialog';
 
 export interface DialogNotOwnedListedDescriptionProps {
   index?: number;
@@ -29,12 +30,25 @@ async function getFee(provider: any) : Promise<BigNumber> {
  * To create custom component templates, see https://help.codux.com/kb/en/article/kb16522
  */
 export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem }: DialogNotOwnedListedDescriptionProps) => {
-    const [duration, setDuration] = useState<number | undefined>();
-    const [isDurationInvalid, setIsDurationInvalid] = useState<boolean | undefined>(false);
-    const [isLoading, setIsLoading] = useState<boolean>(false);
-    const signer = useSigner();
+  const [duration, setDuration] = useState<number | undefined>();
+  const [isDurationInvalid, setIsDurationInvalid] = useState<boolean | undefined>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isWalletAccount, setIsWalletAccount] = useState<boolean>();
+  const signer = useSigner();
     // const 
-    const nft = {maxDuration: 10, price: 0.01}
+  const nft = {maxDuration: 10, price: 0.01}
+
+  useEffect(() => {
+    const resolveIsWallet = async() => {
+      const addr = await signer?.getAddress();
+      if(addr) 
+        setIsWalletAccount(
+          await isWallet(signer, addr)
+        );
+    }
+    resolveIsWallet();
+  }, [signer]);
+
 
   const handleChange = (e: any) => {
     let numValue = parseInt(e.target.value);
@@ -78,7 +92,8 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem 
       setIsLoading(true);
       const rentValue = price.mul(duration);
       const aliq = await getFee(signer);
-      const fee = aliq.mul(rentValue).div(10000);
+      console.log('aliq', aliq);
+      const fee = rentValue.mul(aliq).div(10000);
       await rent(
         signer,
         nftItem.contractAddress,
@@ -88,6 +103,8 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem 
       )
       setIsLoading(false);
     }
+
+    console.log('isWalletAccount', isWalletAccount);
 
     return (
       <div className={styles['bodyDescriptionContainer']}>
@@ -113,7 +130,13 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem 
             </div>
             {isDurationInvalid && <span className={styles.invalidDuration}>{`Set a valid duration. Value cannot be negative and must respect the maximum loan period.`}</span>}
         </div>
-        <button className={styles.borrowButton} onClick={handleButtonClick}>{ isLoading? 'Loading...' : 'Rent It!' }</button>
+        {isWalletAccount &&
+          <button className={styles.borrowButton} onClick={handleButtonClick}>{ isLoading? 'Loading...' : 'Rent It!' }</button>}
+        {!isWalletAccount && <div> <h2 className={styles['bodyDescription']}>
+           <span className={styles.textHilight}>Click here</span> </h2> 
+           <h2 className={styles['bodyDescription']}>to create a rWallet Smart Account</h2>
+           </div>
+           } 
       </div>
   );
 };
