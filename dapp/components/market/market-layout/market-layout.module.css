@@ -226,7 +226,7 @@
 
   border-radius: 25px;
   /* background-color: rgb(253, 246, 252); */
-  background-color: rgb(253, 246, 252);
+  background-color: rgb(255, 255, 255);
   color: rgba(93, 93, 93, 1);
   overflow: hidden;
 }
@@ -273,7 +273,7 @@
   gap: 56px;
 
   border-radius: 25px;
-  background-color: rgb(253, 246, 252);
+  background-color: rgb(255, 255, 255);
   color: rgba(93, 93, 93, 1);
 }
 
@@ -345,7 +345,7 @@
 
   border-radius: 25px;
   /* background-color: rgb(253, 246, 252); */
-  background-color: rgb(253, 246, 252);
+  background-color: rgb(255, 255, 255);
   color: rgba(93, 93, 93, 1);
   overflow: hidden;
 }
