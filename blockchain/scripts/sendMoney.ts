@@ -40,16 +40,16 @@ const sendMoney = async () => {
     // console.log('recAddr', wallet);
     const tx = {
         from: signer.address,
-        to: pubKey_2,
-        value: ethers.utils.parseEther('0.01'),
+        to: '0x088F73ADf40B43c74aEd612FC14186A9d44e7Cce',
+        value: ethers.utils.parseEther('0.002'),
     }
     const send = await signer.sendTransaction(tx);
     const receipt = await send.wait();
     console.log(receipt);
 }
 
-sendMoney().catch((error) => {
-    console.error(error);
-    process.exitCode = 1;
-});
+// sendMoney().catch((error) => {
+//     console.error(error);
+//     process.exitCode = 1;
+// });
 

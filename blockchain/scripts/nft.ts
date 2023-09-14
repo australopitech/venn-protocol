@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import nft from "../deployments/base_goerli/NFT.json";
 import walletAbi from "../artifacts/contracts/wallet/RWallet.sol/RWallet.json";
 import entrypoint from "../artifacts/contracts/core/EntryPoint.sol/EntryPoint.json";
+import mktplace from '../deployments/base_goerli/MarketPlace.json';
 import { arrayify } from "ethers/lib/utils";
 
 dotenv.config({ path: __dirname+'/../.env' });
@@ -25,6 +26,14 @@ const checkSupply = async () => {
     console.log('supply', (await contract.totalSupply()).toString())
 }
 // checkSupply();
+
+const getOwner = async() => {
+    const provider = new ethers.providers.JsonRpcProvider(rpc)
+    const contract  = new ethers.Contract(nft.address, nft.abi, provider);
+    const owner = await contract.ownerOf(1);
+    console.log(owner === mktplace.address);
+}
+getOwner()
 
 const test = async () => {
     if(!rpc) throw new Error("missing env");
@@ -204,6 +213,6 @@ const transfer = async () => {
 }
 
 // checkBal();
-mint();
+// mint();
 // eoaTransfer();
 // transfer();
