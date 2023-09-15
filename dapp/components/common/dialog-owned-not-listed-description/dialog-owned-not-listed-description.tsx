@@ -68,6 +68,8 @@ export const DialogOwnedNotListedDescription = ({
 
   const isApproved = useIsApproved(nftItem);
   console.log('isApproved', isApproved)
+
+  console.log('signer', signer)
   
   const handlePriceChange = (e: any) => {
     let numValue = parseInt(e.target.value);

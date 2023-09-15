@@ -25,4 +25,10 @@ const deList = async() => {
     console.log(`owner == signer?`, newOwner === signer.address );
 } 
 
-deList();
+// deList();
+
+const test = () => {
+    console.log(ethers.utils.id("deList(address,uint256)"));
+}
+
+test();

@@ -10,7 +10,7 @@
   "scripts": {
     "server": "node utils/webserver.js",
     "start": "QUIET=false NODE_ENV=development run-p devtools \"dev {@}\" --",
-    "dev": "npx hardhat clean && npx hardhat compile && webpack --config webpack.config.js --watch",
+    "dev": "npx hardhat clean && npx hardhat compile && webpack --config webpack_wsl.config.js --watch",
     "hardhat-clean-comile": "npx hardhat clean && npx hardhat compile",
     "devtools": "npx redux-devtools --hostname=localhost --port=8000 --open",
     "build": "npx hardhat clean && npx hardhat compile && node utils/build.js",

@@ -1,8 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import styles from './dialog-owned-rented-description.module.css';
+import { useSigner } from '@usedapp/core';
+import { delist } from '@/utils/call';
+import { NftItem } from '@/types/types';
+import { BigNumber } from 'ethers';
 
 export interface DialogOwnedRentedDescriptionProps {
-  someProp?: any;
+  isListed?: boolean;
+  nftItem?: NftItem;
 }
 
 const WarningIcon = () => {
@@ -23,13 +28,32 @@ const WarningIcon = () => {
 }
 
 export const DialogOwnedRentedDescription = ({ 
-  someProp
+  isListed,
+  nftItem
 }: DialogOwnedRentedDescriptionProps) => {
   // const provider = useProvider();
   const [timeLeft, setTimeLeft] = useState<number>(0);
   // const [title, setTitle] = useState<string>();
   // const [name, setName] =  useState<string>();
   // const [endTime, setEndTime] = useState<number>();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const signer = useSigner();
+
+  const handleButtonClick = async() => {
+    if(!signer) {
+      alert('Connect your wallet!')
+      return
+    }
+    if(isLoading) return
+    if(!nftItem) {
+      console.log('error: no nft found');
+      return
+    }
+    setIsLoading(true);
+    await delist(signer, nftItem.contractAddress, BigNumber.from(nftItem.nftData.token_id));
+    setIsLoading(false);
+  }
+
 
   return (
     <div className={styles.bodyDescriptionContainer}>
@@ -44,10 +68,14 @@ export const DialogOwnedRentedDescription = ({
       </div>
       
       <div className={styles.unlistContainer}>
-        <button className={styles.unlistButton}> Unlist NFT</button>
-        <div className={styles.warning}>
-          <WarningIcon /><span className={styles.warningText}>{`If you choose to unlist your NFT, it'll be removed from the market after the current rental ends and won't be available for rent again until you relist it.`}</span>
-        </div>
+        {isListed &&
+          <div>
+          <button className={styles.unlistButton} onClick={handleButtonClick}> Unlist NFT</button>
+          <div className={styles.warning}>
+            <WarningIcon /><span className={styles.warningText}>{`If you choose to unlist your NFT, it'll be removed from the market after the current rental ends and won't be available for rent again until you relist it.`}</span>
+          </div>
+          </div>
+        }
       </div>
     </div>
   );

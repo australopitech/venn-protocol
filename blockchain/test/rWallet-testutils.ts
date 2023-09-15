@@ -48,20 +48,16 @@ export const deployMktPlace = async (
     signer: SignerWithAddress,
     factoryAddress: string,
     receiptsAddress: string,
-    feeBase: number,
-    feeMultiplier: number,
-    pullFeeBase:number,
-    pullFeeMultiplier: number
+    servAliq: number,
+    pullAliq: number,
 ) => {
     console.log('\ndeploying MarketPlace...')
     const mktPlaceFactory = new MarketPlace__factory(signer);
     const mktPlace = await mktPlaceFactory.deploy(
         factoryAddress,
         receiptsAddress,
-        feeBase,
-        feeMultiplier,
-        pullFeeBase,
-        pullFeeMultiplier,
+        servAliq,
+        pullAliq,
         signer.address
     );
     await mktPlace.deployTransaction.wait();
@@ -125,9 +121,8 @@ export const rentNFT = async (
     ]);
     // console.log(calldata_);
 
-    const feeBase = await mktPlace.feeBase();
-    const feeMul = await mktPlace.feeMultiplier();
-    const fee = (price*duration*feeMul) / feeBase;
+    const servAliq = await mktPlace.serviceAliquot();
+    const fee = (price*duration*servAliq) / 10000;
     const value = BigNumber.from(price*duration + fee).add(ethers.utils.parseEther('0.05'));
     const fund = await owner.sendTransaction({to: wallet.address, value: value })
     await fund.wait();

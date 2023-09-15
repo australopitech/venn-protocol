@@ -35,8 +35,7 @@ export const list = async (
 
 export const delist = async (
     signer: any | undefined,
-    nftContractAddr: string,
-    tokenId: number,
+    receiptId: BigNumber,
 ) => {
     if(!signer) {
         console.log('signer undefined');
@@ -47,7 +46,9 @@ export const delist = async (
     let error = null;
     let receipt;
     try {
-        const tx = await mktPlace.deList(nftContractAddr, tokenId);
+        const nftObj = await mktPlace.getNFTbyReceipt(BigNumber.from(receiptId));
+        console.log('nftObj', nftObj)
+        const tx = await mktPlace.deList(nftObj.contractAddress, nftObj.tokenId);
         receipt = await tx.wait();
         console.log(receipt);
     } catch (err) {
@@ -61,8 +62,8 @@ export const delist = async (
 }
 
 export const pull = async (
-    signer: any | undefined,
-    receiptId: number
+    receiptId: number,
+    signer?: any
 ) => {
     if(!signer) {
         console.log('signer undefined');

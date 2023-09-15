@@ -21,6 +21,9 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const signer = useSigner();
   const [signerAddress, setSignerAddress] = useState<string>();
 
+  // console.log('signer dashboard', signer)
+  // console.log('signerAddress', signerAddress)
+
   useEffect(() => {
     if(signer) {
       signer.getAddress().then((r) => setSignerAddress(r))

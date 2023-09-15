@@ -70,8 +70,9 @@ async function getOwner(provider: any, nftItem: NftItem) {
 export async function getListData(
   provider: any, nftItem?: NftItem
 ) : Promise<{price: BigNumber | undefined, maxDur: BigNumber | undefined}> {
-  if(!nftItem) return {price: undefined, maxDur: undefined};
+  if(!nftItem || !provider) return {price: undefined, maxDur: undefined};
   const contract = new ethers.Contract(mktPlace.address, mktPlace.abi, provider);
+  console.log('contract in getList', contract.address);
   const maxDur = await contract.getPrice(nftItem.contractAddress, nftItem.nftData.token_id);
   const price = await contract.getMaxDuration (nftItem.contractAddress, nftItem.nftData.token_id);
   return {price, maxDur};
@@ -267,7 +268,7 @@ export const NFTDialog = ({
                 {!isOwned && !isListed && 
                   <DialogNotOwnedNotListedDescription />} {/* not available for rent*/}
                 {isOwned && isListed && isReceipt && !isRented_Out && 
-                  <DialogOwnedListedDescription />} {/* owned/listed by signer/not rented out */}
+                  <DialogOwnedListedDescription nftItem={nftItem}/>} {/* owned/listed by signer/not rented out */}
                 {isOwned && !isListed && !isReceipt && 
                   <DialogOwnedNotListedDescription nftItem={nftItem} />} {/* owned/not listed by signer/not rented out */}
                 {isOwned && isReceipt && isRented_Out &&

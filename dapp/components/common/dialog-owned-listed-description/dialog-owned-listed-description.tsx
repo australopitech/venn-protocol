@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import styles from './dialog-owned-listed-description.module.css';
 import classNames from 'classnames';
-// import { useProvider } from 'wagmi';
-// import ReleaseAsset from '../../wallet';
-// import { getNFTobj, useNFTname, useNFTtitle } from '../../../hooks/nfts';
+import { ethers, BigNumber } from 'ethers';
+import { getListData } from '../nft-dialog/nft-dialog';
+import { useSigner } from '@usedapp/core';
+import { NftItem } from '@/types/types';
+import { delist } from '@/utils/call';
 
 export interface DialogOwnedListedDescriptionProps {
-    someProp?: any;
+    nftItem?: NftItem;
 }
 
 // function EditableInput() {
@@ -65,11 +67,29 @@ const WarningIcon = () => {
 }
 
 export const DialogOwnedListedDescription = ({ 
-  someProp
+  nftItem
 }: DialogOwnedListedDescriptionProps) => {
   // const provider = useProvider();
   const [duration, setDuration] = useState<number | undefined>();
   const [isDurationInvalid, setIsDurationInvalid] = useState<boolean | undefined>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [rentPrice, setRentPrice] = useState<BigNumber>();
+  const [maxDuration, setMaxDuration] = useState<BigNumber>();
+  
+  const signer = useSigner();
+
+  console.log('signer', signer);
+  
+  // console.log('rentPrice', rentPrice)
+  // console.log('maxDuration', maxDuration)
+  useEffect(() => { 
+    const resolveListData = async() => {
+      const {price, maxDur} = await getListData(signer, nftItem);
+      setRentPrice(price);
+      setMaxDuration(maxDur);
+    }
+    resolveListData();
+  }, [signer]);
   
   const handleChange = (e: any) => {
     let numValue = parseInt(e.target.value);
@@ -88,10 +108,26 @@ export const DialogOwnedListedDescription = ({
     }
   }
 
-  const name = "Awesome NFT #1"
-  const description = "This is an awesome NFT uhul."
-  const price = 0.0001
-  const maxDuration = 10
+
+  const handleButtonClick = async() => {
+    if(!signer) {
+      alert('Connect your wallet!')
+      return
+    }
+    if(isLoading) return
+    if(!nftItem) {
+      console.log('error: no nft found');
+      return
+    }
+    setIsLoading(true);
+    await delist(signer, BigNumber.from(nftItem.nftData.token_id));
+    setIsLoading(false);
+  }
+
+  // const name = "Awesome NFT #1"
+  // const description = "This is an awesome NFT uhul."
+  // const price = 0.0001
+  // const maxDuration = 10
 
   return (
     <div className={styles.bodyDescriptionContainer}>
@@ -100,12 +136,12 @@ export const DialogOwnedListedDescription = ({
         <span>This NFT <span className={styles.textHilight}>is listed!</span></span>
         <br />
         {/* <span>Price: </span><EditableInput /> */}
-        <span className={styles.nftLoanInfo}>{`Price: ${price} ETH/Day`}</span>
-        <span className={styles.nftLoanInfo}>{`Maximum loan duration: ${maxDuration} ${maxDuration === 1 ? 'Day' : 'Days'}`}</span>
+        <span className={styles.nftLoanInfo}>{`Price: ${rentPrice? ethers.utils.formatEther(rentPrice.toString()): ""} ETH/Day`}</span>
+        <span className={styles.nftLoanInfo}>{`Maximum loan duration: ${maxDuration? maxDuration.toString() : ""} ${maxDuration? maxDuration.lte(1) ? 'Day' : 'Days' : 'Days'}`}</span>
         <br />
         {/* <span className={styles.unlistInfo}>Would you like to unlist this NFT?</span> */}
         <div className={styles.unlistContainer}>
-          <button className={styles.unlistButton}> Unlist NFT</button>
+          <button className={styles.unlistButton} onClick={handleButtonClick}> Unlist NFT</button>
           <div className={styles.warning}>
             <WarningIcon /><span className={styles.warningText}>{`If you choose to unlist your NFT, it'll be removed from the market and won't be available for rent again until you relist it.`}</span>
           </div>

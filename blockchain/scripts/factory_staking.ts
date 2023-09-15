@@ -1,5 +1,7 @@
-import * as entryPointSepolia from '../deployments/sepolia/EntryPoint.json';
-import * as factorySepolia from '../deployments/sepolia/RWalletFactory.json'
+// import * as entryPointSepolia from '../deployments/sepolia/EntryPoint.json';
+import entryPoint from '../artifacts/contracts/core/EntryPoint.sol/EntryPoint.json';
+// import * as factorySepolia from '../deployments/sepolia/RWalletFactory.json'
+import factoryBaseGoer from '../deployments/base_goerli/RWalletFactory.json';
 import { EntryPoint, RWalletFactory } from '../typechain';
 import { ethers } from 'ethers';
 
@@ -8,31 +10,33 @@ dotenv.config({ path: './.env' });
 
 
 const apiKey = process.env.INFURA_API_KEY;
-const privateKey = process.env.PRIVATE_KEY;
+const PRIVATE_KEY = process.env.PRIVATE_KEY;
+const RPC = process.env.BASE_GOERLI_PROVIDER;
+const ENTRY_POINT = process.env.ENTRY_POINT_STACKUP;
 
 const main = async () => {
-    if(!apiKey) throw new Error('missing env: API_KEY');
-    if(!privateKey) throw new Error('missing env: PRIVATE_KEY');
-    const provider = new ethers.providers.InfuraProvider('sepolia', apiKey);
-    const signer = new ethers.Wallet(privateKey, provider);
-    const entryPoint = new ethers.Contract(
-        entryPointSepolia.address,
-        entryPointSepolia.abi,
+    if(!RPC) throw new Error('missing env: API_KEY');
+    if(!PRIVATE_KEY || !ENTRY_POINT) throw new Error('missing env');
+    const provider = new ethers.providers.JsonRpcProvider(RPC);
+    const signer = new ethers.Wallet(PRIVATE_KEY, provider);
+    const entryPointContract = new ethers.Contract(
+        ENTRY_POINT,
+        entryPoint.abi,
         provider
     ) as EntryPoint;
     const factory = new ethers.Contract(
-        factorySepolia.address,
-        factorySepolia.abi,
+        factoryBaseGoer.address,
+        factoryBaseGoer.abi,
         signer
     ) as RWalletFactory;
     const stake = await factory.stake(
-        entryPointSepolia.address,
+        entryPointContract.address,
         10000,
-        {value: ethers.utils.parseEther("0.5")}
+        {value: ethers.utils.parseEther("0.05")}
     );
     const receipt = await stake.wait();
     console.log('\nstake tx:', receipt.transactionHash);
-    const depositInfo = await entryPoint.getDepositInfo(factory.address);
+    const depositInfo = await entryPointContract.getDepositInfo(factory.address);
     console.log(depositInfo);
 }
 

@@ -13,6 +13,16 @@ const rpc = process.env.BASE_GOERLI_PROVIDER;
 const ADMIN_ROLE = ethers.constants.HashZero;
 const MINTER_ROLE = ethers.utils.id("MINTER_ROLE");
 
+
+const checkOwner = async() => {
+    if(!rpc) throw new Error('missing env');
+    const provider = new ethers.providers.JsonRpcProvider(rpc);
+    const receiptContract = new ethers.Contract(receipts.address, receipts.abi, provider);
+    const owner = await receiptContract.ownerOf(3);
+    console.log(owner);
+}
+checkOwner();
+
 const checkRole = async () => {
     if(!rpc || !adminAddr) throw new Error('missing env');
     const provider = new ethers.providers.JsonRpcProvider(rpc);
@@ -20,7 +30,7 @@ const checkRole = async () => {
     const res = await receiptContract.hasRole(MINTER_ROLE, minter );
     console.log('ROLE?', res);
 }
-checkRole();
+// checkRole();
 
 
 const grantMinterRole = async () => {
