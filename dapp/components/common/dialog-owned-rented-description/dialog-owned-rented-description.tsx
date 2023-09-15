@@ -50,7 +50,7 @@ export const DialogOwnedRentedDescription = ({
       return
     }
     setIsLoading(true);
-    await delist(signer, nftItem.contractAddress, BigNumber.from(nftItem.nftData.token_id));
+    await delist(signer, BigNumber.from(nftItem.nftData.token_id));
     setIsLoading(false);
   }
 
