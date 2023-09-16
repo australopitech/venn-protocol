@@ -3,7 +3,7 @@ import styles from './dialog-not-owned-listed-description.module.css';
 import { useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import { rent } from '@/utils/call';
-import { useSigner } from '@usedapp/core';
+import { useSigner, useEthers } from '@usedapp/core';
 import { NftItem } from '@/types/types';
 import { getListData } from '../nft-dialog/nft-dialog';
 import mktPlace from '../../../utils/contractData/MarketPlace.json';
@@ -13,6 +13,7 @@ export interface DialogNotOwnedListedDescriptionProps {
   index?: number;
   activeAccount?: string;
   nftItem?: NftItem;
+  setIsNFTOpen?: any;
 }
 
 async function getFee(provider: any) : Promise<BigNumber> {
@@ -29,25 +30,26 @@ async function getFee(provider: any) : Promise<BigNumber> {
  * This component was created using Codux's Default new component template.
  * To create custom component templates, see https://help.codux.com/kb/en/article/kb16522
  */
-export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem }: DialogNotOwnedListedDescriptionProps) => {
+export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem, setIsNFTOpen }: DialogNotOwnedListedDescriptionProps) => {
   const [duration, setDuration] = useState<number | undefined>();
   const [isDurationInvalid, setIsDurationInvalid] = useState<boolean | undefined>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isWalletAccount, setIsWalletAccount] = useState<boolean>();
+  const defaultButtonText = "Rent It!";
+  const [buttonText, setButtonText] = useState<string>(defaultButtonText);
   const signer = useSigner();
-    // const 
+  const { account, library } = useEthers(); 
   const nft = {maxDuration: 10, price: 0.01}
 
   useEffect(() => {
     const resolveIsWallet = async() => {
-      const addr = await signer?.getAddress();
-      if(addr) 
+      if(account) 
         setIsWalletAccount(
-          await isWallet(signer, addr)
+          await isWallet(library, account)
         );
     }
     resolveIsWallet();
-  }, [signer]);
+  }, [account]);
 
 
   const handleChange = (e: any) => {
@@ -75,7 +77,7 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem 
         alert('Connect your wallet!')
         return
       }
-      if(isLoading) return
+      if(buttonText !== defaultButtonText) return
       if(!nftItem) {
         console.log('error: no nft found');
         return
@@ -89,7 +91,7 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem 
         console.log('could not get price');
         return
       }
-      setIsLoading(true);
+      setButtonText('Loading...');
       const rentValue = price.mul(duration);
       const aliq = await getFee(signer);
       console.log('aliq', aliq);
@@ -101,7 +103,8 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem 
         BigNumber.from(duration),
         rentValue.add(fee) 
       )
-      setIsLoading(false);
+      setButtonText(defaultButtonText);
+      setIsNFTOpen(false);
     }
 
     console.log('isWalletAccount', isWalletAccount);
@@ -131,7 +134,7 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem 
             {isDurationInvalid && <span className={styles.invalidDuration}>{`Set a valid duration. Value cannot be negative and must respect the maximum loan period.`}</span>}
         </div>
         {isWalletAccount &&
-          <button className={styles.borrowButton} onClick={handleButtonClick}>{ isLoading? 'Loading...' : 'Rent It!' }</button>}
+          <button className={styles.borrowButton} onClick={handleButtonClick}>{ buttonText}</button>}
         {!isWalletAccount && <div> <h2 className={styles['bodyDescription']}>
            <span className={styles.textHilight}>Click here</span> </h2> 
            <h2 className={styles['bodyDescription']}>to create a rWallet Smart Account</h2>

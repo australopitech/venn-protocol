@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import styles from './dialog-owned-not-listed-description.module.css';
 import classNames from 'classnames';
@@ -17,6 +17,7 @@ export interface DialogOwnedNotListedDescriptionProps {
     activeAccount?: string;
     context?: string;
     nftItem?: NftItem
+    setIsNFTOpen: any
 }
 
 let nft: any;
@@ -56,20 +57,29 @@ export const DialogOwnedNotListedDescription = ({
   index, 
   activeAccount, 
   context,
-  nftItem
+  nftItem,
+  setIsNFTOpen
 }: DialogOwnedNotListedDescriptionProps) => {
   // const provider = useProvider();
   const [price, setPrice] = useState<number>(0);
   const [duration, setDuration] = useState<number>(0);
   const [isPriceInvalid, setIsPriceInvalid] = useState<boolean>(false);
   const [isDurationInvalid, setIsDurationInvalid] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const [isLoading, setIsLoading] = useState<boolean>(false);
+  const listButtonText = "List it!";
+  const approveButtonText = "Approve Listing";
+  const [buttonText, setButtonText] = useState<string>("loading...");
   const signer = useSigner();
 
   const isApproved = useIsApproved(nftItem);
   console.log('isApproved', isApproved)
 
   console.log('signer', signer)
+
+  useEffect(() => {
+    if(isApproved) setButtonText(listButtonText);
+    else setButtonText(approveButtonText)
+  }, [])
   
   const handlePriceChange = (e: any) => {
     let numValue = parseInt(e.target.value);
@@ -110,7 +120,7 @@ export const DialogOwnedNotListedDescription = ({
       alert('Connect your wallet!')
       return
     }
-    if(isLoading) return
+    if(buttonText === "loading...") return
     if(!nftItem) {
       console.log('error: no nft found');
       return
@@ -119,7 +129,7 @@ export const DialogOwnedNotListedDescription = ({
       alert('Set valid values for price and max duration!');
       return
     }
-    setIsLoading(true);
+    setButtonText('loading...');
     if(!isApproved) {
       await approve(
         signer,
@@ -127,6 +137,7 @@ export const DialogOwnedNotListedDescription = ({
         BigNumber.from(nftItem.nftData.token_id),
         mktPlace.address
       );
+      setButtonText(listButtonText);
       return
     }
 
@@ -139,7 +150,8 @@ export const DialogOwnedNotListedDescription = ({
       priceInWei,
       BigNumber.from(duration)
     );
-    setIsLoading(false);
+    // setButtonText(defaultButtonText);
+    setIsNFTOpen(false);
   }
 
   const name = "Awesome NFT #1"
@@ -183,7 +195,7 @@ export const DialogOwnedNotListedDescription = ({
         {isDurationInvalid && <span className={styles.invalidValue}>Set a valid duration. Must be greater than zero!</span>}
       </div>
       <br />
-      <button className={styles.listButton} onClick={handleButtonClick}>{isApproved? 'List NFT!' : 'Approve Listing'}</button>
+      <button className={styles.listButton} onClick={handleButtonClick}>{buttonText}</button>
     </div>
   );
 };

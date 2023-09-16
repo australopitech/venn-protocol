@@ -13,9 +13,9 @@ const provider = new ethers.providers.JsonRpcProvider(RPC);
 const deList = async() => {
     if(!provider || !PRIVATE_KEY) throw new Error('missing env');
     const signer = new ethers.Wallet(PRIVATE_KEY, provider);
-    const mktPlaceContract = new ethers.Contract(oldMktPlaceAddr, mktplace.abi, signer);
+    const mktPlaceContract = new ethers.Contract(mktplace.address, mktplace.abi, signer);
 
-    const tokenId = 1;
+    const tokenId = 7;
     const tx = await mktPlaceContract.deList(nft.address, tokenId);
 
     console.log(await tx.wait());
@@ -25,10 +25,10 @@ const deList = async() => {
     console.log(`owner == signer?`, newOwner === signer.address );
 } 
 
-// deList();
+deList();
 
-const test = () => {
-    console.log(ethers.utils.id("deList(address,uint256)"));
-}
+// const test = () => {
+//     console.log(ethers.utils.id("deList(address,uint256)"));
+// }
 
-test();
+// test();
