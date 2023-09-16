@@ -36,7 +36,17 @@ yarn start
 ```
 After the building process is done, open your chrome browser and click on config on the top right and select *Extensions*, *Manage Extensions*. In the extensions tab turn on *developer mode* on the top right. Then select *Load unpacked* in the top left. On the seleciton window, enter the root folder of this repo then `browserExtension/build/` and hit select.
 
-After this you might be able to run our version of [trampoline](https://github.com/eth-infinitism/trampoline) extension. Now create an account, fund it and deploy it. After that, head to our [test account dashboard] and checkout some test NFTs for rent.
+After this you might be able to run our version of [trampoline](https://github.com/eth-infinitism/trampoline) extension. Now create an account, fund it and deploy it following the instructions provided in the screen.
+
+After that, head to our test account dashboard and checkout some test NFTs for rent. To do that, enter in the `dapp` dir and start the app
+```
+cd ../dapp
+yarn dev
+```
+now open the chrome browser in `https://localhost:3000/dashboard/0x099A294Bffb99Cb2350A6b6cA802712D9C96676A`. See which NFTs are listed for rent and try renting them.
+
+*Feel free to contact any of the team members if you run into any errors or are interested in collaborating.* 
+
 
 ## About the Project
 
