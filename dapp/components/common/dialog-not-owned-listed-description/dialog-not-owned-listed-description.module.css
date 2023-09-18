@@ -199,14 +199,6 @@
   margin-bottom: 8px;
 }
 
-.notConnectedButton:hover {
-  transform: scale(1.05);
-}
-
-.notConnectedButton:active {
-  transform: scale(0.95);
-}
-
 .notConnectedMessage {
   color: rgb(37, 41, 46);
   font-size: 26px;
