@@ -42,7 +42,7 @@ export default function NftCard ({
                 </span>
             )
           : <span className={styles.notListed}>
-              Not listed
+              {/* Not listed */}
             </span>
         }
       </div> 
