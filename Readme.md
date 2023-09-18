@@ -38,16 +38,7 @@ After the building process is done, open your chrome browser and click on config
 
 After this you might be able to run our version of [trampoline](https://github.com/eth-infinitism/trampoline) extension. Now create an account, fund it and deploy it following the instructions provided in the screen.
 
-After that, head to our test account dashboard and checkout some test NFTs for rent. To do that, enter in the `dapp` dir and install the dependencies
-```
-cd ../dapp
-yarn install
-```
-To start the app run
-```
-yarn start
-```
-now open the chrome browser in `https://localhost:3000/dashboard/0x099A294Bffb99Cb2350A6b6cA802712D9C96676A`. See which NFTs are listed for rent and try renting them.
+Now head to our [test account dashboard](https://r-wallet-base-3.vercel.app/dashboard/0x099A294Bffb99Cb2350A6b6cA802712D9C96676A) and checkout some test NFTs for rent. To rent, just click in the NFT card, input a duration for the rent and click the button!
 
 *Feel free to contact any of the team members if you run into any errors or are interested in collaborating.* 
 
