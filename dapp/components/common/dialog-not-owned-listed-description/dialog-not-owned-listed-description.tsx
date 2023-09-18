@@ -135,11 +135,14 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
         </div>
         {isWalletAccount &&
           <button className={styles.borrowButton} onClick={handleButtonClick}>{ buttonText}</button>}
-        {!isWalletAccount && <div> <h2 className={styles['bodyDescription']}>
-           <span className={styles.textHilight}>Click here</span> </h2> 
-           <h2 className={styles['bodyDescription']}>to create a rWallet Smart Account</h2>
-           </div>
-           } 
+        {!isWalletAccount && 
+          <div className={styles.notConnectedMessage}> 
+            <button className={styles.notConnectedButton} onClick={handleButtonClick}>{ buttonText}</button>
+            <p>
+              <span className={styles.textLink}>Click here</span> to create a rWallet Smart Account!
+            </p>
+          </div>
+        } 
       </div>
   );
 };
