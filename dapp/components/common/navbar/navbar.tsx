@@ -110,7 +110,9 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
     // <div className={classNames(styles.navbar, styles.navbarGridTemplate, scrolled ? styles.navbarScrolled : '')}>
     <div className={classNames(styles.navbar, styles.navbarGridTemplate)}>
       <div className={styles.logoContainer}>
-        <Logo />
+        <Link href="/">
+          <Logo />
+        </Link>
       </div>
       <div className={styles.functionalitiesContainer}>
         <div className={styles.searchBoxContainer}>
