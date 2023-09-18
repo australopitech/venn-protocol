@@ -4,6 +4,7 @@ import { SearchBox } from '../search-box/search-box';
 import styles from './navbar.module.css';
 import { useState, useRef, useEffect } from 'react';
 import { useEthers, useEtherBalance, useConfig, useSigner } from '@usedapp/core';
+import Link from 'next/link';
 
 export interface NavBarProps {
   navbarGridTemplate?: string;
@@ -104,6 +105,7 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
     console.log(`Selected: ${item}`);
   };
 
+
   return (
     // <div className={classNames(styles.navbar, styles.navbarGridTemplate, scrolled ? styles.navbarScrolled : '')}>
     <div className={classNames(styles.navbar, styles.navbarGridTemplate)}>
@@ -117,8 +119,21 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
         <div className={styles.menuButtonsContainer}>
           {/* <div className={currentPage === 'market'? styles.secondaryButtonSelected : styles.secondaryButton}>Market</div>
           <div className={currentPage === 'dashboard'? styles.secondaryButtonSelected : styles.secondaryButton}>Dashboard</div> */}
-          <div className={classNames(styles.secondaryButton, currentPage === 'market'? styles.active : '')}>Market</div>
-          <div className={classNames(styles.secondaryButton, currentPage === 'dashboard'? styles.active : '')}>Dashboard</div>
+          <div 
+            className={classNames(styles.secondaryButton, currentPage === 'market'? styles.active : '')}
+          >
+            <Link href="/">
+              Market
+            </Link>
+          </div>
+          <div 
+            className={classNames(styles.secondaryButton, currentPage === 'dashboard'? styles.active : '')}
+          >
+            {/* The following is a temporary address for prototype */}
+            <Link href="/dashboard/0x099A294Bffb99Cb2350A6b6cA802712D9C96676A"> 
+              Dashboard
+            </Link>
+          </div>
           {/* <div className={styles.secondaryButton}>Market</div>
           <div className={styles.secondaryButton}>Dashboard</div> */}
           {/* TO-DO: colocar primary <div className={styles.primaryButton}>Connect Wallet</div> */}

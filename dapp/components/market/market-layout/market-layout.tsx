@@ -6,6 +6,7 @@ import React, { useRef, useState } from 'react';
 import NftCard from '@/components/common/nft-card/nft-card';
 import { NFTDialog } from '@/components/common/nft-dialog/nft-dialog';
 import { CollectionDialog } from '@/components/common/collection-dialog/collection-dialog';
+import Link from 'next/link';
 // import Swipe from 'react-swipe';
 
 interface TrendingCollectionsSliderProps {
@@ -48,7 +49,11 @@ const HeroSection = () => {
         <Header />
         <div className={styles.heroButtons}>
           <span className={styles.secondaryButton}>About the Project</span>
-          <span className={styles.primaryButton}>Get Started</span>
+          <span className={styles.primaryButton}>
+            <Link href="/dashboard/0x099A294Bffb99Cb2350A6b6cA802712D9C96676A"> 
+              Get Started
+            </Link>
+          </span>
         </div>
       </div>
       <HeroIcon />
