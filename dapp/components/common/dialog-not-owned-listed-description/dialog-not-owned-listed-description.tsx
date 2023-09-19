@@ -5,9 +5,8 @@ import { ethers, BigNumber } from 'ethers';
 import { rent } from '@/utils/call';
 import { useSigner, useEthers } from '@usedapp/core';
 import { NftItem } from '@/types/types';
-import { getListData } from '../nft-dialog/nft-dialog';
 import mktPlace from '../../../utils/contractData/MarketPlace.json';
-import { isWallet } from '../nft-dialog/nft-dialog';
+import { isWallet, getListData } from '../../../utils/utils';
 
 export interface DialogNotOwnedListedDescriptionProps {
   index?: number;
@@ -86,7 +85,7 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
         alert('Enter a value for duration');
         return
       }
-      const { price } = await getListData(signer, nftItem);
+      const { price } = await getListData(signer, nftItem.contractAddress, BigNumber.from(nftItem.nftData.token_id));
       if(price === undefined) {
         console.log('could not get price');
         return

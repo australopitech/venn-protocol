@@ -11,14 +11,6 @@ export const approve = async (
     to: string 
 ) => {
     const contract = new ethers.Contract(contractAddr, erc721abi, signer);
-    let error = null;
-    let receipt;
-    try {
-        const tx = await contract.approve(to, tokenId);
-        receipt = tx.wait();
-        console.log(receipt);
-    } catch (err) {
-        error = err;
-        console.log(err);
-    }
+    const tx = await contract.approve(to, tokenId);
+    return tx.wait();
 }

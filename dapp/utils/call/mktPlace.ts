@@ -16,21 +16,8 @@ export const list = async (
         return
     }
     const mktPlace = new ethers.Contract(mktPlaceData.address, mktPlaceData.abi, signer);
-    let error = null;
-    let receipt;
-    console.log(nftContractAddr);
-    try {
-        const tx = await mktPlace.listNFT(nftContractAddr, tokenId, price, maxDuration);
-        receipt = await tx.wait();
-        console.log(receipt);
-    } catch (err) {
-        error = err;
-        console.log(err);
-    } if(!error) {
-        console.log('success');
-        console.log('tx hash', receipt?.transactionHash);
-        alert(success_msg);
-    }
+    const tx = await mktPlace.listNFT(nftContractAddr, tokenId, price, maxDuration);
+    return await tx.wait();
 }
 
 export const delist = async (
@@ -43,22 +30,10 @@ export const delist = async (
         return
     }
     const mktPlace = new ethers.Contract(mktPlaceData.address, mktPlaceData.abi, signer);
-    let error = null;
-    let receipt;
-    try {
-        const nftObj = await mktPlace.getNFTbyReceipt(BigNumber.from(receiptId));
-        console.log('nftObj', nftObj)
-        const tx = await mktPlace.deList(nftObj.contractAddress, nftObj.tokenId);
-        receipt = await tx.wait();
-        console.log(receipt);
-    } catch (err) {
-        error = err;
-        console.log(err);
-    } if(!error) {
-        console.log('success');
-        console.log('tx hash', receipt?.transactionHash);
-        alert(success_msg);
-    }
+    const nftObj = await mktPlace.getNFTbyReceipt(BigNumber.from(receiptId));
+    // console.log('nftObj', nftObj)
+    const tx = await mktPlace.deList(nftObj.contractAddress, nftObj.tokenId);
+    return await tx.wait();
 }
 
 export const pull = async (

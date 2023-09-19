@@ -20,7 +20,7 @@ import erc721 from '../../../utils/contractData/ERC721.artifact.json';
 import mktPlace from '../../../utils/contractData/MarketPlace.json';
 import receipts from '../../../utils/contractData/ReceiptNFT.json';
 import { ethers, BigNumber } from 'ethers';
-import { ownerOf } from '@/utils/utils';
+import { ownerOf, isWallet, checkIsListedByReceipt, checkIsRental, getListData } from '@/utils/utils';
 // import dotenv from 'dotenv';
 // dotenv.config();
 
@@ -32,60 +32,12 @@ function GetNftImage (nftItem: NftItem) {
          nftItem.nftData.external_data.image;
 }
 
-export async function isWallet(provider: any, address: string) {
-  if(!provider) {
-    console.log("error: no provider found");
-    return
-  }
-  const fact = new ethers.Contract(walletFactory.address, walletFactory.abi, provider );
-  const ret = await fact.isWallet(address);
-  console.log('isWallet ret', ret);
-  return ret
-}
-
-async function checkIsRental (provider: any, accountAddr: string | undefined, nftItem: NftItem | undefined) {
-  if(!accountAddr || !nftItem) return
-  if(!provider) {
-    console.log("error: no provider found");
-    return
-  }
-  if(await isWallet(provider, accountAddr)) {
-    const wallet = new ethers.Contract(accountAddr, walletAbi.abi, provider);
-    const ret = await wallet.isRental(nftItem.contractAddress, nftItem.nftData.token_id);
-    console.log('isRental', ret);
-    return ret
-  }
-  console.log('account is not a wallet');
-  return false
-}
-
 async function getOwner(provider: any, nftItem: NftItem) {
-  let ret;
   const nftContract = new ethers.Contract(nftItem.contractAddress, erc721.abi, provider);
   // console.log('nftContract', nftContract)
   return await nftContract.ownerOf(nftItem.nftData.token_id);
-  console.log('getOwner ret', ret);
 }
 
-export async function getListData(
-  provider: any, nftItem?: NftItem
-) : Promise<{price: BigNumber | undefined, maxDur: BigNumber | undefined}> {
-  if(!nftItem || !provider) return {price: undefined, maxDur: undefined};
-  const contract = new ethers.Contract(mktPlace.address, mktPlace.abi, provider);
-  console.log('contract in getList', contract.address);
-  const maxDur = await contract.getPrice(nftItem.contractAddress, nftItem.nftData.token_id);
-  const price = await contract.getMaxDuration (nftItem.contractAddress, nftItem.nftData.token_id);
-  return {price, maxDur};
-}
-
-const checkIsListedByReceipt = async(provider: any, receiptId: BigNumber) => {
-  const mktPlaceContract = new ethers.Contract(mktPlace.address, mktPlace.abi, provider);
-  const nftObj = await mktPlaceContract.getNFTbyReceipt(receiptId);
-  console.log('nftByReceipt', nftObj);
-  const maxDur = await mktPlaceContract.getMaxDuration(nftObj.contractAddress, nftObj.tokenId);
-  console.log('maxDur', maxDur.toString(), maxDur.gt(0));
-  return maxDur.gt(0);
-}
 
 const CloseButton = () => {
   return (
@@ -196,7 +148,11 @@ export const NFTDialog = ({
           return
         }
         if(holder == mktPlace.address) { 
-          const { maxDur } : { maxDur: BigNumber | undefined } = await getListData(library, nftItem);
+          const { maxDur } : { maxDur: BigNumber | undefined } = await getListData(
+            library,
+            nftItem?.contractAddress,
+            BigNumber.from(nftItem?.nftData.token_id)
+          );
           if(maxDur) setIsListed(true);
           if(maxDur?.eq(0)) setIsListed(false);
           return;
@@ -268,7 +224,7 @@ export const NFTDialog = ({
                 {!isOwned && !isListed && 
                   <DialogNotOwnedNotListedDescription />} {/* not available for rent*/}
                 {isOwned && isListed && isReceipt && !isRented_Out && 
-                  <DialogOwnedListedDescription nftItem={nftItem}/>} {/* owned/listed by signer/not rented out */}
+                  <DialogOwnedListedDescription nftItem={nftItem} setIsNFTOpen={setIsNFTOpen}/>} {/* owned/listed by signer/not rented out */}
                 {isOwned && !isListed && !isReceipt && 
                   <DialogOwnedNotListedDescription nftItem={nftItem} setIsNFTOpen={setIsNFTOpen} />} {/* owned/not listed by signer/not rented out */}
                 {isOwned && isReceipt && isRented_Out &&

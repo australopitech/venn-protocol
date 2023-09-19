@@ -25,10 +25,25 @@ const deList = async() => {
     console.log(`owner == signer?`, newOwner === signer.address );
 } 
 
-deList();
+// deList();
 
-// const test = () => {
-//     console.log(ethers.utils.id("deList(address,uint256)"));
-// }
+const getListData = async() => {
+    if(!provider) throw new Error('missing env')
+    const mktPlaceContract = new ethers.Contract(mktplace.address, mktplace.abi, provider);
+    const maxDur = await mktPlaceContract.getMaxDuration(nft.address, 9);
+    console.log(maxDur.toString());
+}
 
-// test();
+// getListData();
+
+const test = () => {
+    // console.log(ethers.utils.id("deList(address,uint256)"));
+    // console.log(mktplace.address);
+    // console.log(nft.address);
+    // console.log(ethers.utils.id("getMaxduration(address,uint256)"))
+    // console.log(ethers.utils.id("getPrice(address,uint256)"))
+    console.log(ethers.utils.id("isApprovedForAll(address,address)"))
+
+}
+
+test();

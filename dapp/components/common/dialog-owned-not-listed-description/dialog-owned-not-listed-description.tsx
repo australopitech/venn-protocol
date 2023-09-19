@@ -62,13 +62,14 @@ export const DialogOwnedNotListedDescription = ({
 }: DialogOwnedNotListedDescriptionProps) => {
   // const provider = useProvider();
   const [price, setPrice] = useState<number>(0);
-  const [duration, setDuration] = useState<number>(0);
+  const [duration, setDuration] = useState<number>();
   const [isPriceInvalid, setIsPriceInvalid] = useState<boolean>(false);
   const [isDurationInvalid, setIsDurationInvalid] = useState<boolean>(false);
   // const [isLoading, setIsLoading] = useState<boolean>(false);
   const listButtonText = "List it!";
   const approveButtonText = "Approve Listing";
-  const [buttonText, setButtonText] = useState<string>("loading...");
+  const loadingText = "loading...";
+  const [buttonText, setButtonText] = useState<string>();
   const signer = useSigner();
 
   const isApproved = useIsApproved(nftItem);
@@ -79,7 +80,7 @@ export const DialogOwnedNotListedDescription = ({
   useEffect(() => {
     if(isApproved) setButtonText(listButtonText);
     else setButtonText(approveButtonText)
-  }, [])
+  }, [isApproved])
   
   const handlePriceChange = (e: any) => {
     let numValue = parseInt(e.target.value);
@@ -106,9 +107,9 @@ export const DialogOwnedNotListedDescription = ({
     }
     console.log('numValue is ', numValue)
     // If value is negative or not a number, set it to 0
-    if ((numValue < 0 || isNaN(numValue)) ) {
+    if ((numValue <= 0 || isNaN(numValue)) ) {
       setIsDurationInvalid(true);
-      setDuration(0);
+      setDuration(undefined);
     } else {
       setIsDurationInvalid(false);
       setDuration(numValue);
@@ -120,40 +121,70 @@ export const DialogOwnedNotListedDescription = ({
       alert('Connect your wallet!')
       return
     }
-    if(buttonText === "loading...") return
+    if(buttonText === loadingText) return
     if(!nftItem) {
       console.log('error: no nft found');
       return
     }
-    if(isPriceInvalid || isDurationInvalid) {
-      alert('Set valid values for price and max duration!');
-      return
-    }
-    setButtonText('loading...');
+    
+
+    let error = null;
+    let txReceipt;
+    /** approval call */
     if(!isApproved) {
-      await approve(
-        signer,
-        nftItem.contractAddress,
-        BigNumber.from(nftItem.nftData.token_id),
-        mktPlace.address
-      );
+      setButtonText(loadingText);
+      try {
+        txReceipt = await approve(
+          signer,
+          nftItem.contractAddress,
+          BigNumber.from(nftItem.nftData.token_id),
+          mktPlace.address
+        );  
+      } catch (err) {
+        error = err;
+        console.log(err);
+        alert('approval unsuccessful');
+        setButtonText(approveButtonText);
+        return
+      }
+      console.log('success');
+      console.log('txhash', txReceipt.transactionHash);
+      alert('success');
       setButtonText(listButtonText);
       return
     }
+    /** */
+    if(isPriceInvalid || isDurationInvalid) {
+      // alert('Set valid values for price and max duration!');
+      return
+    }
 
+    /** list call */
+    setButtonText(loadingText);
     const priceInWei = ethers.utils.parseEther(price.toString());
     // const durationInSec = BigNumber.from(duration*24*60*60);
-    await list(
-      signer,
-      nftItem.contractAddress,
-      BigNumber.from(nftItem.nftData.token_id),
-      priceInWei,
-      BigNumber.from(duration)
-    );
-    // setButtonText(defaultButtonText);
+    try {
+      txReceipt = await list(
+        signer,
+        nftItem.contractAddress,
+        BigNumber.from(nftItem.nftData.token_id),
+        priceInWei,
+        BigNumber.from(duration)
+      );  
+    } catch (err) {
+      error = err;
+      console.log(err);
+      alert('Listing failed')
+      setButtonText(listButtonText);
+      return
+    }
+    console.log('success');
+    console.log('txhash', txReceipt.transactionHash);
+    alert('success');
     setIsNFTOpen(false);
   }
 
+  console.log('isApproved?' , isApproved)
   const name = "Awesome NFT #1"
   const description = "This is an awesome NFT uhul."  
 
@@ -166,7 +197,7 @@ export const DialogOwnedNotListedDescription = ({
         <div className={styles['priceInputContainer']}>
           <input 
             className={styles['priceInput']}
-            placeholder="0"
+            placeholder="0.00"
             type="number"
             min="0"
             // value={price}

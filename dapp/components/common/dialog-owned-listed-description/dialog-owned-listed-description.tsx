@@ -2,13 +2,15 @@ import React, { useEffect, useState } from 'react';
 import styles from './dialog-owned-listed-description.module.css';
 import classNames from 'classnames';
 import { ethers, BigNumber } from 'ethers';
-import { getListData } from '../nft-dialog/nft-dialog';
-import { useSigner } from '@usedapp/core';
+import { useSigner, useEthers } from '@usedapp/core';
 import { NftItem } from '@/types/types';
-import { delist } from '@/utils/call';
+import { delist  } from '@/utils/call';
+import { getListData, getNFTByReceipt } from '@/utils/utils';
+import receiptsContract from '../../../utils/contractData/ReceiptNFT.json';
 
 export interface DialogOwnedListedDescriptionProps {
-    nftItem?: NftItem;
+  setIsNFTOpen?: any
+  nftItem?: NftItem;
 }
 
 // function EditableInput() {
@@ -67,6 +69,7 @@ const WarningIcon = () => {
 }
 
 export const DialogOwnedListedDescription = ({ 
+  setIsNFTOpen,
   nftItem
 }: DialogOwnedListedDescriptionProps) => {
   // const provider = useProvider();
@@ -75,21 +78,36 @@ export const DialogOwnedListedDescription = ({
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [rentPrice, setRentPrice] = useState<BigNumber>();
   const [maxDuration, setMaxDuration] = useState<BigNumber>();
-  
+  const { library } = useEthers();
   const signer = useSigner();
 
   console.log('signer', signer);
   
-  // console.log('rentPrice', rentPrice)
-  // console.log('maxDuration', maxDuration)
+  console.log('rentPrice', rentPrice?.toString())
+  console.log('maxDuration', maxDuration?.toString())
+
   useEffect(() => { 
     const resolveListData = async() => {
-      const {price, maxDur} = await getListData(signer, nftItem);
+      let contractAddress: string | undefined;
+      let tokenId: BigNumber | undefined;
+      if(nftItem?.contractAddress === receiptsContract.address){
+        const nftObj = await getNFTByReceipt(library, BigNumber.from(nftItem.nftData.token_id));
+        contractAddress = nftObj?.contractAddress;
+        tokenId = nftObj?.tokenId;  
+      } else{
+        contractAddress = nftItem?.contractAddress;
+        tokenId = BigNumber.from(nftItem?.nftData.token_id);
+      }
+      const {price, maxDur} = await getListData(
+        library, 
+        contractAddress,
+        tokenId
+      );
       setRentPrice(price);
       setMaxDuration(maxDur);
     }
     resolveListData();
-  }, [signer]);
+  }, [library]);
   
   const handleChange = (e: any) => {
     let numValue = parseInt(e.target.value);
@@ -120,8 +138,19 @@ export const DialogOwnedListedDescription = ({
       return
     }
     setIsLoading(true);
-    await delist(signer, BigNumber.from(nftItem.nftData.token_id));
+    // let error = null;
+    let txReceipt;
+    try {
+      txReceipt = await delist(signer, BigNumber.from(nftItem.nftData.token_id));  
+    } catch (err) {
+      console.log(err);
+      alert('de-listing failed!');
+      setIsLoading(false);
+      return
+    }
+    console.log('txHash', txReceipt.transactionHash);
     setIsLoading(false);
+    setIsNFTOpen(false);
   }
 
   // const name = "Awesome NFT #1"
@@ -141,7 +170,7 @@ export const DialogOwnedListedDescription = ({
         <br />
         {/* <span className={styles.unlistInfo}>Would you like to unlist this NFT?</span> */}
         <div className={styles.unlistContainer}>
-          <button className={styles.unlistButton} onClick={handleButtonClick}> Unlist NFT</button>
+          <button className={styles.unlistButton} onClick={handleButtonClick}> {isLoading? "loading..." : "Unlist NFT"}</button>
           <div className={styles.warning}>
             <WarningIcon /><span className={styles.warningText}>{`If you choose to unlist your NFT, it'll be removed from the market and won't be available for rent again until you relist it.`}</span>
           </div>
