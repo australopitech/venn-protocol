@@ -103,7 +103,7 @@ export const NFTDialog = ({
       if(!nftItem) return
       if(nftItem.contractAddress === receipts.address) return true;
       else return false;
-    }, [])
+    }, []);
 
     useEffect(() => {
       const fetchHolder = async () => {
@@ -112,7 +112,7 @@ export const NFTDialog = ({
 
       fetchHolder();
 
-    }, []);
+    }, []); /* add `library` as dep */
 
     /** - verifica se eh receipt
      *  - identifica o nft relacionado e verifica o holder
@@ -162,7 +162,7 @@ export const NFTDialog = ({
 
       resolveIsListed();
 
-    }, [holder]);
+    }, [holder, isReceipt]);
 
     useEffect(() => {
       const resolveIsRental = async () => {

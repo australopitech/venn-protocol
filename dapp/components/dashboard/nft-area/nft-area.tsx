@@ -6,6 +6,7 @@ import { useState } from 'react';
 import { useAddressData, useAddressNfts } from '../../../hooks/address-data';
 import { NftItem, FetchNftDataResponse } from '../../../types/types';
 import { fetchAddressData } from '@/utils/frontendUtils';
+import { BigNumber } from 'ethers';
 
 export interface NftAreaProps {
   nftAreaGridTemplate?: string;
@@ -128,6 +129,8 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
                 nft.nftData?.external_data?.image
               }
               name={nft.nftData?.external_data?.name}
+              contractAddress={nft.contractAddress}
+              tokenId={BigNumber.from(nft.nftData.token_id)}
               price={0}
               isRented={false}
               expireDate={'0'}

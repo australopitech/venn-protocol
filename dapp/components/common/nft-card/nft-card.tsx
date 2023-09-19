@@ -1,10 +1,18 @@
 import Image from 'next/image';
 import styles from './nft-card.module.css';
 import classNames from 'classnames';
+import { ethers } from 'ethers';
+import { useMemo, useEffect, useState } from 'react';
+import { BigNumber } from 'ethers';
+import { useEthers } from '@usedapp/core';
+import { ownerOf, resolveIsListed, getListData } from '@/utils/utils';
+import receiptsContract from '../../../utils/contractData/ReceiptNFT.json';
 
 export interface NftCardProps {
   imageURI: string;
   name: string;
+  contractAddress: string;
+  tokenId: BigNumber;
   price?: number; 
   isRented?: boolean;
   expireDate?: string;
@@ -14,13 +22,49 @@ export interface NftCardProps {
 
 export default function NftCard ({ 
   imageURI, 
-  name, 
-  price, 
+  name,
+  contractAddress,
+  tokenId, 
   isRented, 
   expireDate, 
   currentPage,
   onClick
 }: NftCardProps) {
+  
+  const { library } = useEthers();
+  const [holder, setHolder] = useState<string>();
+  const [isListed, setIsListed] = useState<string>();
+  const [rentPrice , setRentPrice] = useState<string>();
+  
+  const isReceipt = useMemo(() => {
+    // if(!nftItem) return
+    if(contractAddress === receiptsContract.address) return true;
+    else return false;
+  }, []);
+
+  useEffect(() => {
+    const fetchHolder = async () => {
+      setHolder(await ownerOf(library, contractAddress, tokenId));
+    }
+
+    fetchHolder();
+
+  }, [library]);
+
+  useEffect(() => {
+    resolveIsListed(library, setIsListed, isReceipt, contractAddress, tokenId, holder);
+  }, [library, holder, isReceipt]);
+
+  useEffect(() => {
+    const resolvePrice = async() => {
+      const { price }  = await getListData(library, contractAddress, tokenId);
+      if(price) setRentPrice(ethers.utils.formatEther(price));
+    }
+
+    resolvePrice();
+  }, [library])
+
+  
   return (
     <div className={classNames(styles.nftCardContainer, currentPage === 'market' ? styles.nftCardMarketContainer : '')}>
       <div className={styles.nftCardImageContainer} onClick={onClick}>
@@ -28,7 +72,7 @@ export default function NftCard ({
       </div>
       <div className={styles.nftCardInfo}>
         <span>{name}</span>
-        {price
+        {isListed
           ? (isRented
               ? <span className={styles.rented}>
                   {/* {`Rent expires in ${expireDate || 'NaN'}`} */}
@@ -37,12 +81,12 @@ export default function NftCard ({
               : <span className={styles.listed}>
                   Rent price:
                   <span className={styles.price}>
-                    {`${price} ETH`}
+                    {`${rentPrice} ETH`}
                   </span>
                 </span>
             )
           : <span className={styles.notListed}>
-              {/* Not listed */}
+              Not listed
             </span>
         }
       </div> 

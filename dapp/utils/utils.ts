@@ -94,7 +94,7 @@ export async function getListData(
     // console.log('contract in getList', contract.address);
     const price = await contract.getPrice(nftContractAddress, tokenId);
     const maxDur = await contract.getMaxDuration (nftContractAddress, tokenId);
-    console.log('price/maxDur', price.toString(), maxDur.toString())
+    // console.log('price/maxDur', price.toString(), maxDur.toString())
     return {price, maxDur};
   }
   
@@ -102,7 +102,7 @@ export async function checkIsListedByReceipt(provider: any, receiptId: BigNumber
     const nftObj = await getNFTByReceipt(provider, receiptId);
     const { maxDur } = await getListData(provider, nftObj.contractAddress, nftObj.tokenId);
     if(!maxDur) return;
-    console.log('maxDur', maxDur.toString(), maxDur.gt(0));
+    // console.log('maxDur', maxDur.toString(), maxDur.gt(0));
     return maxDur.gt(0);
   }
   
@@ -112,3 +112,30 @@ export async function checkIsListedByReceipt(provider: any, receiptId: BigNumber
     const nftObj = await mktPlaceContract.getNFTbyReceipt(receiptId);
     return nftObj;
   }
+
+  export async function resolveIsListed (
+    provider: any,
+    setIsListed: any,
+    isReceipt: boolean,
+    contractAddr: string,
+    tokenId: BigNumber,
+    holder?: string,
+  ) {
+    if(isReceipt) {
+        setIsListed(
+          await checkIsListedByReceipt(provider, tokenId)
+        );
+        return
+      }
+      if(holder == mktPlace.address) { 
+        const { maxDur } : { maxDur: BigNumber | undefined } = await getListData(
+          provider,
+          contractAddr,
+          tokenId
+        );
+        if(maxDur) setIsListed(true);
+        if(maxDur?.eq(0)) setIsListed(false);
+        return;
+      }
+      if(holder) setIsListed(false);
+    }
