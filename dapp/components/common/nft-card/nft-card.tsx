@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 import { useMemo, useEffect, useState } from 'react';
 import { BigNumber } from 'ethers';
 import { useEthers } from '@usedapp/core';
-import { ownerOf, resolveIsListed, getListData } from '@/utils/utils';
+import { ownerOf, resolveIsListed, resolveIsRentedOut, getListData, getNFTByReceipt } from '@/utils/utils';
 import receiptsContract from '../../../utils/contractData/ReceiptNFT.json';
 
 export interface NftCardProps {
@@ -35,7 +35,11 @@ export default function NftCard ({
   const [holder, setHolder] = useState<string>();
   const [isListed, setIsListed] = useState<string>();
   const [rentPrice , setRentPrice] = useState<string>();
+  const [isRentedOut, setIsRentedOut] = useState<boolean>();
   
+  // console.log('library', library);
+  console.log('rentPrice', rentPrice)
+
   const isReceipt = useMemo(() => {
     // if(!nftItem) return
     if(contractAddress === receiptsContract.address) return true;
@@ -57,12 +61,31 @@ export default function NftCard ({
 
   useEffect(() => {
     const resolvePrice = async() => {
-      const { price }  = await getListData(library, contractAddress, tokenId);
+      let _contractAddr;
+      let _tokenId;
+      if(isReceipt){
+        const nftObj = await getNFTByReceipt(library, tokenId);
+        contractAddress = nftObj?.contractAddress;
+        tokenId = nftObj?.tokenId;  
+      } else{
+        _contractAddr = contractAddress;
+        _tokenId = tokenId;
+      }
+      const { price } = await getListData(
+        library, 
+        contractAddress,
+        tokenId
+      );
       if(price) setRentPrice(ethers.utils.formatEther(price));
     }
 
     resolvePrice();
-  }, [library])
+
+  }, [library]);
+
+  useEffect(() => {
+    resolveIsRentedOut(library, setIsRentedOut, isReceipt, tokenId, holder );
+  }, [library, isReceipt, holder]);
 
   
   return (
@@ -73,7 +96,7 @@ export default function NftCard ({
       <div className={styles.nftCardInfo}>
         <span>{name}</span>
         {isListed
-          ? (isRented
+          ? (isRentedOut
               ? <span className={styles.rented}>
                   {/* {`Rent expires in ${expireDate || 'NaN'}`} */}
                   Rented

@@ -7,7 +7,7 @@ dotenv.config();
 const network = 'goerli';
 const pkey = process.env.PRIVATE_KEY;
 const apikey = process.env.INFURA_API_KEY;
-const wallet = '0x088F73ADf40B43c74aEd612FC14186A9d44e7Cce';
+const wallet = '0x8957dBa32B08B904677F6c99994c88d6D39704Ca';
 const rpc = process.env.BASE_GOERLI_PROVIDER;
 const walletSignerKey = process.env.WALLET_SIGNER_KEY;
 const walletSignerAddr = process.env.WALLET_SIGNER_ADDR;
@@ -24,10 +24,10 @@ const checkBal = async () => {
     console.log(ethers.utils.formatEther(bal));
 }
 
-checkBal().catch((error) => {
-    console.error(error);
-    process.exitCode = 1;
-});
+// checkBal().catch((error) => {
+//     console.error(error);
+//     process.exitCode = 1;
+// });
 
 const pubKey_2 = process.env.PUBLIC_KEY_2;
 const sendMoney = async () => {
@@ -40,16 +40,16 @@ const sendMoney = async () => {
     // console.log('recAddr', wallet);
     const tx = {
         from: signer.address,
-        to: '0x088F73ADf40B43c74aEd612FC14186A9d44e7Cce',
-        value: ethers.utils.parseEther('0.002'),
+        to: wallet,
+        value: ethers.utils.parseEther('0.01'),
     }
     const send = await signer.sendTransaction(tx);
     const receipt = await send.wait();
     console.log(receipt);
 }
 
-// sendMoney().catch((error) => {
-//     console.error(error);
-//     process.exitCode = 1;
-// });
+sendMoney().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+});
 

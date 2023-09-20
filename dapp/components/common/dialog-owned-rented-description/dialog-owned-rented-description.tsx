@@ -60,10 +60,10 @@ export const DialogOwnedRentedDescription = ({
       <div className={styles.divider}></div>
       <div className={styles.bodyDescription}>
         <span>
-          This NFT is currently rented to another user and will return to your wallet in
+          This NFT is currently rented to another user.
         </span>
         <span className={styles.timeLeftValue}> 
-          {`${timeLeft} ${timeLeft === 1 ? 'day' : 'days'}`} 
+          Time Left: {`${timeLeft} ${timeLeft === 1 ? 'day' : 'days'}`} 
         </span>
       </div>
       

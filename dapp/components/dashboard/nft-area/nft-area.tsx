@@ -131,7 +131,7 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
               name={nft.nftData?.external_data?.name}
               contractAddress={nft.contractAddress}
               tokenId={BigNumber.from(nft.nftData.token_id)}
-              price={0}
+              // price={0}
               isRented={false}
               expireDate={'0'}
               key={nft.contractAddress + nft.nftData?.token_id}

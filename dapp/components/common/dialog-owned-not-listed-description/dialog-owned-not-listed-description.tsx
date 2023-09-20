@@ -1,4 +1,4 @@
-import React, { use, useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import styles from './dialog-owned-not-listed-description.module.css';
 import classNames from 'classnames';
@@ -24,27 +24,22 @@ let nft: any;
 let _title: string | undefined;
 let _name: string | undefined;
 
-const useIsApproved = (nftItem: NftItem | undefined) => {
-  const {account, library} = useEthers();
-  const [isAppr, setIsAppr] = useState<boolean>();
-  useEffect(() => {
-    const resolveIsApproved = async() => {
-      if(!nftItem) return
-      const contract = new ethers.Contract(nftItem.contractAddress, erc721.abi, library);
-      const approved = await contract.getApproved(BigNumber.from(nftItem.nftData.token_id));
-      const isOperator = await contract.isApprovedForAll(account, mktPlace.address);
-      setIsAppr( approved === mktPlace.address || isOperator);
-    }
-    resolveIsApproved();
-
-  }, [account]);
-
-  return isAppr
+const resolveIsApproved = async(
+  provider: any,
+  setIsAppr: any,
+  nftItem?: NftItem, 
+  account?: string
+) => {
+  if(!nftItem || !account)
+    return
+  const contract = new ethers.Contract(nftItem.contractAddress, erc721.abi, provider);
+  const approved = await contract.getApproved(BigNumber.from(nftItem.nftData.token_id));
+  const isOperator = await contract.isApprovedForAll(account, mktPlace.address);
+  setIsAppr( approved === mktPlace.address || isOperator);
 }
-
 /** TODO:
  * - make component re-render on approval call completion
- * - show generic "listing successful" screen on list call completion
+ * - show generic "listing successful" screen on listing call completion
  * - after call nft data must be refetched in parent component nft-dialog
  */
 
@@ -70,12 +65,19 @@ export const DialogOwnedNotListedDescription = ({
   const approveButtonText = "Approve Listing";
   const loadingText = "loading...";
   const [buttonText, setButtonText] = useState<string>();
+  const [resolver, setResolver] = useState<boolean>(false);
   const signer = useSigner();
+  const {account, library} = useEthers();
+  const [isApproved, setIsApproved] = useState<boolean>();
 
-  const isApproved = useIsApproved(nftItem);
+  // const isApproved = useIsApproved(nftItem);
   console.log('isApproved', isApproved)
 
   console.log('signer', signer)
+
+  useEffect(() => {
+    resolveIsApproved(library, setIsApproved, nftItem, account);
+  }, [account, resolver]);
 
   useEffect(() => {
     if(isApproved) setButtonText(listButtonText);
@@ -83,12 +85,13 @@ export const DialogOwnedNotListedDescription = ({
   }, [isApproved])
   
   const handlePriceChange = (e: any) => {
-    let numValue = parseInt(e.target.value);
-
+    // let numValue = parseInt(e.target.value);
+    let numValue = parseFloat(e.target.value);
     if (e.target.value === '') {
       numValue = 0
     }
     console.log('numValue is ', numValue)
+    console.log('price in wei', (ethers.utils.parseEther(price.toString())).toString())
     // If value is negative or not a number, set it to 0
     if ((numValue < 0 || isNaN(numValue)) ) {
       setIsPriceInvalid(true);
@@ -143,22 +146,28 @@ export const DialogOwnedNotListedDescription = ({
       } catch (err) {
         error = err;
         console.log(err);
-        alert('approval unsuccessful');
+        alert('approval failed');
         setButtonText(approveButtonText);
         return
       }
       console.log('success');
       console.log('txhash', txReceipt.transactionHash);
       alert('success');
-      setButtonText(listButtonText);
+      setResolver(!resolver);
+      // setButtonText(listButtonText);
       return
     }
     /** */
+    console.log('isPriceInvalid', isPriceInvalid)
+    console.log('isDurationInvalid', isDurationInvalid)
     if(isPriceInvalid || isDurationInvalid) {
       // alert('Set valid values for price and max duration!');
       return
     }
-
+    if(!duration){
+      setIsDurationInvalid(true)
+      return;
+    }
     /** list call */
     setButtonText(loadingText);
     const priceInWei = ethers.utils.parseEther(price.toString());
