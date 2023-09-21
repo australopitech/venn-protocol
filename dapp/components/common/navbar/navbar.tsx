@@ -20,7 +20,7 @@ interface ConnectButtonProps {
 export const ConnectButton = ({connectText} : ConnectButtonProps) => {
   const { account, deactivate, activateBrowserWallet } = useEthers()
   // 'account' being undefined means that we are not connected.
-  if (account) return <div className={styles.primaryButton} onClick={() => deactivate()}>Disconnect</div>
+  if (account) return <div className={styles.disconnectButton} onClick={() => deactivate()}>Disconnect</div>
   else return (
     <div className={styles.primaryButton} onClick={() => activateBrowserWallet()}>
     {connectText? connectText : 'Connect Wallet'}

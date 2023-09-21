@@ -80,6 +80,7 @@
 .secondaryButtonSelected,
 .primaryButton,
 .primaryButtonSelected,
+.disconnectButton,
 .iconButton {
   transition: all 0.125s ease 0s;
   cursor: pointer;
@@ -122,6 +123,27 @@
   height: 6px; /* dot size */
   background-color: rgba(93, 93, 93, 0.7); /* dot color */
   border-radius: 50%; /* makes the dot rounded */
+}
+
+.disconnectButton {
+  background: linear-gradient(to right bottom, rgba(87, 87, 87, 0.4), rgb(87, 87, 87, 0.5));
+  transition: all 0.125s ease 0s;
+  padding: 12px;
+  border-radius: 18px;
+  /* color: rgb(251, 50, 141); */
+  /* color: rgb(255, 101, 160); */
+  /* color: #EFE6EF; */
+  /* color: rgba(233, 125, 177, 0.8); */
+  color: rgba(255, 255, 255, 0.9);
+  /* color: #5E5E5D; */
+}
+
+.disconnectButton:hover {
+  transform: scale(1.05); 
+}
+
+.disconnectButton:active { 
+  transform: scale(0.95); 
 }
 
 /* .secondaryButtonSelected {
