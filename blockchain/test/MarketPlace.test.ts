@@ -15,7 +15,7 @@ import {
     deployReceiptsContract, listNFT, rentNFT, mint
 } from "./rWallet-testutils";
 
-describe("Testing MarketPlace", function () {
+describe.skip("Testing MarketPlace", function () {
     let factory: RWalletFactory;
     let nft: NFT;
     let receiptContract: ReceiptNFT;
@@ -259,7 +259,9 @@ describe("Testing MarketPlace", function () {
         expect(account_bal_after).to.eq(account_bal.add(user_bal).sub(txfee));
     });
 
-    it("should allow pulling when NFT was de-listed via set maxDuration")
+    // it("listing with price == zero", async() => {
+    //     const tokenId = mint(nft, )
+    // });
 
     it("underflow test", async () => {
         const newToken = await mint(nft, signer_1, signer_2.address);

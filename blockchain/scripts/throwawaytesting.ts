@@ -51,7 +51,20 @@ const accImpl = async() => {
     console.log(await factContract.accountImplementation());
 } 
 
-accImpl();
+// accImpl();
+
+const isWallet = async() => {
+    if(!base_rpc) throw new Error('missing env');
+
+    const account = '0x8957dBa32B08B904677F6c99994c88d6D39704Ca';
+    const provider = new ethers.providers.JsonRpcProvider(base_rpc);
+    const factContract = new ethers.Contract(factory.address, factory.abi, provider);
+    const iswallet = await factContract.isWallet(account);
+    console.log('is wallet?', iswallet);
+    
+}
+
+isWallet();
 
 // const main = async () => {
 //     if(!pkey || !apikey) throw new Error('missing env');
