@@ -8,6 +8,7 @@ import { NftItem } from '@/types/types';
 import mktPlace from '../../../utils/contractData/MarketPlace.json';
 import receiptsContract from '../../../utils/contractData/ReceiptNFT.json';
 import { isWallet, getListData, getNFTByReceipt } from '../../../utils/utils';
+import Router from 'next/router';
 
 export interface DialogNotOwnedListedDescriptionProps {
   index?: number;
@@ -138,7 +139,8 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
       }
       alert('tx successful');
       setButtonText(defaultButtonText);
-      setIsNFTOpen(false);
+      // setIsNFTOpen(false);
+      Router.reload();
     }
 
     console.log('isWalletAccount', isWalletAccount);

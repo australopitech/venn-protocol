@@ -6,6 +6,7 @@ import { useSigner, useEthers } from '@usedapp/core';
 import { NftItem } from '@/types/types';
 import { delist  } from '@/utils/call';
 import { getListData, getNFTByReceipt } from '@/utils/utils';
+import Router from 'next/router';
 import receiptsContract from '../../../utils/contractData/ReceiptNFT.json';
 
 export interface DialogOwnedListedDescriptionProps {
@@ -150,7 +151,8 @@ export const DialogOwnedListedDescription = ({
     }
     console.log('txHash', txReceipt.transactionHash);
     setIsLoading(false);
-    setIsNFTOpen(false);
+    // setIsNFTOpen(false);
+    Router.reload();
   }
 
   // const name = "Awesome NFT #1"

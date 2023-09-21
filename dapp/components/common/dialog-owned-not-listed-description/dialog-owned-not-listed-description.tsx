@@ -10,6 +10,7 @@ import { list, approve } from '@/utils/call';
 import { useSigner, useEthers } from '@usedapp/core';
 import mktPlace from '../../../utils/contractData/MarketPlace.json';
 import erc721 from '../../../utils/contractData/ERC721.artifact.json';
+import Router from 'next/router';
 
 export interface DialogOwnedNotListedDescriptionProps {
     className?: string;
@@ -130,8 +131,6 @@ export const DialogOwnedNotListedDescription = ({
       return
     }
     
-
-    let error = null;
     let txReceipt;
     /** approval call */
     if(!isApproved) {
@@ -144,7 +143,6 @@ export const DialogOwnedNotListedDescription = ({
           mktPlace.address
         );  
       } catch (err) {
-        error = err;
         console.log(err);
         alert('approval failed');
         setButtonText(approveButtonText);
@@ -168,6 +166,7 @@ export const DialogOwnedNotListedDescription = ({
       setIsDurationInvalid(true)
       return;
     }
+
     /** list call */
     setButtonText(loadingText);
     const priceInWei = ethers.utils.parseEther(price.toString());
@@ -181,7 +180,6 @@ export const DialogOwnedNotListedDescription = ({
         BigNumber.from(duration)
       );  
     } catch (err) {
-      error = err;
       console.log(err);
       alert('Listing failed')
       setButtonText(listButtonText);
@@ -190,7 +188,8 @@ export const DialogOwnedNotListedDescription = ({
     console.log('success');
     console.log('txhash', txReceipt.transactionHash);
     alert('success');
-    setIsNFTOpen(false);
+    // setIsNFTOpen(false);
+    Router.reload();
   }
 
   console.log('isApproved?' , isApproved)

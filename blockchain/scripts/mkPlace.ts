@@ -72,7 +72,7 @@ const test = () => {
     
     // console.log(ethers.utils.id('getApproved(uint256)'))
     // console.log(ethers.utils.id("isApprovedForAll(address,address)"))
-    // console.log(ethers.utils.id("ownerOf(uint256)"));
+    console.log(ethers.utils.id("ownerOf(uint256)"));
     // console.log(ethers.utils.formatEther(10040000000000));
 
 }
