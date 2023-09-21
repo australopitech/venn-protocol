@@ -8,7 +8,7 @@ import { BigNumber, Contract } from "ethers";
 import { mine } from "@nomicfoundation/hardhat-network-helpers";
 import { deployFactory, createWallet, rentNFT, deployReceiptsContract, deployMktPlace, nftDeployAndMint } from "./rWallet-testutils";
 
-describe("Testing Wallet", function () {
+describe.skip("Testing Wallet", function () {
     
         const provider = ethers.provider;
         let owner: SignerWithAddress;

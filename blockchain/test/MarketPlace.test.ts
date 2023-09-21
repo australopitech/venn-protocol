@@ -15,7 +15,7 @@ import {
     deployReceiptsContract, listNFT, rentNFT, mint
 } from "./rWallet-testutils";
 
-describe.skip("Testing MarketPlace", function () {
+describe("Testing MarketPlace", function () {
     let factory: RWalletFactory;
     let nft: NFT;
     let receiptContract: ReceiptNFT;
@@ -259,9 +259,21 @@ describe.skip("Testing MarketPlace", function () {
         expect(account_bal_after).to.eq(account_bal.add(user_bal).sub(txfee));
     });
 
-    // it("listing with price == zero", async() => {
-    //     const tokenId = mint(nft, )
-    // });
+    it("should allow listing and renting with price == zero", async() => {
+        const newToken = await mint(nft, signer_1, signer_2.address );
+        await listNFT(signer_2, mktPlace, nft, newToken, 0, 10);
+        expect(await mktPlace.getMaxDuration(nft.address, newToken)).to.eq(10);
+        expect(await mktPlace.getPrice(nft.address, newToken)).to.eq(0);
+        expect(await nft.ownerOf(newToken)).to.eq(mktPlace.address);
+        const receiptId = await mktPlace.getReceipt(nft.address, newToken);
+        expect(await receiptContract.ownerOf(receiptId)).to.eq(signer_2.address);
+
+        await rentNFT(wallet, owner, mktPlace, nft.address, newToken, 2, 0);
+        expect(await nft.ownerOf(newToken)).to.eq(wallet.address);
+        const rentals = await wallet.getRentals();
+        console.log('rentals', rentals);
+
+    });
 
     it("underflow test", async () => {
         const newToken = await mint(nft, signer_1, signer_2.address);
