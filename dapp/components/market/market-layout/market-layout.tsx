@@ -7,6 +7,7 @@ import NftCard from '@/components/common/nft-card/nft-card';
 import { NFTDialog } from '@/components/common/nft-dialog/nft-dialog';
 import { CollectionDialog } from '@/components/common/collection-dialog/collection-dialog';
 import Link from 'next/link';
+import { ethers, BigNumber } from 'ethers';
 // import Swipe from 'react-swipe';
 
 interface TrendingCollectionsSliderProps {
@@ -119,7 +120,9 @@ const ContentSlider = ({ title, contentType, contentSliderData, setIsOpen }: Con
             contentType === "nft" 
             ? <NftCard 
                 imageURI={data.uri} 
-                name={data.name} 
+                name={data.name}
+                contractAddress={ethers.constants.AddressZero}
+                tokenId={BigNumber.from(0)}
                 price={data.price}
                 isRented={data.isRented}
                 expireDate={data.expireDate}
