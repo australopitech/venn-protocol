@@ -218,7 +218,9 @@ export const NFTDialog = ({
                 {!isOwned && isRental_signer &&
                   <DialogNotOwnedBorrowedDescription />} {/* rented by signer */}
                 {!isOwned && isListed && !isRented_Out &&
-                  <DialogNotOwnedListedDescription nftItem={nftItem} setIsNFTOpen={setIsNFTOpen} />}   {/* available for rent */}
+                  <DialogNotOwnedListedDescription 
+                  nftItem={nftItem} setIsNFTOpen={setIsNFTOpen} isReceipt={isReceipt}
+                   />}   {/* available for rent */}
                 {!isOwned && isListed && isRented_Out &&
                  <DialogNotOwnedBorrowedDescription/>}
                 {!isOwned && !isListed && 

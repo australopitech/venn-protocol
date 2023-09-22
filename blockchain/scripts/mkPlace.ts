@@ -163,19 +163,19 @@ const rent = async () => {
     console.log('new owner == wallet?', newOwner == WALLET_ADDR); 
 }
 
-rent();
+// rent();
 
 const test = () => {
     // console.log(ethers.utils.id("deList(address,uint256)"));
-    // console.log(ethers.utils.id("getMaxduration(address,uint256)"))
-    // console.log(ethers.utils.id("getPrice(address,uint256)"))
-    // console.log(ethers.utils.id("getNFTbyReceipt(uint256)"));
-    console.log(ethers.utils.id("rentNFT(address,uint256,uint256)"));
+    console.log(ethers.utils.id("getMaxduration(address,uint256)"))
+    console.log(ethers.utils.id("getPrice(address,uint256)"))
+    console.log(ethers.utils.id("getNFTbyReceipt(uint256)"));
+    // console.log(ethers.utils.id("rentNFT(address,uint256,uint256)"));
     // console.log(ethers.utils.id('getPullFee(uint256)'))
     // console.log(ethers.utils.id('serviceAliquot()'))
-    // console.log(ethers.utils.id('getReceipt(address,uint256)'))
-    // console.log(ethers.utils.id('getBalance(address)'))
-    // console.log(ethers.utils.id('isWallet(address)'))
+    console.log(ethers.utils.id('getReceipt(address,uint256)'))
+    console.log(ethers.utils.id('getBalance(address)'))
+    console.log(ethers.utils.id('isWallet(address)'))
     // console.log(ethers.utils.id('listNFT(address,uint256,uint256,uint256)'))
     // console.log(ethers.utils.id('deList(address,uint256)'))
     // console.log(ethers.utils.id('pullAsset(address,uint256)'))
@@ -191,4 +191,4 @@ const test = () => {
 
 }
 
-// test()
+test()

@@ -15,6 +15,7 @@ export interface DialogNotOwnedListedDescriptionProps {
   activeAccount?: string;
   nftItem?: NftItem;
   setIsNFTOpen?: any;
+  isReceipt?: boolean;
 }
 
 async function getFee(provider: any) : Promise<BigNumber> {
@@ -31,7 +32,7 @@ async function getFee(provider: any) : Promise<BigNumber> {
  * This component was created using Codux's Default new component template.
  * To create custom component templates, see https://help.codux.com/kb/en/article/kb16522
  */
-export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem, setIsNFTOpen }: DialogNotOwnedListedDescriptionProps) => {
+export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem, setIsNFTOpen, isReceipt }: DialogNotOwnedListedDescriptionProps) => {
   const [duration, setDuration] = useState<number | undefined>();
   const [isDurationInvalid, setIsDurationInvalid] = useState<boolean | undefined>(false);
   // const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -43,6 +44,7 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
   const signer = useSigner();
   const { account, library } = useEthers(); 
   // const nft = {maxDuration: 10, price: 0.01}
+
 
   useEffect(() => {
     const resolveIsWallet = async() => {
@@ -122,12 +124,23 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
       const rentValue = rentPrice.mul(duration);
       // console.log('aliq', aliq);
       const fee = rentValue.mul(aliq).div(10000);
+      let contractAddr;
+      let tokenId;
+      if(isReceipt){
+        const mkt = new ethers.Contract(mktPlace.address, mktPlace.abi, library);
+        const nftObj = await mkt.getNFTbyReceipt(BigNumber.from(nftItem.nftData.token_id));
+        contractAddr = nftObj.contractAddress;
+        tokenId = nftObj.tokenId;
+      } else {
+        contractAddr = nftItem.contractAddress;
+        tokenId = BigNumber.from(nftItem.nftData.token_id);
+      }
       let txReceipt;
       try {
         txReceipt = await rent(
           signer,
-          nftItem.contractAddress,
-          BigNumber.from(nftItem.nftData.token_id), 
+          contractAddr,
+          tokenId, 
           BigNumber.from(duration),
           rentValue.add(fee) 
         );
