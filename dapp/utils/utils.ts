@@ -66,17 +66,18 @@ export async function isWallet(provider: any, address: string) {
 
 export async function checkIsRental(
     provider: any,
-    accountAddr: string | undefined,
-    nftItem: NftItem | undefined
+    accountAddr?: string,
+    contractAddr?: string,
+    tokenId?: BigNumber
 ) {
-    if(!accountAddr || !nftItem) return
+    if(!accountAddr || !contractAddr || !tokenId) return
     if(!provider) {
       console.log("error: no provider found");
       return
     }
     if(await isWallet(provider, accountAddr)) {
       const wallet = new ethers.Contract(accountAddr, walletAbi.abi, provider);
-      const ret = await wallet.isRental(nftItem.contractAddress, BigNumber.from(nftItem.nftData.token_id));
+      const ret = await wallet.isRental(contractAddr, tokenId);
       console.log('isRental', ret);
       return ret
     }

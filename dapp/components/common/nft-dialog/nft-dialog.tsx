@@ -168,7 +168,11 @@ export const NFTDialog = ({
       const resolveIsRental = async () => {
         if(holder && account){
           if(holder == account) {
-            setIsRental_signer(await checkIsRental(library, account, nftItem));
+            setIsRental_signer(await checkIsRental(
+              library, 
+              account, nftItem?.contractAddress, 
+              BigNumber.from(nftItem?.nftData.token_id)
+            ));
             return
           }
           setIsRental_signer(false);

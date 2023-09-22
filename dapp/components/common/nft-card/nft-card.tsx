@@ -5,7 +5,7 @@ import { ethers } from 'ethers';
 import { useMemo, useEffect, useState } from 'react';
 import { BigNumber } from 'ethers';
 import { useEthers } from '@usedapp/core';
-import { ownerOf, resolveIsListed, resolveIsRentedOut, getListData, getNFTByReceipt } from '@/utils/utils';
+import { ownerOf, resolveIsListed, resolveIsRentedOut, getListData, getNFTByReceipt, checkIsRental } from '@/utils/utils';
 import receiptsContract from '../../../utils/contractData/ReceiptNFT.json';
 
 export interface NftCardProps {
@@ -14,8 +14,9 @@ export interface NftCardProps {
   contractAddress: string;
   tokenId: BigNumber;
   price?: number; 
-  isRented?: boolean;
+  // isRented?: boolean;
   expireDate?: string;
+  address?: string;
   currentPage?: string | '';
   onClick: any;
 }
@@ -25,20 +26,23 @@ export default function NftCard ({
   name,
   contractAddress,
   tokenId, 
-  isRented, 
-  expireDate, 
+  // isRented, 
+  expireDate,
+  address, 
   currentPage,
   onClick
 }: NftCardProps) {
   
-  const { library } = useEthers();
+  const { library, account } = useEthers();
   const [holder, setHolder] = useState<string>();
   const [isListed, setIsListed] = useState<string>();
   const [rentPrice , setRentPrice] = useState<string>();
   const [isRentedOut, setIsRentedOut] = useState<boolean>();
+  const [isRental, setIsRental] = useState<boolean>();
   
   // console.log('library', library);
-  console.log('rentPrice', rentPrice)
+  // console.log('rentPrice', rentPrice)
+  console.log('tokenid/isrental',tokenId.toString(),isRental)
 
   const isReceipt = useMemo(() => {
     // if(!nftItem) return
@@ -54,6 +58,29 @@ export default function NftCard ({
     fetchHolder();
 
   }, [library]);
+
+  useEffect(() => {
+    const resolveIsRental = async() => {
+      if(address) {
+        setIsRental(await checkIsRental(
+          library,
+          address,
+          contractAddress,
+          tokenId
+        ));
+        return
+      }
+      if(account)
+        setIsRental( await checkIsRental(
+          library,
+          account,
+          contractAddress,
+          tokenId  
+        ));
+    }
+
+    resolveIsRental();
+  }, [library, account]);
 
   useEffect(() => {
     resolveIsListed(library, setIsListed, isReceipt, contractAddress, tokenId, holder);

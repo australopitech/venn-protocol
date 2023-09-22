@@ -13,6 +13,7 @@ export interface NftAreaProps {
   setIsNFTOpen: any;
   setSelectedNFT: any;
   nftFetchData?: FetchNftDataResponse;
+  address?: string;
 }
 
 interface ToggleSwitchProps {
@@ -70,7 +71,7 @@ const ToggleSwitch = ({ onToggle }: ToggleSwitchProps) => {
   )
 }
 
-export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchData, setSelectedNFT}: NftAreaProps) {
+export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchData, setSelectedNFT, address}: NftAreaProps) {
   const [toggleState, setToggleState] = useState<boolean>(false);
 
   const handleToggle = (state: boolean) => {
@@ -132,7 +133,8 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
               contractAddress={nft.contractAddress}
               tokenId={BigNumber.from(nft.nftData.token_id)}
               // price={0}
-              isRented={false}
+              // isRented={false}
+              address={address}
               expireDate={'0'}
               key={nft.contractAddress + nft.nftData?.token_id}
               onClick={() => {handleOnCardClick(i)} }
