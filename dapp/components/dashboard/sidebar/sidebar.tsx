@@ -15,6 +15,13 @@ export interface SideBarProps {
   address?: string;
 }
 
+
+const copyAddress = async (address?: string) => {
+  if(!address) return;
+  await navigator.clipboard.writeText(address);
+  // setTooltipMessage('Address copied');
+}
+
 const CopyIcon = () => {
   return (
     <svg fill="#6d6d6d" height="20px" viewBox="0 0 82 100" width="20px" xmlns="http://www.w3.org/2000/svg">
@@ -35,7 +42,7 @@ const Profile = ({ address }: {address?: string}) => {
           {/* 0x123...4567 */}
           {compactString(address)}
         </span>
-        <div className={styles.copyIcon}>
+        <div className={styles.copyIcon} onClick={() => copyAddress(address)}>
           <CopyIcon />
         </div>
       </div>
