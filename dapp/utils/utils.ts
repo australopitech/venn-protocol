@@ -107,6 +107,21 @@ export async function getListData(
     // console.log('price/maxDur', price.toString(), maxDur.toString())
     return {price, maxDur};
 }
+
+export async function getEndTime(
+    provider: any, 
+    account?: string, 
+    nftItem?: NftItem
+) {
+    if(!account || !nftItem) return
+    const wallet = new ethers.Contract(account, walletAbi.abi, provider );
+    const rentals = await wallet.getRentals();
+    const index = await wallet.getTokenIndex(
+        nftItem.contractAddress,
+        BigNumber.from(nftItem.nftData.token_id)
+    );
+    if(rentals) return rentals[index].endTime;
+  }
   
 export async function checkIsListedByReceipt(
     provider: any,

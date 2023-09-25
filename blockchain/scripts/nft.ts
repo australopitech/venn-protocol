@@ -31,11 +31,11 @@ const checkSupply = async () => {
 const getOwner = async() => {
     const provider = new ethers.providers.JsonRpcProvider(rpc)
     const contract  = new ethers.Contract(nft.address, nft.abi, provider);
-    const owner = await contract.ownerOf(2);
+    const owner = await contract.ownerOf(0);
     console.log(owner);
     console.log('address',nft.address)
 }
-// getOwner()
+getOwner()
 
 const test = async () => {
     if(!rpc) throw new Error("missing env");
@@ -104,7 +104,7 @@ const eoaTransfer = async (tokenId: number) =>{
     console.log('new owner == recipient', newOwner == recipient);
     
 }
-eoaTransfer(18);
+// eoaTransfer(18);
 
 const batchEOAtransfer = async(nZero: number, n: number) => {
     let i;

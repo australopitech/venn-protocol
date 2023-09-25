@@ -1,14 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import styles from './dialog-owned-rented-description.module.css';
-import { useSigner } from '@usedapp/core';
+import { useSigner, useEthers } from '@usedapp/core';
 import { delist } from '@/utils/call';
 import { NftItem } from '@/types/types';
 import { BigNumber } from 'ethers';
+import { getEndTime, getNFTByReceipt, ownerOf } from '@/utils/utils';
+import { useTimestamp } from '@/hooks/block-data';
 
 export interface DialogOwnedRentedDescriptionProps {
   isListed?: boolean;
   nftItem?: NftItem;
 }
+
+const dayCutOff = 82800; // 23 h;
+const hourCutOff = 3540 // 59 min;
+
 
 const WarningIcon = () => {
   return (
@@ -31,13 +37,23 @@ export const DialogOwnedRentedDescription = ({
   isListed,
   nftItem
 }: DialogOwnedRentedDescriptionProps) => {
-  // const provider = useProvider();
   const [timeLeft, setTimeLeft] = useState<number>(0);
-  // const [title, setTitle] = useState<string>();
-  // const [name, setName] =  useState<string>();
-  // const [endTime, setEndTime] = useState<number>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const signer = useSigner();
+  const { account, library, chainId } = useEthers();
+
+  const timestamp = useTimestamp({ chainId: chainId, isStatic: false, refresh: 10});
+  
+  useEffect(() => {
+    const resolveTimeLeft = async() => {
+      const nftObj = await getNFTByReceipt(library, BigNumber.from(nftItem?.nftData.token_id))
+      const nftHolder = await ownerOf(library, nftObj.contractAddress, nftObj.tokenId);
+      const endTime = await getEndTime(library, nftHolder, nftItem);
+      if(endTime && timestamp) setTimeLeft(endTime - timestamp)
+    }
+
+    resolveTimeLeft();
+  }, [timestamp]);
 
   const handleButtonClick = async() => {
     if(!signer) {
@@ -63,7 +79,15 @@ export const DialogOwnedRentedDescription = ({
           This NFT is currently rented to another user.
         </span>
         <span className={styles.timeLeftValue}> 
-          Time Left: {`${timeLeft} ${timeLeft === 1 ? 'day' : 'days'}`} 
+          Time Left: {
+          timeLeft >= dayCutOff
+          ? `${timeLeft/86400} ${timeLeft/86400 <= 2 ? 'day' : 'days'}`
+          : timeLeft >= hourCutOff
+            ? `${timeLeft/3600} ${timeLeft/3600 <= 2 ? 'hour' : 'hours'}`
+            : timeLeft >= 60
+              ? `${timeLeft/60} ${timeLeft <= 120 ? 'minute' : 'minutes' }`
+              : timeLeft > 0 ? 'less than a minute' : 'expired'
+          } 
         </span>
       </div>
       

@@ -225,7 +225,7 @@ export const NFTDialog = ({
                   <DialogNotOwnedListedDescription 
                   nftItem={nftItem} setIsNFTOpen={setIsNFTOpen} isReceipt={isReceipt}
                    />}   {/* available for rent */}
-                {!isOwned && isListed && isRented_Out &&
+                {!isOwned && isRented_Out &&
                  <DialogNotOwnedBorrowedDescription/>}
                 {!isOwned && !isListed && 
                   <DialogNotOwnedNotListedDescription />} {/* not available for rent*/}
@@ -234,7 +234,7 @@ export const NFTDialog = ({
                 {isOwned && !isListed && !isReceipt && 
                   <DialogOwnedNotListedDescription nftItem={nftItem} setIsNFTOpen={setIsNFTOpen} />} {/* owned/not listed by signer/not rented out */}
                 {isOwned && isReceipt && isRented_Out &&
-                  <DialogOwnedRentedDescription />} {/* owned / rented out */}
+                  <DialogOwnedRentedDescription isListed={isListed} nftItem={nftItem} />} {/* owned / rented out */}
                 {/* {!isOwned && isReceipt && 
                   <DialogOwnedRentedDescription />} receipt held by 3rd party; NFT available */}
               </div>
