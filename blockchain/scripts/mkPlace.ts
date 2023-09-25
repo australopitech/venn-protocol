@@ -35,13 +35,14 @@ const deList = async() => {
 const getNFTByReceipt = async() => {
     const mktPlaceContract = new ethers.Contract(mktplace.address, mktplace.abi, provider);
     // console.log('test', mktPlaceContract.address)
-    const receiptId = 15;
+    const receiptId = 2;
     const nftObj = await mktPlaceContract.getNFTbyReceipt(receiptId);
     console.log(`tokenId: ${nftObj.tokenId.toString()}`);
-    console.log('fee', await mktPlaceContract.serviceAliquot());
+    console.log('conteract address', nftObj.contractAddress);
+    // console.log('fee', await mktPlaceContract.serviceAliquot());
 }
 
-// getNFTByReceipt();
+getNFTByReceipt();
 
 const getListData = async() => {
     if(!provider) throw new Error('missing env')
@@ -191,4 +192,4 @@ const test = () => {
 
 }
 
-test()
+// test()

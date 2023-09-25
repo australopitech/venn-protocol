@@ -21,7 +21,7 @@ const checkOwner = async() => {
     const owner = await receiptContract.ownerOf(3);
     console.log(owner);
 }
-checkOwner();
+// checkOwner();
 
 const checkRole = async () => {
     if(!rpc || !adminAddr) throw new Error('missing env');
@@ -47,3 +47,29 @@ const grantMinterRole = async () => {
 }
 
 // grantMinterRole();
+
+const fetchMints = async() => {
+ if(!rpc) throw new Error('mising env');
+ 
+ const provider = new ethers.providers.JsonRpcProvider(rpc);
+ const contract = new ethers.Contract(receipts.address, receipts.abi, provider);
+ const filter = contract.filters.Transfer(ethers.constants.AddressZero);
+ const logs = await contract.queryFilter(filter);
+ console.log(logs);
+}
+
+// fetchMints();
+
+const burn = async() => {
+ if(!rpc || !adminKey) throw new Error('mising env');
+ 
+ const provider = new ethers.providers.JsonRpcProvider(rpc);
+ const signer = new ethers.Wallet(adminKey, provider)
+ const contract = new ethers.Contract(receipts.address, receipts.abi, signer);
+ 
+ const tokenId = 2;
+ const tx = await contract.burn(tokenId);
+ console.log(await tx.wait());
+}
+
+burn();

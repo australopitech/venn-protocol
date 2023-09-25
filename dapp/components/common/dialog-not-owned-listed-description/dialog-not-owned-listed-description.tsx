@@ -106,6 +106,9 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
         return
       }
       if(buttonText !== defaultButtonText) return
+      if(!isWalletAccount) {
+        alert("Connect with a rWallet smart account to enable rent tx's");
+      } 
       if(!nftItem) {
         console.log('error: no nft found');
         return

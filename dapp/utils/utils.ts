@@ -46,9 +46,12 @@ export const isListed = async (
 
 export const ownerOf = async (
     provider: any,
-    nftContractAddr: string,
-    tokenId: BigNumber
+    nftContractAddr?: string,
+    tokenId?: BigNumber
 ) => {
+    if(!provider|| !nftContractAddr || !tokenId) return;
+    // console.log('contract inside ownerOf', nftContractAddr)
+    // console.log('tokenId inside ownerOf', tokenId)
     const contract = new ethers.Contract(nftContractAddr, erc721.abi, provider);
     return await contract.ownerOf(tokenId);    
 }

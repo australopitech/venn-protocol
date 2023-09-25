@@ -43,13 +43,15 @@ export default function NftCard ({
   // console.log('library', library);
   // console.log('rentPrice', rentPrice)
   console.log('tokenid/isrental',tokenId.toString(),isRental)
-
+  
   const isReceipt = useMemo(() => {
     // if(!nftItem) return
     if(contractAddress === receiptsContract.address) return true;
     else return false;
   }, []);
 
+  console.log('isReceipt', isReceipt);
+  console.log('contractAddress', contractAddress)
   useEffect(() => {
     const fetchHolder = async () => {
       setHolder(await ownerOf(library, contractAddress, tokenId));

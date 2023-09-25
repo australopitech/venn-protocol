@@ -32,7 +32,8 @@ const getOwner = async() => {
     const provider = new ethers.providers.JsonRpcProvider(rpc)
     const contract  = new ethers.Contract(nft.address, nft.abi, provider);
     const owner = await contract.ownerOf(2);
-    console.log(owner === dummy);
+    console.log(owner);
+    console.log('address',nft.address)
 }
 // getOwner()
 
@@ -57,7 +58,7 @@ const checkBal = async () => {
     const bal = await provider.getBalance('0x49e75CB7Ff22F1B4E41f382cA4B5e6D349dDDc36');
     console.log(ethers.utils.formatEther(bal));
 }
-checkBal();
+// checkBal();
 
 
 const mint = async () => {
@@ -87,14 +88,11 @@ const eoaTransfer = async (tokenId: number) =>{
     if(!pkey || !rpc) throw new Error("missing env");
     const provider = new ethers.providers.JsonRpcProvider(rpc);
     const signer = new ethers.Wallet(pkey, provider);
-    const contract = new ethers.Contract(receipts.address, receipts.abi, signer);
-    // const contract = new ethers.Contract(nft.address, nft.abi, signer);
-    // console.log(contract );
-    // return
     // 
-    // const tokenId = 0;
+    const contract = new ethers.Contract(receipts.address, receipts.abi, signer); // RECEIPTS
+    // const contract = new ethers.Contract(nft.address, nft.abi, signer); // NFT
     // 
-    const recipient = '0x49e75CB7Ff22F1B4E41f382cA4B5e6D349dDDc36';
+    const recipient = '0x8957dBa32B08B904677F6c99994c88d6D39704Ca';
     // 
     console.log(`\nsending token ${tokenId.toString()} to ${recipient} ... `);
 
@@ -106,7 +104,7 @@ const eoaTransfer = async (tokenId: number) =>{
     console.log('new owner == recipient', newOwner == recipient);
     
 }
-eoaTransfer(2);
+eoaTransfer(18);
 
 const batchEOAtransfer = async(nZero: number, n: number) => {
     let i;
