@@ -43,6 +43,7 @@ export const DialogOwnedRentedDescription = ({
   const { account, library, chainId } = useEthers();
 
   const timestamp = useTimestamp({ chainId: chainId, isStatic: false, refresh: 10});
+  console.log('timeLeft', timeLeft)
   
   useEffect(() => {
     const resolveTimeLeft = async() => {
