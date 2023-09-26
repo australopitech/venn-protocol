@@ -31,7 +31,7 @@ const checkSupply = async () => {
 const getOwner = async() => {
     const provider = new ethers.providers.JsonRpcProvider(rpc)
     const contract  = new ethers.Contract(nft.address, nft.abi, provider);
-    const owner = await contract.ownerOf(2);
+    const owner = await contract.ownerOf(0);
     console.log(owner);
     console.log('address',nft.address)
 }
@@ -104,7 +104,7 @@ const eoaTransfer = async (tokenId: number) =>{
     console.log('new owner == recipient', newOwner == recipient);
     
 }
-eoaTransfer(18);
+// eoaTransfer(18);
 
 const batchEOAtransfer = async(nZero: number, n: number) => {
     let i;
@@ -223,6 +223,19 @@ const transfer = async () => {
     const newOwner = await contract.ownerOf(tokenId);
     console.log('new owner == recipient', newOwner == recipient); 
 }
+
+const WALLET_ADDR = '0x8957dBa32B08B904677F6c99994c88d6D39704Ca';
+const test2 = async() => {
+    if(!rpc) throw new Error("missing env");
+    const provider = new ethers.providers.JsonRpcProvider(rpc);
+    const wallet = new ethers.Contract(WALLET_ADDR, walletAbi.abi, provider );
+    const index = await wallet.getTokenIndex(nft.address, 0);
+    const rentals = await wallet.getRentals();
+    console.log('lender', rentals[index].lender);
+    console.log(mktplace.address)
+}
+test2();
+
 
 // checkBal();
 // mint();

@@ -42,13 +42,13 @@ const getNFTByReceipt = async() => {
     // console.log('fee', await mktPlaceContract.serviceAliquot());
 }
 
-getNFTByReceipt();
+// getNFTByReceipt();
 
 const getListData = async() => {
     if(!provider) throw new Error('missing env')
     const mktPlaceContract = new ethers.Contract(mktplace.address, mktplace.abi, provider);
     // 
-    const tokenId = 4;
+    const tokenId = 0;
     // 
     const maxDur = await mktPlaceContract.getMaxDuration(nft.address, tokenId);
     console.log('maxDuration' , maxDur.toString());
@@ -56,7 +56,7 @@ const getListData = async() => {
     console.log('price', price.toString());
 }
 
-// getListData();
+getListData();
 
 const WALLET_SIGNER_KEY = process.env.WALLET_SIGNER_KEY;
 const WALLET_ADDR = '0x8957dBa32B08B904677F6c99994c88d6D39704Ca';
@@ -168,17 +168,17 @@ const rent = async () => {
 
 const test = () => {
     // console.log(ethers.utils.id("deList(address,uint256)"));
-    console.log(ethers.utils.id("getMaxduration(address,uint256)"))
-    console.log(ethers.utils.id("getPrice(address,uint256)"))
-    console.log(ethers.utils.id("getNFTbyReceipt(uint256)"));
+    // console.log(ethers.utils.id("getMaxduration(address,uint256)"))
+    // console.log(ethers.utils.id("getPrice(address,uint256)"))
+    // console.log(ethers.utils.id("getNFTbyReceipt(uint256)"));
     // console.log(ethers.utils.id("rentNFT(address,uint256,uint256)"));
     // console.log(ethers.utils.id('getPullFee(uint256)'))
     // console.log(ethers.utils.id('serviceAliquot()'))
-    console.log(ethers.utils.id('getReceipt(address,uint256)'))
-    console.log(ethers.utils.id('getBalance(address)'))
-    console.log(ethers.utils.id('isWallet(address)'))
+    // console.log(ethers.utils.id('getReceipt(address,uint256)'))
+    // console.log(ethers.utils.id('getBalance(address)'))
+    // console.log(ethers.utils.id('isWallet(address)'))
     // console.log(ethers.utils.id('listNFT(address,uint256,uint256,uint256)'))
-    // console.log(ethers.utils.id('deList(address,uint256)'))
+    console.log(ethers.utils.id('deList(address,uint256)'))
     // console.log(ethers.utils.id('pullAsset(address,uint256)'))
 
     // console.log(ethers.utils.id('isWallet(address)'))
