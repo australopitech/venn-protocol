@@ -20,7 +20,7 @@ const deList = async() => {
     const signer = new ethers.Wallet(PRIVATE_KEY, provider);
     const mktPlaceContract = new ethers.Contract(mktplace.address, mktplace.abi, signer);
 
-    const tokenId = 4;
+    const tokenId = 6;
     const tx = await mktPlaceContract.deList(nft.address, tokenId);
 
     console.log(await tx.wait());
@@ -35,10 +35,10 @@ const deList = async() => {
 const getNFTByReceipt = async() => {
     const mktPlaceContract = new ethers.Contract(mktplace.address, mktplace.abi, provider);
     // console.log('test', mktPlaceContract.address)
-    const receiptId = 2;
+    const receiptId = 23;
     const nftObj = await mktPlaceContract.getNFTbyReceipt(receiptId);
     console.log(`tokenId: ${nftObj.tokenId.toString()}`);
-    console.log('conteract address', nftObj.contractAddress);
+    console.log('contract address', nftObj.contractAddress);
     // console.log('fee', await mktPlaceContract.serviceAliquot());
 }
 
@@ -49,24 +49,28 @@ const getListData = async() => {
     const mktPlaceContract = new ethers.Contract(mktplace.address, mktplace.abi, provider);
     // 
     const tokenId = 0;
-    // 
+        // 
     const maxDur = await mktPlaceContract.getMaxDuration(nft.address, tokenId);
     console.log('maxDuration' , maxDur.toString());
     const price = await mktPlaceContract.getPrice(nft.address, tokenId);
     console.log('price', price.toString());
 }
 
-getListData();
+// getListData();
+
+
+
 
 const WALLET_SIGNER_KEY = process.env.WALLET_SIGNER_KEY;
-const WALLET_ADDR = '0x8957dBa32B08B904677F6c99994c88d6D39704Ca';
+const WALLET_ADDR = process.env.WALLET_ADDR;
 const BUNDLER_API = process.env.BUNDLER_API;
 const ENTRY_POINT_STACKUP =  process.env.ENTRY_POINT_STACKUP;
 const networkID = 84531;
 
 const rent = async () => {
     
-    if(!WALLET_SIGNER_KEY || !BUNDLER_API || !ENTRY_POINT_STACKUP) throw new Error("missing env");
+    if(!WALLET_SIGNER_KEY || !BUNDLER_API || !ENTRY_POINT_STACKUP || !WALLET_ADDR) 
+      throw new Error("missing env");
 
     const signer = new ethers.Wallet(WALLET_SIGNER_KEY, provider);
     const account = new ethers.Contract(WALLET_ADDR, walletAbi.abi, signer);
@@ -78,7 +82,7 @@ const rent = async () => {
     // const target = mktplace.address; 
     // 
     // 4
-    const tokenId = 2 ;
+    const tokenId = 6 ;
     //
 
     const nonce = await account.getNonce();
@@ -97,11 +101,13 @@ const rent = async () => {
     ]);
     //
 
-    
-    // 0.00001 eth
-    // receiptId 15
-    const rent = ethers.utils.parseEther('0.00001');
-    const fee = rent.mul(40).div(10000)
+    const mktPlaceContract = new ethers.Contract(mktplace.address, mktplace.abi, provider);
+    const price = await mktPlaceContract.getPrice(nft.address, tokenId);
+    const maxDur = await mktPlaceContract.getMaxDuration(nft.address, tokenId);
+    const aliq = await mktPlaceContract.serviceAliquot();
+    const duration = maxDur.sub(1);
+    const rent = price.mul(duration);
+    const fee = rent.mul(aliq).div(10000);
   
 
     const callGasLimit = await provider.estimateGas({
@@ -111,12 +117,11 @@ const rent = async () => {
         data:calldata_
     });
     // 
-//     console.log('flag 3')
+    // console.log('flag 3')
     // 
     const gasPrice = await provider.getGasPrice();
 
     const client = await Client.init(BUNDLER_API, {entryPoint: ENTRY_POINT_STACKUP});
-
 
     const builder = new UserOperationBuilder()
      .setSender(WALLET_ADDR)
@@ -163,8 +168,10 @@ const rent = async () => {
     const newOwner = await contract.ownerOf(tokenId);
     console.log('new owner == wallet?', newOwner == WALLET_ADDR); 
 }
-
-// rent();
+rent().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+});
 
 const test = () => {
     // console.log(ethers.utils.id("deList(address,uint256)"));

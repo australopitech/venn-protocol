@@ -40,6 +40,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
         nftItem={
           userData.nfts ? userData.nfts[selectedNFT] : undefined
         }
+        address={address}
       />
     }
     <div className={styles.dashboard} >

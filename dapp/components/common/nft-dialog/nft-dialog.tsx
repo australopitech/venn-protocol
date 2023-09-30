@@ -63,6 +63,7 @@ const CloseButton = () => {
 export interface NFTDialogProps {
     setIsNFTOpen?: any;
     nftItem?: NftItem;
+    address?: string;
 }
 
 // let image: string | undefined;
@@ -75,7 +76,8 @@ const propImage =  "https://dl.openseauserdata.com/cache/originImage/files/9d6b9
  */
 export const NFTDialog = ({
     setIsNFTOpen,
-    nftItem
+    nftItem,
+    address
 }: NFTDialogProps) => {
     const image = nftItem ? GetNftImage(nftItem) : propImage;
 
@@ -147,17 +149,14 @@ export const NFTDialog = ({
           );
           return
         }
-        if(holder == mktPlace.address) { 
-          const { maxDur } : { maxDur: BigNumber | undefined } = await getListData(
-            library,
-            nftItem?.contractAddress,
-            BigNumber.from(nftItem?.nftData.token_id)
-          );
-          if(maxDur) setIsListed(true);
-          if(maxDur?.eq(0)) setIsListed(false);
-          return;
-        }
-        if(holder) setIsListed(false);
+        const { maxDur } : { maxDur: BigNumber | undefined } = await getListData(
+          library,
+          nftItem?.contractAddress,
+          BigNumber.from(nftItem?.nftData.token_id)
+        );
+        console.log('maxDur', maxDur)
+        if(maxDur) setIsListed(true);
+        if(maxDur?.eq(0)) setIsListed(false);
       }
 
       resolveIsListed();
@@ -196,7 +195,7 @@ export const NFTDialog = ({
     console.log('isOwned', isOwned)
     console.log('isRental_signer', isRental_signer)
     console.log('isReceipt', isReceipt)
-    console.log('signer', account)
+    console.log('isRented_Out', isRented_Out)
 
     const name = nftItem ? nftItem.nftData.external_data.name : "Awesome NFT #1"
     const description = nftItem ? nftItem.nftData.external_data.description : "This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhul."
@@ -220,21 +219,32 @@ export const NFTDialog = ({
                   {description}
                 </p>
                 {!isOwned && isRental_signer &&
-                  <DialogNotOwnedBorrowedDescription />} {/* rented by signer */}
-                {!isOwned && isListed && !isRented_Out &&
+                  <DialogNotOwnedBorrowedDescription isRental={isRental_signer} nftItem={nftItem} />}
+                   {/* rented by signer */}
+                
+                {!isOwned && isListed && !isRented_Out && !isRental_signer &&
                   <DialogNotOwnedListedDescription 
                   nftItem={nftItem} setIsNFTOpen={setIsNFTOpen} isReceipt={isReceipt}
                    />}   {/* available for rent */}
+                
                 {!isOwned && isRented_Out &&
-                 <DialogNotOwnedBorrowedDescription/>}
+                 <DialogNotOwnedBorrowedDescription address={address} nftItem={nftItem} />}
+                
                 {!isOwned && !isListed && 
                   <DialogNotOwnedNotListedDescription />} {/* not available for rent*/}
+                
                 {isOwned && isListed && isReceipt && !isRented_Out && 
-                  <DialogOwnedListedDescription nftItem={nftItem} setIsNFTOpen={setIsNFTOpen}/>} {/* owned/listed by signer/not rented out */}
+                  <DialogOwnedListedDescription nftItem={nftItem} setIsNFTOpen={setIsNFTOpen}/>} 
+                  {/* owned/listed by signer/not rented out */}
+                
                 {isOwned && !isListed && !isReceipt && 
-                  <DialogOwnedNotListedDescription nftItem={nftItem} setIsNFTOpen={setIsNFTOpen} />} {/* owned/not listed by signer/not rented out */}
+                  <DialogOwnedNotListedDescription nftItem={nftItem} setIsNFTOpen={setIsNFTOpen} />} 
+                  {/* owned/not listed by signer/not rented out */}
+                
                 {isOwned && isReceipt && isRented_Out &&
-                  <DialogOwnedRentedDescription isListed={isListed} nftItem={nftItem} />} {/* owned / rented out */}
+                  <DialogOwnedRentedDescription 
+                    isListed={isListed} nftItem={nftItem} setIsNFTOpen={setIsNFTOpen}
+                  />} {/* owned / rented out */}
                 {/* {!isOwned && isReceipt && 
                   <DialogOwnedRentedDescription />} receipt held by 3rd party; NFT available */}
               </div>

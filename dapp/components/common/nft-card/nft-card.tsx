@@ -116,7 +116,7 @@ export default function NftCard ({
     resolveIsRentedOut(library, setIsRentedOut, isReceipt, tokenId, holder );
   }, [library, isReceipt, holder]);
 
-  
+  // console.log(name, 'isRentedOut', isRentedOut)
   return (
     <div className={classNames(styles.nftCardContainer, currentPage === 'market' ? styles.nftCardMarketContainer : '')}>
       <div className={styles.nftCardImageContainer} onClick={onClick}>
@@ -137,9 +137,13 @@ export default function NftCard ({
                   </span>
                 </span>
             )
-          : <span className={styles.notListed}>
-              Not listed
-            </span>
+          : (isRentedOut
+            ? <span className={styles.rented}>
+              Rented
+              </span>
+            : <span className={styles.notListed}>
+                Not listed
+              </span>)
         }
       </div> 
     </div>

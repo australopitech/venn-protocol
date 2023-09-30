@@ -127,6 +127,6 @@ export const rentNFT = async (
     const fund = await owner.sendTransaction({to: wallet.address, value: value })
     await fund.wait();
     const tx = await wallet.connect(owner).execute(mktPlace.address, value, calldata_);
-    await tx.wait();
-    return tx;
+    // await tx.wait();
+    return await tx.wait();
 }

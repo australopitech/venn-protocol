@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styles from './dialog-owned-rented-description.module.css';
 import { useSigner, useEthers } from '@usedapp/core';
 import { delist } from '@/utils/call';
@@ -10,10 +10,17 @@ import { useTimestamp } from '@/hooks/block-data';
 export interface DialogOwnedRentedDescriptionProps {
   isListed?: boolean;
   nftItem?: NftItem;
+  setIsNFTOpen: any;
 }
 
 const dayCutOff = 82800; // 23 h;
 const hourCutOff = 3540 // 59 min;
+
+const getTimestamp = async(provider: any) => {
+  if(!provider) return
+  const blockNum = await provider.getBlockNumber();
+  return (await provider.getBlock(blockNum))?.timestamp;
+}
 
 
 const WarningIcon = () => {
@@ -35,26 +42,39 @@ const WarningIcon = () => {
 
 export const DialogOwnedRentedDescription = ({ 
   isListed,
-  nftItem
+  nftItem,
+  setIsNFTOpen
 }: DialogOwnedRentedDescriptionProps) => {
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const signer = useSigner();
   const { account, library, chainId } = useEthers();
 
-  const timestamp = useTimestamp({ chainId: chainId, isStatic: false, refresh: 10});
+  // const timestamp = useTimestamp({ chainId: chainId, isStatic: false, refresh: 1});
+  // const timestamp = useMemo(() => {
+
+  // })
   console.log('timeLeft', timeLeft)
   
   useEffect(() => {
     const resolveTimeLeft = async() => {
-      const nftObj = await getNFTByReceipt(library, BigNumber.from(nftItem?.nftData.token_id))
-      const nftHolder = await ownerOf(library, nftObj.contractAddress, nftObj.tokenId);
+      const nftObj = await getNFTByReceipt(
+        library, 
+        BigNumber.from(nftItem?.nftData.token_id)
+      );
+      const nftHolder = await ownerOf(
+        library, 
+        nftObj.contractAddress, 
+        nftObj.tokenId
+      );
       const endTime = await getEndTime(library, nftHolder, nftItem);
-      if(endTime && timestamp) setTimeLeft(endTime - timestamp)
+      console.log('endTime', endTime?.toNumber())
+      const timestamp = await getTimestamp(library);
+      if(endTime && timestamp) setTimeLeft(endTime.toNumber() - timestamp)
     }
 
     resolveTimeLeft();
-  }, [timestamp]);
+  }, []);
 
   const handleButtonClick = async() => {
     if(!signer) {
@@ -67,8 +87,23 @@ export const DialogOwnedRentedDescription = ({
       return
     }
     setIsLoading(true);
-    await delist(signer, BigNumber.from(nftItem.nftData.token_id));
-    setIsLoading(false);
+    let txReceipt;
+    try {
+      txReceipt = await delist(
+        signer, 
+        BigNumber.from(nftItem.nftData.token_id)
+      );  
+    } catch (error) {
+      console.log(error);
+      alert('tx failed');
+      setIsLoading(false);
+      return;
+    }
+    console.log('txHash', txReceipt.transactionHash);
+    alert('success');
+    // setIsLoading(false);
+    setIsNFTOpen(false);
+    // router reload
   }
 
 
@@ -95,7 +130,7 @@ export const DialogOwnedRentedDescription = ({
       <div className={styles.unlistContainer}>
         {isListed &&
           <div>
-          <button className={styles.unlistButton} onClick={handleButtonClick}> Unlist NFT</button>
+          <button className={styles.unlistButton} onClick={handleButtonClick}> {isLoading? 'loading...' : 'Unlist NFT'} </button>
           <div className={styles.warning}>
             <WarningIcon /><span className={styles.warningText}>{`If you choose to unlist your NFT, it'll be removed from the market after the current rental ends and won't be available for rent again until you relist it.`}</span>
           </div>

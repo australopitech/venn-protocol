@@ -251,8 +251,9 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
      * this a requirement for marketplace to be used
      */
     function _uponNFTRental(address nftContract, uint256 tokenId, address from, uint256 duration) private {
+        uint256 index = _rentals.length; 
         NFT memory newAsset = NFT(
-            _rentals.length,
+            index,
             // _rentalsByContract[_contract].length,
             nftContract,
             tokenId,
@@ -261,7 +262,7 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
             block.timestamp + duration
         );
         _rentals.push(newAsset);
-        // _rentalsByContract[_contract].push(newAsset);
+        _tokenIndex[nftContract][tokenId] = index;
         _rentalCounterByContract[nftContract]++;
         _isRental[nftContract][tokenId] = true;
     }

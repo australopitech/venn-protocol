@@ -66,7 +66,7 @@ export const rent = async (
     signer: any | undefined,
     nftContractAddr: string,
     tokenId: BigNumber,
-    duration: BigNumber,
+    duration: number,
     value: BigNumber
 ) => {
     if(!signer) {
