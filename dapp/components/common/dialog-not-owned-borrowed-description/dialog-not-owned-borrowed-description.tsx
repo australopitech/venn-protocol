@@ -3,7 +3,7 @@ import styles from './dialog-not-owned-borrowed-description.module.css';
 import { useBlockMeta, useEthers } from '@usedapp/core';
 import { NftItem } from '@/types/types';
 import walletabi from '../../../utils/contractData/RWallet.artifact.json';
-import receiptsContract from '../../../utils/contractData/ReceiptNFT.json';
+import { receiptsContract } from '@/utils/contractData';
 import { BigNumber, ethers } from 'ethers';
 import { useTimestamp } from '@/hooks/block-data';
 import { getNFTByReceipt, ownerOf } from '@/utils/utils';
@@ -26,7 +26,7 @@ async function getEndTime(
   let contractAddr: string;
   let tokenId: BigNumber;
   let acc: string;
-  if(nftItem.contractAddress === receiptsContract.address) {
+  if(ethers.utils.getAddress(nftItem.contractAddress) === receiptsContract.address) {
     const nftObj = await getNFTByReceipt(
       provider,
       BigNumber.from(nftItem.nftData.token_id)
@@ -54,7 +54,7 @@ export const DialogNotOwnedBorrowedDescription = ({
 }: DialogNotOwnedBorrowedDescriptionProps) => {
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const { account, library, chainId } = useEthers();
-  const timestamp = useTimestamp({ chainId: chainId, isStatic: false, refresh: 10});
+  const timestamp = useTimestamp({ chainId: chainId, isStatic: false, refresh: 5});
   
   console.log('timestamp', timestamp, typeof timestamp);
   
@@ -79,15 +79,15 @@ export const DialogNotOwnedBorrowedDescription = ({
         {timeLeft > 0 &&
           <>
           <span>
-          This NFT is a rental. The rent <span className={styles.textHilight}>expires in</span>
+          This NFT is {isRental? "rented by you" : "rented"}. The rent <span className={styles.textHilight}>expires in</span>
           </span>
           <span className={styles.timeLeftValue}> 
             {timeLeft >= dayCutOff
-              ? `${timeLeft/86400} ${timeLeft/86400 <= 2 ? 'day' : 'days'}`
+              ? `${parseFloat(String(timeLeft/86400)).toFixed(1)} ${timeLeft/86400 <= 2 ? 'day' : 'days'}`
               : timeLeft >= hourCutOff
-                ? `${timeLeft/3600} ${timeLeft/3600 <= 2 ? 'hour' : 'hours'}`
+                ? `${parseFloat(String(timeLeft/3600)).toFixed(1)} ${timeLeft/3600 <= 2 ? 'hour' : 'hours'}`
                 : timeLeft >= 60
-                  ? `${timeLeft/60} ${timeLeft <= 120 ? 'minute' : 'minutes' }`
+                  ? `${parseFloat(String(timeLeft/60)).toFixed(1)} ${timeLeft <= 120 ? 'minute' : 'minutes' }`
                   : 'less than a minute'
             } 
           </span></>
@@ -95,7 +95,7 @@ export const DialogNotOwnedBorrowedDescription = ({
         {timeLeft <= 0 &&
           <>
           <span>
-          This NFT is {isRental? 'a rental' : 'rented'}. The rent <span className={styles.textHilight}>is expired.</span>
+          This NFT is {isRental? 'rented by you' : 'rented'}.<br></br> The rent <span className={styles.textHilight}>is expired.</span>
           </span>
           </>
         }

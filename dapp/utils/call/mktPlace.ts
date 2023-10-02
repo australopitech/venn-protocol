@@ -1,5 +1,5 @@
 import { BigNumber, ethers } from "ethers";
-import mktPlaceData from "../contractData/MarketPlace.json";
+import { mktPlaceContract } from "../contractData";
 
 const success_msg = "tx successfull!!";
 
@@ -15,7 +15,7 @@ export const list = async (
         alert('Connect your wallet');
         return
     }
-    const mktPlace = new ethers.Contract(mktPlaceData.address, mktPlaceData.abi, signer);
+    const mktPlace = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi, signer);
     const tx = await mktPlace.listNFT(nftContractAddr, tokenId, price, maxDuration);
     return await tx.wait();
 }
@@ -29,8 +29,8 @@ export const delist = async (
         alert('Connect your wallet');
         return
     }
-    const mktPlace = new ethers.Contract(mktPlaceData.address, mktPlaceData.abi, signer);
-    const nftObj = await mktPlace.getNFTbyReceipt(BigNumber.from(receiptId));
+    const mktPlace = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi, signer);
+    const nftObj = await mktPlace.getNFTbyReceipt(receiptId);
     // console.log('nftObj', nftObj)
     const tx = await mktPlace.deList(nftObj.contractAddress, nftObj.tokenId);
     return await tx.wait();
@@ -45,7 +45,7 @@ export const pull = async (
         alert('Connect your wallet');
         return
     }
-    const mktPlace = new ethers.Contract(mktPlaceData.address, mktPlaceData.abi, signer);
+    const mktPlace = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi, signer);
     let error = null;
     let receipt;
     try {
@@ -73,7 +73,7 @@ export const rent = async (
         console.log('error: signer undefined');
         return
     }
-    const mktPlace = new ethers.Contract(mktPlaceData.address, mktPlaceData.abi, signer);
+    const mktPlace = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi, signer);
     const tx = await mktPlace.rentNFT(nftContractAddr, tokenId, duration, {value: value});
     return await tx.wait();    
 }

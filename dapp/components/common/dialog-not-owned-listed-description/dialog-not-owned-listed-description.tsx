@@ -5,8 +5,7 @@ import { ethers, BigNumber } from 'ethers';
 import { rent } from '@/utils/call';
 import { useSigner, useEthers } from '@usedapp/core';
 import { NftItem } from '@/types/types';
-import mktPlace from '../../../utils/contractData/MarketPlace.json';
-import receiptsContract from '../../../utils/contractData/ReceiptNFT.json';
+import { mktPlaceContract, receiptsContract } from '@/utils/contractData';
 import { isWallet, getListData, getNFTByReceipt } from '../../../utils/utils';
 import Router from 'next/router';
 
@@ -19,7 +18,7 @@ export interface DialogNotOwnedListedDescriptionProps {
 }
 
 async function getFee(provider: any) : Promise<BigNumber> {
-  const contract = new ethers.Contract(mktPlace.address, mktPlace.abi, provider);
+  const contract = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi, provider);
   return await contract.serviceAliquot();
 }
 
@@ -58,9 +57,10 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
 
   useEffect(() => {
     const resolveListData = async() => {
+      if(!nftItem) return
       let contractAddr: string | undefined;
       let tokenId: BigNumber | undefined;
-      if(nftItem?.contractAddress === receiptsContract.address) { /**isReceipt */
+      if(ethers.utils.getAddress(nftItem.contractAddress) === receiptsContract.address) { /**isReceipt */
         const nftObj = await getNFTByReceipt(library, BigNumber.from(nftItem.nftData.token_id));
         contractAddr = nftObj.contractAddress;
         tokenId = nftObj.tokenId;
@@ -130,12 +130,12 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
       let contractAddr;
       let tokenId;
       if(isReceipt){
-        const mkt = new ethers.Contract(mktPlace.address, mktPlace.abi, library);
+        const mkt = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi, library);
         const nftObj = await mkt.getNFTbyReceipt(BigNumber.from(nftItem.nftData.token_id));
         contractAddr = nftObj.contractAddress;
         tokenId = nftObj.tokenId;
       } else {
-        contractAddr = nftItem.contractAddress;
+        contractAddr = ethers.utils.getAddress(nftItem.contractAddress);
         tokenId = BigNumber.from(nftItem.nftData.token_id);
       }
       let txReceipt;
@@ -144,7 +144,7 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
           signer,
           contractAddr,
           tokenId, 
-          BigNumber.from(duration),
+          duration,
           rentValue.add(fee) 
         );
       } catch (error) {

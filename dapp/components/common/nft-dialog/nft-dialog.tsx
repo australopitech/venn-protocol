@@ -14,17 +14,13 @@ import { DialogNotOwnedNotListedDescription } from '../dialog-not-owned-not-list
 // import { getNFTobj, useNFTtitle, useNFTname, useTokenImage, useTokenMetaData } from '../../../hooks/nfts';
 // import { Context } from 'wagmi';
 import { NftItem } from '../../../types/types';
-import walletFactory from '../../../utils/contractData/RWalletFactory.json';
 import walletAbi from '../../../utils/contractData/RWallet.artifact.json';
 import erc721 from '../../../utils/contractData/ERC721.artifact.json';
-import mktPlace from '../../../utils/contractData/MarketPlace.json';
-import receipts from '../../../utils/contractData/ReceiptNFT.json';
+import { mktPlaceContract, receiptsContract } from '@/utils/contractData';
 import { ethers, BigNumber } from 'ethers';
-import { ownerOf, isWallet, checkIsListedByReceipt, checkIsRental, getListData } from '@/utils/utils';
+import { ownerOf, isWallet, checkIsListedByReceipt, checkIsRental, getListData, getNFTByReceipt } from '@/utils/utils';
 // import dotenv from 'dotenv';
 // dotenv.config();
-
-// const provider = new ethers.providers.JsonRpcProvider(process.env.BASE_GOERLI_PROVIDER)
 
 function GetNftImage (nftItem: NftItem) {
   return nftItem.nftData.external_data.image_1024 ? 
@@ -96,14 +92,18 @@ export const NFTDialog = ({
     const [isRented_Out, setIsRented_Out] = useState<boolean>()
 
     const {account, library} = useEthers();
-    console.log('nft contract',nftItem?.contractAddress)
+    console.log('nft contract', nftItem?.contractAddress)
     console.log('nft id', nftItem?.nftData.token_id)
-    console.log('nft_contract == receipts', nftItem?.contractAddress === receipts.address)
-    console.log('receipts_contract', receipts.address )
+    if(nftItem) 
+     console.log(
+      'nft_contract == receipts',
+      ethers.utils.getAddress(nftItem?.contractAddress) === receiptsContract.address
+    )
+    console.log('receipts_contract', receiptsContract.address )
 
     const isReceipt = useMemo(() => {
       if(!nftItem) return
-      if(nftItem.contractAddress === receipts.address) return true;
+      if(ethers.utils.getAddress(nftItem.contractAddress) === receiptsContract.address) return true;
       else return false;
     }, []);
 
@@ -125,11 +125,11 @@ export const NFTDialog = ({
 
     useEffect(() => { 
       const resolveIsRented_Out = async() => {
-        if(holder == mktPlace.address) 
+        if(holder == mktPlaceContract.address) 
           setIsRented_Out(false);
         if(isReceipt && nftItem) {
-          const mktPlaceContract = new ethers.Contract(mktPlace.address, mktPlace.abi, library);
-          const nftObj = await mktPlaceContract.getNFTbyReceipt(BigNumber.from(nftItem.nftData.token_id));
+          const mktPlace = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi , library);
+          const nftObj = await mktPlace.getNFTbyReceipt(BigNumber.from(nftItem.nftData.token_id));
           const nftHolder = await ownerOf(library, nftObj.contractAddress, nftObj.tokenId);
           if(nftHolder) {
             if(nftHolder === mktPlace.address) setIsRented_Out(false);
@@ -165,22 +165,32 @@ export const NFTDialog = ({
 
     useEffect(() => {
       const resolveIsRental = async () => {
-        if(holder && account){
-          if(holder == account) {
-            setIsRental_signer(await checkIsRental(
+        if(account) {
+          let contractAddr: string | undefined;
+          let tokenId: BigNumber | undefined;
+          if(isReceipt) {
+            const nftObj = await getNFTByReceipt(
               library, 
-              account, nftItem?.contractAddress, 
               BigNumber.from(nftItem?.nftData.token_id)
-            ));
-            return
+            );
+            contractAddr = nftObj.contractAddress;
+            tokenId = nftObj.tokenId;
+          } else {
+            contractAddr = nftItem?.contractAddress;
+            tokenId = BigNumber.from(nftItem?.nftData.token_id);
           }
-          setIsRental_signer(false);
+          setIsRental_signer(await checkIsRental(
+            library,
+            account,
+            contractAddr, 
+            tokenId
+          ));
         }
       }
 
       resolveIsRental();
 
-    }, [holder]);
+    }, [account]);
 
     useEffect(() => {
       if(holder && isRental_signer !== undefined) {
@@ -227,7 +237,7 @@ export const NFTDialog = ({
                   nftItem={nftItem} setIsNFTOpen={setIsNFTOpen} isReceipt={isReceipt}
                    />}   {/* available for rent */}
                 
-                {!isOwned && isRented_Out &&
+                {!isOwned && isRented_Out && !isRental_signer &&
                  <DialogNotOwnedBorrowedDescription address={address} nftItem={nftItem} />}
                 
                 {!isOwned && !isListed && 

@@ -5,7 +5,7 @@ dotenv.config();
 
 
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
-const WALLET = '0x8957dBa32B08B904677F6c99994c88d6D39704Ca';
+const WALLET = process.env.WALLET_ADDR;
 const RPC = process.env.BASE_GOERLI_PROVIDER;
 const WALLET_SIGNER_KEY = process.env.WALLET_SIGNER_KEY;
 const WALLET_SIGNER_ADDR = process.env.WALLET_SIGNER_ADDR;
@@ -21,10 +21,7 @@ const checkBal = async () => {
     console.log(ethers.utils.formatEther(bal));
 }
 
-checkBal().catch((error) => {
-    console.error(error);
-    process.exitCode = 1;
-});
+// checkBal();
 
 
 const sendMoney = async () => {
@@ -34,16 +31,16 @@ const sendMoney = async () => {
     // const addr = await signer.getAddress();
     const tx = {
         from: signer.address,
-        to: WALLET_SIGNER_ADDR,
-        value: ethers.utils.parseEther('0.001'),
+        to: WALLET,
+        value: ethers.utils.parseEther('0.002'),
     }
     const send = await signer.sendTransaction(tx);
     const receipt = await send.wait();
     console.log(receipt);
 }
 
-// sendMoney().catch((error) => {
-//     console.error(error);
-//     process.exitCode = 1;
-// });
+sendMoney().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+});
 

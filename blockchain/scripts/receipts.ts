@@ -2,12 +2,11 @@ import { ethers } from "ethers";
 import mktplace from '../deployments/base_goerli/MarketPlace.json';
 import receipts from '../deployments/base_goerli/ReceiptNFT.json';
 import dotenv from 'dotenv';
-import { bytes32 } from "../test/solidityTypes";
 dotenv.config();
 
 const minter = mktplace.address;
-const adminKey = process.env.PRIVATE_KEY;
-const adminAddr = process.env.PUBLIC_KEY;
+const ADMIN_KEY = process.env.PRIVATE_KEY;
+const ADMIN_ADDR = process.env.PUBLIC_KEY;
 const rpc = process.env.BASE_GOERLI_PROVIDER;
 
 const ADMIN_ROLE = ethers.constants.HashZero;
@@ -24,19 +23,19 @@ const checkOwner = async() => {
 // checkOwner();
 
 const checkRole = async () => {
-    if(!rpc || !adminAddr) throw new Error('missing env');
+    if(!rpc || !ADMIN_ADDR) throw new Error('missing env');
     const provider = new ethers.providers.JsonRpcProvider(rpc);
     const receiptContract = new ethers.Contract(receipts.address, receipts.abi, provider);
     const res = await receiptContract.hasRole(MINTER_ROLE, minter );
     console.log('ROLE?', res);
 }
-// checkRole();
+checkRole();
 
 
 const grantMinterRole = async () => {
-    if(!adminKey || !rpc) throw new Error('missing env');
+    if(!ADMIN_KEY || !rpc) throw new Error('missing env');
     const provider = new ethers.providers.JsonRpcProvider(rpc);
-    const signer = new ethers.Wallet(adminKey, provider);
+    const signer = new ethers.Wallet(ADMIN_KEY, provider);
     const receiptContract = new ethers.Contract(receipts.address, receipts.abi, signer);
 
     console.log('signer balance: ', (await signer.getBalance()).toString());
@@ -61,10 +60,10 @@ const fetchMints = async() => {
 // fetchMints();
 
 const burn = async() => {
- if(!rpc || !adminKey) throw new Error('mising env');
+ if(!rpc || !ADMIN_KEY) throw new Error('mising env');
  
  const provider = new ethers.providers.JsonRpcProvider(rpc);
- const signer = new ethers.Wallet(adminKey, provider)
+ const signer = new ethers.Wallet(ADMIN_KEY, provider)
  const contract = new ethers.Contract(receipts.address, receipts.abi, signer);
  
  const tokenId = 2;
@@ -72,4 +71,4 @@ const burn = async() => {
  console.log(await tx.wait());
 }
 
-burn();
+// burn();

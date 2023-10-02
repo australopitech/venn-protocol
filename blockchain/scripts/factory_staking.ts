@@ -1,6 +1,4 @@
-// import * as entryPointSepolia from '../deployments/sepolia/EntryPoint.json';
 import entryPoint from '../artifacts/contracts/core/EntryPoint.sol/EntryPoint.json';
-// import * as factorySepolia from '../deployments/sepolia/RWalletFactory.json'
 import factoryBaseGoer from '../deployments/base_goerli/RWalletFactory.json';
 import { EntryPoint, RWalletFactory } from '../typechain';
 import { ethers } from 'ethers';
@@ -9,7 +7,6 @@ import * as dotenv from 'dotenv';
 dotenv.config({ path: './.env' });
 
 
-const apiKey = process.env.INFURA_API_KEY;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const RPC = process.env.BASE_GOERLI_PROVIDER;
 const ENTRY_POINT = process.env.ENTRY_POINT_STACKUP;

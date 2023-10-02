@@ -6,7 +6,7 @@ import { useMemo, useEffect, useState } from 'react';
 import { BigNumber } from 'ethers';
 import { useEthers } from '@usedapp/core';
 import { ownerOf, resolveIsListed, resolveIsRentedOut, getListData, getNFTByReceipt, checkIsRental } from '@/utils/utils';
-import receiptsContract from '../../../utils/contractData/ReceiptNFT.json';
+import { receiptsContract } from '@/utils/contractData';
 
 export interface NftCardProps {
   imageURI: string;
@@ -50,7 +50,7 @@ export default function NftCard ({
     else return false;
   }, []);
 
-  console.log('isReceipt', isReceipt);
+  console.log('tokenId', tokenId.toString(),'isReceipt', isReceipt);
   console.log('contractAddress', contractAddress)
   useEffect(() => {
     const fetchHolder = async () => {

@@ -8,7 +8,7 @@ import classNames from 'classnames';
 import { NftItem } from '@/types/types';
 import { list, approve } from '@/utils/call';
 import { useSigner, useEthers } from '@usedapp/core';
-import mktPlace from '../../../utils/contractData/MarketPlace.json';
+import { mktPlaceContract } from '@/utils/contractData';
 import erc721 from '../../../utils/contractData/ERC721.artifact.json';
 import Router from 'next/router';
 
@@ -35,8 +35,8 @@ const resolveIsApproved = async(
     return
   const contract = new ethers.Contract(nftItem.contractAddress, erc721.abi, provider);
   const approved = await contract.getApproved(BigNumber.from(nftItem.nftData.token_id));
-  const isOperator = await contract.isApprovedForAll(account, mktPlace.address);
-  setIsAppr( approved === mktPlace.address || isOperator);
+  const isOperator = await contract.isApprovedForAll(account, mktPlaceContract.address);
+  setIsAppr( approved === mktPlaceContract.address || isOperator);
 }
 /** TODO:
  * - make component re-render on approval call completion
@@ -140,7 +140,7 @@ export const DialogOwnedNotListedDescription = ({
           signer,
           nftItem.contractAddress,
           BigNumber.from(nftItem.nftData.token_id),
-          mktPlace.address
+          mktPlaceContract.address
         );  
       } catch (err) {
         console.log(err);

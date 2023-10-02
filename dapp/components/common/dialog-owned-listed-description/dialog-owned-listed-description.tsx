@@ -7,7 +7,7 @@ import { NftItem } from '@/types/types';
 import { delist  } from '@/utils/call';
 import { getListData, getNFTByReceipt } from '@/utils/utils';
 import Router from 'next/router';
-import receiptsContract from '../../../utils/contractData/ReceiptNFT.json';
+import { receiptsContract } from '@/utils/contractData';
 
 export interface DialogOwnedListedDescriptionProps {
   setIsNFTOpen?: any
@@ -73,7 +73,6 @@ export const DialogOwnedListedDescription = ({
   setIsNFTOpen,
   nftItem
 }: DialogOwnedListedDescriptionProps) => {
-  // const provider = useProvider();
   const [duration, setDuration] = useState<number | undefined>();
   const [isDurationInvalid, setIsDurationInvalid] = useState<boolean | undefined>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -89,15 +88,16 @@ export const DialogOwnedListedDescription = ({
 
   useEffect(() => { 
     const resolveListData = async() => {
+      if(!nftItem) return
       let contractAddress: string | undefined;
       let tokenId: BigNumber | undefined;
-      if(nftItem?.contractAddress === receiptsContract.address){
+      if(ethers.utils.getAddress(nftItem.contractAddress) === receiptsContract.address){
         const nftObj = await getNFTByReceipt(library, BigNumber.from(nftItem.nftData.token_id));
         contractAddress = nftObj?.contractAddress;
         tokenId = nftObj?.tokenId;  
       } else{
-        contractAddress = nftItem?.contractAddress;
-        tokenId = BigNumber.from(nftItem?.nftData.token_id);
+        contractAddress = nftItem.contractAddress;
+        tokenId = BigNumber.from(nftItem.nftData.token_id);
       }
       const {price, maxDur} = await getListData(
         library, 

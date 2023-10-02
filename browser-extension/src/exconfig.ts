@@ -8,7 +8,7 @@ const network = "Base Goerli";
 const provider = 'https://base-goerli.gateway.tenderly.co/6jlPleyGSLqQIAsz1uTkSg';
 // const bundler = process.env.BUNDLER_API;
 const bundler = 'https://api.stackup.sh/v1/node/486128ebf36d50338aef8803b5517b5696be3cf6174cacf025bc6e3c0c3a66cf'
-const factory = "0x470459A74DD5ace425A7bd52c537847DaDeF7F91"; // base goerli
+const factory = "0x0A573f68Bca72Fe4F665a34F462ccCCCa1212106"; // base goerli
 
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {

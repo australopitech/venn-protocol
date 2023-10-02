@@ -6,6 +6,7 @@ import { NftItem } from '@/types/types';
 import { BigNumber } from 'ethers';
 import { getEndTime, getNFTByReceipt, ownerOf } from '@/utils/utils';
 import { useTimestamp } from '@/hooks/block-data';
+import Router from 'next/router';
 
 export interface DialogOwnedRentedDescriptionProps {
   isListed?: boolean;
@@ -50,10 +51,8 @@ export const DialogOwnedRentedDescription = ({
   const signer = useSigner();
   const { account, library, chainId } = useEthers();
 
-  // const timestamp = useTimestamp({ chainId: chainId, isStatic: false, refresh: 1});
-  // const timestamp = useMemo(() => {
-
-  // })
+  const timestamp = useTimestamp({ chainId: chainId, isStatic: false, refresh: 5});
+  
   console.log('timeLeft', timeLeft)
   
   useEffect(() => {
@@ -69,7 +68,7 @@ export const DialogOwnedRentedDescription = ({
       );
       const endTime = await getEndTime(library, nftHolder, nftItem);
       console.log('endTime', endTime?.toNumber())
-      const timestamp = await getTimestamp(library);
+      // const timestamp = await getTimestamp(library);
       if(endTime && timestamp) setTimeLeft(endTime.toNumber() - timestamp)
     }
 
@@ -103,7 +102,7 @@ export const DialogOwnedRentedDescription = ({
     alert('success');
     // setIsLoading(false);
     setIsNFTOpen(false);
-    // router reload
+    Router.reload();
   }
 
 
