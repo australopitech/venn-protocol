@@ -240,7 +240,7 @@ export const NFTDialog = ({
                 {!isOwned && isRented_Out && !isRental_signer &&
                  <DialogNotOwnedBorrowedDescription address={address} nftItem={nftItem} />}
                 
-                {!isOwned && !isListed && 
+                {!isOwned && !isListed && !isRented_Out && 
                   <DialogNotOwnedNotListedDescription />} {/* not available for rent*/}
                 
                 {isOwned && isListed && isReceipt && !isRented_Out && 
