@@ -18,7 +18,10 @@ import walletAbi from '../../../utils/contractData/RWallet.artifact.json';
 import erc721 from '../../../utils/contractData/ERC721.artifact.json';
 import { mktPlaceContract, receiptsContract } from '@/utils/contractData';
 import { ethers, BigNumber } from 'ethers';
-import { ownerOf, isWallet, checkIsListedByReceipt, checkIsRental, getListData, getNFTByReceipt } from '@/utils/utils';
+import { 
+  ownerOf, isWallet, checkIsListedByReceipt, checkIsRental, getListData, getNFTByReceipt,
+  resolveIsRentedOut, resolveIsListed, resolveIsRental
+ } from '@/utils/utils';
 // import dotenv from 'dotenv';
 // dotenv.config();
 
@@ -90,6 +93,8 @@ export const NFTDialog = ({
     const [isOwned, setIsOwned] = useState<boolean>();
     const [isRental_signer, setIsRental_signer] = useState<boolean>();
     const [isRented_Out, setIsRented_Out] = useState<boolean>()
+    // 
+    const [isReceipt, setIsReceipt] = useState<boolean>();
 
     const {account, library} = useEthers();
     console.log('nft contract', nftItem?.contractAddress)
@@ -101,96 +106,119 @@ export const NFTDialog = ({
     )
     console.log('receipts_contract', receiptsContract.address )
 
-    const isReceipt = useMemo(() => {
-      if(!nftItem) return
-      if(ethers.utils.getAddress(nftItem.contractAddress) === receiptsContract.address) return true;
-      else return false;
-    }, []);
+    // const isReceipt = useMemo(() => {
+    //   if(!nftItem) return
+    //   if(ethers.utils.getAddress(nftItem.contractAddress) === receiptsContract.address) return true;
+    //   else return false;
+    // }, []);
 
     useEffect(() => {
-      const fetchHolder = async () => {
+      if(nftItem)
+        setIsReceipt(ethers.utils.getAddress(nftItem.contractAddress) === receiptsContract.address);
+      
+        const fetchHolder = async () => {
         if(nftItem) setHolder(await getOwner(library, nftItem));
       }
-
       fetchHolder();
 
     }, []); /* add `library` as dep */
 
-    /** - verifica se eh receipt
-     *  - identifica o nft relacionado e verifica o holder
-     *  - verifica se o holder é o market place
-     *    - se sim, setIsRented_Out(false)
-     *    - se nao, setIdRented_Out(true)
-     */
 
     useEffect(() => { 
-      const resolveIsRented_Out = async() => {
-        if(holder == mktPlaceContract.address) 
-          setIsRented_Out(false);
-        if(isReceipt && nftItem) {
-          const mktPlace = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi , library);
-          const nftObj = await mktPlace.getNFTbyReceipt(BigNumber.from(nftItem.nftData.token_id));
-          const nftHolder = await ownerOf(library, nftObj.contractAddress, nftObj.tokenId);
-          if(nftHolder) {
-            if(nftHolder === mktPlace.address) setIsRented_Out(false);
-            else setIsRented_Out(true);
-          };
-        }
-      }
+      // const resolveIsRented_Out = async() => {
+      //   if(holder == mktPlaceContract.address) 
+      //     setIsRented_Out(false);
+      //   if(isReceipt && nftItem) {
+      //     const mktPlace = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi , library);
+      //     const nftObj = await mktPlace.getNFTbyReceipt(BigNumber.from(nftItem.nftData.token_id));
+      //     const nftHolder = await ownerOf(library, nftObj.contractAddress, nftObj.tokenId);
+      //     if(nftHolder) {
+      //       if(nftHolder === mktPlace.address) setIsRented_Out(false);
+      //       else setIsRented_Out(true);
+      //     };
+      //   }
+      // }
+      // resolveIsRented_Out();
+      if(!nftItem) return
 
-      resolveIsRented_Out();
-    }, [holder])
+      resolveIsRentedOut(
+        setIsRented_Out,
+        BigNumber.from(nftItem?.nftData.token_id),
+        isReceipt,
+        holder,
+        library
+      );
+      
+      resolveIsListed(
+        setIsListed,
+        isReceipt,
+        nftItem?.contractAddress,
+        BigNumber.from(nftItem?.nftData.token_id),
+        library
+      );
 
-    useEffect(() => {
-      const resolveIsListed = async () => {
-        if(isReceipt) {
-          setIsListed(
-            await checkIsListedByReceipt(library, BigNumber.from(nftItem?.nftData.token_id))
-          );
-          return
-        }
-        const { maxDur } : { maxDur: BigNumber | undefined } = await getListData(
-          library,
-          nftItem?.contractAddress,
-          BigNumber.from(nftItem?.nftData.token_id)
-        );
-        console.log('maxDur', maxDur)
-        if(maxDur) setIsListed(true);
-        if(maxDur?.eq(0)) setIsListed(false);
-      }
+      resolveIsRental(
+        setIsRental_signer,
+        isReceipt,
+        nftItem?.contractAddress,
+        BigNumber.from(nftItem?.nftData.token_id),
+        account,
+        library
+      );
 
-      resolveIsListed();
 
-    }, [holder, isReceipt]);
+    }, [holder, isReceipt, account])
 
-    useEffect(() => {
-      const resolveIsRental = async () => {
-        if(account) {
-          let contractAddr: string | undefined;
-          let tokenId: BigNumber | undefined;
-          if(isReceipt) {
-            const nftObj = await getNFTByReceipt(
-              library, 
-              BigNumber.from(nftItem?.nftData.token_id)
-            );
-            contractAddr = nftObj.contractAddress;
-            tokenId = nftObj.tokenId;
-          } else {
-            contractAddr = nftItem?.contractAddress;
-            tokenId = BigNumber.from(nftItem?.nftData.token_id);
-          }
-          setIsRental_signer(await checkIsRental(
-            library,
-            account,
-            contractAddr, 
-            tokenId
-          ));
-        }
-      }
+    // useEffect(() => {
+    //   const resolveIsListed = async () => {
+    //     if(isReceipt) {
+    //       setIsListed(
+    //         await checkIsListedByReceipt(library, BigNumber.from(nftItem?.nftData.token_id))
+    //       );
+    //       return
+    //     }
+    //     const { maxDur } : { maxDur: BigNumber | undefined } = await getListData(
+    //       library,
+    //       nftItem?.contractAddress,
+    //       BigNumber.from(nftItem?.nftData.token_id)
+    //     );
+    //     console.log('maxDur', maxDur)
+    //     if(maxDur) setIsListed(true);
+    //     if(maxDur?.eq(0)) setIsListed(false);
+    //   }
 
-      resolveIsRental();
+    //   resolveIsListed();
 
-    }, [account]);
+    // }, [holder, isReceipt]);
+
+    // useEffect(() => {
+    //   const resolveIsRental = async () => {
+    //     if(account) {
+    //       let contractAddr: string | undefined;
+    //       let tokenId: BigNumber | undefined;
+    //       if(isReceipt) {
+    //         const nftObj = await getNFTByReceipt(
+    //           library, 
+    //           BigNumber.from(nftItem?.nftData.token_id)
+    //         );
+    //         contractAddr = nftObj.contractAddress;
+    //         tokenId = nftObj.tokenId;
+    //       } else {
+    //         contractAddr = nftItem?.contractAddress;
+    //         tokenId = BigNumber.from(nftItem?.nftData.token_id);
+    //       }
+    //       setIsRental_signer(await checkIsRental(
+    //         library,
+    //         account,
+    //         contractAddr, 
+    //         tokenId
+    //       ));
+    //     }
+    //   }
+
+    //   resolveIsRental();
+
+    // }, [account]);
 
     useEffect(() => {
       if(holder && isRental_signer !== undefined) {

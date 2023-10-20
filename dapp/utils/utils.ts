@@ -150,48 +150,101 @@ export async function getNFTByReceipt(
 // )
 
 export async function resolveIsListed (
-    provider: any,
     setIsListed: any,
-    isReceipt: boolean,
-    contractAddr: string,
-    tokenId: BigNumber,
-    holder?: string,
+    isReceipt?: boolean,
+    contractAddr?: string,
+    tokenId?: BigNumber,
+    provider?: any
 ) {
-    if(isReceipt) {
+    if(!provider) return;
+    if(isReceipt && tokenId) {
         setIsListed(
           await checkIsListedByReceipt(provider, tokenId)
         );
         return
-      }
-      if(holder == mktPlaceContract.address) { 
-        const { maxDur } : { maxDur: BigNumber | undefined } = await getListData(
-          provider,
-          contractAddr,
-          tokenId
-        );
-        if(maxDur) setIsListed(true);
-        if(maxDur?.eq(0)) setIsListed(false);
-        return;
-      }
-      if(holder) setIsListed(false);
+    }  
+    const { maxDur } : { maxDur: BigNumber | undefined } = await getListData(
+        provider,
+        contractAddr,
+        tokenId
+    );
+    if(maxDur) setIsListed(true);
+    if(maxDur?.eq(0)) setIsListed(false);
 }
 
 export async function resolveIsRentedOut(
-    provider: any,
     setIsRentedOut: any,
-    isReceipt: boolean,
     tokenId: BigNumber,
-    holder?: string
+    isReceipt?: boolean,
+    holder?: string,
+    provider?: any
 ) {
     if(holder == mktPlaceContract.address) 
         setIsRentedOut(false);
     if(isReceipt) {
         const mktPlace = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi, provider);
         const nftObj = await mktPlace.getNFTbyReceipt(tokenId);
+        console.log('nftObj', nftObj)
         const nftHolder = await ownerOf(provider, nftObj.contractAddress, nftObj.tokenId);
         if(nftHolder) {
             if(nftHolder === mktPlace.address) setIsRentedOut(false);
             else setIsRentedOut(true);
         };
     }
+}
+
+export async function resolveIsRental(
+    setIsRental: any,
+    isReceipt?: boolean,
+    contractAddress?: string,
+    tokenId?: BigNumber,
+    account?: string,
+    provider?: any,
+) {
+    if(account && provider) {
+        let _contractAddr: string | undefined;
+        let _tokenId: BigNumber | undefined;
+        if(isReceipt && tokenId) {
+          const nftObj = await getNFTByReceipt(
+            provider, 
+            tokenId
+          );
+          _contractAddr = nftObj.contractAddress;
+          tokenId = nftObj.tokenId;
+        } else {
+          _contractAddr = contractAddress;
+          _tokenId = tokenId;
+        }
+        setIsRental(await checkIsRental(
+          provider,
+          account,
+          _contractAddr, 
+          _tokenId
+        ));
+      }
+}
+
+export async function resolvePrice(
+    setRentPrice: any,
+    contractAddress: string,
+    tokenId: BigNumber,
+    isReceipt?:boolean,
+    provider?: any
+) {
+    let _contractAddr;
+    let _tokenId;
+    if(isReceipt && provider){
+      const nftObj = await getNFTByReceipt(provider, tokenId);
+      contractAddress = nftObj?.contractAddress;
+      tokenId = nftObj?.tokenId;  
+    } else{
+     _contractAddr = contractAddress;
+     _tokenId = tokenId;
+    }
+    const { price } = await getListData(
+     provider, 
+     contractAddress,
+     tokenId
+    );
+    if(price) setRentPrice(ethers.utils.formatEther(price));
 }
