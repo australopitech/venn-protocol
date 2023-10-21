@@ -1,5 +1,5 @@
 
-import { BalancesResponse, BalanceItem, NftData, NftItem, FetchNftDataResponse } from '../types/types';
+import { BalancesResponse, BalanceItem, NftData, NftItem, FetchNftDataResponse } from '../types/typesNftApi';
 import { fetchAddressData } from '../utils/frontendUtils'
 import { useEffect, useState, useRef } from "react";
 
