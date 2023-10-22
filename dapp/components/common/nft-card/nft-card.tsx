@@ -5,7 +5,9 @@ import { ethers } from 'ethers';
 import { useMemo, useEffect, useState } from 'react';
 import { BigNumber } from 'ethers';
 import { useEthers } from '@usedapp/core';
-import { ownerOf, resolveIsListed, resolveIsRentedOut, getListData, getNFTByReceipt, checkIsRental } from '@/utils/utils';
+import { 
+  ownerOf, resolveIsListed, resolveIsRentedOut, getListData, getNFTByReceipt, checkIsRental, resolvePrice
+ } from '@/utils/utils';
 import { receiptsContract } from '@/utils/contractData';
 
 export interface NftCardProps {
@@ -40,28 +42,57 @@ export default function NftCard ({
   const [isRentedOut, setIsRentedOut] = useState<boolean>();
   const [isRental, setIsRental] = useState<boolean>();
   
-  // console.log('library', library);
-  // console.log('rentPrice', rentPrice)
   console.log('tokenid/isrental',tokenId.toString(),isRental)
   
-  const isReceipt = useMemo(() => {
-    // if(!nftItem) return
-    if(contractAddress === receiptsContract.address) return true;
-    else return false;
-  }, []);
+  // const isReceipt = useMemo(() => {
+  //   // if(!nftItem) return
+  //   if(contractAddress === receiptsContract.address) return true;
+  //   else return false;
+  // }, []);
 
-  console.log('tokenId', tokenId.toString(),'isReceipt', isReceipt);
-  console.log('contractAddress', contractAddress)
+  // useEffect(() => {
+  //   const fetchHolder = async () => {
+  //     setHolder(await ownerOf(library, contractAddress, tokenId));
+  //   }
+
+  //   fetchHolder();
+
+  // }, [library]);
+
+  // useEffect(() => {
+  //   const resolveIsRental = async() => {
+  //     if(address) {
+  //       setIsRental(await checkIsRental(
+  //         library,
+  //         address,
+  //         contractAddress,
+  //         tokenId
+  //       ));
+  //       return
+  //     }
+  //     if(account)
+  //       setIsRental( await checkIsRental(
+  //         library,
+  //         account,
+  //         contractAddress,
+  //         tokenId  
+  //       ));
+  //   }
+
+  //   resolveIsRental();
+  // }, [library, account]);
+
   useEffect(() => {
+    const isReceipt = contractAddress === receiptsContract.address;
     const fetchHolder = async () => {
       setHolder(await ownerOf(library, contractAddress, tokenId));
     }
 
     fetchHolder();
+    resolvePrice(setRentPrice, contractAddress, tokenId, isReceipt, library);
+    resolveIsListed(setIsListed, isReceipt, contractAddress, tokenId, library);
+    resolveIsRentedOut(setIsRentedOut, contractAddress, tokenId, isReceipt, holder, library);
 
-  }, [library]);
-
-  useEffect(() => {
     const resolveIsRental = async() => {
       if(address) {
         setIsRental(await checkIsRental(
@@ -82,41 +113,39 @@ export default function NftCard ({
     }
 
     resolveIsRental();
-  }, [library, account]);
+  }, [library, holder, account]);
 
-  useEffect(() => {
-    resolveIsListed(library, setIsListed, isReceipt, contractAddress, tokenId, holder);
-  }, [library, holder, isReceipt]);
+  // useEffect(() => {
+    // const resolvePrice = async() => {
+    //   let _contractAddr;
+    //   let _tokenId;
+    //   if(isReceipt){
+    //     const nftObj = await getNFTByReceipt(library, tokenId);
+    //     contractAddress = nftObj?.contractAddress;
+    //     tokenId = nftObj?.tokenId;  
+    //   } else{
+    //     _contractAddr = contractAddress;
+    //     _tokenId = tokenId;
+    //   }
+    //   const { price } = await getListData(
+    //     library, 
+    //     contractAddress,
+    //     tokenId
+    //   );
+    //   if(price) setRentPrice(ethers.utils.formatEther(price));
+    // }
 
-  useEffect(() => {
-    const resolvePrice = async() => {
-      let _contractAddr;
-      let _tokenId;
-      if(isReceipt){
-        const nftObj = await getNFTByReceipt(library, tokenId);
-        contractAddress = nftObj?.contractAddress;
-        tokenId = nftObj?.tokenId;  
-      } else{
-        _contractAddr = contractAddress;
-        _tokenId = tokenId;
-      }
-      const { price } = await getListData(
-        library, 
-        contractAddress,
-        tokenId
-      );
-      if(price) setRentPrice(ethers.utils.formatEther(price));
-    }
+  //   resolvePrice();
 
-    resolvePrice();
+  // }, [library]);
 
-  }, [library]);
-
-  useEffect(() => {
-    resolveIsRentedOut(library, setIsRentedOut, isReceipt, tokenId, holder );
-  }, [library, isReceipt, holder]);
+  // useEffect(() => {
+  //   resolveIsRentedOut(library, setIsRentedOut, tokenId, isReceipt, holder );
+  // }, [library, isReceipt, holder]);
 
   // console.log(name, 'isRentedOut', isRentedOut)
+  
+  console.log('contractAddress', contractAddress)
   return (
     <div className={classNames(styles.nftCardContainer, currentPage === 'market' ? styles.nftCardMarketContainer : '')}>
       <div className={styles.nftCardImageContainer} onClick={onClick}>

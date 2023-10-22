@@ -134,7 +134,7 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
             className={classNames(styles.secondaryButton, currentPage === 'dashboard'? styles.active : '')}
           >
             {/* The following is a temporary address for prototype */}
-            <Link href="/dashboard/0x099A294Bffb99Cb2350A6b6cA802712D9C96676A"> 
+            <Link href="/dashboard"> 
               Dashboard
             </Link>
           </div>
