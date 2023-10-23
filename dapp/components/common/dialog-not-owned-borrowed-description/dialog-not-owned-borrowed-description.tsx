@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styles from './dialog-not-owned-borrowed-description.module.css';
 import { useBlockMeta, useEthers } from '@usedapp/core';
-import { NftItem } from '@/types/types';
+import { NftItem } from '@/types/typesNftApi.d';
 import walletabi from '../../../utils/contractData/RWallet.artifact.json';
 import { receiptsContract } from '@/utils/contractData';
 import { BigNumber, ethers } from 'ethers';
