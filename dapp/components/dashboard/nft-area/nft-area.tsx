@@ -3,7 +3,6 @@ import styles from './nft-area.module.css';
 import classNames from 'classnames';
 import { useState } from 'react';
 import { ethers } from 'ethers';
-import { useAddressData, useAddressNfts } from '../../../hooks/address-data';
 import { NftItem, FetchNftDataResponse } from '../../../types/typesNftApi';
 import { fetchAddressData } from '@/utils/frontendUtils';
 import { BigNumber } from 'ethers';

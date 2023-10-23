@@ -7,7 +7,7 @@ import { useSigner } from '@usedapp/core';
 import { useEffect, useState } from 'react';
 import { ConnectButton } from '@/components/common/navbar/navbar';
 import { NFTDialog } from '@/components/common/nft-dialog/nft-dialog';
-import { useAddressData, useAddressNfts } from '../../../hooks/address-data';
+import { useAddressNfts } from '../../../hooks/address-data';
 import { nftViewMode, nftViewContext } from '@/types/nftContext';
 
 export interface DashboardLayoutProps {

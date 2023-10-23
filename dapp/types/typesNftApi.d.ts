@@ -86,7 +86,7 @@ export class NftItem {
     owner: string | undefined;
 }
 export class FetchNftDataResponse {
-    nfts: NftItem[] | undefined;
+    nfts: NftItem[] | null;
     error: string | null;
     isLoading: boolean;
 }
