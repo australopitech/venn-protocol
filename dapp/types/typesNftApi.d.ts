@@ -83,6 +83,7 @@ export declare class NftCollectionAttribute {
 export class NftItem {
     nftData: NftData; 
     contractAddress: string;
+    owner: string | undefined;
 }
 export class FetchNftDataResponse {
     nfts: NftItem[] | undefined;

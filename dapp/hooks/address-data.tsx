@@ -40,7 +40,7 @@ export function useAddressNfts (address: string | undefined) : FetchNftDataRespo
   const error = userData.error;
   const isLoading = userData.isLoading;
 
-  let nfts : {nftData: NftData, contractAddress: string}[] | undefined = undefined;
+  let nfts : NftItem[] | undefined = undefined;
   if (data) {
     let curAddress = '';
     nfts = [];
@@ -51,7 +51,7 @@ export function useAddressNfts (address: string | undefined) : FetchNftDataRespo
       if (item.nft_data) {
         for (let nft of item.nft_data) {
           if (nft.external_data) {
-            nfts.push({nftData: nft, contractAddress: curAddress})
+            nfts.push({nftData: nft, contractAddress: curAddress, owner: address})
           }
         } 
       }
