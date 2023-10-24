@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import styles from './dialog-not-owned-not-listed-description.module.css';
 import classNames from 'classnames';
-// import { useProvider } from 'wagmi';
-// import ReleaseAsset from '../../wallet';
-// import { getNFTobj, useNFTname, useNFTtitle } from '../../../hooks/nfts';
 
 export interface DialogNotOwnedNotListedDescriptionProps {
     className?: string;
@@ -11,10 +8,6 @@ export interface DialogNotOwnedNotListedDescriptionProps {
     activeAccount?: string;
     context?: string;
 }
-
-let nft: any;
-let _title: string | undefined;
-let _name: string | undefined;
 
 
 /**
