@@ -22,9 +22,9 @@ To run the POC, 1st clone this repo runnning the command below,
 ```
 git clone https://github.com/pbfranceschin/r-wallet-base-3.git
 ```
-then enter the `browserExtension` dir,
+then enter the `browser-extension` dir,
 ```
-cd browserExtension
+cd browser-extension
 ```
 and install all dependencies.
 ```
@@ -34,7 +34,7 @@ To build the browser extension app, run
 ```
 yarn start
 ```
-After the building process is done, open your chrome browser and click on config on the top right and select *Extensions* -> *Manage Extensions*. In the extensions tab turn on *developer mode* on the top right. Then select *Load unpacked* in the top left. On the seleciton window, enter the root folder of this repo then `browserExtension/build/` and hit select.
+After the building process is done, open your chrome browser and click on config on the top right and select *Extensions* -> *Manage Extensions*. In the extensions tab turn on *developer mode* on the top right. Then select *Load unpacked* in the top left. On the seleciton window, enter the root folder of this repo then `browser-extension/build/` and hit select.
 
 After this you might be able to run our version of [trampoline](https://github.com/eth-infinitism/trampoline) extension. Now create an account, fund it and deploy it following the instructions provided in the screen.
 
