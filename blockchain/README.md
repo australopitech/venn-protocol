@@ -22,9 +22,9 @@ The protocol is composed by three main entities: the *factory*, the *wallet* and
 
 The *Factory* is a singleton contract that is called every time a new account is created. It stores the wallet contract implementation and handles the deployment of each single instance of wallet used in the protocol. This is done via `createAccount` method.
 
-The contract also stores every wallet address created by it so external addresses can check if a given address is a wallet_name or not. This can be done via `isWallet` method.
+The contract also stores every wallet address created by it so external addresses can check if a given address is a smart account or not. This can be done via `isWallet` method.
 #### Entry Point
-The *Entry Point* contract is also a singleton and it handles every call request made by bundlers. This means that in effect every `execute` call received by wallets should be done by the Entry Point. The contract code can be found [here](https://github.com/pbfranceschin/r-wallet-base-3/blob/main/blockchain/contracts/core/EntryPoint.sol).
+The *Entry Point* contract is also a singleton and it handles every call request made by busndlers. This means that in effect every `execute` call received by wallets should be done by the Entry Point. The contract code can be found [here](https://github.com/pbfranceschin/r-wallet-base-3/blob/main/blockchain/contracts/core/EntryPoint.sol).
 
 ### Wallet
 [Contract code](https://github.com/pbfranceschin/r-wallet-base-3/blob/main/blockchain/contracts/wallet/RWallet.sol)
@@ -41,13 +41,14 @@ Each time `execute` is called it checks the calldata to see if the transaction s
 - transfers, 
 - approvals, 
 - operator settings (*approveForAll*).
+
 The first two types are blocked for NFT's being rented by the wallet. The third is blocked for contracts in which the wallet has rented at least one NFT.
 
 Apart from the cases cited above, the wallet functions like any other wallet. That means users can transfer and approve any asset held as long as its not a rental; and set operators as long as there aren't any tokens from the target contract rented by the wallet.
 
 In effect, NFT's rented by users are "stuck" in the wallet until the rent is due.
 
-`pullAsset` enables external contracts to pull rented tokens back to the original owner after the rental period expires. That mean that the method checks for the current timestamp before making the transfer. The target address of the transfer is always the address who held the NFT when rent was made.
+`pullAsset` enables external callers to pull rented tokens back to the original owner after the rental period expires. That means that the method checks for the current timestamp before making the transfer. The target address of the transfer is always the address who held the NFT when rent was made.
 
 ```solidity
 function pullAsset(uint256 index) external
@@ -62,11 +63,11 @@ function getTokenIndex(address contract_, uint256 tokenId) external view returns
 ### Market Place
 [Contract code](https://github.com/pbfranceschin/r-wallet-base-3/blob/main/blockchain/contracts/wallet/MarketPlace.sol)
 
-The *Market Place* role is to be an intermediary between account who want to put their NFTs for rent, and wallet_name users who want to rent these NFTs. Any Market Place can make itself compatible with our protocol. To see how checkout [next section](link).  
+The *Market Place*'s role is to be an intermediary between the account that wants to put their NFTs for rent, and smart account users who want to rent these NFTs. Any Market Place can make itself compatible with our protocol. To see how checkout [next section](link).  
 
 We provide our own implementation of a Market Place, provided via the dapp. Third parties can use it as a reference but that's not the only way to do it. The code can be seen [here](link). Let's see how it works:
 
-The main methods use in the contract are `listNFT`, `rentNFT` and `deList`. The first one allows any type of account to list an NFT by passing its identification (contract and id) and the listing metadata (price and max duration). 
+The main methods use in the contract are `listNFT`, `rentNFT` and `deList`. The first one allows any type of account to list an NFT by passing its identification (*contract* and *id*) and the listing metadata (*price* and *max duration*). 
 
 ```solidity
 function listNFT(
@@ -74,13 +75,13 @@ function listNFT(
 ) external
 ```
 
-It requires the caller be the owner of the token and the Market Place contract be approved or set as an operator. Since we are using a deposit format the NFT is transferred to the Market Place contract. That means that after the listing the token is no longer in custody of the lister. To allow more freedom to listers, Market Place issues an NFT-receipt that can be used as a guarantee of ownership of the token in question. It tracks the original NFT's metadata, so it looks like an exact replica except it is issued from a different contract. 
+It requires the caller be the owner of the token and the Market Place contract be approved or set as an operator. Since we are using a deposit format, the NFT is transferred to the Market Place contract. That means that after the listing the token is no longer in custody of the lister. To allow more freedom to listers, Market Place issues an NFT-receipt that can be used as a guarantee of ownership of the token in question. It tracks the original NFT's metadata, so it looks like an exact replica except it is issued from a different contract. 
 
 The receipt-NFT can be sold or used as collateral just like a normal NFT, except that it may not hold some innate functionality held by the original NFT. We propose a solution to this: NFT issuers can allow receipts to hold functionality by checking its provenance ([here](link)), and checking if the NFT was rented or not. As long as the NFT is not rented, only the receipt can be used in place of the original. When the NFT is indeed rented, the receipt should be blocked from functionality to guarantee only one of them can be used. *(We will go into more detail on how to do this the future)*
 
-After listing the NFT, listers can change listing metadata by calling `setPrice` and `setMaxDuration`. These methods are restricted to the current owner of the NFT-receipt. That means that if the original lister sells or deposit the receipt it can no longer access these methods. Listers need to be wary of contracts in which they deposit their NFT-receipts. The holder of the receipt at any moment is in effect treated as the lister, so when the rent is due this holder can claim the original asset for themselves. On the other hand, this also means that the receipt-NFT holds value as a claim to the original asset in the future, and can be sold to interested parties.
+After listing the NFT, listers can change listing metadata by calling `setPrice` and `setMaxDuration`. These methods are restricted to the current owner of the NFT-receipt. That means that if the original lister sells or deposits the receipt, he/she can no longer access these methods. Listers need to be wary of contracts in which they deposit their NFT-receipts. The holder of the receipt at any moment is in effect treated as the lister, so when the rent is due this holder can claim the original asset for themselves. On the other hand, this also means that the receipt-NFT holds value as a claim to the original asset in the future, and can be sold to interested parties.
 
-The second main method `rentNFT` is restricted to wallet_name accounts. It also requires that the account has no operators set for the contract from which the NFT was issued (check out the [next session](link) to see how this is done). 
+The second main method `rentNFT` is restricted to smart account accounts. It also requires that the account has no operators set for the contract from which the NFT was issued (check out the [next session](link) to see how this is done). 
 
 ```solidity
 function rentNFT (
@@ -88,28 +89,31 @@ function rentNFT (
     ) external payable override
 ```
 
-It receives as inputs the NFT identification (contract address and id) and the duration of the rent, that has to be less than or equal to the specified `maxDuration`. `maxDuration` can be accessed via the `getMaxDuration` view function. This function is defined by `IMarketPlace` interface, as explained in the next session.
+It receives as inputs the NFT identification (*contract address* and *id*) and the duration of the rent, that has to be less than or equal to the specified `maxDuration`. `maxDuration` can be accessed via the `getMaxDuration` view function. `rentNFT` is defined by `IMarketPlace` interface, as explained in the next session.
 
 The third method, `deList`, as its name suggests, should be called when the lister wants to de-list a listed NFT. It's restricted to the current owner of the related NFT-receipt. There are 3 possible scenarios, regarding the rental, in which the method can be called. In each of them the method is gonna behave in a different manner:
 
-- **1st scenario**: the listed NFT is available, i.e, it is no being rented at the moment of the call.
+- **1st scenario**: the listed NFT is available, i.e, it is not being rented at the moment of the call.
+
 --> In this case the method is gonna reset the listing metadata and transfer the NFT back to the caller burning the related NFT-receipt.
 
 - **2nd scenario**: the listed NFT is rented out and the rent period has not yet expired.
+
 --> In this scenario, the method resets the listing metadata, making the NFT unavailable for future rents.
 
 - **3rd scenario**: the listed NFT is rented out and the rent period has expired.
---> The listing metadata is also reset to zero, and the NFT is pulled back from the wallet_name account and sent to the caller's address. In this case the caller absorbs the **pull fee** (*explained below).
+
+--> The listing metadata is also reset to zero, and the NFT is pulled back from the smart account and sent to the caller's address. In this case the caller absorbs the **pull fee** (explained below).
 
 There is one more public method important make this contract fully functioning. If you noticed in the 2nd scenario above, the NFT is delisted making it ineligible for future rents, but it is not retrieved from the wallet. In this scenario when the rent is finally due another action is required to make the retrieval.
 
-To enable this there is a method called `pullAsset`. This method is actually called by `deList` in the 3rd scenario. This method is permissionless and pays a cut from the service fee the caller, the **pull fee**. This provides a profit opportunity for any *searcher* account monitoring the protocol and contributes for a better user experience. The pull fee related to every NFT is easily accessible via `getPullFee`. Of course even if the searchers do not provide this service the very user can always call the method himself.
+To enable this there is a method called `pullAsset`. This method is actually called by `deList` in the 3rd scenario. This method is permissionless and pays a cut from the service fee to the caller, the **pull fee**. This provides a profit opportunity for any *searcher* account monitoring the protocol and contributes for a better user experience. The pull fee related to every NFT is easily accessible via `getPullFee`. Of course even if the searchers do not provide this service the very user can always call the method himself.
 
 ----
 ## Compatibility
 To be fully compatible with our protocol, third party contracts need to follow a small set of requirements.
 ### NFTs
-Wallets are compatible with any contract that implements `IERC721`. Our Market Place supports contracts that use `IERCMetadata` or `ERC721URIStorage`.
+Wallets are compatible with any contract that implements `IERC721`. Our Market Place supports contracts that use `ERC721URIStorage` or implements `IERCMetadata`.
 ### Market Places
 As mentioned in the previous section, any Market Place can easily make itself compatible with our protocol. All it needs to do is implement the `IMarketPlace` interface shown bellow and follow a few requirements.
 
@@ -129,7 +133,7 @@ Implementations MUST:
 - REQUIRE caller's *operator count* for the NFT contract to be ZERO.
 #### Prescriptions
 Implementations SHOULD:
-- REQUIRE `duration` is less then or equal to maximum duration specified by NFT owner.
+- REQUIRE `duration` is *less then* or *equal to* maximum duration specified by NFT owner.
 - REQUIRE `msg.value` be enough to cover the rent value and any outstanding service fee.
 ----
 ## Adresses

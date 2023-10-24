@@ -6,7 +6,7 @@
 
 This is a SC wallet/dapp that enables NFT rentals entirely on-chain and in a trustless manner. No colateral needed.
 
-It is also made to be fully compatible with ERC-721. No need to implement new patterns!
+It is also made to be **FULLY COMPATIBLE** with ERC-721. No need to implement new patterns!
 
 We are leveraging Acount Abstaction TO ENABLE users to rent NFTs without any collateral, operating in a fully trustless environment. While still in the development phase, we've successfully launched a proof of concept (POC) on Base Goerli. This includes a browser extension wallet, a dashboard/marketplace dapp, and fully operational smart contracts. 
 
