@@ -30,7 +30,7 @@ and install all dependencies.
 ```
 yarn install
 ```
-To build the app, run
+To build the browser extension app, run
 ```
 yarn start
 ```
