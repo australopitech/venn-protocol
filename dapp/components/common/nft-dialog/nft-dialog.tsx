@@ -95,6 +95,7 @@ export const NFTDialog = ({
     const [isRented_Out, setIsRented_Out] = useState<boolean>()
     // 
     const [isReceipt, setIsReceipt] = useState<boolean>();
+    const [loading, setLoading] = useState<boolean>(true);
 
     const {account, library} = useEthers();
     console.log('nft contract', nftItem?.contractAddress)
@@ -116,7 +117,7 @@ export const NFTDialog = ({
       if(nftItem)
         setIsReceipt(ethers.utils.getAddress(nftItem.contractAddress) === receiptsContract.address);
       
-        const fetchHolder = async () => {
+      const fetchHolder = async () => {
         if(nftItem) setHolder(await getOwner(library, nftItem));
       }
       fetchHolder();
@@ -125,25 +126,12 @@ export const NFTDialog = ({
 
 
     useEffect(() => { 
-      // const resolveIsRented_Out = async() => {
-      //   if(holder == mktPlaceContract.address) 
-      //     setIsRented_Out(false);
-      //   if(isReceipt && nftItem) {
-      //     const mktPlace = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi , library);
-      //     const nftObj = await mktPlace.getNFTbyReceipt(BigNumber.from(nftItem.nftData.token_id));
-      //     const nftHolder = await ownerOf(library, nftObj.contractAddress, nftObj.tokenId);
-      //     if(nftHolder) {
-      //       if(nftHolder === mktPlace.address) setIsRented_Out(false);
-      //       else setIsRented_Out(true);
-      //     };
-      //   }
-      // }
-      // resolveIsRented_Out();
       if(!nftItem) return
 
       resolveIsRentedOut(
         setIsRented_Out,
-        BigNumber.from(nftItem?.nftData.token_id),
+        nftItem.contractAddress,
+        BigNumber.from(nftItem.nftData.token_id),
         isReceipt,
         holder,
         library
@@ -152,16 +140,16 @@ export const NFTDialog = ({
       resolveIsListed(
         setIsListed,
         isReceipt,
-        nftItem?.contractAddress,
-        BigNumber.from(nftItem?.nftData.token_id),
+        nftItem.contractAddress,
+        BigNumber.from(nftItem.nftData.token_id),
         library
       );
 
       resolveIsRental(
         setIsRental_signer,
         isReceipt,
-        nftItem?.contractAddress,
-        BigNumber.from(nftItem?.nftData.token_id),
+        nftItem.contractAddress,
+        BigNumber.from(nftItem.nftData.token_id),
         account,
         library
       );
@@ -225,7 +213,17 @@ export const NFTDialog = ({
         if(holder === account) setIsOwned(!isRental_signer);
         else setIsOwned(false);
       }
-    },[holder, isRental_signer])
+    },[holder, isRental_signer]);
+
+    useEffect(() => {
+      if(
+        isOwned !== undefined &&
+        isListed !== undefined &&
+        isReceipt !== undefined &&
+        isRental_signer !== undefined &&
+        isRented_Out !== undefined
+      ) setLoading(false );
+    },[isOwned, isListed, isReceipt, isRental_signer, isRented_Out])
 
 
     console.log('holder', holder)
@@ -234,6 +232,7 @@ export const NFTDialog = ({
     console.log('isRental_signer', isRental_signer)
     console.log('isReceipt', isReceipt)
     console.log('isRented_Out', isRented_Out)
+    console.log('loading', loading)
 
     const name = nftItem ? nftItem.nftData.external_data.name : "Awesome NFT #1"
     const description = nftItem ? nftItem.nftData.external_data.description : "This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhul."
@@ -256,30 +255,31 @@ export const NFTDialog = ({
                 <p className={styles.nftDescription}>
                   {description}
                 </p>
-                {!isOwned && isRental_signer &&
+                {loading && <h1>Loading...</h1>}
+                {!loading && !isOwned && isRental_signer &&
                   <DialogNotOwnedBorrowedDescription isRental={isRental_signer} nftItem={nftItem} />}
                    {/* rented by signer */}
                 
-                {!isOwned && isListed && !isRented_Out && !isRental_signer &&
+                {!loading && !isOwned && isListed && !isRented_Out && !isRental_signer &&
                   <DialogNotOwnedListedDescription 
                   nftItem={nftItem} setIsNFTOpen={setIsNFTOpen} isReceipt={isReceipt}
                    />}   {/* available for rent */}
                 
-                {!isOwned && isRented_Out && !isRental_signer &&
+                {!loading && !isOwned && isRented_Out && !isRental_signer &&
                  <DialogNotOwnedBorrowedDescription address={address} nftItem={nftItem} />}
                 
-                {!isOwned && !isListed && !isRented_Out && 
+                {!loading && !isOwned && !isListed && !isRented_Out && 
                   <DialogNotOwnedNotListedDescription />} {/* not available for rent*/}
                 
-                {isOwned && isListed && isReceipt && !isRented_Out && 
+                {!loading && isOwned && isListed && isReceipt && !isRented_Out && 
                   <DialogOwnedListedDescription nftItem={nftItem} setIsNFTOpen={setIsNFTOpen}/>} 
                   {/* owned/listed by signer/not rented out */}
                 
-                {isOwned && !isListed && !isReceipt && 
+                {!loading && isOwned && !isListed && !isReceipt && 
                   <DialogOwnedNotListedDescription nftItem={nftItem} setIsNFTOpen={setIsNFTOpen} />} 
                   {/* owned/not listed by signer/not rented out */}
                 
-                {isOwned && isReceipt && isRented_Out &&
+                {!loading && isOwned && isReceipt && isRented_Out &&
                   <DialogOwnedRentedDescription 
                     isListed={isListed} nftItem={nftItem} setIsNFTOpen={setIsNFTOpen}
                   />} {/* owned / rented out */}

@@ -91,7 +91,7 @@ export default function NftCard ({
     fetchHolder();
     resolvePrice(setRentPrice, contractAddress, tokenId, isReceipt, library);
     resolveIsListed(setIsListed, isReceipt, contractAddress, tokenId, library);
-    resolveIsRentedOut(setIsRentedOut, tokenId, isReceipt, holder, library);
+    resolveIsRentedOut(setIsRentedOut, contractAddress, tokenId, isReceipt, holder, library);
 
     const resolveIsRental = async() => {
       if(address) {
