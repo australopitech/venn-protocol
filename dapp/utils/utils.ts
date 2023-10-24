@@ -102,10 +102,10 @@ export async function getListData(
         return {price: undefined, maxDur: undefined};
 
     const contract = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi, provider);
-    console.log('contract in getList', contract.address);
+    // console.log('contract in getList', contract.address);
     const price = await contract.getPrice(nftContractAddress, tokenId);
     const maxDur = await contract.getMaxDuration (nftContractAddress, tokenId);
-    // console.log('price/maxDur', price.toString(), maxDur.toString())
+    // console.log('price/maxDur', price.toString(), maxDur.toString(), tokenId)
     return {price, maxDur};
 }
 
@@ -134,7 +134,7 @@ export async function checkIsListedByReceipt(
         console.log('error: getListData: no return value');
         return
     }
-    // console.log('maxDur', maxDur.toString(), maxDur.gt(0));
+    // console.log('maxDur in check', maxDur.toString(), maxDur.gt(0));
     return maxDur.gt(0);
   }
   
@@ -147,12 +147,6 @@ export async function getNFTByReceipt(
     return nftObj;
 }
 
-// export async function resolveListingData(
-//     provider: any,
-//     contractAddr: string,
-    
-// )
-
 export async function resolveIsListed (
     setIsListed: any,
     isReceipt?: boolean,
@@ -160,7 +154,7 @@ export async function resolveIsListed (
     tokenId?: BigNumber,
     provider?: any
 ) {
-    // if(!provider) return;
+    if(isReceipt === undefined) return;
     if(isReceipt && tokenId) {
         setIsListed(
           await checkIsListedByReceipt(provider, tokenId)
@@ -174,6 +168,7 @@ export async function resolveIsListed (
     );
     if(maxDur) setIsListed(true);
     if(maxDur?.eq(0)) setIsListed(false);
+    console.log('maxDur in resolve', maxDur?.toString(), tokenId?.toString());
 }
 
 export async function resolveIsRentedOut(
