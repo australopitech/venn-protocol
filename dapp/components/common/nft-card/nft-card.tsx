@@ -83,12 +83,16 @@ export default function NftCard ({
   // }, [library, account]);
 
   useEffect(() => {
-    const isReceipt = contractAddress === receiptsContract.address;
     const fetchHolder = async () => {
       setHolder(await ownerOf(library, contractAddress, tokenId));
     }
 
     fetchHolder();
+  })
+
+  useEffect(() => {
+    const isReceipt = contractAddress === receiptsContract.address;
+    
     resolvePrice(setRentPrice, contractAddress, tokenId, isReceipt, library);
     resolveIsListed(setIsListed, isReceipt, contractAddress, tokenId, library);
     resolveIsRentedOut(setIsRentedOut, contractAddress, tokenId, isReceipt, holder, library);
