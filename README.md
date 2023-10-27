@@ -20,13 +20,13 @@ Below you can find a guide on how to run the POC. You can find the documentation
 - [To be Done](https://github.com/pbfranceschin/r-wallet-base-3/tree/main#to-be-done)
 
 ## Guide
-To run the POC, 1st download the file in [this link](https://drive.proton.me/urls/C5Z48JQRG8#EuTqtNt0jsp1) (*SHA256sum*: `BD50049C2DE7C58806963140ADB66B852E630A098C2D87DF50215F47BE3C82E5`).
+To run the POC, 1st download the file in [this link](https://drive.proton.me/urls/C5Z48JQRG8#EuTqtNt0jsp1) (*SHA256*: `BD50049C2DE7C58806963140ADB66B852E630A098C2D87DF50215F47BE3C82E5`).
 
-Next, extract the folder to a directory of your choice (to do that you may need a software like RAR or 7zip). Now open your chrome browser and click on 'config' on the top right and select *Extensions* -> *Manage Extensions*. In the extensions tab turn on *developer mode* on the top right. Then select *Load unpacked* in the top left. In the selection window, enter the directory to which you extracted the file and select `build/`.
+Next, extract the folder to a directory of your choice. Now, on Chrome browser, open 'browser-options' on the top right and select *Extensions* -> *Manage Extensions*. In the extensions tab turn on *developer mode* on the top right. Then select *Load unpacked* in the top left. In the selection window, enter the directory to which you extracted the file contents and select `build/`.
 
-After this you should be able to run our version of [trampoline](https://github.com/eth-infinitism/trampoline) browser extension. Now create an account, fund it and deploy it following the instructions provided in the screen.
+After this you should be able to run our version of [trampoline](https://github.com/eth-infinitism/trampoline) browser extension. Open it through the extensions tab. Now create an account, fund it and deploy it following the instructions provided in the screen. To fund your wallet you may need to head to [Base Goerli faucet](https://www.coinbase.com/faucets/base-ethereum-goerli-faucet).
 
-Now head to our [test account dashboard](https://r-wallet-base-3.vercel.app/dashboard/0x099A294Bffb99Cb2350A6b6cA802712D9C96676A) and checkout some test NFTs for rent. To rent, just click in the NFT card, input a duration for the rent and click the button!
+Now head to our [test account dashboard](https://r-wallet-base-3.vercel.app/dashboard/0x099A294Bffb99Cb2350A6b6cA802712D9C96676A) and checkout some test NFTs for rent, free of charge of course. To rent, just click in the NFT card, input a duration for the rent and click the button!
 
 *Feel free to open issues or contact any of the team members if you run into any errors. Also contact us through australopitech@proton.me if you are interested in collaborating.*
 
