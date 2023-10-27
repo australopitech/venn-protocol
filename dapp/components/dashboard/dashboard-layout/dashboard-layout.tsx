@@ -49,8 +49,13 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
       <NavBar navbarGridTemplate={styles.navbarGridTemplate} currentPage='dashboard' />
       { (signer || address)
         ? <div className={styles.contentGridTemplate}> 
-            <SideBar address={address? address : signerAddress} nftsContext={{mode: nftsMode, setNftsViewMode: setNftsMode}}/>
-            <NftArea address={address} nftFetchData={userData} setIsNFTOpen={setIsNFTOpen} setSelectedNFT={setSelectedNFT}/> 
+            <SideBar address={address? address : signerAddress}
+                     nftsContext={{mode: nftsMode, setNftsViewMode: setNftsMode}}/>
+            <NftArea address={address}
+                     nftFetchData={userData}
+                     setIsNFTOpen={setIsNFTOpen}
+                     setSelectedNFT={setSelectedNFT}
+                     viewMode={nftsMode}/> 
           </div>
         : <div className={styles.notConnectedTemplate}>
             <div className={styles.notConnectedContainer}>

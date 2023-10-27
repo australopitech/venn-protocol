@@ -6,6 +6,7 @@ import { ethers } from 'ethers';
 import { NftItem, FetchNftDataResponse } from '../../../types/typesNftApi';
 import { fetchAddressData } from '@/utils/frontendUtils';
 import { BigNumber } from 'ethers';
+import { nftViewMode } from '@/types/nftContext';
 
 export interface NftAreaProps {
   nftAreaGridTemplate?: string;
@@ -13,6 +14,7 @@ export interface NftAreaProps {
   setSelectedNFT: any;
   nftFetchData?: FetchNftDataResponse;
   address?: string;
+  viewMode: nftViewMode;
 }
 
 interface ToggleSwitchProps {
@@ -70,7 +72,7 @@ const ToggleSwitch = ({ onToggle }: ToggleSwitchProps) => {
   )
 }
 
-export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchData, setSelectedNFT, address}: NftAreaProps) {
+export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchData, setSelectedNFT, address, viewMode}: NftAreaProps) {
   const [toggleState, setToggleState] = useState<boolean>(false);
 
   const handleToggle = (state: boolean) => {
@@ -97,7 +99,9 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
           {nftFetchData?.nfts ? 
            nftFetchData?.nfts.length == 0 ?
            "No nfts" :
-           nftFetchData.nfts.map((nft, i) =>
+           nftFetchData.nfts
+             .filter(nft => nft.isRental === (viewMode === 'rented'))
+             .map((nft, i) =>
             <NftCard
               imageURI={
                 nft.nftData?.external_data?.image_1024 ?
