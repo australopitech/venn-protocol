@@ -84,6 +84,7 @@ export class NftItem {
     nftData: NftData; 
     contractAddress: string;
     owner: string | undefined;
+    isRental: boolean | undefined;
 }
 export class FetchNftDataResponse {
     nfts: NftItem[] | null;
