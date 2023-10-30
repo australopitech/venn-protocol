@@ -13,7 +13,7 @@ import { DialogNotOwnedNotListedDescription } from '../dialog-not-owned-not-list
 // import classNames from 'classnames';
 // import { getNFTobj, useNFTtitle, useNFTname, useTokenImage, useTokenMetaData } from '../../../hooks/nfts';
 // import { Context } from 'wagmi';
-import { NftItem } from '../../../types/types';
+import { NftItem } from '../../../types/typesNftApi';
 import walletAbi from '../../../utils/contractData/RWallet.artifact.json';
 import erc721 from '../../../utils/contractData/ERC721.artifact.json';
 import { mktPlaceContract, receiptsContract } from '@/utils/contractData';

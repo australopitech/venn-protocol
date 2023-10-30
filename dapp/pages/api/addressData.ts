@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { fetchBalancesData } from '../../utils/covalentFetchData'; // Import your utility function
-import { BalancesResponse } from '../../types/types';
+import { BalancesResponse } from '../../types/typesNftApi';
 
 export default async function handler(
   req: NextApiRequest,

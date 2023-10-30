@@ -5,7 +5,7 @@ import classNames from 'classnames';
 // import { useProvider } from 'wagmi';
 // import ReleaseAsset from '../../wallet';
 // import { getNFTobj, useNFTname, useNFTtitle } from '../../../hooks/nfts';
-import { NftItem } from '@/types/types';
+import { NftItem } from '@/types/typesNftApi.d';
 import { list, approve } from '@/utils/call';
 import { useSigner, useEthers } from '@usedapp/core';
 import { mktPlaceContract } from '@/utils/contractData';

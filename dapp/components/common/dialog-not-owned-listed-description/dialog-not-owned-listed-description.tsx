@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { ethers, BigNumber } from 'ethers';
 import { rent } from '@/utils/call';
 import { useSigner, useEthers } from '@usedapp/core';
-import { NftItem } from '@/types/types';
+import { NftItem } from '@/types/typesNftApi.d';
 import { mktPlaceContract, receiptsContract } from '@/utils/contractData';
 import { isWallet, getListData, getNFTByReceipt } from '../../../utils/utils';
 import Router from 'next/router';

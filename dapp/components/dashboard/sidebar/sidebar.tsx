@@ -5,6 +5,7 @@ import { useEtherBalance, useEthers, useSigner } from '@usedapp/core';
 import styles from './sidebar.module.css';
 import classNames from 'classnames';
 import compactString from '@/utils/compactString'
+import { nftViewMode, nftViewContext } from '@/types/nftContext';
 
 interface QueryParams {
   address: string;
@@ -13,6 +14,7 @@ interface QueryParams {
 export interface SideBarProps {
   sidebarGridTemplate?: string;
   address?: string;
+  nftsContext: nftViewContext;
 }
 
 
@@ -89,30 +91,37 @@ const SelectedIcon = () => {
   )
 }
 
-const YourNfts = ({ nftsContext } : {nftsContext: string}) => {
+const YourNfts = ({ nftsContext } : {nftsContext: nftViewContext}) => {
   const router = useRouter();
   const address = router.query.address as QueryParams['address'];
   const {account} = useEthers();
+  const { mode, setNftsViewMode } = nftsContext;
   return (
     <div className={styles.yourNftsContainer}>
       <span className={styles.profileSectionTitle}>{((address&&account&&address===account) || (account&&!address)) && 'YOUR'} NFTS</span>
 
       <div>
-        <div className={nftsContext === 'owned' ? styles.menuItemSelected : styles.menuItem}>
+        <div 
+          className={mode === 'owned' ? styles.menuItemSelected : styles.menuItem}
+          onClick={() => setNftsViewMode('owned')} // Set mode to 'owned' on click
+        >
           <span>
             Owned
           </span>
-          {nftsContext === 'owned' 
+          {nftsContext.mode === 'owned' 
             ? <SelectedIcon />
             : <></>
           }
         </div>
         
-        <div className={nftsContext === 'rented' ? styles.menuItemSelected : styles.menuItem}>
+        <div 
+          className={mode === 'rented' ? styles.menuItemSelected : styles.menuItem}
+          onClick={() => setNftsViewMode('rented')} // Set mode to 'rented' on click
+        >
           <span>
             Rentals
           </span>
-          {nftsContext === 'rented' 
+          {nftsContext.mode === 'rented' 
             ? <SelectedIcon />
             : <></>
           }
@@ -221,8 +230,8 @@ const YourBalance = () => {
   )
 }
 
-export default function SideBar ({ sidebarGridTemplate, address }: SideBarProps) {
-  const nftsContext: string =  "owned"
+export default function SideBar ({ sidebarGridTemplate, address, nftsContext }: SideBarProps) {
+  // const nftsContext: string =  "owned"
 
   return (
     <div className={sidebarGridTemplate}>

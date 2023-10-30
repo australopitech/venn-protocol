@@ -1,7 +1,7 @@
 import { ethers, BigNumber } from "ethers";
 import erc721 from "./contractData/ERC721.artifact.json";
 import { mktPlaceContract, factoryContract } from "./contractData";
-import { NftItem } from "@/types/types";
+import { NftItem } from '@/types/typesNftApi.d';
 import walletAbi from "./contractData/RWallet.artifact.json";
 
 const erc721abi = erc721.abi as any;

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import styles from './dialog-owned-rented-description.module.css';
 import { useSigner, useEthers } from '@usedapp/core';
 import { delist } from '@/utils/call';
-import { NftItem } from '@/types/types';
+import { NftItem } from '@/types/typesNftApi.d';
 import { BigNumber } from 'ethers';
 import { getEndTime, getNFTByReceipt, ownerOf } from '@/utils/utils';
 import { useTimestamp } from '@/hooks/block-data';

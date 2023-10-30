@@ -7,7 +7,8 @@ import { useSigner } from '@usedapp/core';
 import { useEffect, useState } from 'react';
 import { ConnectButton } from '@/components/common/navbar/navbar';
 import { NFTDialog } from '@/components/common/nft-dialog/nft-dialog';
-import { useAddressData, useAddressNfts } from '../../../hooks/address-data';
+import { useAddressNfts } from '../../../hooks/address-data';
+import { nftViewMode, nftViewContext } from '@/types/nftContext';
 
 export interface DashboardLayoutProps {
   address?: string;
@@ -20,6 +21,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   // const isWalletConnected = true; //temp
   const signer = useSigner();
   const [signerAddress, setSignerAddress] = useState<string>();
+  const [nftsMode, setNftsMode] = useState<nftViewMode>("owned");
 
   // console.log('signer dashboard', signer)
   // console.log('signerAddress', signerAddress)
@@ -47,8 +49,13 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
       <NavBar navbarGridTemplate={styles.navbarGridTemplate} currentPage='dashboard' />
       { (signer || address)
         ? <div className={styles.contentGridTemplate}> 
-            <SideBar address={address? address : signerAddress}/>
-            <NftArea address={address} nftFetchData={userData} setIsNFTOpen={setIsNFTOpen} setSelectedNFT={setSelectedNFT}/> 
+            <SideBar address={address? address : signerAddress}
+                     nftsContext={{mode: nftsMode, setNftsViewMode: setNftsMode}}/>
+            <NftArea address={address}
+                     nftFetchData={userData}
+                     setIsNFTOpen={setIsNFTOpen}
+                     setSelectedNFT={setSelectedNFT}
+                     viewMode={nftsMode}/> 
           </div>
         : <div className={styles.notConnectedTemplate}>
             <div className={styles.notConnectedContainer}>
