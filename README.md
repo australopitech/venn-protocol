@@ -26,7 +26,7 @@ Next, extract the folder to a directory of your choice. Now, on Chrome browser, 
 
 After this you should be able to run our version of [trampoline](https://github.com/eth-infinitism/trampoline) browser extension. Now create an account, fund it and deploy it following the instructions provided in the screen. To fund your wallet you may need to head to [Base Goerli faucet](https://www.coinbase.com/faucets/base-ethereum-goerli-faucet).
 
-Now head to our [test account dashboard](https://r-wallet-base-3.vercel.app/dashboard/0x099A294Bffb99Cb2350A6b6cA802712D9C96676A) and checkout some test NFTs for rent, free of charge of course. To rent, just click in the NFT card, input a duration for the rent and click the button!
+Now head to our [test account dashboard](https://r-wallet-base-3.vercel.app/dashboard/0x099A294Bffb99Cb2350A6b6cA802712D9C96676A) and checkout some test NFTs for rent, free of charge of course. To rent, just click on the NFT card, input a duration for the rent and click the button!
 
 *Feel free to open issues or contact any of the team members if you run into any errors. Also contact us through australopitech@proton.me if you are interested in collaborating.*
 
