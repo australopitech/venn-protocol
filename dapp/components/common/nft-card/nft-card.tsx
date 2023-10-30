@@ -43,11 +43,11 @@ export default function NftCard ({
   const [rentPrice , setRentPrice] = useState<string>();
   const [isRentedOut, setIsRentedOut] = useState<boolean>();
   const [isRental, setIsRental] = useState<boolean>();
+  const [loading, setLoading] = useState<boolean>(true);
   
   console.log('tokenid/isrental',tokenId.toString(),isRental)
   
   useEffect(() => {
-    const isReceipt = contractAddress === receiptsContract.address;
     const fetchHolder = async () => {
       if (holderAddress) {
         setHolder(holderAddress);
@@ -58,6 +58,11 @@ export default function NftCard ({
     }
 
     fetchHolder();
+  },[]);
+
+  useEffect(() => {
+    const isReceipt = contractAddress === receiptsContract.address;
+    
     resolvePrice(setRentPrice, contractAddress, tokenId, isReceipt, library);
     resolveIsListed(setIsListed, isReceipt, contractAddress, tokenId, library);
     resolveIsRentedOut(setIsRentedOut, contractAddress, tokenId, isReceipt, holder, library);
@@ -84,6 +89,44 @@ export default function NftCard ({
     resolveIsRental();
   }, [library, holder, account]);
 
+  useEffect(() => {
+    if(
+      isListed !== undefined &&
+      isRentedOut !== undefined &&
+      isRental !== undefined
+    ) setLoading(false);
+  },[isListed, isRentedOut, isRental])
+
+  // useEffect(() => {
+    // const resolvePrice = async() => {
+    //   let _contractAddr;
+    //   let _tokenId;
+    //   if(isReceipt){
+    //     const nftObj = await getNFTByReceipt(library, tokenId);
+    //     contractAddress = nftObj?.contractAddress;
+    //     tokenId = nftObj?.tokenId;  
+    //   } else{
+    //     _contractAddr = contractAddress;
+    //     _tokenId = tokenId;
+    //   }
+    //   const { price } = await getListData(
+    //     library, 
+    //     contractAddress,
+    //     tokenId
+    //   );
+    //   if(price) setRentPrice(ethers.utils.formatEther(price));
+    // }
+
+  //   resolvePrice();
+
+  // }, [library]);
+
+  // useEffect(() => {
+  //   resolveIsRentedOut(library, setIsRentedOut, tokenId, isReceipt, holder );
+  // }, [library, isReceipt, holder]);
+
+  // console.log(name, 'isRentedOut', isRentedOut)
+  
   console.log('contractAddress', contractAddress)
   return (
     <div className={classNames(styles.nftCardContainer, currentPage === 'market' ? styles.nftCardMarketContainer : '')}>
@@ -92,7 +135,9 @@ export default function NftCard ({
       </div>
       <div className={styles.nftCardInfo}>
         <span>{name}</span>
-        {isListed
+        {loading
+         ? <span className={styles.notListed}>Loading...</span>
+         : isListed
           ? (isRentedOut
               ? <span className={styles.rented}>
                   {/* {`Rent expires in ${expireDate || 'NaN'}`} */}

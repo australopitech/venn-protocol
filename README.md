@@ -8,9 +8,9 @@ This is a SC wallet/dapp that enables NFT rentals entirely on-chain and in a tru
 
 It is also made to be **FULLY COMPATIBLE** with ERC-721. No need to implement new patterns!
 
-We are leveraging Acount Abstaction TO ENABLE users to rent NFTs without any collateral, operating in a fully trustless environment. While still in the development phase, we've successfully launched a proof of concept (POC) on Base Goerli. This includes a browser extension wallet, a dashboard/marketplace dapp, and fully operational smart contracts. 
+We are leveraging Acount Abstaction TO ENABLE users to rent NFTs without any collateral, operating in a fully trustless environment. While still in the development phase, we've launched a proof of concept (POC) on Base Goerli. This includes a browser extension wallet, a dashboard/marketplace dapp, and fully operational smart contracts. 
 
-Below you can find a guide on how to run the POC. You can find the documentation [here](https://github.com/pbfranceschin/r-wallet-base-3/blob/main/blockchain/README.md).
+Below you can find a guide on how to run the POC. You can find the documentation [here](https://github.com/pbfranceschin/r-wallet-base-3/blob/main/blockchain/README.md), including all the contract addresses.
 
 ## Contents
 - [Guide](https://github.com/pbfranceschin/r-wallet-base-3/tree/main#guide)
@@ -20,29 +20,15 @@ Below you can find a guide on how to run the POC. You can find the documentation
 - [To be Done](https://github.com/pbfranceschin/r-wallet-base-3/tree/main#to-be-done)
 
 ## Guide
-To run the POC, 1st clone this repo runnning the command below,
-```
-git clone https://github.com/pbfranceschin/r-wallet-base-3.git
-```
-then enter the `browser-extension` dir,
-```
-cd browser-extension
-```
-and install all dependencies.
-```
-yarn install
-```
-To build the browser extension app, run
-```
-yarn start
-```
-After the building process is done, open your chrome browser and click on config on the top right and select *Extensions* -> *Manage Extensions*. In the extensions tab turn on *developer mode* on the top right. Then select *Load unpacked* in the top left. In the selection window, enter the root folder of this repo and then `browser-extension/build/` and hit select.
+To run the POC, 1st download the file in [this link](https://drive.proton.me/urls/C5Z48JQRG8#EuTqtNt0jsp1) (*SHA256*: `BD50049C2DE7C58806963140ADB66B852E630A098C2D87DF50215F47BE3C82E5`).
 
-After this you should be able to run our version of [trampoline](https://github.com/eth-infinitism/trampoline) extension. Now create an account, fund it and deploy it following the instructions provided in the screen.
+Next, extract the folder to a directory of your choice. Now, on Chrome browser, open 'browser-options' on the top right and select *Extensions* -> *Manage Extensions*. In the extensions tab turn on *developer mode* on the top right. Then select *Load unpacked* in the top left. In the selection window, enter the directory to which you extracted the file contents and select `build/`.
 
-Now head to our [test account dashboard](https://r-wallet-base-3.vercel.app/dashboard/0x099A294Bffb99Cb2350A6b6cA802712D9C96676A) and checkout some test NFTs for rent. To rent, just click in the NFT card, input a duration for the rent and click the button!
+After this you should be able to run our version of [trampoline](https://github.com/eth-infinitism/trampoline) browser extension. Now create an account, fund it and deploy it following the instructions provided in the screen. To fund your wallet you may need to head to [Base Goerli faucet](https://www.coinbase.com/faucets/base-ethereum-goerli-faucet).
 
-*Feel free to contact any of the team members if you run into any errors or are interested in collaborating.* 
+Now head to our [test account dashboard](https://r-wallet-base-3.vercel.app/dashboard/0x099A294Bffb99Cb2350A6b6cA802712D9C96676A) and checkout some test NFTs for rent, free of charge of course. To rent, just click on the NFT card, input a duration for the rent and click the button!
+
+*Feel free to open issues or contact any of the team members if you run into any errors. Also contact us through australopitech@proton.me if you are interested in collaborating.*
 
 
 ## About the Project
@@ -57,7 +43,6 @@ Our application is tailor-made to work with ERC-721. NO NEED FOR NEW PATTERNS!!
 
 We've also streamlined the process for any marketplace dapp to integrate seamlessly with our wallet. [Check here for details](https://github.com/pbfranceschin/r-wallet-base-3/tree/main/blockchain#compatibility).
 
-Checkout our documentation [here](https://github.com/pbfranceschin/r-wallet-base-3/blob/main/blockchain/README.md).
 
 ## Main Use Cases
 
@@ -71,9 +56,9 @@ Checkout our documentation [here](https://github.com/pbfranceschin/r-wallet-base
 
 The implications of our project are clear-cut. It unveils the inherent value of assets that are, or can be, represented as NFTs, encompassing both current and prospective cases. Upon our launch, any asset owner can potentially generate passive income, provided there's real demand for their assets.
 
-## To be done
+## Future developments
 
-- Finish market place UI
-- Include buying and selling NFT's in market place
+- Fully functional market place/dashboard UI
+- Buying and selling NFT's in market place
 - Scale api through sub-graphs
-- Start bulding mobile app
+- Mobile app
