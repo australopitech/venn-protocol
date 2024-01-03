@@ -1,5 +1,5 @@
 
-# rWallet 
+# Venn Protocol 
 ## NFT Rentals Using Account Abstraction: NO COLLATERAL NEEDED
 
 **TL;DR**
