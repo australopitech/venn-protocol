@@ -1,79 +1,146 @@
-import { BigNumber, ethers } from "ethers";
+// import { BigNumber, ethers } from "ethers";
 import { mktPlaceContract } from "../contractData";
+import { writeContract } from "viem/actions";
+import { PublicClient, Abi, WalletClient } from "viem";
+import { NftObj } from "@/types/nftObj";
 
 const success_msg = "tx successfull!!";
+const mktPlaceAddr = mktPlaceContract.address as `0x${string}`;
+const mktPlaceAbi = mktPlaceContract.abi;
 
 export const list = async (
-    signer: any | undefined,
+    provider: PublicClient | undefined,
+    signer: WalletClient | undefined,
     nftContractAddr: string,
-    tokenId: BigNumber,
-    price: BigNumber,
-    maxDuration: BigNumber
+    tokenId: bigint,
+    price: bigint,
+    maxDuration: bigint
 ) => {
+    if(!provider) {
+        console.error('no provider found');
+        return
+    }
     if(!signer) {
-        console.log('signer undefined');
+        console.error('signer undefined');
         alert('Connect your wallet');
         return
     }
-    const mktPlace = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi, signer);
-    const tx = await mktPlace.listNFT(nftContractAddr, tokenId, price, maxDuration);
-    return await tx.wait();
+    // const mktPlace = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi, signer);
+    // const tx = await mktPlace.listNFT(nftContractAddr, tokenId, price, maxDuration);
+    const account = signer.account;
+    const { request } = await provider.simulateContract({
+        account,
+        address: mktPlaceAddr,
+        abi: mktPlaceAbi,
+        functionName: 'listNFT',
+        args: [nftContractAddr, tokenId, price, maxDuration]
+    });
+    return await signer.writeContract(request);
 }
 
 export const delist = async (
-    signer: any | undefined,
-    receiptId: BigNumber,
+    provider: PublicClient | undefined,
+    signer: WalletClient | undefined,
+    receiptId: bigint,
 ) => {
+    if(!provider) {
+        console.error('no provider found');
+        return
+    }
     if(!signer) {
-        console.log('signer undefined');
+        console.error('signer undefined');
         alert('Connect your wallet');
         return
     }
-    const mktPlace = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi, signer);
-    const nftObj = await mktPlace.getNFTbyReceipt(receiptId);
+    // const mktPlace = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi, signer);
+    // const nftObj = await mktPlace.getNFTbyReceipt(receiptId);
+    const nftObj = await provider.readContract({
+        address: mktPlaceAddr,
+        abi: mktPlaceAbi,
+        functionName: 'getNFTbyReceipt',
+        args: [receiptId]
+    }) as NftObj;
     // console.log('nftObj', nftObj)
-    const tx = await mktPlace.deList(nftObj.contractAddress, nftObj.tokenId);
-    return await tx.wait();
+    // const tx = await mktPlace.deList(nftObj.contractAddress, nftObj.tokenId);
+    const account = signer.account;
+    const { request } = await provider.simulateContract({
+        account,
+        address: mktPlaceAddr,
+        abi: mktPlaceAbi,
+        functionName: 'listNFT',
+        args: [nftObj.contractAddress, nftObj.tokenId]
+    });
+    return await signer.writeContract(request);
 }
 
 export const pull = async (
     receiptId: number,
-    signer?: any
+    signer?: WalletClient,
+    provider?: PublicClient
 ) => {
+    if(!provider) {
+        console.error('no provider found');
+        return
+    }
     if(!signer) {
         console.log('signer undefined');
         alert('Connect your wallet');
         return
     }
-    const mktPlace = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi, signer);
+    // const mktPlace = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi, signer);
     let error = null;
     let receipt;
     try {
-        const tx = await mktPlace.pullAsset(receiptId);
-        receipt = await tx.wait();
-        console.log(receipt);
+        // const tx = await mktPlace.pullAsset(receiptId);
+        // receipt = await tx.wait();
+        // console.log(receipt);
+        const account = signer.account;
+        const { request } = await provider.simulateContract({
+            account,
+            address: mktPlaceAddr,
+            abi: mktPlaceAbi,
+            functionName: 'pullAsset',
+            args: [receiptId]
+        });
+        return await signer.writeContract(request);
     } catch (err) {
-        error = err;
-        console.log(err);
-    } if(!error) {
-        console.log('success');
-        console.log('tx hash', receipt?.transactionHash);
-        alert(success_msg);
-    }
+        // error = err;
+        console.error(err);
+    } 
+    // if(!error) {
+    //     console.log('success');
+    //     console.log('tx hash', receipt?.transactionHash);
+    //     alert(success_msg);
+    // }
 }
 
 export const rent = async (
-    signer: any | undefined,
+    signer: WalletClient | undefined,
     nftContractAddr: string,
-    tokenId: BigNumber,
+    tokenId: bigint,
     duration: number,
-    value: BigNumber
+    value: bigint,
+    provider?: PublicClient
 ) => {
+    if(!provider) {
+        console.error('no provider found');
+        return
+    }
     if(!signer) {
         console.log('error: signer undefined');
         return
     }
-    const mktPlace = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi, signer);
-    const tx = await mktPlace.rentNFT(nftContractAddr, tokenId, duration, {value: value});
-    return await tx.wait();    
+    const account = signer.account;
+    const { request } = await provider.simulateContract({
+        account,
+        address: mktPlaceAddr,
+        abi: mktPlaceAbi,
+        functionName: 'rentNFT',
+        args: [nftContractAddr, tokenId, duration],
+        value: value
+    });
+    return await signer.writeContract(request);
+    // const mktPlace = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi, signer);
+    // const tx = await mktPlace.rentNFT(nftContractAddr, tokenId, duration, {value: value});
+    // return await tx.wait();    
 }

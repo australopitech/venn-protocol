@@ -3,7 +3,7 @@ import { Logo } from '../logo/logo';
 import { SearchBox } from '../search-box/search-box';
 import styles from './navbar.module.css';
 import { useState, useRef, useEffect } from 'react';
-import { useEthers, useEtherBalance, useConfig, useSigner } from '@usedapp/core';
+// import { useEthers, useEtherBalance, useConfig, useSigner } from '@usedapp/core';
 import Link from 'next/link';
 
 export interface NavBarProps {
@@ -17,16 +17,16 @@ interface ConnectButtonProps {
 
 //to-do: pegar a info de qual pagina está, para saber qual botão está ativo
 
-export const ConnectButton = ({connectText} : ConnectButtonProps) => {
-  const { account, deactivate, activateBrowserWallet } = useEthers()
-  // 'account' being undefined means that we are not connected.
-  if (account) return <div className={styles.disconnectButton} onClick={() => deactivate()}>Disconnect</div>
-  else return (
-    <div className={styles.primaryButton} onClick={() => activateBrowserWallet()}>
-    {connectText? connectText : 'Connect Wallet'}
-    </div>
-  )
-}
+// export const ConnectButton = ({connectText} : ConnectButtonProps) => {
+//   const { account, deactivate, activateBrowserWallet } = useEthers()
+//   // 'account' being undefined means that we are not connected.
+//   if (account) return <div className={styles.disconnectButton} onClick={() => deactivate()}>Disconnect</div>
+//   else return (
+//     <div className={styles.primaryButton} onClick={() => activateBrowserWallet()}>
+//     {connectText? connectText : 'Connect Wallet'}
+//     </div>
+//   )
+// }
 
 const MenuIcon = () => {
   return (
@@ -141,7 +141,7 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
           {/* <div className={styles.secondaryButton}>Market</div>
           <div className={styles.secondaryButton}>Dashboard</div> */}
           {/* TO-DO: colocar primary <div className={styles.primaryButton}>Connect Wallet</div> */}
-          <ConnectButton />         
+          {/* <ConnectButton />          */}
           {/* <div className={styles.iconButton}><MenuIcon /></div> */}
           <div className={styles.iconButton}><DropdownMenu items={items} onItemSelect={handleItemSelect} /></div>
         </div>

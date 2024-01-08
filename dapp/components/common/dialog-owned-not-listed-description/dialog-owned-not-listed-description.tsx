@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { ethers, BigNumber } from 'ethers';
+// import { ethers, BigNumber } from 'ethers';
 import styles from './dialog-owned-not-listed-description.module.css';
 import classNames from 'classnames';
 // import { useProvider } from 'wagmi';
@@ -7,10 +7,14 @@ import classNames from 'classnames';
 // import { getNFTobj, useNFTname, useNFTtitle } from '../../../hooks/nfts';
 import { NftItem } from '@/types/typesNftApi.d';
 import { list, approve } from '@/utils/call';
-import { useSigner, useEthers } from '@usedapp/core';
+// import { useSigner, useEthers } from '@usedapp/core';
 import { mktPlaceContract } from '@/utils/contractData';
 import erc721 from '../../../utils/contractData/ERC721.artifact.json';
 import Router from 'next/router';
+import { isApproved as getIsApproved } from '@/utils/utils';
+import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
+import { parseEther } from 'viem';
+import { client } from '@/pages/client';
 
 export interface DialogOwnedNotListedDescriptionProps {
     className?: string;
@@ -25,19 +29,20 @@ let nft: any;
 let _title: string | undefined;
 let _name: string | undefined;
 
-const resolveIsApproved = async(
-  provider: any,
-  setIsAppr: any,
-  nftItem?: NftItem, 
-  account?: string
-) => {
-  if(!nftItem || !account)
-    return
-  const contract = new ethers.Contract(nftItem.contractAddress, erc721.abi, provider);
-  const approved = await contract.getApproved(BigNumber.from(nftItem.nftData.token_id));
-  const isOperator = await contract.isApprovedForAll(account, mktPlaceContract.address);
-  setIsAppr( approved === mktPlaceContract.address || isOperator);
-}
+// const resolveIsApproved = async(
+//   provider: any,
+//   setIsAppr: any,
+//   nftItem?: NftItem, 
+//   account?: string
+// ) => {
+//   if(!nftItem || !account)
+//     return
+//   const contract = new ethers.Contract(nftItem.contractAddress, erc721.abi, provider);
+//   const approved = await contract.getApproved(BigNumber.from(nftItem.nftData.token_id));
+//   const isOperator = await contract.isApprovedForAll(account, mktPlaceContract.address);
+//   setIsAppr( approved === mktPlaceContract.address || isOperator);
+// }
+
 /** TODO:
  * - make component re-render on approval call completion
  * - show generic "listing successful" screen on listing call completion
@@ -67,22 +72,50 @@ export const DialogOwnedNotListedDescription = ({
   const loadingText = "loading...";
   const [buttonText, setButtonText] = useState<string>();
   const [resolver, setResolver] = useState<boolean>(false);
-  const signer = useSigner();
-  const {account, library} = useEthers();
+  // const signer = useSigner();
+  const { data: signer } = useWalletClient();
+  // const {account, library} = useEthers();
+  const { address: account } = useAccount();
+  // const client = usePublicClient();
   const [isApproved, setIsApproved] = useState<boolean>();
+  const [tokenId, setTokenId] = useState<bigint>();
 
   // const isApproved = useIsApproved(nftItem);
-  console.log('isApproved', isApproved)
 
-  console.log('signer', signer)
+  console.log('signer', signer);
+  console.log('account', account)
+  console.log('tokenId', tokenId)
 
   useEffect(() => {
-    resolveIsApproved(library, setIsApproved, nftItem, account);
-  }, [account, resolver]);
+    if(nftItem) {
+      if(nftItem.nftData.token_id) {
+        setTokenId(BigInt(nftItem.nftData.token_id));
+      } else console.error('no token id found');
+    }
+  },[nftItem]);
+
+  useEffect(() => {
+    const resolveIsApproved = async () => {
+      if(nftItem && tokenId !== undefined && account){
+        if(!nftItem.owner) {
+          console.error('no owner found')
+          return
+        }
+        setIsApproved(await getIsApproved(
+          client,
+          nftItem.contractAddress as `0x${string}`,
+          tokenId,
+          nftItem.owner,
+          mktPlaceContract.address
+        ));
+      }
+    }
+    resolveIsApproved();
+  }, [account, resolver, nftItem, tokenId]);
 
   useEffect(() => {
     if(isApproved) setButtonText(listButtonText);
-    else setButtonText(approveButtonText)
+    else if(isApproved !== undefined) setButtonText(approveButtonText);
   }, [isApproved])
   
   const handlePriceChange = (e: any) => {
@@ -92,7 +125,7 @@ export const DialogOwnedNotListedDescription = ({
       numValue = 0
     }
     console.log('numValue is ', numValue)
-    console.log('price in wei', (ethers.utils.parseEther(price.toString())).toString())
+    // console.log('price in wei', (ethers.utils.parseEther(price.toString())).toString())
     // If value is negative or not a number, set it to 0
     if ((numValue < 0 || isNaN(numValue)) ) {
       setIsPriceInvalid(true);
@@ -125,21 +158,26 @@ export const DialogOwnedNotListedDescription = ({
       alert('Connect your wallet!')
       return
     }
-    if(buttonText === loadingText) return
+    if(!buttonText || buttonText === loadingText)
+      return
     if(!nftItem) {
-      console.log('error: no nft found');
+      console.error('no nft found');
       return
     }
-    
-    let txReceipt;
+    if(tokenId === undefined){
+      console.error('no token id found');
+      return
+    }
+    let hash;
     /** approval call */
     if(!isApproved) {
       setButtonText(loadingText);
       try {
-        txReceipt = await approve(
+        hash = await approve(
+          client,
           signer,
           nftItem.contractAddress,
-          BigNumber.from(nftItem.nftData.token_id),
+          tokenId,
           mktPlaceContract.address
         );  
       } catch (err) {
@@ -149,7 +187,7 @@ export const DialogOwnedNotListedDescription = ({
         return
       }
       console.log('success');
-      console.log('txhash', txReceipt.transactionHash);
+      console.log('txhash', hash);
       alert('success');
       setResolver(!resolver);
       // setButtonText(listButtonText);
@@ -169,15 +207,16 @@ export const DialogOwnedNotListedDescription = ({
 
     /** list call */
     setButtonText(loadingText);
-    const priceInWei = ethers.utils.parseEther(price.toString());
+    const priceInWei = parseEther(price.toString());
     // const durationInSec = BigNumber.from(duration*24*60*60);
     try {
-      txReceipt = await list(
+      hash = await list(
+        client,
         signer,
         nftItem.contractAddress,
-        BigNumber.from(nftItem.nftData.token_id),
+        tokenId,
         priceInWei,
-        BigNumber.from(duration)
+        BigInt(duration)
       );  
     } catch (err) {
       console.log(err);
@@ -186,7 +225,7 @@ export const DialogOwnedNotListedDescription = ({
       return
     }
     console.log('success');
-    console.log('txhash', txReceipt.transactionHash);
+    console.log('txhash', hash);
     alert('success');
     // setIsNFTOpen(false);
     Router.reload();

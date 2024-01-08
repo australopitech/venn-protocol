@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import styles from './dialog-owned-listed-description.module.css';
 import classNames from 'classnames';
-import { ethers, BigNumber } from 'ethers';
-import { useSigner, useEthers } from '@usedapp/core';
+// import { ethers, BigNumber } from 'ethers';
+// import { useSigner, useEthers } from '@usedapp/core';
 import { NftItem } from '@/types/typesNftApi.d';
 import { delist  } from '@/utils/call';
 import { getListData, getNFTByReceipt } from '@/utils/utils';
 import Router from 'next/router';
 import { receiptsContract } from '@/utils/contractData';
+import { usePublicClient, useWalletClient } from 'wagmi';
+import { getAddress, formatEther } from 'viem';
 
 export interface DialogOwnedListedDescriptionProps {
   setIsNFTOpen?: any
@@ -76,39 +78,54 @@ export const DialogOwnedListedDescription = ({
   const [duration, setDuration] = useState<number | undefined>();
   const [isDurationInvalid, setIsDurationInvalid] = useState<boolean | undefined>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [rentPrice, setRentPrice] = useState<BigNumber>();
-  const [maxDuration, setMaxDuration] = useState<BigNumber>();
-  const { library } = useEthers();
-  const signer = useSigner();
+  const [rentPrice, setRentPrice] = useState<bigint>();
+  const [maxDuration, setMaxDuration] = useState<bigint>();
+  const [tokenId, setTokenId] = useState<bigint>();
+  // const { library } = useEthers();
+  const client = usePublicClient();
+  // const signer = useSigner();
+  const { data: signer }= useWalletClient();
 
   console.log('signer', signer);
   
   console.log('rentPrice', rentPrice?.toString())
   console.log('maxDuration', maxDuration?.toString())
+  console.log('tokenId', tokenId)
+
+  useEffect(() => {
+    if(nftItem) {
+      if(nftItem.nftData.token_id) {
+        setTokenId(BigInt(nftItem.nftData.token_id));
+      } else console.error('no token id found');
+    }
+  },[nftItem]);
 
   useEffect(() => { 
     const resolveListData = async() => {
-      if(!nftItem) return
-      let contractAddress: string | undefined;
-      let tokenId: BigNumber | undefined;
-      if(ethers.utils.getAddress(nftItem.contractAddress) === receiptsContract.address){
-        const nftObj = await getNFTByReceipt(library, BigNumber.from(nftItem.nftData.token_id));
-        contractAddress = nftObj?.contractAddress;
-        tokenId = nftObj?.tokenId;  
+      if(!nftItem) 
+        return
+      if(tokenId === undefined)
+        return
+      let _contractAddress: string;
+      let _tokenId: bigint;
+      if(getAddress(nftItem.contractAddress) === receiptsContract.address){
+        const nftObj = await getNFTByReceipt(client, tokenId);
+        _contractAddress = nftObj.contractAddress;
+        _tokenId = nftObj.tokenId;  
       } else{
-        contractAddress = nftItem.contractAddress;
-        tokenId = BigNumber.from(nftItem.nftData.token_id);
+        _contractAddress = nftItem.contractAddress;
+        _tokenId = tokenId;
       }
       const {price, maxDur} = await getListData(
-        library, 
-        contractAddress,
-        tokenId
+        client, 
+        _contractAddress,
+        _tokenId
       );
       setRentPrice(price);
       setMaxDuration(maxDur);
     }
     resolveListData();
-  }, [library]);
+  }, [client, tokenId]);
   
   const handleChange = (e: any) => {
     let numValue = parseInt(e.target.value);
@@ -133,23 +150,28 @@ export const DialogOwnedListedDescription = ({
       alert('Connect your wallet!')
       return
     }
-    if(isLoading) return
+    if(tokenId === undefined) {
+      console.error('no token id found');
+      return
+    }
+    if(isLoading)
+      return
     if(!nftItem) {
       console.log('error: no nft found');
       return
     }
     setIsLoading(true);
     // let error = null;
-    let txReceipt;
+    let hash;
     try {
-      txReceipt = await delist(signer, BigNumber.from(nftItem.nftData.token_id));  
+      hash = await delist(client, signer, tokenId);
     } catch (err) {
       console.log(err);
       alert('de-listing failed!');
       setIsLoading(false);
       return
     }
-    console.log('txHash', txReceipt.transactionHash);
+    console.log('txHash', hash);
     setIsLoading(false);
     // setIsNFTOpen(false);
     Router.reload();
@@ -167,8 +189,8 @@ export const DialogOwnedListedDescription = ({
         <span>This NFT <span className={styles.textHilight}>is listed!</span></span>
         <br />
         {/* <span>Price: </span><EditableInput /> */}
-        <span className={styles.nftLoanInfo}>{`Price: ${rentPrice? ethers.utils.formatEther(rentPrice.toString()): ""} ETH/Day`}</span>
-        <span className={styles.nftLoanInfo}>{`Maximum loan duration: ${maxDuration? maxDuration.toString() : ""} ${maxDuration? maxDuration.lte(1) ? 'Day' : 'Days' : 'Days'}`}</span>
+        <span className={styles.nftLoanInfo}>{`Price: ${rentPrice !== undefined? formatEther(rentPrice): ""} ETH/Day`}</span>
+        <span className={styles.nftLoanInfo}>{`Maximum loan duration: ${maxDuration? maxDuration.toString() : ""} ${maxDuration? maxDuration <= BigInt(1) ? 'Day' : 'Days' : 'Days'}`}</span>
         <br />
         {/* <span className={styles.unlistInfo}>Would you like to unlist this NFT?</span> */}
         <div className={styles.unlistContainer}>

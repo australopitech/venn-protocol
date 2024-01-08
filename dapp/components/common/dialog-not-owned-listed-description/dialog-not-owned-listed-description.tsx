@@ -1,13 +1,16 @@
 import React, { useEffect, useMemo } from 'react';
 import styles from './dialog-not-owned-listed-description.module.css';
 import { useState } from 'react';
-import { ethers, BigNumber } from 'ethers';
+// import { ethers, BigNumber } from 'ethers';
 import { rent } from '@/utils/call';
-import { useSigner, useEthers } from '@usedapp/core';
+// import { useSigner, useEthers } from '@usedapp/core';
 import { NftItem } from '@/types/typesNftApi.d';
+import { NftObj } from '@/types/nftObj';
 import { mktPlaceContract, receiptsContract } from '@/utils/contractData';
 import { isWallet, getListData, getNFTByReceipt } from '../../../utils/utils';
 import Router from 'next/router';
+import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
+import { getAddress, formatEther } from 'viem';
 
 export interface DialogNotOwnedListedDescriptionProps {
   index?: number;
@@ -17,9 +20,17 @@ export interface DialogNotOwnedListedDescriptionProps {
   isReceipt?: boolean;
 }
 
-async function getFee(provider: any) : Promise<BigNumber> {
-  const contract = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi, provider);
-  return await contract.serviceAliquot();
+const mktPlaceAddr = mktPlaceContract.address as `0x${string}`;
+
+
+async function getFee(provider: any) : Promise<bigint> {
+  // const contract = new ethers.Contract(mktPlaceAddr, mktPlaceContract.abi, provider);
+  // return await contract.serviceAliquot();
+  return await provider.readContract({
+    address: mktPlaceAddr,
+    abi: mktPlaceContract.abi,
+    functionName: 'serviceAliquot',
+  });
 }
 
 
@@ -38,10 +49,13 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
   const [isWalletAccount, setIsWalletAccount] = useState<boolean>();
   const defaultButtonText = "Rent It!";
   const [buttonText, setButtonText] = useState<string>(defaultButtonText);
-  const [rentPrice, setRentPrice] = useState<BigNumber>();
-  const [maxDuration, setMaxDuration] = useState<BigNumber>();
-  const signer = useSigner();
-  const { account, library } = useEthers(); 
+  const [rentPrice, setRentPrice] = useState<bigint>();
+  const [maxDuration, setMaxDuration] = useState<bigint>();
+  // const signer = useSigner();
+  const { data: signer } = useWalletClient();
+  // const { account, library } = useEthers(); 
+  const { address: account } = useAccount();
+  const client = usePublicClient();
   // const nft = {maxDuration: 10, price: 0.01}
 
 
@@ -49,7 +63,7 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
     const resolveIsWallet = async() => {
       if(account) 
         setIsWalletAccount(
-          await isWallet(library, account)
+          await isWallet(client, account)
         );
     }
     resolveIsWallet();
@@ -58,26 +72,29 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
   useEffect(() => {
     const resolveListData = async() => {
       if(!nftItem) return
-      let contractAddr: string | undefined;
-      let tokenId: BigNumber | undefined;
-      if(ethers.utils.getAddress(nftItem.contractAddress) === receiptsContract.address) { /**isReceipt */
-        const nftObj = await getNFTByReceipt(library, BigNumber.from(nftItem.nftData.token_id));
+      if(!nftItem.nftData.token_id) {
+        console.error('no token id found');
+        return
+      }
+      let contractAddr: string;
+      let tokenId: bigint;
+      if(getAddress(nftItem.contractAddress) === receiptsContract.address) { /**isReceipt */
+        const nftObj = await getNFTByReceipt(client, BigInt(nftItem.nftData.token_id));
         contractAddr = nftObj.contractAddress;
         tokenId = nftObj.tokenId;
       } else {
-        contractAddr = nftItem?.contractAddress;
-        tokenId = BigNumber.from(nftItem?.nftData.token_id);
-
+        contractAddr = nftItem.contractAddress;
+        tokenId = BigInt(nftItem.nftData.token_id);
       }
       if(!contractAddr || tokenId === undefined) return
-      const { price, maxDur } = await getListData(library, contractAddr, tokenId);
+      const { price, maxDur } = await getListData(client, contractAddr, tokenId);
       setRentPrice(price);
       setMaxDuration(maxDur);
     }
 
     resolveListData();
     
-  }, [library])
+  }, [client])
 
 
   const handleChange = (e: any) => {
@@ -91,7 +108,7 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
     if (numValue < 0 || isNaN(numValue)) {
       setIsDurationInvalid(true);
       setDuration(0);
-    } else if ( maxDuration?.lt(numValue) ) {
+    } else if ( maxDuration! < BigInt(numValue) ) {
       setIsDurationInvalid(true);
       setDuration(0);
     } else {
@@ -109,8 +126,8 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
       if(!isWalletAccount) {
         alert("Connect with a rWallet smart account to enable rent tx's");
       } 
-      if(!nftItem) {
-        console.log('error: no nft found');
+      if(!nftItem || !nftItem.nftData.token_id) {
+        console.error('missing nft info');
         return
       }
       if(!duration) {
@@ -124,19 +141,25 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
         return
       }
       setButtonText('Loading...');
-      const rentValue = rentPrice.mul(duration);
+      const rentValue = rentPrice * BigInt(duration);
       // console.log('aliq', aliq);
-      const fee = rentValue.mul(aliq).div(10000);
+      const fee = (rentValue * aliq) / BigInt(10000);
       let contractAddr;
       let tokenId;
       if(isReceipt){
-        const mkt = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi, library);
-        const nftObj = await mkt.getNFTbyReceipt(BigNumber.from(nftItem.nftData.token_id));
+        // const mkt = new ethers.Contract(mktPlaceAddr, mktPlaceContract.abi, client);
+        // const nftObj = await mkt.getNFTbyReceipt(BigNumber.from(nftItem.nftData.token_id));
+        const nftObj = await client.readContract({
+          address: mktPlaceAddr,
+          abi: mktPlaceContract.abi,
+          functionName: 'getNFTbyReceipt',
+          args: [BigInt(nftItem.nftData.token_id)]
+        }) as NftObj;
         contractAddr = nftObj.contractAddress;
         tokenId = nftObj.tokenId;
       } else {
-        contractAddr = ethers.utils.getAddress(nftItem.contractAddress);
-        tokenId = BigNumber.from(nftItem.nftData.token_id);
+        contractAddr = getAddress(nftItem.contractAddress);
+        tokenId = BigInt(nftItem.nftData.token_id);
       }
       let txReceipt;
       try {
@@ -145,10 +168,10 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
           contractAddr,
           tokenId, 
           duration,
-          rentValue.add(fee) 
+          rentValue + fee 
         );
       } catch (error) {
-        console.log(error);
+        console.error(error);
         alert('tx failed');
         setButtonText(defaultButtonText);
         return
@@ -166,9 +189,9 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
         <div className={styles.divider}></div>
         <h2 className={styles['bodyDescription']}><span className={styles.textHilight}>Rent</span> this NFT!</h2>
         <h3 className={styles['priceDescription']}>
-            Price: <span className={styles['priceCurrency']}>{rentPrice ? ethers.utils.formatEther(rentPrice) : ""} ETH/day</span>
+            Price: <span className={styles['priceCurrency']}>{rentPrice ? formatEther(rentPrice) : ""} ETH/day</span>
         </h3>
-        <div className={styles.priceDescription}>{`Maximum loan period: ${maxDuration?.toString()} ${maxDuration?.eq(1)  ? 'day' : 'days'}`}</div>
+        <div className={styles.priceDescription}>{`Maximum loan period: ${maxDuration?.toString()} ${maxDuration === BigInt(1)  ? 'day' : 'days'}`}</div>
         <div className={styles.priceWrapper}>
             <div className={styles.priceInputContainer}>
                 <input 

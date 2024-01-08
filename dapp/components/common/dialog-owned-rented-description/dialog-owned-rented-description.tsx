@@ -1,12 +1,13 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import styles from './dialog-owned-rented-description.module.css';
-import { useSigner, useEthers } from '@usedapp/core';
+// import { useSigner, useEthers } from '@usedapp/core';
 import { delist } from '@/utils/call';
 import { NftItem } from '@/types/typesNftApi.d';
-import { BigNumber } from 'ethers';
+// import { BigNumber } from 'ethers';
 import { getEndTime, getNFTByReceipt, ownerOf } from '@/utils/utils';
 import { useTimestamp } from '@/hooks/block-data';
 import Router from 'next/router';
+import { useBlock, usePublicClient, useWalletClient } from 'wagmi';
 
 export interface DialogOwnedRentedDescriptionProps {
   isListed?: boolean;
@@ -14,8 +15,12 @@ export interface DialogOwnedRentedDescriptionProps {
   setIsNFTOpen: any;
 }
 
-const dayCutOff = 82800; // 23 h;
-const hourCutOff = 3540 // 59 min;
+// time in secs
+const dayCutOff = BigInt(82800); // 23 h;
+const hourCutOff = BigInt(3540); // 59 min;
+const day = BigInt(86400); // 24h
+const hour = BigInt(3600);
+const min = BigInt(60);
 
 const getTimestamp = async(provider: any) => {
   if(!provider) return
@@ -46,34 +51,48 @@ export const DialogOwnedRentedDescription = ({
   nftItem,
   setIsNFTOpen
 }: DialogOwnedRentedDescriptionProps) => {
-  const [timeLeft, setTimeLeft] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<bigint>(BigInt(0));
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const signer = useSigner();
-  const { account, library, chainId } = useEthers();
+  const [tokenId, setTokenId] = useState<bigint>();
+  // const signer = useSigner();
+  const { data: signer } = useWalletClient();
+  // const { account, library, chainId } = useEthers();
+  const client = usePublicClient();
+  const { data: block } = useBlock();
 
-  const timestamp = useTimestamp({ chainId: chainId, isStatic: false, refresh: 5});
+  // const timestamp = useTimestamp({ chainId: chainId, isStatic: false, refresh: 5});
   
   console.log('timeLeft', timeLeft)
   
   useEffect(() => {
+    if(nftItem) {
+      if(nftItem.nftData.token_id) {
+        setTokenId(BigInt(nftItem.nftData.token_id));
+      } else console.error('no token id found');
+    }
+  },[nftItem]);
+  
+  useEffect(() => {
     const resolveTimeLeft = async() => {
+      if(tokenId === undefined)
+        return;
       const nftObj = await getNFTByReceipt(
-        library, 
-        BigNumber.from(nftItem?.nftData.token_id)
+        client, 
+        tokenId
       );
       const nftHolder = await ownerOf(
-        library, 
+        client,
         nftObj.contractAddress, 
         nftObj.tokenId
       );
-      const endTime = await getEndTime(library, nftHolder, nftItem);
-      console.log('endTime', endTime?.toNumber())
+      const endTime = await getEndTime(client, nftHolder, nftItem);
+      console.log('endTime', endTime?.toString())
       // const timestamp = await getTimestamp(library);
-      if(endTime && timestamp) setTimeLeft(endTime.toNumber() - timestamp)
+      if(endTime && block) setTimeLeft(endTime - block.timestamp)
     }
 
     resolveTimeLeft();
-  }, []);
+  }, [tokenId]);
 
   const handleButtonClick = async() => {
     if(!signer) {
@@ -82,23 +101,28 @@ export const DialogOwnedRentedDescription = ({
     }
     if(isLoading) return
     if(!nftItem) {
-      console.log('error: no nft found');
+      console.error('error: no nft found');
+      return
+    }
+    if(tokenId === undefined) {
+      console.error('no token id found');
       return
     }
     setIsLoading(true);
-    let txReceipt;
+    let hash;
     try {
-      txReceipt = await delist(
+      hash = await delist(
+        client,
         signer, 
-        BigNumber.from(nftItem.nftData.token_id)
+        tokenId
       );  
     } catch (error) {
-      console.log(error);
+      console.error(error);
       alert('tx failed');
       setIsLoading(false);
       return;
     }
-    console.log('txHash', txReceipt.transactionHash);
+    console.log('txHash', hash);
     alert('success');
     // setIsLoading(false);
     setIsNFTOpen(false);
@@ -116,11 +140,11 @@ export const DialogOwnedRentedDescription = ({
         <span className={styles.timeLeftValue}> 
           Time Left: {
           timeLeft >= dayCutOff
-          ? `${timeLeft/86400} ${timeLeft/86400 <= 2 ? 'day' : 'days'}`
+          ? `${timeLeft/day} ${timeLeft/day <= 2 ? 'day' : 'days'}`
           : timeLeft >= hourCutOff
-            ? `${timeLeft/3600} ${timeLeft/3600 <= 2 ? 'hour' : 'hours'}`
-            : timeLeft >= 60
-              ? `${timeLeft/60} ${timeLeft <= 120 ? 'minute' : 'minutes' }`
+            ? `${timeLeft/hour} ${timeLeft/hour <= 2 ? 'hour' : 'hours'}`
+            : timeLeft >= hour
+              ? `${timeLeft/hour} ${timeLeft <= 120 ? 'minute' : 'minutes' }`
               : timeLeft > 0 ? 'less than a minute' : 'expired'
           } 
         </span>

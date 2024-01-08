@@ -2,11 +2,11 @@ import NftCard from '@/components/common/nft-card/nft-card';
 import styles from './nft-area.module.css';
 import classNames from 'classnames';
 import { useState } from 'react';
-import { ethers } from 'ethers';
+// import { ethers } from 'ethers';
 import { NftItem, FetchNftDataResponse } from '../../../types/typesNftApi';
 import { fetchAddressData } from '@/utils/frontendUtils';
-import { BigNumber } from 'ethers';
 import { nftViewMode } from '@/types/nftContext';
+import { getAddress } from 'viem';
 
 export interface NftAreaProps {
   nftAreaGridTemplate?: string;
@@ -109,8 +109,8 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
                 nft.nftData?.external_data?.image
               }
               name={nft.nftData?.external_data?.name}
-              contractAddress={ethers.utils.getAddress(nft.contractAddress)}
-              tokenId={BigNumber.from(nft.nftData.token_id)}
+              contractAddress={getAddress(nft.contractAddress)}
+              tokenId={nft.nftData.token_id ? BigInt(nft.nftData.token_id) : undefined}
               // price={0}
               // isRented={false}
               address={address}

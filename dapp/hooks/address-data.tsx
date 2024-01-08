@@ -2,9 +2,11 @@
 import { BalancesResponse, BalanceItem, NftData, NftItem, FetchNftDataResponse } from '../types/typesNftApi';
 import { fetchAddressData } from '../utils/frontendUtils'
 import { useEffect, useState } from "react";
-import { useEthers } from '@usedapp/core';
+// import { useEthers } from '@usedapp/core';
 import { checkIsRental } from '@/utils/utils';
-import { BigNumber } from 'ethers';
+import { usePublicClient } from 'wagmi';
+import { baseGoerli } from 'viem/chains';
+
 
 const processApiData = async (apiData: BalancesResponse, address: string | undefined) => {
   if (!apiData) {
@@ -29,9 +31,10 @@ const processApiData = async (apiData: BalancesResponse, address: string | undef
 
 async function getRentalData(provider: any, nfts: NftItem[]): Promise<NftItem[]> {
   const promises = nfts.map((nft) => {
-    return checkIsRental(provider, nft.owner, nft.contractAddress, BigNumber.from(nft.nftData.token_id));
+    return nft.nftData.token_id
+     ? checkIsRental(provider, nft.contractAddress, BigInt(nft.nftData.token_id), nft.owner)
+     : undefined;
   });
-
   try {
     const results = await Promise.all(promises);
     const nftRentalData: NftItem[] = nfts.map((nft, i) => {
@@ -49,7 +52,8 @@ export function useAddressNfts (address: string | undefined) : FetchNftDataRespo
   const [nfts, setNfts] = useState<NftItem[] | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { library } = useEthers();
+  // const { library } = useEthers();
+  const client = usePublicClient({ chainId: baseGoerli.id });
 
   useEffect(() => {
     if (address) {
@@ -59,7 +63,7 @@ export function useAddressNfts (address: string | undefined) : FetchNftDataRespo
           const apiData = await fetchAddressData("base-testnet", address);
           let nfts = await processApiData(apiData, address);
           if (nfts) {
-            nfts = await getRentalData(library, nfts);
+            nfts = await getRentalData(client, nfts);
           }
           setNfts(nfts);
         } catch (err) {

@@ -1,20 +1,21 @@
 import Image from 'next/image';
 import styles from './nft-card.module.css';
 import classNames from 'classnames';
-import { ethers } from 'ethers';
+// import { ethers } from 'ethers';
 import { useMemo, useEffect, useState } from 'react';
-import { BigNumber } from 'ethers';
-import { useEthers } from '@usedapp/core';
+// import { useEthers } from '@usedapp/core';
 import { 
   ownerOf, resolveIsListed, resolveIsRentedOut, getListData, getNFTByReceipt, checkIsRental, resolvePrice
  } from '@/utils/utils';
 import { receiptsContract } from '@/utils/contractData';
+import { useAccount, usePublicClient } from 'wagmi';
+import { client } from '../../../pages/client';
 
 export interface NftCardProps {
   imageURI: string;
   name: string;
   contractAddress: string;
-  tokenId: BigNumber;
+  tokenId?: bigint;
   price?: number; 
   // isRented?: boolean;
   expireDate?: string;
@@ -37,7 +38,9 @@ export default function NftCard ({
   holderAddress
 }: NftCardProps) {
   
-  const { library, account } = useEthers();
+  // const { library, account } = useEthers();
+  // const client = usePublicClient();
+  const { address: account } = useAccount();
   const [holder, setHolder] = useState<string>();
   const [isListed, setIsListed] = useState<string>();
   const [rentPrice , setRentPrice] = useState<string>();
@@ -45,7 +48,16 @@ export default function NftCard ({
   const [isRental, setIsRental] = useState<boolean>();
   const [loading, setLoading] = useState<boolean>(true);
   
-  console.log('tokenid/isrental',tokenId.toString(),isRental)
+  // console.log('tokenid/isrental',tokenId?.toString(),isRental)
+  // console.log(
+  //   name,
+  //   'price', rentPrice,
+  //   // 'holder', holder,
+  //   // 'isListed', isListed,
+  //   // 'isRental', isRental,
+  //   // 'isRentedOut', isRentedOut,
+  //   // 'loading', loading
+  // )
   
   useEffect(() => {
     const fetchHolder = async () => {
@@ -53,7 +65,7 @@ export default function NftCard ({
         setHolder(holderAddress);
       }
       else {
-        setHolder(await ownerOf(library, contractAddress, tokenId));
+        if(tokenId !== undefined) setHolder(await ownerOf(client, contractAddress, tokenId));
       }
     }
 
@@ -61,33 +73,38 @@ export default function NftCard ({
   },[]);
 
   useEffect(() => {
+    if(tokenId === undefined) {
+      console.error('no token id found');
+      return
+    }
+    
     const isReceipt = contractAddress === receiptsContract.address;
     
-    resolvePrice(setRentPrice, contractAddress, tokenId, isReceipt, library);
-    resolveIsListed(setIsListed, isReceipt, contractAddress, tokenId, library);
-    resolveIsRentedOut(setIsRentedOut, contractAddress, tokenId, isReceipt, holder, library);
+    resolvePrice(setRentPrice, contractAddress, tokenId, isReceipt, client);
+    resolveIsListed(setIsListed, isReceipt, contractAddress, tokenId, client);
+    resolveIsRentedOut(setIsRentedOut, contractAddress, tokenId, isReceipt, holder, client);
 
     const resolveIsRental = async() => {
       if(address) {
         setIsRental(await checkIsRental(
-          library,
-          address,
+          client,
           contractAddress,
-          tokenId
+          tokenId,
+          address,
         ));
         return
       }
       if(account)
         setIsRental( await checkIsRental(
-          library,
-          account,
+          client,
           contractAddress,
-          tokenId  
+          tokenId,
+          account,
         ));
     }
 
     resolveIsRental();
-  }, [library, holder, account]);
+  }, [client, holder, account]);
 
   useEffect(() => {
     if(
@@ -127,7 +144,7 @@ export default function NftCard ({
 
   // console.log(name, 'isRentedOut', isRentedOut)
   
-  console.log('contractAddress', contractAddress)
+  // console.log('contractAddress', contractAddress)
   return (
     <div className={classNames(styles.nftCardContainer, currentPage === 'market' ? styles.nftCardMarketContainer : '')}>
       <div className={styles.nftCardImageContainer} onClick={onClick}>

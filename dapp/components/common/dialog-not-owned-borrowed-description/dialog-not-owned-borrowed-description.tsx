@@ -1,15 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import styles from './dialog-not-owned-borrowed-description.module.css';
-import { useBlockMeta, useEthers } from '@usedapp/core';
+// import { useBlockMeta, useEthers } from '@usedapp/core';
 import { NftItem } from '@/types/typesNftApi.d';
 import walletabi from '../../../utils/contractData/RWallet.artifact.json';
 import { receiptsContract } from '@/utils/contractData';
-import { BigNumber, ethers } from 'ethers';
+// import { BigNumber, ethers } from 'ethers';
 import { useTimestamp } from '@/hooks/block-data';
 import { getNFTByReceipt, ownerOf } from '@/utils/utils';
+import { getAddress } from 'viem';
+import { useAccount, useBlock, usePublicClient } from 'wagmi';
+import { client } from '@/pages/client';
 
 export interface DialogNotOwnedBorrowedDescriptionProps {
-  address?: string;
+  address?: `0x${string}`;
   nftItem?: NftItem;
   isRental?: boolean;
 }
@@ -19,29 +22,44 @@ const hourCutOff = 3540 // 59 min;
 
 async function getEndTime(
   provider: any, 
-  account?: string, 
+  account?: `0x${string}`, 
   nftItem?: NftItem,
   ) {
   if(!account || !nftItem) return
+  if(!nftItem.nftData.token_id) {
+    console.error('no token id found');
+    return
+  }
   let contractAddr: string;
-  let tokenId: BigNumber;
-  let acc: string;
-  if(ethers.utils.getAddress(nftItem.contractAddress) === receiptsContract.address) {
+  let tokenId: bigint;
+  let acc: `0x${string}`;
+  if(getAddress(nftItem.contractAddress) === receiptsContract.address) {
     const nftObj = await getNFTByReceipt(
-      provider,
-      BigNumber.from(nftItem.nftData.token_id)
+      client,
+      BigInt(nftItem.nftData.token_id)
     );
     contractAddr = nftObj.contractAddress;
     tokenId = nftObj.tokenId;
-    acc = await ownerOf(provider, contractAddr, tokenId);
+    acc = await ownerOf(client, contractAddr, tokenId);
   } else {
     contractAddr = nftItem.contractAddress;
-    tokenId = BigNumber.from(nftItem.nftData.token_id)
+    tokenId = BigInt(nftItem.nftData.token_id);
     acc = account;
   }
-  const wallet = new ethers.Contract(acc, walletabi.abi, provider );
-  const rentals = await wallet.getRentals();
-  const index = await wallet.getTokenIndex(contractAddr, tokenId);
+  // const wallet = new ethers.Contract(acc, walletabi.abi, client );
+  // const rentals = await wallet.getRentals();
+  const rentals = await client.readContract({
+    address: acc,
+    abi: walletabi.abi,
+    functionName: 'getRentals',
+  }) as any[];
+  // const index = await wallet.getTokenIndex(contractAddr, tokenId);
+  const index = await client.readContract({
+    address: acc,
+    abi: walletabi.abi,
+    functionName: 'getTokenIndex',
+    args: [contractAddr, tokenId]
+  }) as any;
   console.log('tokenIndex', index);
   console.log('rental', rentals[index]);
   if(rentals) return rentals[index].endTime;
@@ -53,24 +71,28 @@ export const DialogNotOwnedBorrowedDescription = ({
   isRental
 }: DialogNotOwnedBorrowedDescriptionProps) => {
   const [timeLeft, setTimeLeft] = useState<number>(0);
-  const { account, library, chainId } = useEthers();
-  const timestamp = useTimestamp({ chainId: chainId, isStatic: false, refresh: 5});
-  
-  console.log('timestamp', timestamp, typeof timestamp);
+  // const { account, library, chainId } = useEthers();
+  // const client = usePublicClient();
+  const { address: account} = useAccount();
+  // const timestamp = useTimestamp({ chainId: chainId, isStatic: false, refresh: 5});
+  const { data: block } = useBlock();
+
+  // console.log('timestamp', timestamp, typeof timestamp);
   
 
   useEffect(() => {
     const resolveTimeLeft = async() => {
       const addr = address ?? account;
-      console.log('addr', addr)
-      const endTime = await getEndTime(library, addr, nftItem);
+      // console.log('addr', addr)
+      const endTime = await getEndTime(client, addr, nftItem);
       console.log('endTime', endTime?.toString());
+      const timestamp = block?.timestamp;
       if(endTime && timestamp) setTimeLeft(endTime.sub(timestamp).toNumber())
     }
 
     resolveTimeLeft();
     console.log('timeLeft', timeLeft)
-  }, [timestamp, library]);
+  }, [block, client]);
 
   return (
     <div className={styles.bodyDescriptionContainer}>

@@ -3,12 +3,13 @@ import classNames from 'classnames';
 import NavBar from '@/components/common/navbar/navbar'
 import SideBar from '@/components/dashboard/sidebar/sidebar'
 import NftArea from '@/components/dashboard/nft-area/nft-area'
-import { useSigner } from '@usedapp/core';
+// import { useSigner } from '@usedapp/core';
 import { useEffect, useState } from 'react';
-import { ConnectButton } from '@/components/common/navbar/navbar';
+// import { ConnectButton } from '@/components/common/navbar/navbar';
 import { NFTDialog } from '@/components/common/nft-dialog/nft-dialog';
 import { useAddressNfts } from '../../../hooks/address-data';
 import { nftViewMode, nftViewContext } from '@/types/nftContext';
+import { useAccount } from 'wagmi';
 
 export interface DashboardLayoutProps {
   address?: string;
@@ -19,18 +20,19 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const [selectedNFT, setSelectedNFT] = useState(0);
   const [isCollectionOpen, setIsCollectionOpen] = useState(false);
   // const isWalletConnected = true; //temp
-  const signer = useSigner();
+  // const signer = useSigner();
+  const { address: account } = useAccount();
   const [signerAddress, setSignerAddress] = useState<string>();
   const [nftsMode, setNftsMode] = useState<nftViewMode>("owned");
 
   // console.log('signer dashboard', signer)
   // console.log('signerAddress', signerAddress)
 
-  useEffect(() => {
-    if(signer) {
-      signer.getAddress().then((r) => setSignerAddress(r))
-    }
-  }, [signer]);
+  // useEffect(() => {
+  //   if(signer) {
+  //     signer.getAddress().then((r) => setSignerAddress(r))
+  //   }
+  // }, [signer]);
 
   const userData = useAddressNfts(address? address : signerAddress);
 
@@ -47,7 +49,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
     }
     <div className={styles.dashboard} >
       <NavBar navbarGridTemplate={styles.navbarGridTemplate} currentPage='dashboard' />
-      { (signer || address)
+      { (account || address)
         ? <div className={styles.contentGridTemplate}> 
             <SideBar address={address? address : signerAddress}
                      nftsContext={{mode: nftsMode, setNftsViewMode: setNftsMode}}/>
@@ -65,7 +67,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
                 <span></span>
               </div>
               <span className={styles.notConnectedMessage}>Connect a wallet <br /> to see your dashboard</span>
-              <ConnectButton connectText='Connect'/>
+              {/* <ConnectButton connectText='Connect'/> */}
             </div>
           </div>
       }
