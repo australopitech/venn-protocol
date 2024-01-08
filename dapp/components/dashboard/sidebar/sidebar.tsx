@@ -1,11 +1,12 @@
-import { ethers } from 'ethers';
+// import { ethers } from 'ethers';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { useEtherBalance, useEthers, useSigner } from '@usedapp/core';
+// import { useEtherBalance, useEthers, useSigner } from '@usedapp/core';
 import styles from './sidebar.module.css';
 import classNames from 'classnames';
 import compactString from '@/utils/compactString'
 import { nftViewMode, nftViewContext } from '@/types/nftContext';
+import Wallet from '../wallet/wallet';
 
 interface QueryParams {
   address: string;
@@ -91,144 +92,145 @@ const SelectedIcon = () => {
   )
 }
 
-const YourNfts = ({ nftsContext } : {nftsContext: nftViewContext}) => {
-  const router = useRouter();
-  const address = router.query.address as QueryParams['address'];
-  const {account} = useEthers();
-  const { mode, setNftsViewMode } = nftsContext;
-  return (
-    <div className={styles.yourNftsContainer}>
-      <span className={styles.profileSectionTitle}>{((address&&account&&address===account) || (account&&!address)) && 'YOUR'} NFTS</span>
+// const YourNfts = ({ nftsContext } : {nftsContext: nftViewContext}) => {
+//   const router = useRouter();
+//   const address = router.query.address as QueryParams['address'];
+//   const {account} = useEthers();
+//   const { mode, setNftsViewMode } = nftsContext;
+//   return (
+//     <div className={styles.yourNftsContainer}>
+//       <span className={styles.profileSectionTitle}>{((address&&account&&address===account) || (account&&!address)) && 'YOUR'} NFTS</span>
 
-      <div>
-        <div 
-          className={mode === 'owned' ? styles.menuItemSelected : styles.menuItem}
-          onClick={() => setNftsViewMode('owned')} // Set mode to 'owned' on click
-        >
-          <span>
-            Owned
-          </span>
-          {nftsContext.mode === 'owned' 
-            ? <SelectedIcon />
-            : <></>
-          }
-        </div>
+//       <div>
+//         <div 
+//           className={mode === 'owned' ? styles.menuItemSelected : styles.menuItem}
+//           onClick={() => setNftsViewMode('owned')} // Set mode to 'owned' on click
+//         >
+//           <span>
+//             Owned
+//           </span>
+//           {nftsContext.mode === 'owned' 
+//             ? <SelectedIcon />
+//             : <></>
+//           }
+//         </div>
         
-        <div 
-          className={mode === 'rented' ? styles.menuItemSelected : styles.menuItem}
-          onClick={() => setNftsViewMode('rented')} // Set mode to 'rented' on click
-        >
-          <span>
-            Rentals
-          </span>
-          {nftsContext.mode === 'rented' 
-            ? <SelectedIcon />
-            : <></>
-          }
-        </div>
-      </div>
-    </div>
-  )
-}
+//         <div 
+//           className={mode === 'rented' ? styles.menuItemSelected : styles.menuItem}
+//           onClick={() => setNftsViewMode('rented')} // Set mode to 'rented' on click
+//         >
+//           <span>
+//             Rentals
+//           </span>
+//           {nftsContext.mode === 'rented' 
+//             ? <SelectedIcon />
+//             : <></>
+//           }
+//         </div>
+//       </div>
+//     </div>
+//   )
+// }
 
-const SendIcon =  () => { //3C4252
-  return (
-    <div className={styles.sendIcon}>
-      <svg
-        version="1.1"
-        id="Layer_1"
-        xmlns="http://www.w3.org/2000/svg"
-        xmlnsXlink="http://www.w3.org/1999/xlink"
-        x="0px"
-        y="0px"
-        viewBox="0 0 28 28"
-        xmlSpace="preserve"
-        width="20"
-        height="20"
-      >
-        <g>
-          <g>
-            <path
-              d="M27.352 12.957 1.697 0.129C0.639 -0.4 -0.443 0.801 0.192 1.798l7.765 12.202L0.192 26.202c-0.635 0.998 0.447 2.198 1.505 1.669l25.655 -12.828c0.86 -0.43 0.86 -1.656 0 -2.086zM4.42 23.902 10.323 14.626a1.166 1.166 0 0 0 0 -1.252L4.42 4.098l19.803 9.902L4.42 23.902z"
-              stroke="#4f4f4fe6"
-              fill="#4f4f4fe6"
-            />
-          </g>
-        </g>
-      </svg>
-    </div>
-  )
-}
+// const SendIcon =  () => { //3C4252
+//   return (
+//     <div className={styles.sendIcon}>
+//       <svg
+//         version="1.1"
+//         id="Layer_1"
+//         xmlns="http://www.w3.org/2000/svg"
+//         xmlnsXlink="http://www.w3.org/1999/xlink"
+//         x="0px"
+//         y="0px"
+//         viewBox="0 0 28 28"
+//         xmlSpace="preserve"
+//         width="20"
+//         height="20"
+//       >
+//         <g>
+//           <g>
+//             <path
+//               d="M27.352 12.957 1.697 0.129C0.639 -0.4 -0.443 0.801 0.192 1.798l7.765 12.202L0.192 26.202c-0.635 0.998 0.447 2.198 1.505 1.669l25.655 -12.828c0.86 -0.43 0.86 -1.656 0 -2.086zM4.42 23.902 10.323 14.626a1.166 1.166 0 0 0 0 -1.252L4.42 4.098l19.803 9.902L4.42 23.902z"
+//               stroke="#4f4f4fe6"
+//               fill="#4f4f4fe6"
+//             />
+//           </g>
+//         </g>
+//       </svg>
+//     </div>
+//   )
+// }
 
-const SwapIcon =  () => {
-  return (
-    <svg 
-      version="1.1" 
-      id="Layer_1" 
-      xmlns="http://www.w3.org/2000/svg"
-      xmlnsXlink="http://www.w3.org/1999/xlink" 
-      x="0px" 
-      y="0px" 
-      viewBox="0 0 32 32" 
-      xmlSpace="preserve" 
-      width="28px" 
-      height="28px"
-    >
-      <g>
-        <g>
-          <g>
-            <path
-              d="M4.552 13.333H20c0.736 0 1.333 -0.597 1.333 -1.333 0 -0.736 -0.597 -1.333 -1.333 -1.333H4.552l3.057 -3.057c0.521 -0.521 0.521 -1.365 0 -1.886 -0.521 -0.521 -1.365 -0.521 -1.886 0L0.391 11.057c-0.031 0.031 -0.06 0.064 -0.088 0.098 -0.013 0.015 -0.024 0.032 -0.035 0.047 -0.014 0.019 -0.029 0.038 -0.042 0.057 -0.013 0.019 -0.024 0.039 -0.035 0.058 -0.011 0.018 -0.022 0.035 -0.032 0.054 -0.011 0.02 -0.02 0.04 -0.029 0.06 -0.009 0.019 -0.019 0.038 -0.027 0.058 -0.008 0.02 -0.015 0.04 -0.022 0.06 -0.008 0.021 -0.016 0.042 -0.022 0.063 -0.006 0.02 -0.011 0.04 -0.016 0.061 -0.006 0.022 -0.012 0.044 -0.016 0.066 -0.005 0.023 -0.007 0.047 -0.011 0.071 -0.003 0.019 -0.006 0.039 -0.008 0.058a1.342 1.342 0 0 0 0 0.263c0.002 0.02 0.006 0.039 0.008 0.058 0.003 0.024 0.006 0.047 0.011 0.071 0.004 0.022 0.011 0.044 0.016 0.066 0.005 0.02 0.009 0.041 0.016 0.061 0.006 0.021 0.015 0.042 0.022 0.063 0.007 0.02 0.014 0.04 0.022 0.06 0.008 0.02 0.018 0.038 0.027 0.058 0.01 0.02 0.019 0.041 0.029 0.061 0.01 0.018 0.021 0.036 0.032 0.054 0.012 0.019 0.023 0.039 0.035 0.058 0.013 0.02 0.028 0.038 0.042 0.057 0.012 0.016 0.023 0.032 0.036 0.048 0.028 0.034 0.057 0.066 0.088 0.097l0.001 0.001 5.333 5.333c0.521 0.521 1.365 0.521 1.886 0 0.521 -0.521 0.521 -1.365 0 -1.886l-3.057 -3.057z"
-              stroke="#4f4f4fe6"
-              fill="#4f4f4fe6"
-            />
-            <path
-              d="M31.698 20.845c0.013 -0.015 0.024 -0.032 0.036 -0.048 0.014 -0.019 0.029 -0.037 0.042 -0.057 0.013 -0.019 0.024 -0.039 0.035 -0.058 0.011 -0.018 0.022 -0.035 0.032 -0.054 0.011 -0.02 0.02 -0.04 0.029 -0.061 0.009 -0.019 0.019 -0.038 0.027 -0.058 0.008 -0.02 0.015 -0.04 0.022 -0.06 0.008 -0.021 0.016 -0.042 0.022 -0.063 0.006 -0.02 0.011 -0.04 0.016 -0.061 0.006 -0.022 0.012 -0.044 0.016 -0.066 0.005 -0.023 0.007 -0.047 0.011 -0.071 0.003 -0.019 0.006 -0.039 0.008 -0.058 0.009 -0.087 0.009 -0.176 0 -0.263 -0.002 -0.02 -0.006 -0.039 -0.008 -0.058 -0.003 -0.024 -0.006 -0.047 -0.011 -0.071 -0.004 -0.022 -0.011 -0.044 -0.016 -0.066 -0.005 -0.02 -0.009 -0.041 -0.016 -0.061 -0.006 -0.021 -0.015 -0.042 -0.022 -0.063 -0.007 -0.02 -0.014 -0.04 -0.022 -0.06 -0.008 -0.02 -0.018 -0.038 -0.027 -0.058 -0.01 -0.02 -0.019 -0.041 -0.029 -0.061 -0.01 -0.018 -0.021 -0.036 -0.032 -0.054 -0.012 -0.019 -0.023 -0.039 -0.035 -0.058 -0.013 -0.02 -0.028 -0.038 -0.042 -0.057 -0.012 -0.016 -0.023 -0.032 -0.036 -0.048a1.335 1.335 0 0 0 -0.087 -0.096l-0.001 -0.001 -5.333 -5.333c-0.521 -0.521 -1.365 -0.521 -1.886 0s-0.521 1.365 0 1.886l3.057 3.057H12c-0.736 0 -1.333 0.597 -1.333 1.333s0.597 1.333 1.333 1.333h15.448l-3.057 3.057c-0.521 0.521 -0.521 1.365 0 1.886s1.365 0.521 1.886 0l5.333 -5.333 0.001 -0.001a1.379 1.379 0 0 0 0.087 -0.096z"
-              stroke="#4f4f4fe6"
-              fill="#4f4f4fe6"
-            />
-          </g>
-        </g>
-      </g>
-    </svg>
-  )
-}
+// const SwapIcon =  () => {
+//   return (
+//     <svg 
+//       version="1.1" 
+//       id="Layer_1" 
+//       xmlns="http://www.w3.org/2000/svg"
+//       xmlnsXlink="http://www.w3.org/1999/xlink" 
+//       x="0px" 
+//       y="0px" 
+//       viewBox="0 0 32 32" 
+//       xmlSpace="preserve" 
+//       width="28px" 
+//       height="28px"
+//     >
+//       <g>
+//         <g>
+//           <g>
+//             <path
+//               d="M4.552 13.333H20c0.736 0 1.333 -0.597 1.333 -1.333 0 -0.736 -0.597 -1.333 -1.333 -1.333H4.552l3.057 -3.057c0.521 -0.521 0.521 -1.365 0 -1.886 -0.521 -0.521 -1.365 -0.521 -1.886 0L0.391 11.057c-0.031 0.031 -0.06 0.064 -0.088 0.098 -0.013 0.015 -0.024 0.032 -0.035 0.047 -0.014 0.019 -0.029 0.038 -0.042 0.057 -0.013 0.019 -0.024 0.039 -0.035 0.058 -0.011 0.018 -0.022 0.035 -0.032 0.054 -0.011 0.02 -0.02 0.04 -0.029 0.06 -0.009 0.019 -0.019 0.038 -0.027 0.058 -0.008 0.02 -0.015 0.04 -0.022 0.06 -0.008 0.021 -0.016 0.042 -0.022 0.063 -0.006 0.02 -0.011 0.04 -0.016 0.061 -0.006 0.022 -0.012 0.044 -0.016 0.066 -0.005 0.023 -0.007 0.047 -0.011 0.071 -0.003 0.019 -0.006 0.039 -0.008 0.058a1.342 1.342 0 0 0 0 0.263c0.002 0.02 0.006 0.039 0.008 0.058 0.003 0.024 0.006 0.047 0.011 0.071 0.004 0.022 0.011 0.044 0.016 0.066 0.005 0.02 0.009 0.041 0.016 0.061 0.006 0.021 0.015 0.042 0.022 0.063 0.007 0.02 0.014 0.04 0.022 0.06 0.008 0.02 0.018 0.038 0.027 0.058 0.01 0.02 0.019 0.041 0.029 0.061 0.01 0.018 0.021 0.036 0.032 0.054 0.012 0.019 0.023 0.039 0.035 0.058 0.013 0.02 0.028 0.038 0.042 0.057 0.012 0.016 0.023 0.032 0.036 0.048 0.028 0.034 0.057 0.066 0.088 0.097l0.001 0.001 5.333 5.333c0.521 0.521 1.365 0.521 1.886 0 0.521 -0.521 0.521 -1.365 0 -1.886l-3.057 -3.057z"
+//               stroke="#4f4f4fe6"
+//               fill="#4f4f4fe6"
+//             />
+//             <path
+//               d="M31.698 20.845c0.013 -0.015 0.024 -0.032 0.036 -0.048 0.014 -0.019 0.029 -0.037 0.042 -0.057 0.013 -0.019 0.024 -0.039 0.035 -0.058 0.011 -0.018 0.022 -0.035 0.032 -0.054 0.011 -0.02 0.02 -0.04 0.029 -0.061 0.009 -0.019 0.019 -0.038 0.027 -0.058 0.008 -0.02 0.015 -0.04 0.022 -0.06 0.008 -0.021 0.016 -0.042 0.022 -0.063 0.006 -0.02 0.011 -0.04 0.016 -0.061 0.006 -0.022 0.012 -0.044 0.016 -0.066 0.005 -0.023 0.007 -0.047 0.011 -0.071 0.003 -0.019 0.006 -0.039 0.008 -0.058 0.009 -0.087 0.009 -0.176 0 -0.263 -0.002 -0.02 -0.006 -0.039 -0.008 -0.058 -0.003 -0.024 -0.006 -0.047 -0.011 -0.071 -0.004 -0.022 -0.011 -0.044 -0.016 -0.066 -0.005 -0.02 -0.009 -0.041 -0.016 -0.061 -0.006 -0.021 -0.015 -0.042 -0.022 -0.063 -0.007 -0.02 -0.014 -0.04 -0.022 -0.06 -0.008 -0.02 -0.018 -0.038 -0.027 -0.058 -0.01 -0.02 -0.019 -0.041 -0.029 -0.061 -0.01 -0.018 -0.021 -0.036 -0.032 -0.054 -0.012 -0.019 -0.023 -0.039 -0.035 -0.058 -0.013 -0.02 -0.028 -0.038 -0.042 -0.057 -0.012 -0.016 -0.023 -0.032 -0.036 -0.048a1.335 1.335 0 0 0 -0.087 -0.096l-0.001 -0.001 -5.333 -5.333c-0.521 -0.521 -1.365 -0.521 -1.886 0s-0.521 1.365 0 1.886l3.057 3.057H12c-0.736 0 -1.333 0.597 -1.333 1.333s0.597 1.333 1.333 1.333h15.448l-3.057 3.057c-0.521 0.521 -0.521 1.365 0 1.886s1.365 0.521 1.886 0l5.333 -5.333 0.001 -0.001a1.379 1.379 0 0 0 0.087 -0.096z"
+//               stroke="#4f4f4fe6"
+//               fill="#4f4f4fe6"
+//             />
+//           </g>
+//         </g>
+//       </g>
+//     </svg>
+//   )
+// }
 
-const YourBalance = () => {
-  const router = useRouter();
-  const address = router.query.address as QueryParams['address'];
-  const bal = useEtherBalance(address);
-  // const signer = useSigner();
-  const { account, library } = useEthers();
-  const [signerBalance, setSignerBalance] = useState<any>();
+// const YourBalance = () => {
+//   const router = useRouter();
+//   const address = router.query.address as QueryParams['address'];
+//   const bal = useEtherBalance(address);
+//   // const signer = useSigner();
+//   const { account, library } = useEthers();
+//   const [signerBalance, setSignerBalance] = useState<any>();
 
-  useEffect(() => {
-    if(account && library) {
-      library.getBalance(account).then((r) => setSignerBalance(ethers.utils.formatEther(r)))
-    }
-  })
+//   useEffect(() => {
+//     if(account && library) {
+//       library.getBalance(account).then((r) => setSignerBalance(ethers.utils.formatEther(r)))
+//     }
+//   })
 
-  return (
-    <div className={styles.yourBalanceContainer}>
-      <span className={styles.profileSectionTitle}>{((address&&account&&address===account) || (account&&!address))  && 'YOUR'} BALANCE</span>
-      <div>
-        <div className={styles.balanceValueContainer}>
-          <span className={styles.balanceValue}>
-            {(bal || account) && bal? parseFloat(ethers.utils.formatEther(bal)).toFixed(4)
-            : parseFloat(signerBalance).toFixed(4) } 
-          </span>
-          <span className={styles.balanceCurrency}>
-            ETH
-          </span>
-        </div>
-        <div className={styles.balanceActionsContainer}>
-          <div className={styles.actionContainer}><SendIcon /></div>
-          <div className={styles.actionContainer}><SwapIcon /></div>
-        </div>
-      </div>
-    </div>
-  )
-}
+//   return (
+//     <div className={styles.yourBalanceContainer}>
+//       <span className={styles.profileSectionTitle}>{((address&&account&&address===account) || (account&&!address))  && 'YOUR'} BALANCE</span>
+//       <div>
+//         <div className={styles.balanceValueContainer}>
+//           <span className={styles.balanceValue}>
+//             {(bal || account) && bal
+//             ? parseFloat(ethers.utils.formatEther(bal)).toFixed(4)
+//             : parseFloat(signerBalance).toFixed(4) } 
+//           </span>
+//           <span className={styles.balanceCurrency}>
+//             ETH
+//           </span>
+//         </div>
+//         <div className={styles.balanceActionsContainer}>
+//           <div className={styles.actionContainer}><SendIcon /></div>
+//           <div className={styles.actionContainer}><SwapIcon /></div>
+//         </div>
+//       </div>
+//     </div>
+//   )
+// }
 
 export default function SideBar ({ sidebarGridTemplate, address, nftsContext }: SideBarProps) {
   // const nftsContext: string =  "owned"
@@ -239,11 +241,11 @@ export default function SideBar ({ sidebarGridTemplate, address, nftsContext }: 
         <div className={styles.profileInfo}>
           <Profile address={address} />
         </div>
-        <div className={styles.profileInfo}>
+        {/* <div className={styles.profileInfo}>
           <YourNfts nftsContext={nftsContext} />
-        </div>
+        </div> */}
         <div className={styles.profileInfo}>
-          <YourBalance />
+          {/* <Wallet /> */}
         </div>
       </div>
     </div>
