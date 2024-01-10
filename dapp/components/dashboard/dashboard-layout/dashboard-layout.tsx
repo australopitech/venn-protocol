@@ -13,7 +13,7 @@ import { useAccount } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import 'node_modules/@rainbow-me/rainbowkit/dist/index.css';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-// import { createWeb3AuthSigner } from '@/utils/web3auth';
+import { createWeb3AuthSigner } from '@/utils/web3auth';
 
 export interface DashboardLayoutProps {
   address?: string;
@@ -92,7 +92,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
                 {/* <ConnectButton connectText='Connect'/> */}
                 <div className={styles.connectButtonsWrapper}>
                   <div className={styles.connectButtonContainer}>
-                    <SignInButton style={styles.connectButton} connectText='VSA Sign In' handler={() => {}} />
+                    <SignInButton style={styles.connectButton} connectText='VSA Sign In' handler={createWeb3AuthSigner} />
                     <div className={styles.descriptionTitle}>Sign In with a <b><i>Venn Smart Account</i></b>.<br/></div>
                     <div className={styles.descriptionText}>                    
                     You can <b>LIST</b> and <b>PURCHASE</b> NFT's as <b>rentals</b>.<br/>
