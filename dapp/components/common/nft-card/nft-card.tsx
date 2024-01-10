@@ -9,7 +9,8 @@ import {
  } from '@/utils/utils';
 import { receiptsContract } from '@/utils/contractData';
 import { useAccount, usePublicClient } from 'wagmi';
-import { client } from '../../../pages/client';
+import { baseGoerli } from 'viem/chains';
+// import { client } from '../../../pages/client';
 
 export interface NftCardProps {
   imageURI: string;
@@ -47,7 +48,7 @@ export default function NftCard ({
   const [isRentedOut, setIsRentedOut] = useState<boolean>();
   const [isRental, setIsRental] = useState<boolean>();
   const [loading, setLoading] = useState<boolean>(true);
-  
+  const client = usePublicClient({ chainId: baseGoerli.id });
   // console.log('tokenid/isrental',tokenId?.toString(),isRental)
   // console.log(
   //   name,

@@ -6,7 +6,7 @@ import walletAbi from "./contractData/RWallet.artifact.json";
 import { readContract } from "viem/actions";
 import { createPublicClient } from "viem";
 import { formatEther } from "viem";
-import { client } from '../pages/client';
+// import { client } from '../pages/client';
 
 interface NftObj {
     contractAddress: `0x${string}`,
@@ -19,13 +19,13 @@ const mktPlaceAbi = mktPlaceContract.abi as any;
 
 
 export const isApproved = async (
-    provider: any,
+    client: any,
     contractAddr: `0x${string}`,
     tokenId: bigint,
     tokenOwner: string,
     to: string
 ) => {
-    // const contract = new ethers.Contract(contractAddr, erc721abi, provider);
+    // const contract = new ethers.Contract(contractAddr, erc721abi, client);
     let approved;
     let isOperator;
     try {
@@ -52,11 +52,11 @@ export const isApproved = async (
 }
 
 export const isListed = async (
-    provider: any,
+    client: any,
     nftContractAddr: string,
     tokenId: number
 ) => {
-    // const contract = new ethers.Contract(mktPlaceAddr, mktPlaceAbi, provider);
+    // const contract = new ethers.Contract(mktPlaceAddr, mktPlaceAbi, client);
     let maxDuration;
     try {
         // maxDuration = await contract.getMaxDuration(nftContractAddr, tokenId);
@@ -74,14 +74,14 @@ export const isListed = async (
 }
 
 export const ownerOf = async (
-    provider: any,
+    client: any,
     nftContractAddr: string,
     tokenId: bigint
 ) => {
-    // if(!provider|| !nftContractAddr || !tokenId) return;
+    // if(!client|| !nftContractAddr || !tokenId) return;
     // console.log('contract inside ownerOf', nftContractAddr)
     // console.log('tokenId inside ownerOf', tokenId)
-    // const contract = new ethers.Contract(nftContractAddr, erc721.abi, provider);
+    // const contract = new ethers.Contract(nftContractAddr, erc721.abi, client);
     // return await contract.ownerOf(tokenId);
     return await client.readContract({
         address: nftContractAddr as `0x${string}`,
@@ -91,12 +91,12 @@ export const ownerOf = async (
     }) as `0x${string}`;
 }
 
-export async function isWallet(provider: any, address: string) {
-    // if(!provider) {
-    //   console.log("error: no provider found");
+export async function isWallet(client: any, address: string) {
+    // if(!client) {
+    //   console.log("error: no client found");
     //   return
     // }
-    // const fact = new ethers.Contract(factoryContract.address, factoryContract.abi, provider );
+    // const fact = new ethers.Contract(factoryContract.address, factoryContract.abi, client );
     // const ret = await fact.isWallet(address);
     const ret = await client.readContract({
         address: factoryContract.address as `0x${string}`,
@@ -109,7 +109,7 @@ export async function isWallet(provider: any, address: string) {
 }
 
 export async function checkIsRental(
-    provider: any,
+    client: any,
     contractAddr: string,
     tokenId: bigint,
     accountAddr?: string,
@@ -117,7 +117,7 @@ export async function checkIsRental(
     const acc = accountAddr ?? await ownerOf(client, contractAddr, tokenId);
     const isWalletRet = await isWallet(client, acc); 
     if(isWalletRet) {
-    //   const wallet = new ethers.Contract(accountAddr, walletAbi.abi, provider);
+    //   const wallet = new ethers.Contract(accountAddr, walletAbi.abi, client);
     //   const ret = await wallet.isRental(contractAddr, tokenId);
       const ret = await client.readContract({
         address: acc as `0x${string}`,
@@ -134,13 +134,13 @@ export async function checkIsRental(
 }
   
 export async function getListData(
-    provider: any,
+    client: any,
     nftContractAddress: string,
     tokenId: bigint
   ) {
     // if(!nftContractAddress || !tokenId)
     //     return {price: undefined, maxDur: undefined};
-    // const contract = new ethers.Contract(mktPlaceAddr, mktPlaceAbi, provider);
+    // const contract = new ethers.Contract(mktPlaceAddr, mktPlaceAbi, client);
     // console.log('contract in getList', contract.address);
     // const price = await contract.getPrice(nftContractAddress, tokenId);
     const price = await client.readContract({
@@ -161,13 +161,13 @@ export async function getListData(
 }
 
 export async function getEndTime(
-    provider: any, 
+    client: any, 
     account?: string, 
     nftItem?: NftItem
 ) {
     if(!account || !nftItem) return
     if(!nftItem.nftData.token_id) return
-    // const wallet = new ethers.Contract(account, walletAbi.abi, provider );
+    // const wallet = new ethers.Contract(account, walletAbi.abi, client );
     // const rentals = await wallet.getRentals();
     const rentals = await client.readContract({
         address: account as `0x${string}`,
@@ -192,7 +192,7 @@ export async function getEndTime(
   }
   
 export async function checkIsListedByReceipt(
-    provider: any,
+    client: any,
     receiptId: bigint
 ) {
     const nftObj = await getNFTByReceipt(client, receiptId);
@@ -208,10 +208,10 @@ export async function checkIsListedByReceipt(
   }
   
 export async function getNFTByReceipt(
-    provider: any,
+    client: any,
     receiptId: bigint
 ) {
-    // const mktPlace = new ethers.Contract(mktPlaceAddr, mktPlaceAbi, provider);
+    // const mktPlace = new ethers.Contract(mktPlaceAddr, mktPlaceAbi, client);
     // const nftObj = await mktPlace.getNFTbyReceipt(receiptId);
     return client.readContract({
         address: mktPlaceAddr,
@@ -226,7 +226,7 @@ export async function resolveIsListed (
     isReceipt: boolean,
     contractAddr: string,
     tokenId: bigint,
-    provider?: any
+    client?: any
 ) {
     if(isReceipt) {
         setIsListed(
@@ -250,12 +250,12 @@ export async function resolveIsRentedOut(
     tokenId: bigint,
     isReceipt?: boolean,
     holder?: string,
-    provider?: any
+    client?: any
 ) {
     if(holder === mktPlaceAddr) 
         setIsRentedOut(false);
     if(isReceipt) {
-        // const mktPlace = new ethers.Contract(mktPlaceAddr, mktPlaceAbi, provider);
+        // const mktPlace = new ethers.Contract(mktPlaceAddr, mktPlaceAbi, client);
         // const nftObj = await mktPlace.getNFTbyReceipt(tokenId);
         const nftObj = await getNFTByReceipt(client, tokenId);
         // console.log('nftObj', nftObj)
@@ -281,7 +281,7 @@ export async function resolveIsRental(
     contractAddress: string,
     tokenId: bigint,
     account?: string,
-    provider?: any,
+    client?: any,
 ) {
     // console.log('account in resolve', account);
     if(!account) {
@@ -318,7 +318,7 @@ export async function resolvePrice(
     contractAddress: string,
     tokenId: bigint,
     isReceipt:boolean,
-    provider?: any
+    client?: any
 ) {
     let _contractAddr;
     let _tokenId;

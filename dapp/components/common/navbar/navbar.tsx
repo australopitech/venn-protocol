@@ -5,15 +5,19 @@ import styles from './navbar.module.css';
 import { useState, useRef, useEffect } from 'react';
 // import { useEthers, useEtherBalance, useConfig, useSigner } from '@usedapp/core';
 import Link from 'next/link';
+import { SignInButton } from '@/components/dashboard/dashboard-layout/dashboard-layout';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 
 export interface NavBarProps {
+  isConnectOpen: boolean,
+  setIsConnetctOpen: any,
   navbarGridTemplate?: string;
   currentPage?: string;
 }
 
-interface ConnectButtonProps {
-  connectText?: string;
-}
+// interface ConnectButtonProps {
+//   connectText?: string;
+// }
 
 //to-do: pegar a info de qual pagina está, para saber qual botão está ativo
 
@@ -80,7 +84,7 @@ const DropdownMenu = ({ items, onItemSelect } : DropdownProps ) => {
 
 
 
-export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps) {
+export default function NavBar ({ navbarGridTemplate, currentPage, setIsConnetctOpen, isConnectOpen}: NavBarProps) {
   // const [scrolled, setScrolled] = useState(false);
 
   // useEffect(() => {
@@ -107,7 +111,7 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
       window.open('https://github.com/pbfranceschin/r-wallet-base-3/blob/main/Readme.md', '_blank');
   };
 
-
+  const { openConnectModal } = useConnectModal();
   return (
     // <div className={classNames(styles.navbar, styles.navbarGridTemplate, scrolled ? styles.navbarScrolled : '')}>
     <div className={classNames(styles.navbar, styles.navbarGridTemplate)}>
@@ -141,7 +145,7 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
           {/* <div className={styles.secondaryButton}>Market</div>
           <div className={styles.secondaryButton}>Dashboard</div> */}
           {/* TO-DO: colocar primary <div className={styles.primaryButton}>Connect Wallet</div> */}
-          {/* <ConnectButton />          */}
+          <SignInButton connectText={isConnectOpen? 'Cancel' : 'Sign In'} style={styles.primaryButton} handler={() => setIsConnetctOpen(!isConnectOpen)} />
           {/* <div className={styles.iconButton}><MenuIcon /></div> */}
           <div className={styles.iconButton}><DropdownMenu items={items} onItemSelect={handleItemSelect} /></div>
         </div>

@@ -24,7 +24,8 @@ import {
  } from '@/utils/utils';
 import { useAccount, usePublicClient } from 'wagmi';
 import { getAddress } from 'viem';
-import { client } from '@/pages/client';
+import { baseGoerli } from 'viem/chains';
+// import { client } from '@/pages/client';
 
 function GetNftImage (nftItem: NftItem) {
   return nftItem.nftData.external_data.image_1024 ? 
@@ -98,9 +99,9 @@ export const NFTDialog = ({
     const [isReceipt, setIsReceipt] = useState<boolean>();
     const [loading, setLoading] = useState<boolean>(true);
     const [tokenId, setTokenId] = useState<bigint>();
-    // const {account, library} = useEthers();
-    // const client = usePublicClient();
+    const client = usePublicClient({ chainId: baseGoerli.id });
     const { address: account } = useAccount();
+
     console.log('nft contract', nftItem?.contractAddress)
     console.log('nft id', nftItem?.nftData.token_id)
     if(nftItem)
@@ -110,12 +111,6 @@ export const NFTDialog = ({
     )
     console.log('receipts_contract', receiptsContract.address )
 
-    // const isReceipt = useMemo(() => {
-    //   if(!nftItem) return
-    //   if(ethers.utils.getAddress(nftItem.contractAddress) === receiptsContract.address) return true;
-    //   else return false;
-    // }, []);
-    
     useEffect(() => {
       if(nftItem){
         setIsReceipt(getAddress(nftItem.contractAddress) === receiptsContract.address);

@@ -10,19 +10,37 @@ import { NFTDialog } from '@/components/common/nft-dialog/nft-dialog';
 import { useAddressNfts } from '../../../hooks/address-data';
 import { nftViewMode, nftViewContext } from '@/types/nftContext';
 import { useAccount } from 'wagmi';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 export interface DashboardLayoutProps {
   address?: string;
 }
 
+export interface ConnectButtonProps {
+  handler: any;
+  style?: any,
+  connectText?: string
+}
+
+export function SignInButton ({handler, style,  connectText}: ConnectButtonProps) {
+  return (
+    <div className={style} onClick={handler}>
+      {connectText ?? 'Connect Wallet'}
+    </div>
+  )
+}
+
+
 export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const [isNFTOpen, setIsNFTOpen] = useState(false);
   const [selectedNFT, setSelectedNFT] = useState(0);
   const [isCollectionOpen, setIsCollectionOpen] = useState(false);
+  const [isConnectOpen, setIsConnectOpen] = useState(false);
   // const isWalletConnected = true; //temp
   // const signer = useSigner();
   const { address: account } = useAccount();
-  const [signerAddress, setSignerAddress] = useState<string>();
+  // const [signerAddress, setSignerAddress] = useState<string>();
   const [nftsMode, setNftsMode] = useState<nftViewMode>("owned");
 
   // console.log('signer dashboard', signer)
@@ -34,7 +52,8 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   //   }
   // }, [signer]);
 
-  const userData = useAddressNfts(address? address : signerAddress);
+  const userData = useAddressNfts(address? address : account);
+  const { openConnectModal } = useConnectModal();
 
   return (
     <>
@@ -47,31 +66,53 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
         address={address}
       />
     }
-    <div className={styles.dashboard} >
-      <NavBar navbarGridTemplate={styles.navbarGridTemplate} currentPage='dashboard' />
-      { (account || address)
-        ? <div className={styles.contentGridTemplate}> 
-            <SideBar address={address? address : signerAddress}
-                     nftsContext={{mode: nftsMode, setNftsViewMode: setNftsMode}}/>
-            <NftArea address={address}
-                     nftFetchData={userData}
-                     setIsNFTOpen={setIsNFTOpen}
-                     setSelectedNFT={setSelectedNFT}
-                     viewMode={nftsMode}/> 
-          </div>
-        : <div className={styles.notConnectedTemplate}>
-            <div className={styles.notConnectedContainer}>
-              <div className={styles.ellipses}>
-                <span></span>
-                <span></span>
-                <span></span>
-              </div>
-              <span className={styles.notConnectedMessage}>Connect a wallet <br /> to see your dashboard</span>
-              {/* <ConnectButton connectText='Connect'/> */}
+      <div className={styles.dashboard} >
+        <NavBar isConnectOpen={isConnectOpen} setIsConnetctOpen={setIsConnectOpen} navbarGridTemplate={styles.navbarGridTemplate} currentPage='dashboard' />
+        { !isConnectOpen && (account || address)
+          ? <div className={styles.contentGridTemplate}> 
+              <SideBar address={address? address : account}
+                      nftsContext={{mode: nftsMode, setNftsViewMode: setNftsMode}}/>
+              <NftArea address={address}
+                      nftFetchData={userData}
+                      setIsNFTOpen={setIsNFTOpen}
+                      setSelectedNFT={setSelectedNFT}
+                      viewMode={nftsMode}/> 
             </div>
-          </div>
-      }
-    </div>
+          : <div className={styles.notConnectedTemplate}>
+              <div className={styles.notConnectedContainer}>
+                <div className={styles.ellipses}>
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
+                <span className={styles.notConnectedMessage}>Sign In<br /> to see your dashboard</span>
+                {/* <ConnectButton connectText='Connect'/> */}
+                <div className={styles.connectButtonsWrapper}>
+                  <div className={styles.connectButtonContainer}>
+                    <SignInButton style={styles.connectButton} connectText='VSA Sign In' handler={() => {}} />
+                    <div className={styles.descriptionTitle}>Sign In with a <b><i>Venn Smart Account</i></b>.<br/></div>
+                    <div className={styles.descriptionText}>                    
+                    You can <b>LIST</b> and <b>PURCHASE</b> NFT's as <b>rentals</b>.<br/>
+                      Even if you <i>do not</i> have a VSA yet, you can proceed with the sign in to create one.<span className={styles.warningText}>[Recommended]</span>
+                    </div>
+                  </div>
+                  <div className={styles.connectButtonContainer}>
+                    <SignInButton style={styles.connectButton} connectText='EOA Sign In' handler={openConnectModal} />
+                    {/* <ConnectButton /> */}
+                    <div className={styles.descriptionTitle}>Sign In with a regular account.</div>
+                    <div className={styles.descriptionText}>
+                      Use a web3 wallet like Metamask, Coinbase Wallet, etc.<br/> 
+                      You can still list your own NFT's to be rented, but can not purchase a rental yourself.
+                    </div>
+                    </div>
+                  </div>
+              </div>
+            </div>
+        }
+      </div>
+      {/* <SignInButton style={styles.connectButton} connectText='EOA Sign In' handler={openConnectModal} /> */}
+      <ConnectButton />
+
     </>
   );
 }

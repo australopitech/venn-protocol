@@ -14,7 +14,8 @@ import Router from 'next/router';
 import { isApproved as getIsApproved } from '@/utils/utils';
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { parseEther } from 'viem';
-import { client } from '@/pages/client';
+import { baseGoerli } from 'viem/chains';
+// import { client } from '@/pages/client';
 
 export interface DialogOwnedNotListedDescriptionProps {
     className?: string;
@@ -79,6 +80,7 @@ export const DialogOwnedNotListedDescription = ({
   // const client = usePublicClient();
   const [isApproved, setIsApproved] = useState<boolean>();
   const [tokenId, setTokenId] = useState<bigint>();
+  const client = usePublicClient({ chainId: baseGoerli.id });
 
   // const isApproved = useIsApproved(nftItem);
 

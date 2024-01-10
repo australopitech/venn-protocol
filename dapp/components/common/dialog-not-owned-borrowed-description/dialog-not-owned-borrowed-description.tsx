@@ -7,9 +7,10 @@ import { receiptsContract } from '@/utils/contractData';
 // import { BigNumber, ethers } from 'ethers';
 import { useTimestamp } from '@/hooks/block-data';
 import { getNFTByReceipt, ownerOf } from '@/utils/utils';
-import { getAddress } from 'viem';
-import { useAccount, useBlock, usePublicClient } from 'wagmi';
-import { client } from '@/pages/client';
+import { getAddress, GetBlockReturnType } from 'viem';
+import { useAccount, useBlockNumber, usePublicClient } from 'wagmi';
+import { baseGoerli } from 'viem/chains';
+// import { client } from '@/pages/client';
 
 export interface DialogNotOwnedBorrowedDescriptionProps {
   address?: `0x${string}`;
@@ -21,7 +22,7 @@ const dayCutOff = 82800; // 23 h;
 const hourCutOff = 3540 // 59 min;
 
 async function getEndTime(
-  provider: any, 
+  client: any, 
   account?: `0x${string}`, 
   nftItem?: NftItem,
   ) {
@@ -71,14 +72,24 @@ export const DialogNotOwnedBorrowedDescription = ({
   isRental
 }: DialogNotOwnedBorrowedDescriptionProps) => {
   const [timeLeft, setTimeLeft] = useState<number>(0);
+  const [block, setBlock] = useState<GetBlockReturnType>();
   // const { account, library, chainId } = useEthers();
   // const client = usePublicClient();
   const { address: account} = useAccount();
   // const timestamp = useTimestamp({ chainId: chainId, isStatic: false, refresh: 5});
-  const { data: block } = useBlock();
-
+  // const { data: block } = useBlock();
+  const { data: blockNum, error: blockErr } = useBlockNumber({ watch: true });
+  const client = usePublicClient({
+    chainId: baseGoerli.id
+  });
   // console.log('timestamp', timestamp, typeof timestamp);
   
+  useEffect(() => {
+    const resolveBlock = async () => {
+      setBlock(await client.getBlock());
+    }
+    resolveBlock();
+  }, [blockNum, client]);
 
   useEffect(() => {
     const resolveTimeLeft = async() => {
