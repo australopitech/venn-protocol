@@ -11,7 +11,9 @@ import { useAddressNfts } from '../../../hooks/address-data';
 import { nftViewMode, nftViewContext } from '@/types/nftContext';
 import { useAccount } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
+import 'node_modules/@rainbow-me/rainbowkit/dist/index.css';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
+// import { createWeb3AuthSigner } from '@/utils/web3auth';
 
 export interface DashboardLayoutProps {
   address?: string;
@@ -37,6 +39,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const [selectedNFT, setSelectedNFT] = useState(0);
   const [isCollectionOpen, setIsCollectionOpen] = useState(false);
   const [isConnectOpen, setIsConnectOpen] = useState(false);
+  const [connectMode, setConnectMode] = useState<'VSA'|'EOA'>();
   // const isWalletConnected = true; //temp
   // const signer = useSigner();
   const { address: account } = useAccount();

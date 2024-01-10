@@ -184,7 +184,8 @@
 
 .descriptionText {
   font-size: 0.4em; /* Make the text a bit larger */
-  font-weight: 500;
+  font-weight: 600;
+  color: darkgrey;
   word-wrap: break-word; /* Ensure text breaks into lines as needed */
   max-width: 100%; /* Ensure text fits the container */
   padding: 0.6cm;
@@ -204,5 +205,5 @@
   /* border-radius: 10px; */
 }
 .warningText {
-  color: red;
+  color: violet;
 }
