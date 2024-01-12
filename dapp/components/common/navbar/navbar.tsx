@@ -10,7 +10,7 @@ import { useConnectModal } from '@rainbow-me/rainbowkit';
 
 export interface NavBarProps {
   isConnectOpen: boolean,
-  setIsConnetctOpen: any,
+  setIsConnectOpen: any,
   navbarGridTemplate?: string;
   currentPage?: string;
 }
@@ -84,7 +84,7 @@ const DropdownMenu = ({ items, onItemSelect } : DropdownProps ) => {
 
 
 
-export default function NavBar ({ navbarGridTemplate, currentPage, setIsConnetctOpen, isConnectOpen}: NavBarProps) {
+export default function NavBar ({ navbarGridTemplate, currentPage, setIsConnectOpen, isConnectOpen}: NavBarProps) {
   // const [scrolled, setScrolled] = useState(false);
 
   // useEffect(() => {
@@ -145,7 +145,7 @@ export default function NavBar ({ navbarGridTemplate, currentPage, setIsConnetct
           {/* <div className={styles.secondaryButton}>Market</div>
           <div className={styles.secondaryButton}>Dashboard</div> */}
           {/* TO-DO: colocar primary <div className={styles.primaryButton}>Connect Wallet</div> */}
-          <SignInButton connectText={isConnectOpen? 'Cancel' : 'Sign In'} style={styles.primaryButton} handler={() => setIsConnetctOpen(!isConnectOpen)} />
+          <SignInButton connectText={isConnectOpen? 'Cancel' : 'Sign In'} style={styles.primaryButton} handler={() => setIsConnectOpen(!isConnectOpen)} />
           {/* <div className={styles.iconButton}><MenuIcon /></div> */}
           <div className={styles.iconButton}><DropdownMenu items={items} onItemSelect={handleItemSelect} /></div>
         </div>

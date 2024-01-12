@@ -13,7 +13,7 @@ import { useAccount } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import 'node_modules/@rainbow-me/rainbowkit/dist/index.css';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { createWeb3AuthSigner } from '@/utils/web3auth';
+import { createWeb3AuthSigner } from '@/utils/web3auth/web3auth';
 
 export interface DashboardLayoutProps {
   address?: string;
@@ -70,7 +70,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
       />
     }
       <div className={styles.dashboard} >
-        <NavBar isConnectOpen={isConnectOpen} setIsConnetctOpen={setIsConnectOpen} navbarGridTemplate={styles.navbarGridTemplate} currentPage='dashboard' />
+        <NavBar isConnectOpen={isConnectOpen} setIsConnectOpen={setIsConnectOpen} navbarGridTemplate={styles.navbarGridTemplate} currentPage='dashboard' />
         { !isConnectOpen && (account || address)
           ? <div className={styles.contentGridTemplate}> 
               <SideBar address={address? address : account}
@@ -113,8 +113,6 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
             </div>
         }
       </div>
-      {/* <SignInButton style={styles.connectButton} connectText='EOA Sign In' handler={openConnectModal} /> */}
-      <ConnectButton />
 
     </>
   );

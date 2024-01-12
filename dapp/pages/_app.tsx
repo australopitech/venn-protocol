@@ -33,11 +33,10 @@ export const wagmiConfig = createConfig({
   publicClient
 });
 
-// theme={lightTheme({accentColor: '#FFB6C1', accentColorForeground: 'white', overlayBlur: 'small'})}
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <WagmiConfig config={wagmiConfig}>
-        <RainbowKitProvider chains={chains} >
+        <RainbowKitProvider chains={chains} theme={lightTheme({accentColor: '#FFB6C1', accentColorForeground: 'white', overlayBlur: 'small'})}>
           <Component {...pageProps} />
         </RainbowKitProvider>
     </WagmiConfig>

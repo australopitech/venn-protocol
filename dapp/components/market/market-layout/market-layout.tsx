@@ -147,6 +147,7 @@ const ContentSlider = ({ title, contentType, contentSliderData, setIsOpen }: Con
 export default function MarketLayout ({ somePropHere }: MarketLayoutProps) {
   const [isNFTOpen, setIsNFTOpen] = useState(false);
   const [isCollectionOpen, setIsCollectionOpen] = useState(false);
+  const [isConnectOpen, setIsConnectOpen] = useState(false);
 
   const collectionsData = [
     {name: "Super Ultra Awesome Collection", floor: 0.02,  uri: "https://dl.openseauserdata.com/cache/originImage/files/a0e0ab6a2841ae56d4ba63f833ebbca2.png"},
@@ -192,12 +193,12 @@ export default function MarketLayout ({ somePropHere }: MarketLayoutProps) {
         />
       }
       <div className={styles.market} >
-        <NavBar navbarGridTemplate={styles.navbarGridTemplate} currentPage='market' />
-        <div className={styles.contentGridTemplate}> 
+        <NavBar isConnectOpen={isConnectOpen} setIsConnectOpen={setIsConnectOpen} navbarGridTemplate={styles.navbarGridTemplate} currentPage='market' />
+        {<div className={styles.contentGridTemplate}> 
           <HeroSection />
           <ContentSlider title={"Latest NFTs"} contentType={"nft"} contentSliderData={nftsData} setIsOpen={setIsNFTOpen} />
           <ContentSlider title={"Trending Collections"} contentType={"collection"} contentSliderData={collectionsData} setIsOpen={setIsCollectionOpen} />
-        </div>
+        </div>}
       </div>
     </>
     
