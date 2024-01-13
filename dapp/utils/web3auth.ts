@@ -3,7 +3,9 @@ import { Web3AuthSigner } from "@alchemy/aa-signers/web3auth";
 const clientId = 'BEladcxiN547-jOdKsH6udt5ghJMymep8ZtuP_p3gLRcAtjxGgp2SzDUeJKv8CWDifXYJ5cMAVyi6C1O9s-44cE';
 
 export const createWeb3AuthSigner = async () => {
-    const signer = new Web3AuthSigner({
+  let signer: Web3AuthSigner | null;
+  try {
+    const signer_ = new Web3AuthSigner({
         clientId: clientId,
         uiConfig:{
           appName: "Venn smart",
@@ -20,14 +22,21 @@ export const createWeb3AuthSigner = async () => {
         },
     });
 
-    await signer.authenticate({
+    await signer_.authenticate({
         init: async () => {
-          await signer.inner.initModal();
+          await signer_.inner.initModal();
         },
         connect: async () => {
-          await signer.inner.connect();
+          await signer_.inner.connect();
         }
     });
 
-    return signer;
+    signer = signer_;
+    
+  } catch (error: any) {
+    console.error(error.message);
+    signer = null;
+  }
+
+  return signer;
 }

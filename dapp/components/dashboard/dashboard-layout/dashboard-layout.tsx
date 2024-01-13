@@ -96,7 +96,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
                     <div className={styles.descriptionTitle}>Sign In with a <b><i>Venn Smart Account</i></b>.<br/></div>
                     <div className={styles.descriptionText}>                    
                     You can <b>LIST</b> and <b>PURCHASE</b> NFT's as <b>rentals</b>.<br/>
-                      Even if you <i>do not</i> have a VSA yet, you can proceed with the sign in to create one.<span className={styles.warningText}>[Recommended]</span>
+                      Even if you <i>do not</i> have a VSA yet, you can proceed with the sign in to create one. <span className={styles.warningText}>[Recommended]</span>
                     </div>
                   </div>
                   <div className={styles.connectButtonContainer}>
