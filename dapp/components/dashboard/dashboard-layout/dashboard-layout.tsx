@@ -13,7 +13,7 @@ import { useAccount } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import 'node_modules/@rainbow-me/rainbowkit/dist/index.css';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { createWeb3AuthSigner } from '@/utils/web3auth/web3auth';
+import { createWeb3AuthSigner } from '@/utils/web3auth';
 
 export interface DashboardLayoutProps {
   address?: string;
