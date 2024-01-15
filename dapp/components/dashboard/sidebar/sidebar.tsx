@@ -1,6 +1,6 @@
 'use client'
 // import { ethers } from 'ethers';
-import { useRouter } from 'next/router';
+// import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 // import { useEtherBalance, useEthers, useSigner } from '@usedapp/core';
 import styles from './sidebar.module.css';
@@ -246,7 +246,7 @@ export default function SideBar ({ sidebarGridTemplate, address, nftsContext }: 
           <YourNfts nftsContext={nftsContext} />
         </div> */}
         <div className={styles.profileInfo}>
-          {/* <Wallet /> */}
+          <Wallet address={address} />
         </div>
       </div>
     </div>

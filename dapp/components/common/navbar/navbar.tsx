@@ -126,7 +126,7 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
       window.open('https://github.com/pbfranceschin/r-wallet-base-3/blob/main/Readme.md', '_blank');
   };
 
-  console.log('eoa', eoaAccount);
+  // console.log('eoa', eoaAccount);
 
   const { openConnectModal } = useConnectModal();
   return (

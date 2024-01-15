@@ -9,18 +9,22 @@ import { parseEther, formatEther } from 'viem';
 import { useSmartAccountAddress, pair } from '@/app/venn-provider';
 import styles from './wallet.module.css';
 
+const zeroAddress = "0x0000000000000000000000000000000000000000";
+
 interface QueryParams {
     address: string;
 }
 
 interface WalletProps {
-  account: `0x${string}`,
-  activeNetwork: Chain,
-  setActiveNetwork: any,
-  provider?: AlchemyProvider
+  address?: string
 }
 
-const SendIcon =  () => { //3C4252
+interface ShowBalanceProps {
+  address?: string,
+  isSigner?: boolean,
+}
+
+const SendIcon =  ({enabled} : {enabled: boolean}) => { //3C4252
     return (
       <div className={styles.sendIcon}>
         <svg
@@ -34,6 +38,8 @@ const SendIcon =  () => { //3C4252
           xmlSpace="preserve"
           width="20"
           height="20"
+          opacity={enabled ? 1 : 0.2}
+          cursor={enabled? "pointer" : "not-allowed"}
         >
           <g>
             <g>
@@ -49,7 +55,7 @@ const SendIcon =  () => { //3C4252
     )
   }
   
-  const SwapIcon =  () => {
+  const SwapIcon =  ({enabled} : {enabled: boolean}) => {
     return (
       <svg 
         version="1.1" 
@@ -62,6 +68,8 @@ const SendIcon =  () => { //3C4252
         xmlSpace="preserve" 
         width="28px" 
         height="28px"
+        opacity={enabled? 1 : 0.2}
+        cursor={enabled? "pointer" : "not-allowed"}
       >
         <g>
           <g>
@@ -84,50 +92,69 @@ const SendIcon =  () => { //3C4252
   }
   
 
-const YourBalance = () => {
+const ShowBalance = ({address, isSigner} : ShowBalanceProps) => {
     // const router = useRouter();
     // const address = router.query.address as QueryParams['address'] as `0x${string}`;
-    const { address } = useParams();
-    const { data: paramBal } = useBalance({ address: address as `0x${string}` });
-    const { address: eoa } = useAccount();
-    const { data: eoaBal } = useBalance({ address: eoa });
-    const vsa = useSmartAccountAddress();
-    const { data: vsaBal } = useBalance({ address: vsa}) 
+    const [isClient, setIsClient] = useState(false);
+    // const { address } = useParams();
+    // const { data: paramBal } = useBalance({ address: address as `0x${string}` });
+    // const { address: eoa } = useAccount();
+    // const { data: eoaBal } = useBalance({ address: eoa });
+    // const vsa = useSmartAccountAddress();
+    // const { data: vsaBal } = useBalance({ address: vsa}) 
 
+    const { data: bal } = useBalance({ address: address as `0x${string}`});
+ 
+
+    useEffect(() => {
+      setIsClient(true);
+    }, [])
   
     return (
       <div className={styles.yourBalanceContainer}>
-        <span className={styles.profileSectionTitle}>{(
-          (address&&eoa&&address===eoa) ||
-          (address&&vsa&&address===vsa)  ||
-          ((vsa || eoa )&&!address))  &&
-          'YOUR'} BALANCE</span>
-        <div>
+        <span className={styles.profileSectionTitle}>{
+          // ((address&&eoa&&address===eoa) ||
+          // (address&&vsa&&address===vsa)  ||
+          // ((vsa || eoa )&&!address))  &&
+          isSigner&&'YOUR'} BALANCE
+        </span>
+        {isClient && <div>
           <div className={styles.balanceValueContainer}>
             <span className={styles.balanceValue}>
-              {paramBal
+              {/* {paramBal
               ? parseFloat(formatEther(paramBal.value)).toFixed(4)
               : eoaBal 
                 ? parseFloat(formatEther(eoaBal.value)).toFixed(4)
                 : vsaBal
                   ?  parseFloat(formatEther(vsaBal.value)).toFixed(4)
-                  : "couldn't fetch balance"
-            } 
+                  : "Loading..."
+            }  */}
+            {bal? parseFloat(formatEther(bal.value)).toFixed(4) : ''}
             </span>
             <span className={styles.balanceCurrency}>
-              ETH
+              {/* {(paramBal||eoaBal||vsaBal) && 'ETH'} */}
+              {bal && 'ETH'}
             </span>
           </div>
-        </div>
+        </div>}
       </div>
     )
 }
 
-const Buttons = (setOpenTransfer: any, setOpenConnect: any) => {
+const Buttons = ({setOpenTransfer, setOpenConnect, enabled}: {setOpenTransfer: any, setOpenConnect: any, enabled: boolean}) => {
+  const [style, setStyle] = useState(styles.balanceActionsContainerDisabled);
+  
+  // useEffect(() => {
+  //   if(enabled)
+  //     setStyle(styles.balanceActionsContainer);
+  // }, [enabled]);
+
+  // console.log('style', style)
+  // console.log('enabled', enabled);
   return (
-    <div className={styles.balanceActionsContainer}>
-            <div className={styles.actionContainer} onClick={() => {}}><SendIcon /></div>
-            <div className={styles.actionContainer} onClick={() => setOpenConnect(true)}><SwapIcon /></div>
+    <div className={style}>
+            <div className={styles.actionContainer} onClick={() => {}}><SendIcon enabled={enabled} /></div>
+            <div className={styles.actionContainer} onClick={() => setOpenConnect(true)}><SwapIcon enabled={enabled}/></div>
     </div>
   )
 }
@@ -146,54 +173,70 @@ const Connect = () => {
   }, [uri])
 
   return (
-    <div className={styles['priceInputContainer']}>
-        <input 
-        className={styles['priceInput']}
-        placeholder='Enter Dapp Uri'
-        type='string'
-        onChange={(e) => setUri(e.target.value)}
-        />
-        <button onClick={() => pair(uri)} disabled={disabled}>Connect</button>
+    <div>
+      <div className={styles['priceInputContainer']}>
+          <input 
+          className={styles['priceInput']}
+          placeholder='Enter Uri'
+          type='string'
+          onChange={(e) => setUri(e.target.value)}
+          />
+      </div>
+      <div className={disabled? styles.disabled : ''}>
+        <div className={styles.primaryButton}>
+          Connect
+        </div>
+      </div>
     </div>
   )
 }
 
 const Back = ({
-  openConnect,
-  openTransfer,
   setOpenTransfer,
   setOpenConnect
 } : {
-  openConnect: boolean,
-  openTransfer: boolean,
-  setOpenTransfer: any,
-  setOpenConnect: any
+  setOpenTransfer?: any,
+  setOpenConnect?: any
 }) => {
   
   const back = useCallback(() => {
-    if(openConnect)
+    if(setOpenConnect)
       setOpenConnect(false);
-    else if(openTransfer)
+    else if(setOpenTransfer)
       setOpenTransfer(false);
-  },[openConnect, openTransfer]);
+  },[setOpenConnect, setOpenTransfer]);
 
   return (
-    <div>
-      <button onClick={() => back()}>Back</button>
+    <div className={styles.secondaryButton} onClick={back}>
+      Back
     </div>
   )
 }
 
-export default function Wallet() {
+export default function Wallet({address} : WalletProps) {
   const [openTransfer, setOpenTransfer] = useState<boolean>(false);
-  const [openConnect, setOpenConnect] = useState<boolean>(false);   
-
-
+  const [openConnect, setOpenConnect] = useState<boolean>(false);
+  // const [disableActions, setDisalbleAction] = useState<boolean>();
+  const eoa = useAccount();
+  const vsaAddr = useSmartAccountAddress();
+  
   return (
     <div>
-        <YourBalance />
-        {!openConnect && !openTransfer && <Buttons />}
-        {openConnect && <Connect />}
+        <ShowBalance address={address?? eoa.address?? vsaAddr} isSigner={address? (address==eoa.address) || (address==vsaAddr) : true } />
+        {!openConnect && !openTransfer && 
+        <Buttons 
+        setOpenConnect={setOpenConnect} 
+        setOpenTransfer={setOpenTransfer} 
+        // enabled={address? (address==vsaAddr) : vsaAddr? true : false} 
+        enabled={true}
+        />
+        }
+        {openConnect &&
+        <>
+          <Connect />
+          <Back setOpenConnect={setOpenConnect} />
+        </>
+        }
     </div>
 
   )

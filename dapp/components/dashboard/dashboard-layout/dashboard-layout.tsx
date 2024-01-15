@@ -19,7 +19,7 @@ import { useSmartAccountAddress } from '@/app/venn-provider';
 import { useRouter } from 'next/navigation';
 
 export interface DashboardLayoutProps {
-  address?: string;
+  address?: `0x${string}`;
 }
 
 export interface ConnectButtonProps {
@@ -98,7 +98,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
                   <span></span>
                   <span></span>
                 </div>
-                <h1>Loading...</h1>
+                <span className={styles.notConnectedMessage}>Loading... Please wait.</span>
                 {/* <span className={styles.notConnectedMessage}>Sign In<br /> to see your dashboard</span>
                 <div className={styles.connectButtonsWrapper}>
                   <div className={styles.connectButtonContainer}>
