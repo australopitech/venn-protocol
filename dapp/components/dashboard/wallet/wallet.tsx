@@ -1,10 +1,13 @@
+'use client'
 import { AlchemyProvider } from '@alchemy/aa-alchemy'
 import { Chain } from 'viem';
-import { useRouter } from 'next/router';
-import { useState , useEffect } from 'react';
+// import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation'
+import { useState , useEffect, useCallback } from 'react';
 import { useAccount, useBalance, useWalletClient } from 'wagmi';
 import { parseEther, formatEther } from 'viem';
-import styles from './wallet.module.css'; 
+import { useSmartAccountAddress, pair } from '@/app/venn-provider';
+import styles from './wallet.module.css';
 
 interface QueryParams {
     address: string;
@@ -82,23 +85,33 @@ const SendIcon =  () => { //3C4252
   
 
 const YourBalance = () => {
-    const router = useRouter();
-    const address = router.query.address as QueryParams['address'] as `0x${string}`;
-    const { data: bal } = useBalance({ address });
-    const { address: account } = useAccount();
-    const { data: signerBal } = useBalance({ address: account });
+    // const router = useRouter();
+    // const address = router.query.address as QueryParams['address'] as `0x${string}`;
+    const { address } = useParams();
+    const { data: paramBal } = useBalance({ address: address as `0x${string}` });
+    const { address: eoa } = useAccount();
+    const { data: eoaBal } = useBalance({ address: eoa });
+    const vsa = useSmartAccountAddress();
+    const { data: vsaBal } = useBalance({ address: vsa}) 
+
   
     return (
       <div className={styles.yourBalanceContainer}>
-        <span className={styles.profileSectionTitle}>{((address&&account&&address===account) || (account&&!address))  && 'YOUR'} BALANCE</span>
+        <span className={styles.profileSectionTitle}>{(
+          (address&&eoa&&address===eoa) ||
+          (address&&vsa&&address===vsa)  ||
+          ((vsa || eoa )&&!address))  &&
+          'YOUR'} BALANCE</span>
         <div>
           <div className={styles.balanceValueContainer}>
             <span className={styles.balanceValue}>
-              {(bal || account) && bal
-              ? parseFloat(formatEther(bal.value)).toFixed(4)
-              : signerBal 
-                ? parseFloat(formatEther(signerBal.value)).toFixed(4)
-                : "couldn't fetch balance"
+              {paramBal
+              ? parseFloat(formatEther(paramBal.value)).toFixed(4)
+              : eoaBal 
+                ? parseFloat(formatEther(eoaBal.value)).toFixed(4)
+                : vsaBal
+                  ?  parseFloat(formatEther(vsaBal.value)).toFixed(4)
+                  : "couldn't fetch balance"
             } 
             </span>
             <span className={styles.balanceCurrency}>
@@ -113,7 +126,7 @@ const YourBalance = () => {
 const Buttons = (setOpenTransfer: any, setOpenConnect: any) => {
   return (
     <div className={styles.balanceActionsContainer}>
-            <div className={styles.actionContainer} onClick={() => setOpenTransfer(true)}><SendIcon /></div>
+            <div className={styles.actionContainer} onClick={() => {}}><SendIcon /></div>
             <div className={styles.actionContainer} onClick={() => setOpenConnect(true)}><SwapIcon /></div>
     </div>
   )
@@ -122,7 +135,15 @@ const Buttons = (setOpenTransfer: any, setOpenConnect: any) => {
 
 
 const Connect = () => {
-  const [uri, setUri] = useState<string>();
+  const [uri, setUri] = useState<string>('');
+  const [disabled, setDisabled] = useState<boolean>();
+
+  useEffect(() => {
+    if(uri.length)
+      setDisabled(false)
+    else
+      setDisabled(true);
+  }, [uri])
 
   return (
     <div className={styles['priceInputContainer']}>
@@ -132,11 +153,36 @@ const Connect = () => {
         type='string'
         onChange={(e) => setUri(e.target.value)}
         />
-        <button>Connect</button>
+        <button onClick={() => pair(uri)} disabled={disabled}>Connect</button>
     </div>
   )
 }
 
+const Back = ({
+  openConnect,
+  openTransfer,
+  setOpenTransfer,
+  setOpenConnect
+} : {
+  openConnect: boolean,
+  openTransfer: boolean,
+  setOpenTransfer: any,
+  setOpenConnect: any
+}) => {
+  
+  const back = useCallback(() => {
+    if(openConnect)
+      setOpenConnect(false);
+    else if(openTransfer)
+      setOpenTransfer(false);
+  },[openConnect, openTransfer]);
+
+  return (
+    <div>
+      <button onClick={() => back()}>Back</button>
+    </div>
+  )
+}
 
 export default function Wallet() {
   const [openTransfer, setOpenTransfer] = useState<boolean>(false);

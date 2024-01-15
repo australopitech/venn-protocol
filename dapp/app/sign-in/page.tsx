@@ -1,13 +1,11 @@
-import Contact from "./contact";
+import SignIn from "@/components/sign-in/sign-in";
 import WagmiProvider from "../wagmi";
 import { VennAccountProvider } from "../venn-provider";
 
 export default function Page () {
-  return (
     <VennAccountProvider>
-      <WagmiProvider>
-          <Contact />
-      </WagmiProvider>
+        <WagmiProvider>
+            <SignIn />
+        </WagmiProvider>
     </VennAccountProvider>
-  )
 }

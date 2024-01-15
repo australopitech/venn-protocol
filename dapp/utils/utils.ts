@@ -1,4 +1,3 @@
-// import { ethers, BigNumber } from "ethers";
 import erc721 from "./contractData/ERC721.artifact.json";
 import { mktPlaceContract, factoryContract } from "./contractData";
 import { NftItem } from '@/types/typesNftApi.d';
@@ -6,7 +5,7 @@ import walletAbi from "./contractData/RWallet.artifact.json";
 import { readContract } from "viem/actions";
 import { createPublicClient } from "viem";
 import { formatEther } from "viem";
-// import { client } from '../pages/client';
+import { getAddress } from "viem";
 
 interface NftObj {
     contractAddress: `0x${string}`,
@@ -337,3 +336,15 @@ export async function resolvePrice(
     );
     if(price !== undefined) setRentPrice(formatEther(price));
 }
+
+export function formatParams(method: string, params: any[]) {
+    let _params = params;
+    if(
+      method === "eth_sign" ||
+      method === "eth_signTypedData_v4"
+    )
+      _params[0] = getAddress(params[0]) as `0x${string}`;
+    if(method === "personal_sign")
+      _params[1] = getAddress(params[1]) as `0x${string}`;
+    return _params;
+  }

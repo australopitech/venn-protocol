@@ -1,16 +1,20 @@
+'use client'
 import classNames from 'classnames';
 import { Logo } from '../logo/logo';
 import { SearchBox } from '../search-box/search-box';
 import styles from './navbar.module.css';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 // import { useEthers, useEtherBalance, useConfig, useSigner } from '@usedapp/core';
 import Link from 'next/link';
 import { SignInButton } from '@/components/dashboard/dashboard-layout/dashboard-layout';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { useRouter } from 'next/navigation';
+import { useAccount, useDisconnect } from 'wagmi';
+import { signOut } from '@/app/venn-provider';
+import { useSmartAccountAddress } from '@/app/venn-provider';
 
 export interface NavBarProps {
-  isConnectOpen: boolean,
-  setIsConnectOpen: any,
+  signInPage?: boolean;
   navbarGridTemplate?: string;
   currentPage?: string;
 }
@@ -84,7 +88,7 @@ const DropdownMenu = ({ items, onItemSelect } : DropdownProps ) => {
 
 
 
-export default function NavBar ({ navbarGridTemplate, currentPage, setIsConnectOpen, isConnectOpen}: NavBarProps) {
+export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps) {
   // const [scrolled, setScrolled] = useState(false);
 
   // useEffect(() => {
@@ -102,14 +106,27 @@ export default function NavBar ({ navbarGridTemplate, currentPage, setIsConnectO
   // }, []);
 
   // console.log('scrolled ', scrolled)
-
+  const eoaAccount = useAccount();
+  const vsaAddr = useSmartAccountAddress();
+  const router = useRouter();
+  const { disconnect } = useDisconnect()
   const items = ['About the project', 'Contact Us'];
+
+  const signOutHandler = useCallback(() => {
+    if(eoaAccount) {
+      disconnect();
+    } else if(vsaAddr) {
+      signOut();
+    }
+  }, [eoaAccount, vsaAddr])
 
   const handleItemSelect = (item: string) => {
     console.log(`Selected: ${item}`);
     if(item === 'About the project')
       window.open('https://github.com/pbfranceschin/r-wallet-base-3/blob/main/Readme.md', '_blank');
   };
+
+  console.log('eoa', eoaAccount);
 
   const { openConnectModal } = useConnectModal();
   return (
@@ -145,7 +162,9 @@ export default function NavBar ({ navbarGridTemplate, currentPage, setIsConnectO
           {/* <div className={styles.secondaryButton}>Market</div>
           <div className={styles.secondaryButton}>Dashboard</div> */}
           {/* TO-DO: colocar primary <div className={styles.primaryButton}>Connect Wallet</div> */}
-          <SignInButton connectText={isConnectOpen? 'Cancel' : 'Sign In'} style={styles.primaryButton} handler={() => setIsConnectOpen(!isConnectOpen)} />
+          {(eoaAccount.isConnected || vsaAddr)
+            ? <SignInButton connectText='Sign Out' style={styles.disconnectButton} handler={signOutHandler} />
+            : <SignInButton connectText={'Sign In'} style={styles.primaryButton} handler={() => router.push('/sign-in')} />}
           {/* <div className={styles.iconButton}><MenuIcon /></div> */}
           <div className={styles.iconButton}><DropdownMenu items={items} onItemSelect={handleItemSelect} /></div>
         </div>

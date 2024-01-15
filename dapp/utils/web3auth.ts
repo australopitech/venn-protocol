@@ -34,7 +34,8 @@ export const createWeb3AuthSigner = async () => {
     signer = signer_;
     
   } catch (error: any) {
-    console.error(error.message);
+    console.error(error);
+    alert(error.message);
     signer = null;
   }
 
