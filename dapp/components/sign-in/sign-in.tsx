@@ -5,7 +5,7 @@ import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useSetSigner, useSmartAccountAddress } from '@/app/venn-provider';
 import NavBar from '../common/navbar/navbar';
 import { useEffect } from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useAccount } from 'wagmi';
 import { signIn } from '@/app/venn-provider';
 
@@ -34,7 +34,7 @@ export default function SignIn () {
 
   useEffect(() => {
     if(vsa || eoa) {
-      router.back();
+      router.push('/dashboard');
     }
   }, [vsa, eoa]);
 
@@ -49,7 +49,7 @@ export default function SignIn () {
                   <span></span>
                   <span></span>
                 </div>
-                <span className={styles.notConnectedMessage}>Sign In<br /> to see your dashboard</span>
+                <span className={styles.notConnectedMessage}>Choose your preffered <br /> Sign In method</span>
                 {/* <ConnectButton connectText='Connect'/> */}
                 <div className={styles.connectButtonsWrapper}>
                   <div className={styles.connectButtonContainer}>

@@ -3,9 +3,11 @@ import WagmiProvider from "../wagmi";
 import { VennAccountProvider } from "../venn-provider";
 
 export default function Page () {
+    return (
     <VennAccountProvider>
         <WagmiProvider>
             <SignIn />
         </WagmiProvider>
     </VennAccountProvider>
+    )
 }
