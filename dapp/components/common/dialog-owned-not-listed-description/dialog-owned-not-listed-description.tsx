@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useRef, useState } from 'react';
 // import { ethers, BigNumber } from 'ethers';
 import styles from './dialog-owned-not-listed-description.module.css';

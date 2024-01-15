@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useMemo, useState } from 'react';
 import styles from './dialog-owned-rented-description.module.css';
 // import { useSigner, useEthers } from '@usedapp/core';

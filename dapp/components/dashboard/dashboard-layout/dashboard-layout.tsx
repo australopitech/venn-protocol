@@ -1,3 +1,4 @@
+'use client'
 import styles from './dashboard-layout.module.css';
 import classNames from 'classnames';
 import NavBar from '@/components/common/navbar/navbar'
@@ -14,6 +15,8 @@ import { useConnectModal } from '@rainbow-me/rainbowkit';
 import 'node_modules/@rainbow-me/rainbowkit/dist/index.css';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { createWeb3AuthSigner } from '@/utils/web3auth';
+import { useSmartAccountAddress } from '@/app/venn-provider';
+import { useRouter } from 'next/navigation';
 
 export interface DashboardLayoutProps {
   address?: string;
@@ -25,7 +28,7 @@ export interface ConnectButtonProps {
   connectText?: string
 }
 
-export function SignInButton ({handler, style,  connectText}: ConnectButtonProps) {
+export function SignInButton ({handler, style, connectText}: ConnectButtonProps) {
   return (
     <div className={style} onClick={handler}>
       {connectText ?? 'Connect Wallet'}
@@ -38,14 +41,14 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const [isNFTOpen, setIsNFTOpen] = useState(false);
   const [selectedNFT, setSelectedNFT] = useState(0);
   const [isCollectionOpen, setIsCollectionOpen] = useState(false);
-  const [isConnectOpen, setIsConnectOpen] = useState(false);
-  const [connectMode, setConnectMode] = useState<'VSA'|'EOA'>();
+  // const [isConnectOpen, setIsConnectOpen] = useState(false);
+  // const [connectMode, setConnectMode] = useState<'VSA'|'EOA'>();
   // const isWalletConnected = true; //temp
   // const signer = useSigner();
-  const { address: account } = useAccount();
+  const { address: eoa } = useAccount();
   // const [signerAddress, setSignerAddress] = useState<string>();
   const [nftsMode, setNftsMode] = useState<nftViewMode>("owned");
-
+  const vsa = useSmartAccountAddress();
   // console.log('signer dashboard', signer)
   // console.log('signerAddress', signerAddress)
 
@@ -55,8 +58,15 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   //   }
   // }, [signer]);
 
-  const userData = useAddressNfts(address? address : account);
+  const userData = useAddressNfts(address?? eoa?? vsa);
   const { openConnectModal } = useConnectModal();
+  const router = useRouter();
+  
+  useEffect(() => {
+    if(!address && !eoa && !vsa) {
+      router.push('/sign-in');
+    }
+  }, [address, eoa, vsa])
 
   return (
     <>
@@ -70,10 +80,10 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
       />
     }
       <div className={styles.dashboard} >
-        <NavBar isConnectOpen={isConnectOpen} setIsConnectOpen={setIsConnectOpen} navbarGridTemplate={styles.navbarGridTemplate} currentPage='dashboard' />
-        { !isConnectOpen && (account || address)
+        <NavBar navbarGridTemplate={styles.navbarGridTemplate} currentPage='dashboard' />
+        { (eoa || vsa || address)
           ? <div className={styles.contentGridTemplate}> 
-              <SideBar address={address? address : account}
+              <SideBar address={address?? eoa ?? vsa}
                       nftsContext={{mode: nftsMode, setNftsViewMode: setNftsMode}}/>
               <NftArea address={address}
                       nftFetchData={userData}
@@ -88,8 +98,8 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
                   <span></span>
                   <span></span>
                 </div>
-                <span className={styles.notConnectedMessage}>Sign In<br /> to see your dashboard</span>
-                {/* <ConnectButton connectText='Connect'/> */}
+                <h1>Loading...</h1>
+                {/* <span className={styles.notConnectedMessage}>Sign In<br /> to see your dashboard</span>
                 <div className={styles.connectButtonsWrapper}>
                   <div className={styles.connectButtonContainer}>
                     <SignInButton style={styles.connectButton} connectText='VSA Sign In' handler={createWeb3AuthSigner} />
@@ -101,14 +111,13 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
                   </div>
                   <div className={styles.connectButtonContainer}>
                     <SignInButton style={styles.connectButton} connectText='EOA Sign In' handler={openConnectModal} />
-                    {/* <ConnectButton /> */}
                     <div className={styles.descriptionTitle}>Sign In with a regular account.</div>
                     <div className={styles.descriptionText}>
                       Use a web3 wallet like Metamask, Coinbase Wallet, etc.<br/> 
                       You can still list your own NFT's to be rented, but can not purchase a rental yourself.
                     </div>
                     </div>
-                  </div>
+                  </div> */}
               </div>
             </div>
         }

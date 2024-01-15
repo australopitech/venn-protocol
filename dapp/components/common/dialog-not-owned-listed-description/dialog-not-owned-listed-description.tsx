@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useMemo } from 'react';
 import styles from './dialog-not-owned-listed-description.module.css';
 import { useState } from 'react';

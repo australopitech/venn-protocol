@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import styles from './work-in-progress-dialog.module.css';
 

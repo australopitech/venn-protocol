@@ -1,3 +1,4 @@
+'use client'
 import NftCard from '@/components/common/nft-card/nft-card';
 import styles from './nft-area.module.css';
 import classNames from 'classnames';

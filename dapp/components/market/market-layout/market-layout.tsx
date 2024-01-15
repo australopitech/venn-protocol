@@ -1,3 +1,4 @@
+'use client'
 import styles from './market-layout.module.css';
 import classNames from 'classnames';
 import NavBar from '@/components/common/navbar/navbar'
@@ -122,7 +123,7 @@ const ContentSlider = ({ title, contentType, contentSliderData, setIsOpen }: Con
                 imageURI={data.uri} 
                 name={data.name}
                 contractAddress={ethers.constants.AddressZero}
-                tokenId={BigNumber.from(0)}
+                tokenId={BigInt(0)}
                 price={data.price}
                 // isRented={data.isRented}
                 expireDate={data.expireDate}
@@ -193,7 +194,7 @@ export default function MarketLayout ({ somePropHere }: MarketLayoutProps) {
         />
       }
       <div className={styles.market} >
-        <NavBar isConnectOpen={isConnectOpen} setIsConnectOpen={setIsConnectOpen} navbarGridTemplate={styles.navbarGridTemplate} currentPage='market' />
+        <NavBar navbarGridTemplate={styles.navbarGridTemplate} currentPage='market' />
         {<div className={styles.contentGridTemplate}> 
           <HeroSection />
           <ContentSlider title={"Latest NFTs"} contentType={"nft"} contentSliderData={nftsData} setIsOpen={setIsNFTOpen} />

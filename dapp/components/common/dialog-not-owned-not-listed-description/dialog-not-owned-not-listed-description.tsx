@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useState } from 'react';
 import styles from './dialog-not-owned-not-listed-description.module.css';
 import classNames from 'classnames';

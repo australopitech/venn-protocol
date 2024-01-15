@@ -1,3 +1,4 @@
+'use client'
 import { useState, FocusEvent, ChangeEvent } from 'react';
 import styles from './search-box.module.css';
 

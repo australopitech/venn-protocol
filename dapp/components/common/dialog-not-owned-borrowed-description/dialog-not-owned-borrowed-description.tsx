@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useState } from 'react';
 import styles from './dialog-not-owned-borrowed-description.module.css';
 // import { useBlockMeta, useEthers } from '@usedapp/core';

@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
 // import { useEthers, useSigner } from '@usedapp/core';
 // import { DialogBorrowedDescription } from '../dialog-borrowed-description/dialog-borrowed-description';
@@ -64,7 +65,7 @@ const CloseButton = () => {
 export interface NFTDialogProps {
     setIsNFTOpen?: any;
     nftItem?: NftItem;
-    address?: string;
+    address?: `0x${string}`;
 }
 
 // let image: string | undefined;

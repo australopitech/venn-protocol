@@ -1,3 +1,4 @@
+'use client'
 import Image from 'next/image';
 import styles from './nft-card.module.css';
 import classNames from 'classnames';

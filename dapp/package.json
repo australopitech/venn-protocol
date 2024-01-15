@@ -19,6 +19,7 @@
     "@types/node": "20.5.7",
     "@types/react": "^18.2.47",
     "@types/react-dom": "18.2.7",
+    "@walletconnect/types": "^2.11.0",
     "@walletconnect/web3wallet": "^1.10.0",
     "@web3auth/base": "^7.2.1",
     "@web3auth/modal": "^7.3.0",
