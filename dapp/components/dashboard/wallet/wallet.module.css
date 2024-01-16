@@ -318,6 +318,7 @@
     color: rgba(233, 125, 177, 0.8);
     /* color: rgba(255, 255, 255, 0.9); */
     /* color: #5E5E5D; */
+    cursor: pointer;
   }
   
   .primaryButton:hover {
@@ -334,6 +335,7 @@
     color: #5D5D5D;
     background-color: #EEE6EF;
     border-radius: 18px;
+    cursor: pointer;
   }
   
   .secondaryButton:hover {
@@ -342,4 +344,12 @@
   
   .secondaryButton:active { 
     transform: scale(0.95); /* Scale down when active */
+  }
+
+  .priceInputLabel {
+    display: flex;
+    color: #5D5D5D;
+    font-size: 18px;
+    margin: 18px 0px 4px 0px;
+    width: 100%;
   }

@@ -153,13 +153,49 @@ const Buttons = ({setOpenTransfer, setOpenConnect, enabled}: {setOpenTransfer: a
   // console.log('enabled', enabled);
   return (
     <div className={style}>
-            <div className={styles.actionContainer} onClick={() => {}}><SendIcon enabled={enabled} /></div>
+            <div className={styles.actionContainer} onClick={() => setOpenTransfer(true)}><SendIcon enabled={enabled} /></div>
             <div className={styles.actionContainer} onClick={() => setOpenConnect(true)}><SwapIcon enabled={enabled}/></div>
     </div>
   )
 }
   
+const Transfer = () => {
+  const [value, setValue] = useState<number>();
+  const [disabled, setDisabled] = useState<boolean>(true);
 
+  const handleValueChange = (e: any) => {
+    let numValue = parseFloat(e.target.value);
+    if(e.target.value === '')
+      numValue = 0;
+    if((numValue <= 0 || isNaN(numValue))){
+      setDisabled(true);
+      setValue(0);
+    } else {
+      setDisabled(false)
+      setValue(numValue);
+    }
+  }
+
+  return (
+    <div>
+      <span className={styles.priceInputLabel}></span>
+      <div className={styles['priceInputContainer']}>
+          <input 
+          className={styles['priceInput']}
+          placeholder='0.00'
+          type='number'
+          min='0'
+          onChange={(e) => handleValueChange(e)}
+          />
+      </div>
+      <div className={disabled? styles.disabled : ''}>
+        <div className={styles.primaryButton}>
+          Transfer
+        </div>
+      </div>
+    </div>
+  )
+}
 
 const Connect = () => {
   const [uri, setUri] = useState<string>('');
@@ -235,6 +271,12 @@ export default function Wallet({address} : WalletProps) {
         <>
           <Connect />
           <Back setOpenConnect={setOpenConnect} />
+        </>
+        }
+        {openTransfer &&
+        <>
+        <Transfer />
+        <Back setOpenTransfer={setOpenTransfer} />
         </>
         }
     </div>
