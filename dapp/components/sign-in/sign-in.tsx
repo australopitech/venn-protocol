@@ -4,7 +4,7 @@ import { createWeb3AuthSigner } from '@/utils/web3auth';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useSetSigner, useSigner, useSmartAccountAddress, useSignIn } from '@/app/venn-provider';
 import NavBar from '../common/navbar/navbar';
-import { useCallback, useContext, useEffect } from 'react';
+import { useCallback, useContext, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAccount } from 'wagmi';
 // import { signIn } from '@/app/venn-provider';
@@ -29,27 +29,34 @@ export default function SignIn () {
 //   const [hideBackground]
   const { openConnectModal } = useConnectModal();
   const router = useRouter();
-  const vsa = useSmartAccountAddress();
   const { address: eoa } = useAccount();
   const setSigner = useSetSigner();
   const signer = useSigner();
+  const vsa = useSmartAccountAddress();
+  const isInitialRender = useRef(true);
   // const signIn = useSignIn();
 
   console.log('signer', signer);
-  console.log('vsa', vsa)
+  // console.log('vsa', vsa)
+  
 
   useEffect(() => {
-    if(vsa || eoa) {
-      router.push('/dashboard');
+    if (isInitialRender.current) {
+    // Skip the effect on initial render
+      isInitialRender.current = false;
+    } else if (vsa || eoa) {
+      setTimeout(() => {
+        router.push('/dashboard');
+      }, 100);
     }
-  }, [vsa, eoa]);
+    return () => {
+      console.log('SignIn component is unmounting');
+    };
+  }, [vsa, eoa, router]);
 
-  const signIn = useCallback(() => {
-    const resolveSigner = async () => {
-      if(setSigner)
-        setSigner(await createWeb3AuthSigner());
-    }
-    resolveSigner();
+  const signIn = useCallback(async() => {
+    if(setSigner)
+      setSigner(await createWeb3AuthSigner());
   } ,[setSigner]);
   
     return (

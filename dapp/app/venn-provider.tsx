@@ -219,13 +219,27 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
   }, [signer]);
 
   useEffect(() => {
-    if(vsaProvider) {
+    let isCancelled = false;
+  
+    if (vsaProvider) {
       const resolveAddress = async () => {
-        setAccountAddress(await vsaProvider.getAddress())
-      }
+        try {
+          const address = await vsaProvider.getAddress();
+          if (!isCancelled) {
+            setAccountAddress(address);
+          }
+        } catch (error) {
+          console.error('Error fetching address:', error);
+          // Handle error appropriately
+        }
+      };
       resolveAddress();
     }
-  }, [vsaProvider])
+    // Cleanup function to set the cancelled flag
+    return () => {
+      isCancelled = true;
+    };
+  }, [vsaProvider]);
 
   useEffect(() => {
     const resolveWeb3Wallet = async () => {
@@ -245,6 +259,8 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
       vennWallet.on('session_delete', onSessionDelete);
     }
   }, [vennWallet]);
+  
+  // console.log('signer inside provider', signer);
   
   return (
     <VennSmartAccont.Provider value={{vsaProvider, accountAddress, signer, setSigner}}>
@@ -301,7 +317,7 @@ export function useSmartAccountAddress () {
   return context?.accountAddress;
 }
 
-export async function useSigner () {
+export function useSigner () {
   const context = useContext(VennSmartAccont);
   return context?.signer;
 }
