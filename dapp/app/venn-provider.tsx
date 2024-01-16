@@ -261,21 +261,26 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
   )
 }
 
-export async function signIn () {
+export function useSignIn () {
   const context = useContext(VennSmartAccont);
-  if(!context) 
-    throw new Error('context called outside scope');
-
-  context.setSigner(await createWeb3AuthSigner());
+  
+  const ret = useCallback(async () => {
+    if(context){
+      context.setSigner(await createWeb3AuthSigner());
+    }
+  }, [context]);
+  return ret;
 }
 
-export async function signOut () {
+export function useSignOut () {
   const context = useContext(VennSmartAccont);
-  if(!context) 
-    throw new Error('context called outside scope');
-
-  await context.signer?.inner.logout();
-  context.setSigner(null);
+  const ret = useCallback(async () => {
+    if(context) {
+      await context.signer?.inner.logout();
+      context.setSigner(null);
+    }
+  }, [context]);
+  return ret;
 }
 
 export async function pair (uri: string) {
@@ -294,6 +299,11 @@ export function useSmartAccountProvider () {
 export function useSmartAccountAddress () {
   const context = useContext(VennSmartAccont);
   return context?.accountAddress;
+}
+
+export async function useSigner () {
+  const context = useContext(VennSmartAccont);
+  return context?.signer;
 }
 
 export function useSetSigner () {

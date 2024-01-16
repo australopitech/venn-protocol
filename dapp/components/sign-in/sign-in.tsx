@@ -2,12 +2,12 @@
 import styles from './sign-in.module.css';
 import { createWeb3AuthSigner } from '@/utils/web3auth';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
-import { useSetSigner, useSmartAccountAddress } from '@/app/venn-provider';
+import { useSetSigner, useSigner, useSmartAccountAddress, useSignIn } from '@/app/venn-provider';
 import NavBar from '../common/navbar/navbar';
-import { useEffect } from 'react';
+import { useCallback, useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAccount } from 'wagmi';
-import { signIn } from '@/app/venn-provider';
+// import { signIn } from '@/app/venn-provider';
 
 export interface ConnectButtonProps {
   handler: any;
@@ -31,6 +31,12 @@ export default function SignIn () {
   const router = useRouter();
   const vsa = useSmartAccountAddress();
   const { address: eoa } = useAccount();
+  const setSigner = useSetSigner();
+  const signer = useSigner();
+  // const signIn = useSignIn();
+
+  console.log('signer', signer);
+  console.log('vsa', vsa)
 
   useEffect(() => {
     if(vsa || eoa) {
@@ -38,6 +44,13 @@ export default function SignIn () {
     }
   }, [vsa, eoa]);
 
+  const signIn = useCallback(() => {
+    const resolveSigner = async () => {
+      if(setSigner)
+        setSigner(await createWeb3AuthSigner());
+    }
+    resolveSigner();
+  } ,[setSigner]);
   
     return (
         <div className={styles.dashboard}>

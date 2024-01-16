@@ -10,8 +10,8 @@ import { SignInButton } from '@/components/dashboard/dashboard-layout/dashboard-
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useRouter } from 'next/navigation';
 import { useAccount, useDisconnect } from 'wagmi';
-import { signOut } from '@/app/venn-provider';
-import { useSmartAccountAddress } from '@/app/venn-provider';
+// import { signOut } from '@/app/venn-provider';
+import { useSigner, useSetSigner, useSmartAccountAddress, useSignOut } from '@/app/venn-provider';
 
 export interface NavBarProps {
   signInPage?: boolean;
@@ -111,12 +111,15 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
   const router = useRouter();
   const { disconnect } = useDisconnect()
   const items = ['About the project', 'Contact Us'];
-
-  const signOutHandler = useCallback(() => {
+  const setSigner = useSetSigner();
+  const signer = useSigner();
+  const signOut = useSignOut();
+  
+  const signOutHandler = useCallback(async() => {
     if(eoaAccount) {
       disconnect();
     } else if(vsaAddr) {
-      signOut();
+      await signOut();
     }
   }, [eoaAccount, vsaAddr])
 
