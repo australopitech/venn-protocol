@@ -1,7 +1,9 @@
 'use client'
 import { NextPage } from 'next'
 import Head from 'next/head'
-import DashboardLayout from '@/components/dashboard/dashboard-layout/dashboard-layout'
+import DashboardLayout from '@/components/dashboard/dashboard-layout/dashboard-layout';
+import { useSessionDemand } from '../venn-provider';
+import ApproveDialog from '@/components/common/approve-dialog/approve-dialog';
 
 interface QueryParams {
   address: string;
@@ -16,6 +18,8 @@ const AddressPage: NextPage = () => {
 //   if (typeof address !== 'string') {
 //     return <div>Invalid address parameter.</div>;
 //   }
+  // const { demandType } = useSessionDemand();
+  const demandType = true;
 
   return (
     <>
@@ -25,6 +29,8 @@ const AddressPage: NextPage = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         {/* <link rel="icon" href="/favicon.ico" /> */}
       </Head>
+      {demandType && 
+      <ApproveDialog />}
       <DashboardLayout />
     </>
   )
