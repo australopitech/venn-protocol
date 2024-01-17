@@ -7,11 +7,12 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 // import { useEthers, useEtherBalance, useConfig, useSigner } from '@usedapp/core';
 import Link from 'next/link';
 // import { SignInButton } from '@/components/dashboard/dashboard-layout/dashboard-layout';
-import { ConnectButton, useConnectModal } from '@rainbow-me/rainbowkit';
-import { useRouter } from 'next/navigation';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { useRouter, usePathname } from 'next/navigation';
 import { useAccount, useDisconnect } from 'wagmi';
 // import { signOut } from '@/app/venn-provider';
 import { useSmartAccountAddress} from '@/app/venn-provider';
+import compactString from '@/utils/compactString';
 
 export interface NavBarProps {
   signInPage?: boolean;
@@ -19,22 +20,45 @@ export interface NavBarProps {
   currentPage?: string;
 }
 
-// interface ConnectButtonProps {
-//   connectText?: string;
-// }
+interface ConnectButtonProps {
+  connectText?: string;
+  // page?: string
+}
 
 //to-do: pegar a info de qual pagina está, para saber qual botão está ativo
 
-// export const ConnectButton = ({connectText} : ConnectButtonProps) => {
-//   const { account, deactivate, activateBrowserWallet } = useEthers()
-//   // 'account' being undefined means that we are not connected.
-//   if (account) return <div className={styles.disconnectButton} onClick={() => deactivate()}>Disconnect</div>
-//   else return (
-//     <div className={styles.primaryButton} onClick={() => activateBrowserWallet()}>
-//     {connectText? connectText : 'Connect Wallet'}
-//     </div>
-//   )
-// }
+const ConnectButton = ({connectText} : ConnectButtonProps) => {
+  const account = useAccount();
+  const { disconnect } = useDisconnect();
+  const { openConnectModal } = useConnectModal();
+  const compactAddress = compactString(account.address);
+  const path = usePathname();
+  const [showDisconnect, setShowDisconnect] = useState(false);
+  const [disconnectStlye, setDisconnectStyle] = useState<any>(styles.disconnectButton);
+  
+  const onDisconnect = useCallback(() => {  
+    if(
+      !path.includes("dashboard") &&
+      !showDisconnect
+      ){  
+        setShowDisconnect(true);
+        setDisconnectStyle(styles.primaryButton)
+        setTimeout(() => {
+          setShowDisconnect(false);
+          setDisconnectStyle(styles.disconnectButton)
+        }, 5000);
+      } else
+        disconnect();
+  }, [showDisconnect, setShowDisconnect]);
+
+  if (account.isConnected) return <div className={disconnectStlye} onClick={() => onDisconnect()}>{(path.includes("dashboard") || showDisconnect) ? "Disconnect" : compactAddress}</div>
+  else if (openConnectModal) return (
+    <div className={styles.primaryButton} onClick={() => openConnectModal()}>
+    {connectText? connectText : 'Connect Wallet'}
+    </div>
+  )
+  else return <div>Error</div>
+}
 
 const MenuIcon = () => {
   return (
