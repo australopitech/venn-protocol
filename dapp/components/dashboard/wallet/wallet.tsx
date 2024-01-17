@@ -263,8 +263,8 @@ export default function Wallet({address} : WalletProps) {
         <Buttons 
         setOpenConnect={setOpenConnect} 
         setOpenTransfer={setOpenTransfer} 
-        // enabled={address? (address==vsaAddr) : vsaAddr? true : false} 
-        enabled={true}
+        enabled={address? (address==vsaAddr) : vsaAddr? true : false} 
+        // enabled={true}
         />
         }
         {openConnect &&
