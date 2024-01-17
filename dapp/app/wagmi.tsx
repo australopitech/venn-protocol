@@ -6,8 +6,11 @@ import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
 // import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { getDefaultWallets, lightTheme, RainbowKitProvider } from '@rainbow-me/rainbowkit';
+import { getDefaultWallets, lightTheme, RainbowKitProvider, connectorsForWallets } from '@rainbow-me/rainbowkit';
+import { rainbowWallet, metaMaskWallet } from '@rainbow-me/rainbowkit/wallets';
 import React from 'react';
+import { CHAIN_NAMESPACES } from '@web3auth/base';
+import { rainbowWeb3AuthConnector } from './rainbowkit-w3a-connector.';
 
 
 const baseTestProvider = process.env.NEXT_PUBLIC_BASE_GOERLI_PROVIDER;
@@ -22,13 +25,18 @@ const { chains, publicClient} = configureChains(
   ]
 );
 
-const { connectors } = getDefaultWallets({
-  appName: 'Venn',
-  projectId,
-  chains
-});
+const connectors = connectorsForWallets([
+  {
+    groupName: 'Recommended',
+    wallets: [
+      rainbowWeb3AuthConnector({ chains }),
+      rainbowWallet({ projectId, chains }),
+      metaMaskWallet({ projectId, chains }),
+    ],
+  },
+]);
 
-export const wagmiConfig = createConfig({
+const wagmiConfig = createConfig({
   connectors,
   publicClient
 });
@@ -41,4 +49,4 @@ export default function WagmiProvider({children}: { children : React.ReactNode})
           </RainbowKitProvider>
       </WagmiConfig>
       )
-  }
+}

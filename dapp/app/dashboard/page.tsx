@@ -4,10 +4,11 @@ import { VennAccountProvider } from "../venn-provider";
 
 export default function Page () {
   return (
-    <VennAccountProvider>
-      <WagmiProvider>
+    <WagmiProvider>
+        <VennAccountProvider>
           <AddressPage />
-      </WagmiProvider>
-    </VennAccountProvider>
+        </VennAccountProvider>
+    </WagmiProvider>
+
   )
 }

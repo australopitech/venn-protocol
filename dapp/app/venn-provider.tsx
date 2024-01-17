@@ -1,5 +1,6 @@
 'use client'
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
+import { WalletClientSigner, type SmartAccountSigner } from "@alchemy/aa-core";
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
 import { LightSmartContractAccount } from "@alchemy/aa-accounts";
 import { Web3AuthSigner } from "@alchemy/aa-signers/web3auth";
@@ -14,12 +15,14 @@ import { createWeb3AuthSigner } from "@/utils/web3auth";
 import { SessionTypes } from "@walletconnect/types";
 import { formatParams } from "@/utils/utils";
 import { formatJsonRpcError, formatJsonRpcResult } from "@json-rpc-tools/utils";
+import { WalletClient } from "viem";
+import { useWalletClient } from "wagmi";
+
 
 type VennSmartAccountContextType = {
     vsaProvider?: AlchemyProvider;
     accountAddress?: `0x${string}`;
-    signer: Web3AuthSigner | null;
-    setSigner: React.Dispatch<React.SetStateAction<Web3AuthSigner | null>>;
+    triggerVsaUpdate: () => void;
 };
 
 type VennWalletContextType = {
@@ -40,11 +43,12 @@ const factoryAddress = factoryContract.address;
 // const supportedChains = [baseGoerli];
 
 
-const createAccountProvider = (signer: Web3AuthSigner) => {
+const createAccountProvider = (walletClient: WalletClient) => {
   if(!apiKey) throw new Error("missing api key");
+  const signer = new WalletClientSigner(walletClient, "json-rpc");
   return new AlchemyProvider({
     apiKey,
-    chain: baseGoerli
+    chain: activeNetwork
   }).connect(
     (rpcClient) =>
     new LightSmartContractAccount({
@@ -186,13 +190,19 @@ export async function onRejectSessionRequest() {
 }
 
 export function VennAccountProvider ({children} : {children : React.ReactNode}) {
-  const [signer, setSigner] = useState<Web3AuthSigner | null>(null);
+  // const [signer, setSigner] = useState<Web3AuthSigner | null>(null);
+  const { data: walletClient } = useWalletClient();
   const [vsaProvider, setVsaProvider] = useState<AlchemyProvider>();
   const [accountAddress, setAccountAddress] = useState<`0x${string}`>();
   const [vennWallet, setVennWallet] = useState<Web3WalletType>();
   const [sessionProposal, setSessionProposal] = useState<Web3WalletTypes.SessionProposal>();
   const [sessionRequest, setSessionRequest] = useState<Web3WalletTypes.SessionRequest>();
   const [namespaces, setNamespaces] = useState<SessionTypes.Namespaces>();
+  const [updater, setUpdater] = useState(false);
+
+  const triggerVsaUpdate = useCallback(() => {
+    setUpdater(!updater);
+  }, [updater, setUpdater])
   
   const onSessionProposal = useCallback((proposal: Web3WalletTypes.SessionProposal) => {
     setSessionProposal(proposal);
@@ -212,33 +222,34 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
   },[])
 
   useEffect(() => {
-    if(signer) 
-      setVsaProvider(createAccountProvider(signer));
+    if(walletClient) 
+      setVsaProvider(createAccountProvider(walletClient));
     else
       setVsaProvider(undefined);
-  }, [signer]);
+  }, [walletClient, updater]);
 
   useEffect(() => {
-    let isCancelled = false;
+    // let isCancelled = false;
   
     if (vsaProvider) {
       const resolveAddress = async () => {
         try {
           const address = await vsaProvider.getAddress();
-          if (!isCancelled) {
+          // if (!isCancelled) {
             setAccountAddress(address);
-          }
+          // }
         } catch (error) {
           console.error('Error fetching address:', error);
           // Handle error appropriately
         }
       };
       resolveAddress();
-    }
+    } else
+      setAccountAddress(undefined);
     // Cleanup function to set the cancelled flag
-    return () => {
-      isCancelled = true;
-    };
+    // return () => {
+    //   isCancelled = true;
+    // };
   }, [vsaProvider]);
 
   useEffect(() => {
@@ -260,10 +271,10 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
     }
   }, [vennWallet]);
   
-  // console.log('signer inside provider', signer);
+  console.log('inside provider', walletClient)
   
   return (
-    <VennSmartAccont.Provider value={{vsaProvider, accountAddress, signer, setSigner}}>
+    <VennSmartAccont.Provider value={{vsaProvider, accountAddress, triggerVsaUpdate}}>
         <VennWalelt.Provider 
         value={{
             vennWallet, setVennWallet,
@@ -277,27 +288,27 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
   )
 }
 
-export function useSignIn () {
-  const context = useContext(VennSmartAccont);
+// export function useSignIn () {
+//   const context = useContext(VennSmartAccont);
   
-  const ret = useCallback(async () => {
-    if(context){
-      context.setSigner(await createWeb3AuthSigner());
-    }
-  }, [context]);
-  return ret;
-}
+//   const ret = useCallback(async () => {
+//     if(context){
+//       context.setSigner(await createWeb3AuthSigner());
+//     }
+//   }, [context]);
+//   return ret;
+// }
 
-export function useSignOut () {
-  const context = useContext(VennSmartAccont);
-  const ret = useCallback(async () => {
-    if(context) {
-      await context.signer?.inner.logout();
-      context.setSigner(null);
-    }
-  }, [context]);
-  return ret;
-}
+// export function useSignOut () {
+//   const context = useContext(VennSmartAccont);
+//   const ret = useCallback(async () => {
+//     if(context) {
+//       await context.signer?.inner.logout();
+//       context.setSigner(null);
+//     }
+//   }, [context]);
+//   return ret;
+// }
 
 export async function pair (uri: string) {
   const context = useContext(VennWalelt);
@@ -317,15 +328,20 @@ export function useSmartAccountAddress () {
   return context?.accountAddress;
 }
 
-export function useSigner () {
+export function useVsaUpdate () {
   const context = useContext(VennSmartAccont);
-  return context?.signer;
+  return context?.triggerVsaUpdate;
 }
 
-export function useSetSigner () {
-  const context = useContext(VennSmartAccont);
-  return context?.setSigner;
-}
+// export function useSigner () {
+//   const context = useContext(VennSmartAccont);
+//   return context?.signer;
+// }
+
+// export function useSetSigner () {
+//   const context = useContext(VennSmartAccont);
+//   return context?.setSigner;
+// }
 
 export function useVennWallet () {
   const context = useContext(VennWalelt);

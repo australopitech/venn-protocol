@@ -6,12 +6,12 @@ import styles from './navbar.module.css';
 import { useState, useRef, useEffect, useCallback } from 'react';
 // import { useEthers, useEtherBalance, useConfig, useSigner } from '@usedapp/core';
 import Link from 'next/link';
-import { SignInButton } from '@/components/dashboard/dashboard-layout/dashboard-layout';
-import { useConnectModal } from '@rainbow-me/rainbowkit';
+// import { SignInButton } from '@/components/dashboard/dashboard-layout/dashboard-layout';
+import { ConnectButton, useConnectModal } from '@rainbow-me/rainbowkit';
 import { useRouter } from 'next/navigation';
 import { useAccount, useDisconnect } from 'wagmi';
 // import { signOut } from '@/app/venn-provider';
-import { useSigner, useSetSigner, useSmartAccountAddress, useSignOut } from '@/app/venn-provider';
+import { useSmartAccountAddress} from '@/app/venn-provider';
 
 export interface NavBarProps {
   signInPage?: boolean;
@@ -111,17 +111,17 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
   const router = useRouter();
   const { disconnect } = useDisconnect()
   const items = ['About the project', 'Contact Us'];
-  const setSigner = useSetSigner();
-  const signer = useSigner();
-  const signOut = useSignOut();
+  // const setSigner = useSetSigner();
+  // const signer = useSigner();
+  // const signOut = useSignOut();
   
-  const signOutHandler = useCallback(async() => {
-    if(eoaAccount) {
-      disconnect();
-    } else if(vsaAddr) {
-      await signOut();
-    }
-  }, [eoaAccount, vsaAddr])
+  // const signOutHandler = useCallback(async() => {
+  //   if(eoaAccount) {
+  //     disconnect();
+  //   } else if(vsaAddr) {
+  //     await signOut();
+  //   }
+  // }, [eoaAccount, vsaAddr])
 
   const handleItemSelect = (item: string) => {
     console.log(`Selected: ${item}`);
@@ -131,7 +131,7 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
 
   // console.log('eoa', eoaAccount);
 
-  const { openConnectModal } = useConnectModal();
+  // const { openConnectModal } = useConnectModal();
   return (
     // <div className={classNames(styles.navbar, styles.navbarGridTemplate, scrolled ? styles.navbarScrolled : '')}>
     <div className={classNames(styles.navbar, styles.navbarGridTemplate)}>
@@ -165,10 +165,11 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
           {/* <div className={styles.secondaryButton}>Market</div>
           <div className={styles.secondaryButton}>Dashboard</div> */}
           {/* TO-DO: colocar primary <div className={styles.primaryButton}>Connect Wallet</div> */}
-          {(eoaAccount.isConnected || vsaAddr)
+          {/* {(eoaAccount.isConnected || vsaAddr)
             ? <SignInButton connectText='Sign Out' style={styles.disconnectButton} handler={signOutHandler} />
             : <SignInButton connectText={'Sign In'} style={styles.primaryButton} handler={() => router.push('/sign-in')} />}
-          {/* <div className={styles.iconButton}><MenuIcon /></div> */}
+          <div className={styles.iconButton}><MenuIcon /></div> */}
+          <ConnectButton />
           <div className={styles.iconButton}><DropdownMenu items={items} onItemSelect={handleItemSelect} /></div>
         </div>
       </div>

@@ -1,4 +1,6 @@
 import '../styles/globals.css';
+import WagmiProvider from "@/app/wagmi";
+import { VennAccountProvider } from "./venn-provider";
 
 export default function RootLayout({
     // Layouts must accept a children prop.
@@ -9,7 +11,13 @@ export default function RootLayout({
   }) {
     return (
       <html lang="en">
-        <body>{children}</body>
+        <body>
+        <WagmiProvider>
+          <VennAccountProvider>
+            {children}
+          </VennAccountProvider>
+        </WagmiProvider>
+        </body>
       </html>
     )
   }
