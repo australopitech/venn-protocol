@@ -2,14 +2,23 @@
 import styles from './approve-dialog.module.css';
 import { useApproveSessionProposal, useApproveSessionRequest, useRejectSessionProposal, useRejectSessionRequest, useSessionDemand } from '@/app/venn-provider';
 import { useCallback, useState } from 'react';
+import { SessionDemandType } from '@/app/venn-provider';
+import { ApproveData } from '@/components/dashboard/dashboard-layout/dashboard-layout';
 
 interface ApproveDialogProps {
-  setOpenApproveDialog: any;
+  // setOpenApproveDialog: any;
+  onApprove: () => Promise<void>;
+  onReject: () => Promise<void>;
+  onClose: () => void;
+  approveData?: ApproveData;
+  loading: boolean;
+  error?: any
+  txResolved?: TxResolved
 }
 
 export interface TxResolved {
   success: boolean;
-  hash?: string,
+  hash?: string;
 }
 
 interface ButtonProps {
@@ -71,8 +80,8 @@ export const CloseButton = ({onClick}: ButtonProps) => {
 }
 
 
-export default function ApproveDialog ({setOpenApproveDialog} : ApproveDialogProps) {
-  const { demandType, data } = useSessionDemand();
+export default function ApproveDialog ({ onApprove, onReject, onClose, loading, approveData, error, txResolved } : ApproveDialogProps) {
+  // const { demandType, data } = useSessionDemand();
   // const demandType = 'Connection'
   // const data = {
   //   proposer: {
@@ -85,90 +94,7 @@ export default function ApproveDialog ({setOpenApproveDialog} : ApproveDialogPro
   //   }
   // }
 
-  const [txResolved, setTxResolved] = useState<TxResolved>();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState();
-
-  const onApproveProposal = useApproveSessionProposal();
-  const onRejectProposal = useRejectSessionProposal();
-  const onApproveRequest = useApproveSessionRequest();
-  const onRejectRequest = useRejectSessionRequest();
-
-  const onApprove = useCallback(async () => {
-    setLoading(true);
-    let _error: any;
-    switch (demandType) {
-      case 'Connection':
-        try{
-          await onApproveProposal();
-        } catch(err: any) {
-          setError(err);
-        } finally {
-          setLoading(false);
-        }
-        break;
-      case 'Transaction':
-        let hash: any        
-        try {
-          hash = await onApproveRequest();
-        } catch(err: any) {
-          _error = err;
-          setError(err);
-        } finally {
-          setLoading(false);
-          setTxResolved({success: !_error, hash});
-        }
-        break;
-      case 'Signature':
-        try {
-          hash = await onApproveRequest();
-        } catch(err: any) {
-          _error = err;
-          setError(err);
-        } finally {
-          setLoading(false);
-        }
-        break;
-    }
-  }, [
-    demandType, onApproveProposal, onApproveRequest,
-    setError, setLoading, setTxResolved
-  ]);
-
-  const onReject = useCallback(async () => {
-    setLoading(true);
-    switch (demandType) {
-      case 'Connection':
-        try {
-          await onRejectProposal();
-        } catch (err: any) {
-          setError(err);
-        } finally {
-          setLoading(false);
-        }
-        break
-      case 'Transaction':
-      case 'Signature':
-        try {
-          await onRejectRequest();
-        } catch (err: any) {
-          setError(err);
-        } finally {
-          setLoading(false);
-        }
-        break;
-    }
-  },[
-    demandType, onRejectProposal, 
-    onRejectRequest, setLoading, setError
-  ]);
-
-  const resetState = useCallback(() => {
-    setError(undefined);
-    setTxResolved(undefined); //put undefined
-    setOpenApproveDialog(false);
-  }, [setError, setTxResolved]);
-
+  
 
   return (
     <>
@@ -187,21 +113,40 @@ export default function ApproveDialog ({setOpenApproveDialog} : ApproveDialogPro
                         <div className={styles.ErrorTitle}>An Error ocurred!</div>
                         <div className={styles.ErrorDescription}> This error ocurred while processing your request: </div>
                         <div className={styles.approveDescription}>{error}</div>
-                        <div className={styles.buttonContainer}> <CloseButton onClick={() => resetState()}/> </div>
+                        <div className={styles.buttonContainer}> <CloseButton onClick={() => onClose()}/> </div>
                       </div>
                     : txResolved?.success
                       ? <div className={styles.approveDescriptionContainer}>
                           <div className={styles.txTitle}>Transaction Successful!!</div>
                           <div className={styles.txDescription}>tx hash: {txResolved.hash}</div>
-                          <div className={styles.buttonContainer}> <CloseButton onClick={() => resetState()}/> </div>
+                          <div className={styles.buttonContainer}> <CloseButton onClick={() => onClose()}/> </div>
                         </div>
                       : <div className={styles.approveDescriptionContainer}>
-                          <h1 className={styles.title}>Approve {demandType}</h1>
-                          {demandType === 'Connection'
-                            ?<p className={styles.approveDescription}>
-                              Connect to {data.proposer.metadata.url} ?
-                            </p>
-                            : ''
+                          <h1 className={styles.title}>Approve {approveData?.type}</h1>
+                          {approveData?.type === 'Connection'
+                            ?<div className={styles.approveDescription}>
+                              Connect to {approveData?.data.proposer.metadata.url} ?
+                            </div>
+                            :  <div>
+                                  <div className={styles.approveType}>
+                                    {approveData?.type === 'Signature' ? 'Signature Request' : 'Approve '}{approveData?.type}?
+                                  </div>
+                                  {!(approveData?.type === 'Transfer') &&
+                                    <p className={styles.approveDescription}>
+                                      <br/>
+                                      - Origin: <br/>
+                                    </p>}
+                                  {!(approveData?.type === 'Signature') &&
+                                    <>
+                                    <p className={styles.approveDescription}>
+                                      <br/>
+                                      - Value: <br/>
+                                    </p>
+                                    <p className={styles.approveDescription}>
+                                      - Gas: 
+                                    </p>
+                                    </>}
+                                </div>
                           }
                           <div className={styles.buttonContainer}>
                             <RejectButton onClick={() => onReject()}/>

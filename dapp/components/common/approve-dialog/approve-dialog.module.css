@@ -61,6 +61,21 @@
   text-overflow: ellipsis;
 }
 
+.approveType {
+  color: rgb(67, 74, 79);
+  font-size: 22px;
+  font-style: normal;
+  font-weight: 500;
+  /* margin-bottom: 24px; */
+  padding-right: 8px;
+  text-align: left;
+  text-overflow: ellipsis;
+  overflow-y: auto;
+  max-height: 100px;
+  scrollbar-width: thin;
+  scrollbar-color: rgb(211, 199, 208, 0.6) rgb(240, 230, 239, 0.6);
+}
+
 .approveDescription {
   color: rgb(67, 74, 79);
   font-size: 20px;

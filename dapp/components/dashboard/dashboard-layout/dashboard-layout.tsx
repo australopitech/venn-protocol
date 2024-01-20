@@ -5,7 +5,7 @@ import NavBar from '@/components/common/navbar/navbar'
 import SideBar from '@/components/dashboard/sidebar/sidebar'
 import NftArea from '@/components/dashboard/nft-area/nft-area'
 // import { useSigner } from '@usedapp/core';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 // import { ConnectButton } from '@/components/common/navbar/navbar';
 import { NFTDialog } from '@/components/common/nft-dialog/nft-dialog';
 import { useAddressNfts } from '../../../hooks/address-data';
@@ -14,9 +14,14 @@ import { useAccount } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import 'node_modules/@rainbow-me/rainbowkit/dist/index.css';
 // import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { createWeb3AuthSigner } from '@/utils/web3auth';
-import { useSmartAccountAddress, useVsaUpdate } from '@/app/venn-provider';
-import { useRouter } from 'next/navigation';
+// import { createWeb3AuthSigner } from '@/utils/web3auth';
+import { useSmartAccount, useVsaUpdate, useSessionDemand,
+  useApproveSessionProposal, useApproveSessionRequest, 
+  useRejectSessionProposal, useRejectSessionRequest } from '@/app/venn-provider';
+// import { useRouter } from 'next/navigation';
+import { TxResolved } from '@/components/common/approve-dialog/approve-dialog';
+import ApproveDialog from '@/components/common/approve-dialog/approve-dialog';
+import { SessionDemandType } from '@/app/venn-provider';
 
 export interface DashboardLayoutProps {
   address?: `0x${string}`;
@@ -28,6 +33,11 @@ export interface ConnectButtonProps {
   connectText?: string
 }
 
+export interface ApproveData {
+  type: SessionDemandType | 'Transfer';
+  data: any;
+}
+
 export function ConnectButton ({handler, style, connectText}: ConnectButtonProps) {
   return (
     <div className={style} onClick={handler}>
@@ -36,28 +46,30 @@ export function ConnectButton ({handler, style, connectText}: ConnectButtonProps
   )
 }
 
-
 export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const [isNFTOpen, setIsNFTOpen] = useState(false);
   const [selectedNFT, setSelectedNFT] = useState(0);
   const [isCollectionOpen, setIsCollectionOpen] = useState(false);
   
-  const { address: eoa, connector } = useAccount();
+  const { address: eoa } = useAccount();
   
   const [nftsMode, setNftsMode] = useState<nftViewMode>("owned");
-  const vsa = useSmartAccountAddress();
+  const { provider: vsa, address: vsaAddr } = useSmartAccount();
   const vsaUpdate = useVsaUpdate();
 
-  const userData = useAddressNfts(address?? eoa?? vsa);
+  const userData = useAddressNfts(address?? eoa?? vsaAddr);
   const { openConnectModal } = useConnectModal();
+  const [txResolved, setTxResolved] = useState<TxResolved>();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState();
+  const { demandType, data } = useSessionDemand();
+  const [openApproveDialog, setOpenApproveDialog] = useState(true);
+  const [approveData, setApproveData] = useState<ApproveData>();
   
-  // const router = useRouter();
-  
-  // useEffect(() => {
-  //   if(!address && !eoa && !vsa) {
-  //     router.push('/sign-in');
-  //   }
-  // }, [address, eoa, vsa])
+  const onApproveProposal = useApproveSessionProposal();
+  const onRejectProposal = useRejectSessionProposal();
+  const onApproveRequest = useApproveSessionRequest();
+  const onRejectRequest = useRejectSessionRequest();
 
   useEffect(() => {
     if(vsaUpdate) {
@@ -66,11 +78,130 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
     }
   }, [eoa, vsaUpdate]);
 
-  console.log('vsa', vsa)
-  console.log('eoa', eoa);
+  // console.log('vsa', vsa)
+  // console.log('eoa', eoa);
+  useEffect(() => {
+    if(demandType){
+      setApproveData({type: demandType, data});
+      setOpenApproveDialog(true);
+    }
+    else
+      setOpenApproveDialog(false);
+  }, [demandType, data]);
+
+  const onApprove = useCallback(async () => {
+    setLoading(true);
+    let _error: any;
+    if(demandType) {
+      switch (demandType) {
+        case 'Connection':
+          try{
+            await onApproveProposal();
+          } catch(err: any) {
+            setError(err);
+          } finally {
+            setLoading(false);
+          }
+          break;
+        case 'Transaction':
+          let hash: any        
+          try {
+            hash = await onApproveRequest();
+          } catch(err: any) {
+            _error = err;
+            setError(err);
+          } finally {
+            setLoading(false);
+            setTxResolved({success: !_error, hash});
+          }
+          break;
+        case 'Signature':
+          try {
+            hash = await onApproveRequest();
+          } catch(err: any) {
+            _error = err;
+            setError(err);
+          } finally {
+            setLoading(false);
+          }
+          break;
+      }
+    } else {
+      let _error: any;
+      let hash: `0x${string}` | undefined;
+      const target = approveData?.data.targetAddress;
+      const value = approveData?.data.value;
+      try {
+        const res = await vsa?.sendUserOperation({
+          target,
+          data: '0x',
+          value
+      });
+      hash = res?.hash;
+      } catch (err: any) {
+        console.error(err);
+        setError(err);
+        _error = err;
+      } finally {
+        setLoading(false);
+        setTxResolved({ success: !_error, hash });
+      }
+    }
+  }, [
+    demandType, onApproveProposal, onApproveRequest,
+    setError, setLoading, setTxResolved
+  ]);
+
+  const onReject = useCallback(async () => {
+    setLoading(true);
+    if(demandType){
+      switch (demandType) {
+        case 'Connection':
+          try {
+            await onRejectProposal();
+          } catch (err: any) {
+            setError(err);
+          } finally {
+            setLoading(false);
+          }
+          break
+        case 'Transaction':
+        case 'Signature':
+          try {
+            await onRejectRequest();
+          } catch (err: any) {
+            setError(err);
+          } finally {
+            setLoading(false);
+          }
+          break;
+    }
+  } else 
+    setOpenApproveDialog(false);
+  },[
+    demandType, onRejectProposal, 
+    onRejectRequest, setLoading, setError
+  ]);
+
+  const resetState = useCallback(() => {
+    setError(undefined);
+    setTxResolved(undefined); //put undefined
+    setOpenApproveDialog(false);
+  }, [setError, setTxResolved]);
 
   return (
     <>
+    {openApproveDialog && 
+      <ApproveDialog 
+      approveData={approveData}
+      onApprove={onApprove}
+      onReject={onReject}
+      onClose={resetState}
+      loading={loading}
+      error={error}
+      txResolved={txResolved}
+      />
+    }
     {isNFTOpen && 
       <NFTDialog
         setIsNFTOpen={setIsNFTOpen} 
@@ -82,10 +213,13 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
     }
       <div className={styles.dashboard} >
         <NavBar navbarGridTemplate={styles.navbarGridTemplate} currentPage='dashboard' />
-        { (eoa || vsa || address)
+        { (eoa || vsaAddr || address)
           ? <div className={styles.contentGridTemplate}> 
-              <SideBar address={address?? vsa ?? vsa}
-                      nftsContext={{mode: nftsMode, setNftsViewMode: setNftsMode}}/>
+              <SideBar address={address?? vsaAddr ?? ''}
+                      nftsContext={{mode: nftsMode, setNftsViewMode: setNftsMode}}
+                      setOpenApproveDialog={setOpenApproveDialog}
+                      setApproveData={setApproveData}
+              />
               <NftArea address={address}
                       nftFetchData={userData}
                       setIsNFTOpen={setIsNFTOpen}
