@@ -7,7 +7,7 @@ import { BigNumber, Contract } from "ethers";
 import { 
     deployFactory, nftDeployAndMint, deployMktPlace, createWallet,
     deployReceiptsContract, listNFT, rentNFT, mint
-} from "./rWallet-testutils";
+} from "./account-test-utils";
 
 describe.skip("Testing MarketPlace", function () {
     let factory: RWalletFactory;

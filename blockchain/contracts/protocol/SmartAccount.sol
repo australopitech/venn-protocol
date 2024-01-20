@@ -12,10 +12,10 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
 import "./IMarketPlace.sol";
 import "../core/BaseAccount.sol";
-import "../samples/callback/TokenCallbackHandler.sol";
+import "../core/TokenCallbackHandler.sol";
 import "./FunctionSignatures.sol";
 
-contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initializable {
+contract SmartAccount is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initializable {
     using ECDSA for bytes32;
 
     address public owner;
@@ -131,9 +131,6 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
     /**
      * @dev this function is run before every call
      * it returns a bool indicating weather or not the call is authorized
-     * if there are enough assets marked in the _rentalsByContract list 
-     * every approve and transfer op will reach gas limit
-     * in such cases releaseAsset methods should be called
      */
     function _authorizedCall(address target, bytes memory data) private returns(bool) {
         if (data.length < 4) return true;
@@ -206,15 +203,6 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
         return;
     }
 
-    function isRental(address contract_, uint256 tokenId) external view returns(bool){
-        // NFT[] memory loans_ = _rentalsByContract[contract_];
-        // for(uint i=0; i<loans_.length; i++){
-        //     if(loans_[i].id == tokenId){
-        //         return true;
-        //     }
-        // }
-        return _isRental[contract_][tokenId];
-    }
     
     function _extractFunctionSignature(bytes memory data) private pure returns (bytes4) {
         // require(data.length >= 4, "Invalid data length");
@@ -223,27 +211,6 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
             functionSelector := mload(add(data, 32))
         }
         return functionSelector;
-    }
-
-
-    function getRentals() external view returns(NFT[] memory) {
-        return _rentals;
-    }
-
-    function getTokenIndex(address contract_, uint256 tokenId) external view returns(uint256) {
-        return _tokenIndex[contract_][tokenId];
-    }
-
-    // function getLoansByContract(address contract_) external view returns(NFT[] memory) {
-    //     return _rentalsByContract[contract_];
-    // }
-
-    function getRentalCounterByContract(address contract_) external view returns(uint256) {
-        return _rentalCounterByContract[contract_];
-    }
-
-    function getOperatorCount(address contract_) public view returns(uint256) {
-        return _operatorCount[contract_];
     }
 
     /**
@@ -269,7 +236,7 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
 
     /**
      * releaseAsset methods
-     * releases asset(s) from wallet.
+     * releases asset(s) from account.
      * should be called by owner in case loans make operations reach gas limit.
      * this might happen because `_isRental` needs to be called at every userOp
      */
@@ -315,6 +282,42 @@ contract RWallet is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initiali
         );
         _releaseAsset(index);
     }
+
+    function isRental(address contract_, uint256 tokenId) external view returns(bool){
+        // NFT[] memory loans_ = _rentalsByContract[contract_];
+        // for(uint i=0; i<loans_.length; i++){
+        //     if(loans_[i].id == tokenId){
+        //         return true;
+        //     }
+        // }
+        return _isRental[contract_][tokenId];
+    }
+    
+    function getRentals() external view returns(NFT[] memory) {
+        return _rentals;
+    }
+
+    function getTokenIndex(address contract_, uint256 tokenId) external view returns(uint256) {
+        return _tokenIndex[contract_][tokenId];
+    }
+
+    function getEndTime(address contract_, uint256 tokenId) external view returns(uint256) {
+        NFT memory token = _rentals[_tokenIndex[contract_][tokenId]];
+        return token.endTime;
+    }
+
+    // function getLoansByContract(address contract_) external view returns(NFT[] memory) {
+    //     return _rentalsByContract[contract_];
+    // }
+
+    function getRentalCounterByContract(address contract_) external view returns(uint256) {
+        return _rentalCounterByContract[contract_];
+    }
+
+    function getOperatorCount(address contract_) public view returns(uint256) {
+        return _operatorCount[contract_];
+    }
+
 
     // check: gas efficient alternatives
     // CHANGE: use .call to save gas

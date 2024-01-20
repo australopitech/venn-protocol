@@ -1,45 +1,45 @@
 import { ethers } from "hardhat";
 import { expect } from "chai";
-import { RWalletFactory, RWalletFactory__factory, EntryPoint__factory } from "../typechain";
+import { SmartAccountFactory, SmartAccountFactory__factory, EntryPoint__factory } from "../typechain";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
-import { abi } from "../artifacts/contracts/wallet/RWallet.sol/RWallet.json";
+import { abi } from "../artifacts/contracts/protocol/SmartAccount.sol/SmartAccount.json";
 import { deployEntryPoint } from "./testutils";
 
-describe.skip("Testing WalletFactory", function () {
-    let factoryFactory: RWalletFactory__factory;
-    let factoryContract: RWalletFactory;
+describe.skip("Testing accountFactory", function () {
+    let factoryFactory: SmartAccountFactory__factory;
+    let factoryContract: SmartAccountFactory;
     let owner: SignerWithAddress;
-    let walletAddress: any;
+    let accountAddress: any;
     const entryPoint = ethers.utils.getAddress(ethers.utils.ripemd160("0x"));
     const provider = ethers.provider;
     
     before(async () => {
         [owner] = await ethers.getSigners();
         console.log('\nDeploying factory contract...');
-        factoryFactory = new RWalletFactory__factory(owner);
+        factoryFactory = new SmartAccountFactory__factory(owner);
         factoryContract = await factoryFactory.deploy(entryPoint);
         // const receipt = await factoryContract.deployTransaction.wait();
-        console.log(`\nWalletFactory deployed to address ${factoryContract.address}\n`);
+        console.log(`\naccountFactory deployed to address ${factoryContract.address}\n`);
     });
-    it("should create a wallet contract", async () => {
+    it("should create a account contract", async () => {
         const salt = 2;
         const newAccountTx = await factoryContract.createAccount(owner.address, salt);
         const newAccountReceipt = await newAccountTx.wait();
         // let newAccountEvent: Event | undefined;
         const newAccountEvent = newAccountReceipt.events?.find(
-            (event: any) => event.event === 'WalletCreated'
+            (event: any) => event.event === 'accountCreated'
         );
-        walletAddress = newAccountEvent?.args?.account;
-        const wallet = new ethers.Contract(walletAddress, abi, provider);
-        const ownerFromGetter = await wallet.owner();
+        accountAddress = newAccountEvent?.args?.account;
+        const account = new ethers.Contract(accountAddress, abi, provider);
+        const ownerFromGetter = await account.owner();
         expect(ownerFromGetter).to.eq(owner.address);
-        const entryPointFromGetter = await wallet.entryPoint();
+        const entryPointFromGetter = await account.entryPoint();
         expect(entryPointFromGetter).to.eq(entryPoint);
     });
-    it("should store wallet address", async () => {
-        // console.log('walletAddress', walletAddress);
-        const isWallet_ = await factoryContract.isWallet(walletAddress);
-        expect(isWallet_).to.eq(true);
+    it("should store account address", async () => {
+        // console.log('accountAddress', accountAddress);
+        const isaccount_ = await factoryContract.isSmartAccount(accountAddress);
+        expect(isaccount_).to.eq(true);
     });
     it("should stake at entryPoint contract", async () => {
         const entryPoint = await deployEntryPoint();

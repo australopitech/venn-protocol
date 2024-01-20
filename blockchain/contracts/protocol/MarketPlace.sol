@@ -5,8 +5,8 @@ import './IMarketPlace.sol';
 import './IReceiptNFT.sol';
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 /* implementar a interface */
-import './RWalletFactory.sol';
-import './RWallet.sol';
+import './SmartAccountFactory.sol';
+import './SmartAccount.sol';
 
 /* TODO:
 - Implentar a inteface da wallet e da factory
@@ -22,7 +22,7 @@ contract MarketPlace is IMarketPlace {
 
     error NoReceipts(address, uint256);
 
-    RWalletFactory public immutable factoryContract;
+    SmartAccountFactory public immutable factoryContract;
 
     IReceiptNFT public immutable receiptsContract;
 
@@ -126,7 +126,7 @@ contract MarketPlace is IMarketPlace {
         uint32 pullAliq_,
         address admin_
         ) {
-        factoryContract = RWalletFactory(factoryAddress);
+        factoryContract = SmartAccountFactory(factoryAddress);
         receiptsContract = IReceiptNFT(receiptsContractAddr);
         serviceAliquot = serviceAliq_;
         pullAliquot = pullAliq_;
@@ -161,8 +161,8 @@ contract MarketPlace is IMarketPlace {
         return _balances[account];
     }
 
-    function isWallet(address account) public view returns(bool) {
-        return factoryContract.isWallet(account);
+    function isSmartAccount(address account) public view returns(bool) {
+        return factoryContract.isSmartAccount(account);
     }
 
     function setMaxDuration(address contract_, uint256 tokenId, uint256 maxDuration) external {
@@ -213,7 +213,7 @@ contract MarketPlace is IMarketPlace {
     function rentNFT (
         address contract_, uint256 tokenId, uint256 duration
     ) external payable override {
-        require(isWallet(msg.sender), "caller is not a renter wallet contract");
+        require(isSmartAccount(msg.sender), "caller is not a Venn Smart Account contract");
         require(_operatorCount(msg.sender, contract_) <= 0, "error: operator count greater than zero" );
         require(_maxDuration[contract_][tokenId] > 0, "this NFT is not listed");
         require(duration <= _maxDuration[contract_][tokenId], "rental period set too long");
@@ -264,8 +264,8 @@ contract MarketPlace is IMarketPlace {
         IERC721 nftContract = IERC721(contract_);
         address from = nftContract.ownerOf(tokenId);
 
-        RWallet rwallet = RWallet(payable(from));
-        rwallet.pullAsset(rwallet.getTokenIndex(contract_, tokenId));
+        SmartAccount account = SmartAccount(payable(from));
+        account.pullAsset(account.getTokenIndex(contract_, tokenId));
 
         if(_maxDuration[contract_][tokenId] == 0) { /* was de-listed */
           address to = receiptsContract.ownerOf(receiptId);
@@ -308,9 +308,9 @@ contract MarketPlace is IMarketPlace {
         );
     }
 
-    function _operatorCount(address wallet, address contract_) private view returns(uint256) {
-        RWallet _wallet = RWallet(payable(wallet));
-        return _wallet.getOperatorCount(contract_);
+    function _operatorCount(address account, address contract_) private view returns(uint256) {
+        SmartAccount _account = SmartAccount(payable(account));
+        return _account.getOperatorCount(contract_);
     }
 
     function _getNFTowner(address contract_, uint256 tokenId) private view returns(address) {
