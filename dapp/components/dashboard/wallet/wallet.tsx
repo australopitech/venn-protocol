@@ -1,22 +1,24 @@
 'use client'
-import { AlchemyProvider } from '@alchemy/aa-alchemy'
-import { Chain } from 'viem';
+// import { AlchemyProvider } from '@alchemy/aa-alchemy'
+// import { Chain } from 'viem';
 // import { useRouter } from 'next/router';
 import { useParams } from 'next/navigation'
 import { useState , useEffect, useCallback } from 'react';
 import { useAccount, useBalance, useWalletClient } from 'wagmi';
-import { parseEther, formatEther } from 'viem';
-import { useSmartAccountAddress, pair } from '@/app/venn-provider';
+import { parseEther, formatEther, isAddress } from 'viem';
+import { useSmartAccountAddress, usePair, useSmartAccount } from '@/app/venn-provider';
 import styles from './wallet.module.css';
 
-const zeroAddress = "0x0000000000000000000000000000000000000000";
+// const zeroAddress = "0x0000000000000000000000000000000000000000";
 
-interface QueryParams {
-    address: string;
-}
+// interface QueryParams {
+//     address: string;
+// }
 
 interface WalletProps {
-  address?: string
+  address?: string,
+  setOpenApproveDialog: any
+  setApproveData: any
 }
 
 interface ShowBalanceProps {
@@ -159,9 +161,13 @@ const Buttons = ({setOpenTransfer, setOpenConnect, enabled}: {setOpenTransfer: a
   )
 }
   
-const Transfer = () => {
+const Transfer = ({setOpenApproveDialog, setApproveData} : {setOpenApproveDialog: any, setApproveData: any}) => {
   const [value, setValue] = useState<number>();
-  const [disabled, setDisabled] = useState<boolean>(true);
+  const [targetAddress, setTargetAddress] = useState<string>();
+  const [disabled, setDisabled] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const vsaAddr = useSmartAccountAddress();
+  const { data: bal } = useBalance({ address: vsaAddr });
 
   const handleValueChange = (e: any) => {
     let numValue = parseFloat(e.target.value);
@@ -176,9 +182,45 @@ const Transfer = () => {
     }
   }
 
+  const handleAddressChange = (e: any) => {
+    let value = e.target.value;
+    if(!value || !value.length)
+      setDisabled(true);
+    else {
+      setDisabled(false);
+      setTargetAddress(value);
+    }
+  }
+
+  const onTransfer = useCallback(async () => {
+    if(disabled || loading)
+      return
+    if(!isAddress(targetAddress!)){
+      setDisabled(true);
+      return
+    }
+    const parsedValue = parseEther(value!.toString())
+    if(bal?.value) {
+      if(bal.value < parsedValue) {
+        setDisabled(true);
+        alert('not enough balance');
+        return
+      }
+    }
+    setLoading(true);
+    setApproveData({
+      type: 'Transfer',
+      data: {
+        targetAddress,
+        value: parsedValue
+      }
+    });
+    setOpenApproveDialog(true);
+  }, [disabled, loading, targetAddress, setDisabled, setLoading]);
+
   return (
     <div>
-      <span className={styles.priceInputLabel}></span>
+      <span className={styles.priceInputLabel}>Value(ETH):</span>
       <div className={styles['priceInputContainer']}>
           <input 
           className={styles['priceInput']}
@@ -188,8 +230,17 @@ const Transfer = () => {
           onChange={(e) => handleValueChange(e)}
           />
       </div>
+      <span className={styles.priceInputLabel}>Address:</span>
+      <div className={styles['priceInputContainer']}>
+          <input 
+          className={styles['priceInput']}
+          placeholder='0x...'
+          type='string'
+          onChange={(e) => handleAddressChange(e)}
+          />
+      </div>
       <div className={disabled? styles.disabled : ''}>
-        <div className={styles.primaryButton}>
+        <div className={styles.primaryButton} onClick={() => onTransfer()}>
           Transfer
         </div>
       </div>
@@ -200,13 +251,30 @@ const Transfer = () => {
 const Connect = () => {
   const [uri, setUri] = useState<string>('');
   const [disabled, setDisabled] = useState<boolean>();
+  const [loading, setLoading] = useState(false);
+  const pair = usePair();
 
   useEffect(() => {
     if(uri.length)
       setDisabled(false)
     else
       setDisabled(true);
-  }, [uri])
+  }, [uri]);
+
+  const onConnect = useCallback(async () => {
+    if(disabled || loading)
+      return
+    if(pair){
+      setLoading(true);
+      try {
+        await pair({ uri });
+      } catch (error: any) {
+        alert(error.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+  }, [pair, uri]);
 
   return (
     <div>
@@ -219,8 +287,8 @@ const Connect = () => {
           />
       </div>
       <div className={disabled? styles.disabled : ''}>
-        <div className={styles.primaryButton}>
-          Connect
+        <div className={styles.primaryButton} onClick={() => onConnect()}>
+          {loading ? "Waiting approval..." : "Connect"}
         </div>
       </div>
     </div>
@@ -249,7 +317,8 @@ const Back = ({
   )
 }
 
-export default function Wallet({address} : WalletProps) {
+
+export default function Wallet({address, setOpenApproveDialog, setApproveData} : WalletProps) {
   const [openTransfer, setOpenTransfer] = useState<boolean>(false);
   const [openConnect, setOpenConnect] = useState<boolean>(false);
   // const [disableActions, setDisalbleAction] = useState<boolean>();
@@ -275,7 +344,7 @@ export default function Wallet({address} : WalletProps) {
         }
         {openTransfer &&
         <>
-        <Transfer />
+        <Transfer setOpenApproveDialog={setOpenApproveDialog} setApproveData={setApproveData}/>
         <Back setOpenTransfer={setOpenTransfer} />
         </>
         }
