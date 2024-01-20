@@ -59,25 +59,31 @@ const config: HardhatUserConfig = {
     proxy: getNetwork1('http://localhost:8545'),
     sepolia: {
       chainId: 11155111,
-      url: `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_SEPOLIA_API_KEY}`,
-      accounts: [`${process.env.PRIVATE_KEY}`]
+      url: `https://eth-sepolia.g.alchemy.com/v2/${process.env.SEPOLIA_ALCHEMY_API_KEY}`,
+      accounts: [`${process.env.DEPLOYER_PRIVATE_KEY}`]
     },
     // base: {
     //   chainId: 8453,
     //   // url: process.env.BASE_PROVIDER,
-    //   accounts: [`${process.env.PRIVATE_KEY}`]
+    //   accounts: [`${process.env.DEPLOYER_PRIVATE_KEY}`]
     // },
     base_goerli: {
       chainId: 84531,
-      url: process.env.BASE_GOERLI_ALCHEMY_PROVIDER,
-      accounts: [`${process.env.PRIVATE_KEY}`]
+      url: `https://base-goerli.g.alchemy.com/v2/${process.env.BASE_GOERLI_ALCHEMY_API_KEY}`,
+      accounts: [`${process.env.DEPLOYER_PRIVATE_KEY}`]
+    },
+
+    polygon_mumbai: {
+      chainId: 80001,
+      url: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.MUMBAI_ALCHEMY_API_KEY}`,
+      accounts: [`${process.env.DEPLOYER_PRIVATE_KEY}`]      
     }
   },
 
   namedAccounts: {
     deployer: {
       default: 0,
-      sepolia: `${process.env.PUBLIC_KEY}`,
+      // sepolia: `${process.env.PUBLIC_KEY}`,
     }
   },
 
