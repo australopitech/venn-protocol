@@ -9,7 +9,7 @@ import { Web3Wallet, Web3WalletTypes  } from '@walletconnect/web3wallet';
 // import { SessionTypes } from "@walletconnect/types";
 import { Core } from '@walletconnect/core';
 import { buildApprovedNamespaces, getSdkError } from '@walletconnect/utils'
-import { baseGoerli } from "viem/chains";
+import { baseGoerli, polygonMumbai } from "viem/chains";
 import { factoryContract } from "@/utils/contractData";
 import { createWeb3AuthSigner } from "@/utils/web3auth";
 import { SessionTypes } from "@walletconnect/types";
@@ -17,7 +17,7 @@ import { formatParams } from "@/utils/utils";
 import { formatJsonRpcError, formatJsonRpcResult } from "@json-rpc-tools/utils";
 import { WalletClient } from "viem";
 import { useWalletClient } from "wagmi";
-
+import { getDefaultEntryPointAddress } from "@alchemy/aa-core";
 
 type VennSmartAccountContextType = {
     vsaProvider?: AlchemyProvider;
@@ -25,7 +25,7 @@ type VennSmartAccountContextType = {
     triggerVsaUpdate: () => void;
 };
 
-type SessionDemandType = 'Connection'|'Transaction'|'Signature';
+export type SessionDemandType = 'Connection'|'Transaction'|'Signature';
 
 type VennWalletContextType = {
   vennWallet?: Web3WalletType;
@@ -39,7 +39,9 @@ type VennWalletContextType = {
   sessionDemand: SessionDemandType | undefined;
   setSessionDemand: React.Dispatch<React.SetStateAction<SessionDemandType | undefined>>;
 }
-
+// test
+const entryPointAddr = getDefaultEntryPointAddress(baseGoerli);
+//
 const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID;
 const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_BASE_API_KEY;
 const activeNetwork = baseGoerli;
@@ -110,10 +112,10 @@ export function useApproveSessionProposal () {
         })
       } catch (error: any) {
         console.log(error)
-        alert(error.message);
+        // alert(error.message);
       }
     } else 
-        console.error('missing context: check state for session proposal and namespaces');
+        throw new Error ('missing context: check state for session proposal and namespaces');
     context?.setSessionProposal(undefined);
     context?.setNamespaces(undefined);
     context?.setSessionDemand(undefined);
@@ -124,12 +126,16 @@ export function useRejectSessionProposal () {
   return useCallback(async () => {
     const context = useContext(VennWalelt);
     if(context && context.sessionProposal) {
-      await context.vennWallet?.rejectSession({
-        id: context.sessionProposal?.id,
-        reason: getSdkError("USER_REJECTED")
-      });
+      try {
+        await context.vennWallet?.rejectSession({
+          id: context.sessionProposal?.id,
+          reason: getSdkError("USER_REJECTED")
+        });
+      } catch (error: any) {
+        console.error(error);
+      }
     } else
-      console.error('missing context: check state for session proposal and namespaces');
+      throw new Error('missing context: check state for session proposal and namespaces');
     context?.setSessionProposal(undefined);
     context?.setNamespaces(undefined);
     context?.setSessionDemand(undefined);
@@ -156,7 +162,7 @@ export function useApproveSessionRequest () {
               });
             } catch (error: any) {
               console.error(error);
-              alert(error.message);
+              // alert(error.message);
               response = formatJsonRpcError(id, error.message);
               await walletContext.vennWallet?.respondSessionRequest({
                   topic,
@@ -177,8 +183,13 @@ export function useApproveSessionRequest () {
               } catch(error: any) {
                   console.error(error);
                   alert(error.message);
+              } finally {
+                walletContext.setSessionRequest(undefined);
+                walletContext.setSessionDemand(undefined);
               }
           }
+      } else {
+        throw new Error ('missing context: check wallet provider');
       }
     }, [VennWalelt, VennSmartAccont])
 }
@@ -198,7 +209,7 @@ export function useRejectSessionRequest() {
         });
       } catch (error: any) {
         console.error(error);
-        alert(error.message);
+        // alert(error.message);
       } finally {
         context.setSessionRequest(undefined);
         context.setSessionDemand(undefined);
@@ -309,7 +320,8 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
     }
   }, [vennWallet]);
   
-  console.log('inside provider', walletClient)
+  // console.log('inside provider', walletClient)
+  console.log('entrypoint', entryPointAddr);
   
   return (
     <VennSmartAccont.Provider value={{vsaProvider, accountAddress, triggerVsaUpdate}}>
@@ -349,17 +361,16 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
 //   return ret;
 // }
 
-export async function pair (uri: string) {
+export function usePair () {
   const context = useContext(VennWalelt);
-  if(!context)
-    throw new Error('context called outside scope');
-
-  await context.vennWallet?.core.pairing.pair({ uri });
+  return context?.vennWallet?.core.pairing.pair;
 }
 
-export function useSmartAccountProvider () {
+export function useSmartAccount () {
   const context = useContext(VennSmartAccont);
-  return context?.vsaProvider;
+  const provider = context?.vsaProvider;
+  const address = context?.accountAddress;
+  return { provider, address };
 }
 
 export function useSmartAccountAddress () {
