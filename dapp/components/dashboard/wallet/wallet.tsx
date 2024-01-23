@@ -4,7 +4,7 @@
 // import { useRouter } from 'next/router';
 import { useParams } from 'next/navigation'
 import { useState , useEffect, useCallback } from 'react';
-import { useAccount, useBalance, useWalletClient } from 'wagmi';
+import { useAccount, useBalance, useNetwork, useWalletClient } from 'wagmi';
 import { parseEther, formatEther, isAddress } from 'viem';
 import { useSmartAccountAddress, usePair, useSmartAccount } from '@/app/venn-provider';
 import styles from './wallet.module.css';
@@ -105,7 +105,8 @@ const ShowBalance = ({address, isSigner} : ShowBalanceProps) => {
     // const vsa = useSmartAccountAddress();
     // const { data: vsaBal } = useBalance({ address: vsa}) 
 
-    const { data: bal } = useBalance({ address: address as `0x${string}`});
+    const { data: bal } = useBalance({ address: address as `0x${string}`, watch: true });
+    const { chain } = useNetwork();
  
 
     useEffect(() => {
@@ -135,7 +136,7 @@ const ShowBalance = ({address, isSigner} : ShowBalanceProps) => {
             </span>
             <span className={styles.balanceCurrency}>
               {/* {(paramBal||eoaBal||vsaBal) && 'ETH'} */}
-              {bal && 'ETH'}
+              {bal && chain?.nativeCurrency.symbol}
             </span>
           </div>
         </div>}
@@ -207,7 +208,7 @@ const Transfer = ({setOpenApproveDialog, setApproveData} : {setOpenApproveDialog
         return
       }
     }
-    setLoading(true);
+    // setLoading(true);
     setApproveData({
       type: 'Transfer',
       data: {
@@ -254,6 +255,9 @@ const Connect = () => {
   const [loading, setLoading] = useState(false);
   const pair = usePair();
 
+  // console.log('pair', pair);
+  console.log('connect loading', loading)
+
   useEffect(() => {
     if(uri.length)
       setDisabled(false)
@@ -261,20 +265,37 @@ const Connect = () => {
       setDisabled(true);
   }, [uri]);
 
-  const onConnect = useCallback(async () => {
+  // const onConnect = useCallback(async () => {
+  //   if(disabled || loading)
+  //     return
+  //   if(pair){
+  //     setLoading(true);
+  //     try {
+  //       console.log('pair')
+  //       await pair({ uri });
+  //     } catch (error: any) {
+  //       alert(error.message);
+  //     } finally {
+  //       setLoading(false);
+  //     }
+  //   }
+  // }, [pair, uri]);
+
+  const onConnect = async () => {
     if(disabled || loading)
       return
     if(pair){
       setLoading(true);
       try {
-        await pair({ uri });
+        console.log('pair')
+        await pair({ uri, activatePairing: true });
       } catch (error: any) {
         alert(error.message);
       } finally {
         setLoading(false);
       }
     }
-  }, [pair, uri]);
+  }
 
   return (
     <div>

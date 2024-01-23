@@ -1,7 +1,7 @@
 'use client'
 
 import { createConfig, configureChains, WagmiConfig } from 'wagmi';
-import { mainnet, sepolia, baseGoerli } from 'wagmi/chains';
+import { mainnet, sepolia, baseGoerli, polygonMumbai } from 'wagmi/chains';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 import { jsonRpcProvider } from 'wagmi/providers/jsonRpc';
@@ -17,8 +17,8 @@ const baseTestProvider = process.env.NEXT_PUBLIC_BASE_GOERLI_PROVIDER;
 const projectId = '7029fcb544dedd8f2a0d1fa0135cc597';
 // const queryClient = new QueryClient();
 
-const { chains, publicClient} = configureChains(
-  [baseGoerli],
+export const { chains, publicClient} = configureChains(
+  [polygonMumbai, baseGoerli],
   [
     // jsonRpcProvider({rpc: (chain) => ({http: baseTestProvider ?? ''})}),
     publicProvider()
