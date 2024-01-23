@@ -94,7 +94,7 @@ export default function ApproveDialog ({ onApprove, onReject, onClose, loading, 
   //   }
   // }
 
-  
+  console.log('approveData', approveData)
 
   return (
     <>
@@ -112,7 +112,7 @@ export default function ApproveDialog ({ onApprove, onReject, onClose, loading, 
                     ? <div className={styles.approveDescriptionContainer}>
                         <div className={styles.ErrorTitle}>An Error ocurred!</div>
                         <div className={styles.ErrorDescription}> This error ocurred while processing your request: </div>
-                        <div className={styles.approveDescription}>{error}</div>
+                        <div className={styles.approveDescription}>{error.message}</div>
                         <div className={styles.buttonContainer}> <CloseButton onClick={() => onClose()}/> </div>
                       </div>
                     : txResolved?.success
@@ -125,7 +125,7 @@ export default function ApproveDialog ({ onApprove, onReject, onClose, loading, 
                           <h1 className={styles.title}>Approve {approveData?.type}</h1>
                           {approveData?.type === 'Connection'
                             ?<div className={styles.approveDescription}>
-                              Connect to {approveData?.data.proposer.metadata.url} ?
+                              Connect to {approveData?.data.params.proposer.metadata.url} ?
                             </div>
                             :  <div>
                                   <div className={styles.approveType}>
@@ -134,15 +134,16 @@ export default function ApproveDialog ({ onApprove, onReject, onClose, loading, 
                                   {!(approveData?.type === 'Transfer') &&
                                     <p className={styles.approveDescription}>
                                       <br/>
-                                      - Origin: <br/>
+                                      - Origin: 
                                     </p>}
                                   {!(approveData?.type === 'Signature') &&
                                     <>
                                     <p className={styles.approveDescription}>
                                       <br/>
-                                      - Value: <br/>
+                                      - Value: 
                                     </p>
                                     <p className={styles.approveDescription}>
+                                      <br/>
                                       - Gas: 
                                     </p>
                                     </>}
