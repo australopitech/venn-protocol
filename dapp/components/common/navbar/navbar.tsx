@@ -11,7 +11,7 @@ import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAccount, useDisconnect } from 'wagmi';
 // import { signOut } from '@/app/venn-provider';
-import { useSmartAccountAddress} from '@/app/venn-provider';
+import { useSmartAccountAddress, useVsaUpdate} from '@/app/venn-provider';
 import compactString from '@/utils/compactString';
 
 export interface NavBarProps {
@@ -35,7 +35,8 @@ const ConnectButton = ({connectText} : ConnectButtonProps) => {
   const path = usePathname();
   const [showDisconnect, setShowDisconnect] = useState(false);
   const [disconnectStlye, setDisconnectStyle] = useState<any>(styles.disconnectButton);
-  
+  const vsaUpdate = useVsaUpdate();
+
   const onDisconnect = useCallback(() => {  
     if(
       !path.includes("dashboard") &&
@@ -47,8 +48,10 @@ const ConnectButton = ({connectText} : ConnectButtonProps) => {
           setShowDisconnect(false);
           setDisconnectStyle(styles.disconnectButton)
         }, 5000);
-      } else
+      } else {
         disconnect();
+        if(vsaUpdate) vsaUpdate();
+      }
   }, [showDisconnect, setShowDisconnect]);
 
   if (account.isConnected) return <div className={disconnectStlye} onClick={() => onDisconnect()}>{(path.includes("dashboard") || showDisconnect) ? "Disconnect" : compactAddress}</div>
