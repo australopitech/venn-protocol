@@ -80,32 +80,32 @@ const config: HardhatUserConfig = {
     }
   },
 
-  namedAccounts: {
-    deployer: {
-      default: 0,
-      // sepolia: `${process.env.PUBLIC_KEY}`,
-    }
-  },
+  // namedAccounts: {
+  //   deployer: {
+  //     default: 0,
+  //     // sepolia: `${process.env.PUBLIC_KEY}`,
+  //   }
+  // },
 
   mocha: {
     timeout: 10000
   },
 
-  etherscan: {
-   apiKey: {
-    "base-goerli": "PLACEHOLDER_STRING"
-   },
-   customChains: [
-     {
-       network: "base-goerli",
-       chainId: 84531,
-       urls: {
-        apiURL: "https://api-goerli.basescan.org/api",
-        browserURL: "https://goerli.basescan.org"
-       }
-     }
-   ]
- },
+//   etherscan: {
+//    apiKey: {
+//     "base-goerli": "PLACEHOLDER_STRING"
+//    },
+//    customChains: [
+//      {
+//        network: "base-goerli",
+//        chainId: 84531,
+//        urls: {
+//         apiURL: "https://api-goerli.basescan.org/api",
+//         browserURL: "https://goerli.basescan.org"
+//        }
+//      }
+//    ]
+//  },
 
 }
 
