@@ -69,4 +69,9 @@ contract SmartAccountFactory {
         );
         require(success, "stake call failed");
     }
+
+    function unlockStake(address entryPoint) external {
+        (bool success, ) = entryPoint.call(abi.encodeWithSignature("unlockStake()"));
+        require(success, "unlock stake call failed");
+    }
 }
