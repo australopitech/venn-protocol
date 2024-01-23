@@ -55,15 +55,14 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   
   const [nftsMode, setNftsMode] = useState<nftViewMode>("owned");
   const { provider: vsa, address: vsaAddr } = useSmartAccount();
-  const vsaUpdate = useVsaUpdate();
 
   const userData = useAddressNfts(address?? eoa?? vsaAddr);
   const { openConnectModal } = useConnectModal();
   const [txResolved, setTxResolved] = useState<TxResolved>();
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState();
+  const [error, setError] = useState<any>();
   const { demandType, data } = useSessionDemand();
-  const [openApproveDialog, setOpenApproveDialog] = useState(true);
+  const [openApproveDialog, setOpenApproveDialog] = useState(false);
   const [approveData, setApproveData] = useState<ApproveData>();
   
   const onApproveProposal = useApproveSessionProposal();
@@ -71,14 +70,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const onApproveRequest = useApproveSessionRequest();
   const onRejectRequest = useRejectSessionRequest();
 
-  useEffect(() => {
-    if(vsaUpdate) {
-      if(!eoa)
-        vsaUpdate();
-    }
-  }, [eoa, vsaUpdate]);
-
-  // console.log('vsa', vsa)
+  console.log('vsa', vsa)
   // console.log('eoa', eoa);
   useEffect(() => {
     if(demandType){
@@ -88,6 +80,8 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
     else
       setOpenApproveDialog(false);
   }, [demandType, data]);
+
+  console.log('demandType', demandType);
 
   const onApprove = useCallback(async () => {
     setLoading(true);
@@ -112,7 +106,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
             setError(err);
           } finally {
             setLoading(false);
-            setTxResolved({success: !_error, hash});
+            setTxResolved({success: !_error, hash}); // checar confirmação que a tx passou 
           }
           break;
         case 'Signature':
@@ -127,17 +121,25 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
           break;
       }
     } else {
+      if(!vsa) {
+        setError({ message: "no provider found" })
+        setLoading(false)
+        return;
+      }
       let _error: any;
       let hash: `0x${string}` | undefined;
       const target = approveData?.data.targetAddress;
       const value = approveData?.data.value;
+      console.log('onApprove: approveData', approveData);
       try {
-        const res = await vsa?.sendUserOperation({
+        console.log('sending uo...');
+        const res = await vsa.sendUserOperation({
           target,
           data: '0x',
           value
       });
       hash = res?.hash;
+      console.log('hash', hash);
       } catch (err: any) {
         console.error(err);
         setError(err);
@@ -149,7 +151,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
     }
   }, [
     demandType, onApproveProposal, onApproveRequest,
-    setError, setLoading, setTxResolved
+    setError, setLoading, setTxResolved, vsa
   ]);
 
   const onReject = useCallback(async () => {
