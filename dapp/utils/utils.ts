@@ -90,7 +90,7 @@ export const ownerOf = async (
     }) as `0x${string}`;
 }
 
-export async function isWallet(client: any, address: string) {
+export async function isSmartAccount(client: any, address: string) {
     // if(!client) {
     //   console.log("error: no client found");
     //   return
@@ -100,10 +100,10 @@ export async function isWallet(client: any, address: string) {
     const ret = await client.readContract({
         address: factoryContract.address as `0x${string}`,
         abi: factoryContract.abi,
-        functionName: 'isWallet',
+        functionName: 'isSmartAccount',
         args: [address]
     }) as boolean;
-    // console.log('isWallet ret', ret);
+    // console.log('isSmartAccount ret', ret);
     return ret
 }
 
@@ -114,8 +114,8 @@ export async function checkIsRental(
     accountAddr?: string,
 ) : Promise<boolean | undefined> {
     const acc = accountAddr ?? await ownerOf(client, contractAddr, tokenId);
-    const isWalletRet = await isWallet(client, acc); 
-    if(isWalletRet) {
+    const isSmartAccountRet = await isSmartAccount(client, acc); 
+    if(isSmartAccountRet) {
     //   const wallet = new ethers.Contract(accountAddr, walletAbi.abi, client);
     //   const ret = await wallet.isRental(contractAddr, tokenId);
       const ret = await client.readContract({
@@ -126,10 +126,10 @@ export async function checkIsRental(
       }) as boolean;
       console.log('isRental', ret);
       return ret
-    } else if(isWalletRet === false){
+    } else if(isSmartAccountRet === false){
       console.log('account is not a wallet');
       return false
-    } else console.log('error: isWallet: no return value')
+    } else console.log('error: isSmartAccount: no return value')
 }
   
 export async function getListData(
@@ -265,8 +265,8 @@ export async function resolveIsRentedOut(
             else setIsRentedOut(true);
         };
     } else if(holder) {
-        const isWalletRet = await isWallet(client, holder);
-        if(!isWalletRet) setIsRentedOut(false);
+        const isSmartAccountRet = await isSmartAccount(client, holder);
+        if(!isSmartAccountRet) setIsRentedOut(false);
         else {
             const ret = await checkIsRental(client, contractAddress, tokenId, holder);
             setIsRentedOut(ret);

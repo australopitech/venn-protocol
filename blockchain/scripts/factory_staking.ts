@@ -5,6 +5,7 @@ import { BigNumber, ethers } from 'ethers';
 // import config from '../hardhat.config';
 
 import * as dotenv from 'dotenv';
+import { parseEther } from 'ethers/lib/utils';
 dotenv.config({ path: './.env' });
 
 
@@ -34,7 +35,7 @@ const main = async () => {
     const stake = await factory.stake(
         entryPointContract.address,
         4294967295,
-        {value: ethers.utils.parseEther("0.1")}
+        {value: ethers.utils.parseEther("0.5")}
     );
     const receipt = await stake.wait();
     console.log('\nstake tx:', receipt.transactionHash);
@@ -43,7 +44,13 @@ const main = async () => {
     console.log('deposit info:', depositInfo);
 }
 
-main().catch((error) => {
-    console.error(error);
-    process.exitCode = 1;
-});
+// main().catch((error) => {
+//     console.error(error);
+//     process.exitCode = 1;
+// });
+
+const func = () => {
+    console.log(ethers.utils.formatEther("700000000000000000"));
+}
+
+func();

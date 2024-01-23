@@ -8,7 +8,7 @@ import { rent } from '@/utils/call';
 import { NftItem } from '@/types/typesNftApi.d';
 import { NftObj } from '@/types/nftObj';
 import { mktPlaceContract, receiptsContract } from '@/utils/contractData';
-import { isWallet, getListData, getNFTByReceipt } from '../../../utils/utils';
+import { isSmartAccount, getListData, getNFTByReceipt } from '../../../utils/utils';
 import Router from 'next/router';
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { getAddress, formatEther } from 'viem';
@@ -47,7 +47,7 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
   const [duration, setDuration] = useState<number | undefined>();
   const [isDurationInvalid, setIsDurationInvalid] = useState<boolean | undefined>(false);
   // const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isWalletAccount, setIsWalletAccount] = useState<boolean>();
+  const [isSmartaccount, setIsSmartaccount] = useState<boolean>();
   const defaultButtonText = "Rent It!";
   const [buttonText, setButtonText] = useState<string>(defaultButtonText);
   const [rentPrice, setRentPrice] = useState<bigint>();
@@ -61,13 +61,13 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
 
 
   useEffect(() => {
-    const resolveIsWallet = async() => {
+    const resolveIsSmartAccount = async() => {
       if(account) 
-        setIsWalletAccount(
-          await isWallet(client, account)
+        setIsSmartaccount(
+          await isSmartAccount(client, account)
         );
     }
-    resolveIsWallet();
+    resolveIsSmartAccount();
   }, [account]);
 
   useEffect(() => {
@@ -124,7 +124,7 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
         return
       }
       if(buttonText !== defaultButtonText) return
-      if(!isWalletAccount) {
+      if(!isSmartaccount) {
         alert("Connect with a rWallet smart account to enable rent tx's");
       } 
       if(!nftItem || !nftItem.nftData.token_id) {
@@ -183,7 +183,6 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
       Router.reload();
     }
 
-    console.log('isWalletAccount', isWalletAccount);
 
     return (
       <div className={styles['bodyDescriptionContainer']}>
@@ -209,9 +208,9 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
             </div>
             {isDurationInvalid && <span className={styles.invalidDuration}>{`Set a valid duration. Value cannot be negative and must respect the maximum loan period.`}</span>}
         </div>
-        {isWalletAccount &&
+        {isSmartaccount &&
           <button className={styles.borrowButton} onClick={handleButtonClick}>{ buttonText}</button>}
-        {!isWalletAccount && 
+        {!isSmartaccount && 
           <div className={styles.notConnectedMessage}> 
             <button className={styles.notConnectedButton} onClick={handleButtonClick}>{ buttonText}</button>
             <p>
