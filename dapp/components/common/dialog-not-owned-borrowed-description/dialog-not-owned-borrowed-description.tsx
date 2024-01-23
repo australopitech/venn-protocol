@@ -6,7 +6,7 @@ import { NftItem } from '@/types/typesNftApi.d';
 import walletabi from '../../../utils/contractData/RWallet.artifact.json';
 import { receiptsContract } from '@/utils/contractData';
 // import { BigNumber, ethers } from 'ethers';
-import { useTimestamp } from '@/hooks/block-data';
+// import { useTimestamp } from '@/hooks/block-data';
 import { getNFTByReceipt, ownerOf } from '@/utils/utils';
 import { getAddress, GetBlockReturnType } from 'viem';
 import { useAccount, useBlockNumber, usePublicClient } from 'wagmi';
