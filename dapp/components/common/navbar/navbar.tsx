@@ -36,6 +36,11 @@ const ConnectButton = ({connectText} : ConnectButtonProps) => {
   const [showDisconnect, setShowDisconnect] = useState(false);
   const [disconnectStlye, setDisconnectStyle] = useState<any>(styles.disconnectButton);
   const vsaUpdate = useVsaUpdate();
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  },[])
 
   const onDisconnect = useCallback(() => {  
     if(
@@ -52,15 +57,14 @@ const ConnectButton = ({connectText} : ConnectButtonProps) => {
         disconnect();
         if(vsaUpdate) vsaUpdate();
       }
-  }, [showDisconnect, setShowDisconnect]);
+  }, [showDisconnect, setShowDisconnect, vsaUpdate]);
 
-  if (account.isConnected) return <div className={disconnectStlye} onClick={() => onDisconnect()}>{(path.includes("dashboard") || showDisconnect) ? "Disconnect" : compactAddress}</div>
-  else if (openConnectModal) return (
+  if (isClient && account.isConnected) return <div className={disconnectStlye} onClick={() => onDisconnect()}>{(path.includes("dashboard") || showDisconnect) ? "Disconnect" : compactAddress}</div>
+  else if (isClient && openConnectModal) return (
     <div className={styles.primaryButton} onClick={() => openConnectModal()}>
     {connectText? connectText : 'Connect Wallet'}
     </div>
   )
-  else return <div>Error</div>
 }
 
 const MenuIcon = () => {
