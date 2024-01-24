@@ -6,7 +6,8 @@ import { useParams } from 'next/navigation'
 import { useState , useEffect, useCallback } from 'react';
 import { useAccount, useBalance, useNetwork, useWalletClient } from 'wagmi';
 import { parseEther, formatEther, isAddress } from 'viem';
-import { useSmartAccountAddress, usePair, useSmartAccount } from '@/app/venn-provider';
+import { useSmartAccountAddress, usePair, useSmartAccount, useVennWallet } from '@/app/venn-provider';
+import { getSdkError } from '@walletconnect/utils';
 import styles from './wallet.module.css';
 
 // const zeroAddress = "0x0000000000000000000000000000000000000000";
@@ -254,7 +255,6 @@ const Connect = () => {
   const [disabled, setDisabled] = useState<boolean>();
   const [loading, setLoading] = useState(false);
   const pair = usePair();
-
   // console.log('pair', pair);
   console.log('connect loading', loading)
 
@@ -265,21 +265,6 @@ const Connect = () => {
       setDisabled(true);
   }, [uri]);
 
-  // const onConnect = useCallback(async () => {
-  //   if(disabled || loading)
-  //     return
-  //   if(pair){
-  //     setLoading(true);
-  //     try {
-  //       console.log('pair')
-  //       await pair({ uri });
-  //     } catch (error: any) {
-  //       alert(error.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   }
-  // }, [pair, uri]);
 
   const onConnect = async () => {
     if(disabled || loading)
@@ -307,12 +292,57 @@ const Connect = () => {
           onChange={(e) => setUri(e.target.value)}
           />
       </div>
-      <div className={disabled? styles.disabled : ''}>
+      <div className={(disabled || loading)? styles.disabled : ''}>
         <div className={styles.primaryButton} onClick={() => onConnect()}>
-          {loading ? "Waiting approval..." : "Connect"}
+           Connect
         </div>
       </div>
     </div>
+  )
+}
+
+const Sessions = () => {
+  const [activeSessions, setActiveSessions] = useState<any>();
+  const [updater, setUpdater] =  useState(false);
+  const [disconect, setDisconect] = useState<any>();
+  const wallet = useVennWallet();
+
+  useEffect(() => {
+    setActiveSessions(wallet?.getActiveSessions());
+  }, [wallet, updater]);
+
+  const onClick = (key: any) => {
+    if(!wallet) return
+    if(disconect === key) {
+      wallet.disconnectSession({
+        topic: `${key}`,
+        reason: getSdkError('USER_DISCONNECTED')
+      });
+      setUpdater(!updater);
+    } else {
+      setDisconect(key)
+      setTimeout(() => {
+        setDisconect(undefined)
+      }, 3000);
+    }
+  }
+  console.log('activeSessions', activeSessions);
+  
+  /// A LISTA DO MAP ABAIXO NAO TA ATUALIZANDO QDO DESCONECTA
+  return (
+    <>
+      <div className={styles.profileSectionTitle}>Active Sessions</div>
+      {activeSessions
+        ? Object.keys(activeSessions).map((key) => {
+            return (
+              <div key={key} onClick={() => onClick(key)}>
+                {(disconect === key) ? "Disconnect" : activeSessions[key].peer.metadata.name}
+              </div>
+            )
+          })
+        : ''
+      }
+    </>
   )
 }
 
@@ -361,6 +391,7 @@ export default function Wallet({address, setOpenApproveDialog, setApproveData} :
         <>
           <Connect />
           <Back setOpenConnect={setOpenConnect} />
+          <Sessions />
         </>
         }
         {openTransfer &&
