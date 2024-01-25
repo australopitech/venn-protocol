@@ -50,6 +50,8 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const [isNFTOpen, setIsNFTOpen] = useState(false);
   const [selectedNFT, setSelectedNFT] = useState(0);
   const [isCollectionOpen, setIsCollectionOpen] = useState(false);
+  const [openTransfer, setOpenTransfer] = useState(false);
+  const [openConnect, setOpenConnect] = useState(false);
   
   const { address: eoa } = useAccount();
   
@@ -64,14 +66,20 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const { demandType, data } = useSessionDemand();
   const [openApproveDialog, setOpenApproveDialog] = useState(false);
   const [approveData, setApproveData] = useState<ApproveData>();
-  
+  const [loggedIn, setLoggedIn] = useState<boolean>();
   const onApproveProposal = useApproveSessionProposal();
   const onRejectProposal = useRejectSessionProposal();
   const onApproveRequest = useApproveSessionRequest();
   const onRejectRequest = useRejectSessionRequest();
 
-  console.log('vsa', vsa)
+  const resetWalletUi = useCallback(() => {
+    setOpenTransfer(false);
+    setOpenConnect(false);
+  }, [setOpenTransfer, setOpenConnect]);
+  
+  // console.log('vsa', vsa)
   // console.log('eoa', eoa);
+  
   useEffect(() => {
     if(demandType){
       setApproveData({type: demandType, data});
@@ -80,6 +88,13 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
     else
       setOpenApproveDialog(false);
   }, [demandType, data]);
+
+  // useEffect(() => {
+  //   if(eoa)
+  //     setLoggedIn(true);
+  //   else 
+  //     setLoggedIn(false)
+  // }, [eoa])
 
   console.log('demandType', demandType);
 
@@ -102,11 +117,15 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
           try {
             hash = await onApproveRequest();
           } catch(err: any) {
+            console.error(err);
             _error = err;
             setError(err);
           } finally {
+            if(!hash && !_error)
+              setError({code: '001' , message: `Failed to catch tx confirmation: please verify last tx on block exporer for confirmation`})
+            else
+              setTxResolved({success: !_error, hash}); // checar confirmação que a tx passou
             setLoading(false);
-            setTxResolved({success: !_error, hash}); // checar confirmação que a tx passou 
           }
           break;
         case 'Signature':
@@ -149,6 +168,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
         setTxResolved({ success: !_error, hash });
       }
     }
+    resetWalletUi();
   }, [
     demandType, onApproveProposal, onApproveRequest,
     setError, setLoading, setTxResolved, vsa
@@ -215,12 +235,16 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
     }
       <div className={styles.dashboard} >
         <NavBar navbarGridTemplate={styles.navbarGridTemplate} currentPage='dashboard' />
-        { (eoa || vsaAddr || address)
+        { (eoa || address)
           ? <div className={styles.contentGridTemplate}> 
               <SideBar address={address?? vsaAddr ?? ''}
                       nftsContext={{mode: nftsMode, setNftsViewMode: setNftsMode}}
                       setOpenApproveDialog={setOpenApproveDialog}
                       setApproveData={setApproveData}
+                      openTransfer={openTransfer}
+                      setOpenTransfer={setOpenTransfer}
+                      openConnect={openConnect}
+                      setOpenConnect={setOpenConnect}
               />
               <NftArea address={address}
                       nftFetchData={userData}
