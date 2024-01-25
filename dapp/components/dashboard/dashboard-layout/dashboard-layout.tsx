@@ -64,7 +64,6 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>();
   const { demandType, data } = useSessionDemand();
-  const [openApproveDialog, setOpenApproveDialog] = useState(false);
   const [approveData, setApproveData] = useState<ApproveData>();
   const [loggedIn, setLoggedIn] = useState<boolean>();
   const onApproveProposal = useApproveSessionProposal();
@@ -76,6 +75,12 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
     setOpenTransfer(false);
     setOpenConnect(false);
   }, [setOpenTransfer, setOpenConnect]);
+
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, [])
   
   // console.log('vsa', vsa)
   // console.log('eoa', eoa);
@@ -200,7 +205,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
           break;
       }
     } else 
-      setOpenApproveDialog(false);
+      resetState()
   },[
     demandType, onRejectProposal, 
     onRejectRequest, setLoading, setError
@@ -209,7 +214,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const resetState = () => {
     setError(undefined);
     setTxResolved(undefined);
-    setOpenApproveDialog(false);
+    setApproveData(undefined);
     setLoading(false);
   };
 
@@ -241,7 +246,6 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
           ? <div className={styles.contentGridTemplate}> 
               <SideBar address={address?? vsaAddr ?? ''}
                       nftsContext={{mode: nftsMode, setNftsViewMode: setNftsMode}}
-                      setOpenApproveDialog={setOpenApproveDialog}
                       setApproveData={setApproveData}
                       openTransfer={openTransfer}
                       setOpenTransfer={setOpenTransfer}
@@ -261,10 +265,17 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
               <span></span>
               <span></span>
             </div>
-            <span className={styles.notConnectedMessage}>Connect a wallet <br /> to see your dashboard</span>
-            <div className={styles.connectButtonContainer}>
-              <ConnectButton style={styles.connectButton} connectText='Connect' handler={openConnectModal} />
-            </div>
+            {isClient
+              ? <>            
+                <span className={styles.notConnectedMessage}>Connect a wallet <br /> to see your dashboard</span>
+                <div className={styles.connectButtonContainer}>
+                  <ConnectButton style={styles.connectButton} connectText='Connect' handler={openConnectModal} />
+                </div>
+                </>
+              : <>
+                  <span className={styles.notConnectedMessage}>Loading... <br /><br /> Please Wait</span>
+                </>            
+            }
           </div>
         </div>
         }

@@ -17,7 +17,6 @@ export interface SideBarProps {
   sidebarGridTemplate?: string;
   address?: string;
   nftsContext: nftViewContext;
-  setOpenApproveDialog: any;
   setApproveData: any;
   openTransfer?: boolean,
   setOpenTransfer: any
@@ -240,7 +239,7 @@ const SelectedIcon = () => {
 // }
 
 export default function SideBar ({
-   sidebarGridTemplate, address, nftsContext, setOpenApproveDialog, 
+   sidebarGridTemplate, address, nftsContext,  
    setApproveData, openTransfer, setOpenTransfer, openConnect, setOpenConnect 
 }: SideBarProps) {
   // const nftsContext: string =  "owned"
@@ -257,7 +256,6 @@ export default function SideBar ({
         <div className={styles.profileInfo}>
           <Wallet 
           address={address}
-          setOpenApproveDialog={setOpenApproveDialog}
           setApproveData={setApproveData}
           openTransfer={openTransfer}
           setOpenTransfer={setOpenTransfer}
