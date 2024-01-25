@@ -80,14 +80,14 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   // console.log('vsa', vsa)
   // console.log('eoa', eoa);
   
-  useEffect(() => {
-    if(demandType){
-      setApproveData({type: demandType, data});
-      setOpenApproveDialog(true);
-    }
-    else
-      setOpenApproveDialog(false);
-  }, [demandType, data]);
+  // useEffect(() => {
+  //   if(demandType){
+  //     setApproveData({type: demandType, data});
+  //     setOpenApproveDialog(true);
+  //   }
+  //   else
+  //     setOpenApproveDialog(false);
+  // }, [demandType, data]);
 
   // useEffect(() => {
   //   if(eoa)
@@ -166,6 +166,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
       } finally {
         setLoading(false);
         setTxResolved({ success: !_error, hash });
+        setApproveData(undefined);
       }
     }
     resetWalletUi();
@@ -197,25 +198,26 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
             setLoading(false);
           }
           break;
-    }
-  } else 
-    setOpenApproveDialog(false);
+      }
+    } else 
+      setOpenApproveDialog(false);
   },[
     demandType, onRejectProposal, 
     onRejectRequest, setLoading, setError
   ]);
 
-  const resetState = useCallback(() => {
+  const resetState = () => {
     setError(undefined);
-    setTxResolved(undefined); //put undefined
+    setTxResolved(undefined);
     setOpenApproveDialog(false);
-  }, [setError, setTxResolved]);
+    setLoading(false);
+  };
 
   return (
     <>
-    {openApproveDialog && 
+    {(demandType || approveData || error || txResolved) && 
       <ApproveDialog 
-      approveData={approveData}
+      approveData={approveData? approveData : demandType? {type: demandType, data} : undefined}
       onApprove={onApprove}
       onReject={onReject}
       onClose={resetState}
