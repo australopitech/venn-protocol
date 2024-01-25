@@ -18,7 +18,6 @@ import styles from './wallet.module.css';
 
 interface WalletProps {
   address?: string,
-  setOpenApproveDialog: any
   setApproveData: any,
   openTransfer?: boolean,
   setOpenTransfer: any
@@ -168,7 +167,7 @@ const Buttons = ({setOpenTransfer, setOpenConnect, enabled}: {setOpenTransfer: a
   )
 }
   
-const Transfer = ({setOpenApproveDialog, setApproveData} : {setOpenApproveDialog: any, setApproveData: any}) => {
+const Transfer = ({ setApproveData } : { setApproveData: any }) => {
   const [value, setValue] = useState<number>();
   const [targetAddress, setTargetAddress] = useState<string>();
   const [disabled, setDisabled] = useState(true);
@@ -222,7 +221,7 @@ const Transfer = ({setOpenApproveDialog, setApproveData} : {setOpenApproveDialog
         value: parsedValue
       }
     });
-    setOpenApproveDialog(true);
+    // setOpenApproveDialog(true);
   }, [disabled, loading, targetAddress, setDisabled, setLoading]);
 
   return (
@@ -316,13 +315,13 @@ const Sessions = ({setOpenConnect} : {setOpenConnect: any}) => {
     setActiveSessions(wallet?.getActiveSessions());
   }, [wallet, updater, walletUpdater]);
 
-  const onClick = (key: any) => {
+  const onClick = async (key: any) => {
     if(!wallet) return
     if(disconect === key) {
       let error: any;
       try {
-        wallet.disconnectSession({
-          topic: `${key}`,
+        await wallet.disconnectSession({
+          topic: activeSessions[key].topic,
           reason: getSdkError('USER_DISCONNECTED')
         });
       } catch(err) {
@@ -383,7 +382,7 @@ const Back = ({
 
 
 export default function Wallet({
-  address, setOpenApproveDialog, setApproveData, openTransfer, setOpenTransfer, openConnect, setOpenConnect
+  address, setApproveData, openTransfer, setOpenTransfer, openConnect, setOpenConnect
 } : WalletProps) {
 
   // const [disableActions, setDisalbleAction] = useState<boolean>();
@@ -410,7 +409,7 @@ export default function Wallet({
         }
         {openTransfer &&
         <>
-        <Transfer setOpenApproveDialog={setOpenApproveDialog} setApproveData={setApproveData}/>
+        <Transfer setApproveData={setApproveData}/>
         <Back setOpenTransfer={setOpenTransfer} />
         </>
         }
