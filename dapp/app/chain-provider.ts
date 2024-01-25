@@ -10,7 +10,7 @@ const providerKey: { [index: number]: string | undefined } = {
 }
 
 export const resolveProviderKey = (chainId: number) => {
-    console.log('apikey response', providerKey[chainId] )
+    // console.log('apikey response', providerKey[chainId] )
     return providerKey[chainId];
 }
 

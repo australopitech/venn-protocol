@@ -133,7 +133,7 @@ const emitChainChanged = (
 export function useApproveSessionProposal () {
   const context = useContext(VennWalelt);
   // const { chain } = useNetwork();
-  console.log('state', context?.sessionProposal, context?.namespaces)
+  // console.log('state', context?.sessionProposal, context?.namespaces)
   return async () => {
     if(context && context.sessionProposal && context.namespaces ){
       try {
@@ -143,7 +143,7 @@ export function useApproveSessionProposal () {
         });
         context.setNewPairingTopic(context.sessionProposal.params.pairingTopic);
       } catch (error: any) {
-        console.log(error)
+        console.error(error)
         // alert(error.message);
       } 
     } else 
@@ -206,7 +206,7 @@ export function useApproveSessionRequest () {
           return ret;
         }
       } else {
-          response = formatJsonRpcError(id, getSdkError("USER_DISCONNECTED"));
+          response = formatJsonRpcError(id, getSdkError("USER_DISCONNECTED").message);
           try {
             await walletContext.vennWallet?.respondSessionRequest({
               topic,
@@ -230,11 +230,13 @@ export function useRejectSessionRequest() {
   const context = useContext(VennWalelt);
   return async () => {
     if(context?.sessionRequest) {
-      const response = formatJsonRpcError(
-        context.sessionRequest.id,
-        getSdkError('USER_REJECTED')
-      );
+      // console.log('using reject');
       try {
+        const response = formatJsonRpcError(
+          context.sessionRequest.id,
+          getSdkError('USER_REJECTED').message
+        );
+        console.log('responding...');
         await context.vennWallet?.respondSessionRequest({
           topic: context.sessionRequest.topic,
           response
@@ -243,6 +245,7 @@ export function useRejectSessionRequest() {
         console.error(error);
         // alert(error.message);
       } finally {
+        // console.log('reset provider state');
         context.setSessionRequest(undefined);
         context.setSessionDemand(undefined);
       }
@@ -266,7 +269,7 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
   const [activeSessions, setActiveSessions] = useState<any>();
   const { chain } = useNetwork();
 
-  console.log('sessionProposal', sessionProposal);
+  // console.log('sessionProposal', sessionProposal);
 
   const triggerVsaUpdate = useCallback(() => {
     setUpdater(!updater);
@@ -289,14 +292,12 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
   // }, [accountAddress, setNamespaces, setSessionProposal]);
 
   const onSessionProposal = (proposal: Web3WalletTypes.SessionProposal) => {
-    console.log('session proposal', proposal);
+    console.log('session_proposal', proposal);
     // console.log('state', sessionProposal, sessionDemand)
     if(!sessionProposal && !sessionDemand){
       setSessionProposal(proposal);
       setSessionDemand('Connection');
-      console.log('accountAddress in handler', accountAddress)
       if(accountAddress) {
-        console.log('flag')
         setNamespaces(getApprovedNamespaces(accountAddress, proposal));
       }
       else
@@ -306,7 +307,7 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
   
 
   const onSessionRequest = useCallback((request: Web3WalletTypes.SessionRequest) => {
-    console.log(request);
+    console.log('session_request', request);
     if(!sessionRequest && !sessionDemand){
       setSessionRequest(request);
       const method = request.params.request.method
@@ -327,7 +328,7 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
   }, [setSessionDemand, sessionDemand, sessionRequest]);
 
   const onSessionDelete = useCallback(async (event: any) => {
-    console.log('session disconected', event);
+    console.log('session_delete', event);
     triggerVsaUpdate()
   },[vennWallet])
 
@@ -392,9 +393,9 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
   }, [newPairingTopic]);
   
   // console.log('supportedChains', supportedChains)
-  console.log('chain', chain?.name);
-  console.log('accountAddress', accountAddress);
-  console.log('eoa', walletClient?.account.address);
+  // console.log('chain', chain?.name);
+  // console.log('accountAddress', accountAddress);
+  // console.log('eoa', walletClient?.account.address);
   
   
   return (
@@ -503,7 +504,6 @@ export function useSessionDemand () {
       data = context?.sessionRequest;
       break
   }
-  console.log('data in hook', data)
   return { demandType, data }
 }
 
