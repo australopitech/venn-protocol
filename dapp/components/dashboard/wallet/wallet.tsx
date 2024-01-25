@@ -19,7 +19,12 @@ import styles from './wallet.module.css';
 interface WalletProps {
   address?: string,
   setOpenApproveDialog: any
-  setApproveData: any
+  setApproveData: any,
+  openTransfer?: boolean,
+  setOpenTransfer: any
+  openConnect: boolean,
+  setOpenConnect: any
+  
 }
 
 interface ShowBalanceProps {
@@ -116,11 +121,11 @@ const ShowBalance = ({address, isSigner} : ShowBalanceProps) => {
   
     return (
       <div className={styles.yourBalanceContainer}>
-        <span className={styles.profileSectionTitle}>{
-          // ((address&&eoa&&address===eoa) ||
+        <span className={styles.profileSectionTitle}>
+          {// ((address&&eoa&&address===eoa) ||
           // (address&&vsa&&address===vsa)  ||
           // ((vsa || eoa )&&!address))  &&
-          isSigner&&'YOUR'} BALANCE
+          isClient&&isSigner&&'YOUR'} BALANCE
         </span>
         {isClient && <div>
           <div className={styles.balanceValueContainer}>
@@ -301,23 +306,31 @@ const Connect = () => {
   )
 }
 
-const Sessions = () => {
+const Sessions = ({setOpenConnect} : {setOpenConnect: any}) => {
   const [activeSessions, setActiveSessions] = useState<any>();
   const [updater, setUpdater] =  useState(false);
   const [disconect, setDisconect] = useState<any>();
-  const wallet = useVennWallet();
+  const { wallet, updater: walletUpdater } = useVennWallet();
 
   useEffect(() => {
     setActiveSessions(wallet?.getActiveSessions());
-  }, [wallet, updater]);
+  }, [wallet, updater, walletUpdater]);
 
   const onClick = (key: any) => {
     if(!wallet) return
     if(disconect === key) {
-      wallet.disconnectSession({
-        topic: `${key}`,
-        reason: getSdkError('USER_DISCONNECTED')
-      });
+      let error: any;
+      try {
+        wallet.disconnectSession({
+          topic: `${key}`,
+          reason: getSdkError('USER_DISCONNECTED')
+        });
+      } catch(err) {
+        console.error(err);
+        error = err;
+      }
+      if(!error)
+        setOpenConnect(false);
       setUpdater(!updater);
     } else {
       setDisconect(key)
@@ -331,11 +344,11 @@ const Sessions = () => {
   /// A LISTA DO MAP ABAIXO NAO TA ATUALIZANDO QDO DESCONECTA
   return (
     <>
-      <div className={styles.profileSectionTitle}>Active Sessions</div>
+      <div className={styles.profileSectionTitle}>ACTIVE SESSIONS</div>
       {activeSessions
         ? Object.keys(activeSessions).map((key) => {
             return (
-              <div key={key} onClick={() => onClick(key)}>
+              <div className={styles.sessions} key={key} onClick={() => onClick(key)}>
                 {(disconect === key) ? "Disconnect" : activeSessions[key].peer.metadata.name}
               </div>
             )
@@ -369,9 +382,10 @@ const Back = ({
 }
 
 
-export default function Wallet({address, setOpenApproveDialog, setApproveData} : WalletProps) {
-  const [openTransfer, setOpenTransfer] = useState<boolean>(false);
-  const [openConnect, setOpenConnect] = useState<boolean>(false);
+export default function Wallet({
+  address, setOpenApproveDialog, setApproveData, openTransfer, setOpenTransfer, openConnect, setOpenConnect
+} : WalletProps) {
+
   // const [disableActions, setDisalbleAction] = useState<boolean>();
   const eoa = useAccount();
   const vsaAddr = useSmartAccountAddress();
@@ -391,7 +405,7 @@ export default function Wallet({address, setOpenApproveDialog, setApproveData} :
         <>
           <Connect />
           <Back setOpenConnect={setOpenConnect} />
-          <Sessions />
+          <Sessions setOpenConnect={setOpenConnect} />
         </>
         }
         {openTransfer &&

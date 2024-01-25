@@ -332,6 +332,7 @@
   .secondaryButton {
     padding: 12px;
     margin-top: 6px;
+    margin-bottom: 12px;
     color: #5D5D5D;
     background-color: #EEE6EF;
     border-radius: 18px;
@@ -352,4 +353,8 @@
     font-size: 18px;
     margin: 18px 0px 4px 0px;
     width: 100%;
+  }
+
+  .sessions {
+    cursor: pointer;
   }
