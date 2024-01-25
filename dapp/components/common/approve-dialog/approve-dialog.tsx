@@ -1,9 +1,10 @@
 'use client'
 import styles from './approve-dialog.module.css';
-import { useApproveSessionProposal, useApproveSessionRequest, useRejectSessionProposal, useRejectSessionRequest, useSessionDemand } from '@/app/venn-provider';
+import { useApproveSessionProposal, useApproveSessionRequest, useRejectSessionProposal, useRejectSessionRequest, useSessionDemand, useSmartAccount } from '@/app/venn-provider';
 import { useCallback, useState } from 'react';
 import { SessionDemandType } from '@/app/venn-provider';
 import { ApproveData } from '@/components/dashboard/dashboard-layout/dashboard-layout';
+import { useAccount, useNetwork } from 'wagmi';
 
 interface ApproveDialogProps {
   // setOpenApproveDialog: any;
@@ -94,6 +95,9 @@ export default function ApproveDialog ({ onApprove, onReject, onClose, loading, 
   //   }
   // }
 
+  const { address: eoa } = useAccount();
+  const { address: vsa } = useSmartAccount();
+  const { chain } = useNetwork();
   console.log('approveData', approveData)
 
   return (
@@ -113,6 +117,14 @@ export default function ApproveDialog ({ onApprove, onReject, onClose, loading, 
                         <div className={styles.ErrorTitle}>An Error ocurred!</div>
                         <div className={styles.ErrorDescription}> This error ocurred while processing your request: </div>
                         <div className={styles.approveDescription}>{error.message}</div>
+                        {error.code === '001' && 
+                          <a 
+                          className={styles.approveDescription}
+                          href={chain?.blockExplorers?.default.url + `/account/${vsa ?? eoa}`}
+                          target='_blank'
+                          > 
+                          Click here to see your account.
+                        </a>}
                         <div className={styles.buttonContainer}> <CloseButton onClick={() => onClose()}/> </div>
                       </div>
                     : txResolved?.success
