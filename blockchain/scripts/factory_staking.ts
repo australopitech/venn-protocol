@@ -1,5 +1,5 @@
 import entryPoint from '../artifacts/contracts/core/EntryPoint.sol/EntryPoint.json';
-import factoryBaseGoer from '../deployments/base_goerli/SmartAccountFactory.json';
+import factoryBaseGoer from '../deployments/polygon_mumbai/SmartAccountFactory.json';
 import { EntryPoint, SmartAccountFactory } from '../typechain';
 import { BigNumber, ethers } from 'ethers';
 // import config from '../hardhat.config';
@@ -32,25 +32,25 @@ const main = async () => {
         factoryBaseGoer.abi,
         signer
     ) as SmartAccountFactory;
+    console.log('factoryAddr',factory.address)
     const stake = await factory.stake(
         entryPointContract.address,
         4294967295,
-        {value: ethers.utils.parseEther("0.5")}
+        {value: ethers.utils.parseEther("0.3")}
     );
     const receipt = await stake.wait();
     console.log('\nstake tx:', receipt.transactionHash);
-    console.log('factoryAddr',factory.address)
     const depositInfo = await entryPointContract.getDepositInfo(factory.address);
-    console.log('deposit info:', depositInfo);
+    console.log('stake:', ethers.utils.formatEther(depositInfo.stake.toString()));
 }
 
-// main().catch((error) => {
-//     console.error(error);
-//     process.exitCode = 1;
-// });
+main().catch((error) => {
+    console.error(error);
+    process.exitCode = 1;
+});
 
 const func = () => {
     console.log(ethers.utils.formatEther("700000000000000000"));
 }
 
-func();
+// func();
