@@ -15,14 +15,11 @@ import { DialogNotOwnedNotListedDescription } from '../dialog-not-owned-not-list
 // import { getNFTobj, useNFTtitle, useNFTname, useTokenImage, useTokenMetaData } from '../../../hooks/nfts';
 // import { Context } from 'wagmi';
 import { NftItem } from '../../../types/typesNftApi';
-import walletAbi from '../../../utils/contractData/RWallet.artifact.json';
+import walletAbi from '../../../utils/contractData/SmartAccount.json';
 import erc721 from '../../../utils/contractData/ERC721.artifact.json';
 import { mktPlaceContract, receiptsContract } from '@/utils/contractData';
 // import { ethers, BigNumber } from 'ethers';
-import { 
-  ownerOf, isWallet, checkIsListedByReceipt, checkIsRental, getListData, getNFTByReceipt,
-  resolveIsRentedOut, resolveIsListed, resolveIsRental
- } from '@/utils/utils';
+import { ownerOf, resolveIsRentedOut, resolveIsListed, resolveIsRental } from '@/utils/utils';
 import { useAccount, usePublicClient } from 'wagmi';
 import { getAddress } from 'viem';
 import { baseGoerli } from 'viem/chains';

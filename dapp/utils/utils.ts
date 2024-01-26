@@ -1,7 +1,7 @@
 import erc721 from "./contractData/ERC721.artifact.json";
 import { mktPlaceContract, factoryContract } from "./contractData";
 import { NftItem } from '@/types/typesNftApi.d';
-import walletAbi from "./contractData/RWallet.artifact.json";
+import walletAbi from "./contractData/SmartAccount.json";
 import { readContract } from "viem/actions";
 import { createPublicClient } from "viem";
 import { formatEther } from "viem";

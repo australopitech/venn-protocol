@@ -11,7 +11,7 @@ import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAccount, useDisconnect } from 'wagmi';
 // import { signOut } from '@/app/venn-provider';
-import { useSmartAccountAddress, useVsaUpdate} from '@/app/venn-provider';
+import { useSmartAccountAddress, useVsaUpdate} from '@/app/account/venn-provider';
 import compactString from '@/utils/compactString';
 
 export interface NavBarProps {

@@ -2,7 +2,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { WalletClientSigner, type SmartAccountSigner } from "@alchemy/aa-core";
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
-import { LightSmartContractAccount } from "@alchemy/aa-accounts";
 import { Web3AuthSigner } from "@alchemy/aa-signers/web3auth";
 import { Web3Wallet as Web3WalletType } from "@walletconnect/web3wallet/dist/types/client";
 import { Web3Wallet, Web3WalletTypes  } from '@walletconnect/web3wallet';
@@ -11,6 +10,7 @@ import { Core } from '@walletconnect/core';
 import { buildApprovedNamespaces, getSdkError } from '@walletconnect/utils'
 import { baseGoerli, mainnet, polygonMumbai } from "viem/chains";
 import { factoryContract } from "@/utils/contractData";
+import { VennSmartAccount } from "./account";
 import { createWeb3AuthSigner } from "@/utils/web3auth";
 import { SessionTypes } from "@walletconnect/types";
 import { formatParams } from "@/utils/utils";
@@ -18,10 +18,10 @@ import { formatJsonRpcError, formatJsonRpcResult } from "@json-rpc-tools/utils";
 import { WalletClient } from "viem";
 import { useAccount, useNetwork, useWalletClient } from "wagmi";
 import { getDefaultEntryPointAddress } from "@alchemy/aa-core";
-import { chains as supportedChains } from "./wagmi";
-import { resolveProviderKey } from "./chain-provider";
+import { chains as supportedChains } from "../wagmi";
+import { resolveProviderKey } from "../chain-provider";
 
-type VennSmartAccountContextType = {
+type SmartAccountContextType = {
     vsaProvider?: AlchemyProvider;
     accountAddress?: `0x${string}`;
     triggerVsaUpdate: () => void;
@@ -29,7 +29,7 @@ type VennSmartAccountContextType = {
 
 export type SessionDemandType = 'Connection'|'Transaction'|'Signature';
 
-type VennWalletContextType = {
+type WalletContextType = {
   vennWallet?: Web3WalletType;
   setVennWallet: React.Dispatch<React.SetStateAction<Web3WalletType | undefined>>;
   sessionProposal?: Web3WalletTypes.SessionProposal;
@@ -64,7 +64,7 @@ const createAccountProvider = (walletClient: WalletClient) => {
     chain
   }).connect(
     (rpcClient) =>
-    new LightSmartContractAccount({
+    new VennSmartAccount({
         chain: activeNetwork,
         owner: signer,
         factoryAddress,
@@ -88,8 +88,8 @@ const createWeb3Wallet = async () => {
 }
 
 
-const VennSmartAccont = createContext<VennSmartAccountContextType | null>(null);
-const VennWalelt = createContext<VennWalletContextType | null>(null);
+const SmartAccount = createContext<SmartAccountContextType | null>(null);
+const Wallet = createContext<WalletContextType | null>(null);
 
 const getApprovedNamespaces = (account: `0x${string}`, proposal: Web3WalletTypes.SessionProposal) => {
   return buildApprovedNamespaces({
@@ -131,7 +131,7 @@ const emitChainChanged = (
 }
 
 export function useApproveSessionProposal () {
-  const context = useContext(VennWalelt);
+  const context = useContext(Wallet);
   // const { chain } = useNetwork();
   // console.log('state', context?.sessionProposal, context?.namespaces)
   return async () => {
@@ -155,7 +155,7 @@ export function useApproveSessionProposal () {
 }
 
 export function useRejectSessionProposal () {
-  const context = useContext(VennWalelt);
+  const context = useContext(Wallet);
   return async () => {
     if(context && context.sessionProposal) {
       try {
@@ -175,8 +175,8 @@ export function useRejectSessionProposal () {
 }
 
 export function useApproveSessionRequest () {
-  const walletContext = useContext(VennWalelt);
-  const vsaContext = useContext(VennSmartAccont);  
+  const walletContext = useContext(Wallet);
+  const vsaContext = useContext(SmartAccount);  
   return async () => {
     if(walletContext?.sessionRequest) {
       let ret: any;
@@ -227,7 +227,7 @@ export function useApproveSessionRequest () {
 }
 
 export function useRejectSessionRequest() {
-  const context = useContext(VennWalelt);
+  const context = useContext(Wallet);
   return async () => {
     if(context?.sessionRequest) {
       // console.log('using reject');
@@ -399,8 +399,8 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
   
   
   return (
-    <VennSmartAccont.Provider value={{vsaProvider, accountAddress, triggerVsaUpdate}}>
-        <VennWalelt.Provider 
+    <SmartAccount.Provider value={{vsaProvider, accountAddress, triggerVsaUpdate}}>
+        <Wallet.Provider 
         value={{
             vennWallet, setVennWallet,
             sessionProposal, setSessionProposal,
@@ -410,13 +410,13 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
             setNewPairingTopic, updater
         }}>
             {children}
-        </VennWalelt.Provider>
-    </VennSmartAccont.Provider>
+        </Wallet.Provider>
+    </SmartAccount.Provider>
   )
 }
 
 // export function useSignIn () {
-//   const context = useContext(VennSmartAccont);
+//   const context = useContext(SmartAccount);
   
 //   const ret = useCallback(async () => {
 //     if(context){
@@ -427,7 +427,7 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
 // }
 
 // export function useSignOut () {
-//   const context = useContext(VennSmartAccont);
+//   const context = useContext(SmartAccount);
 //   const ret = useCallback(async () => {
 //     if(context) {
 //       await context.signer?.inner.logout();
@@ -438,61 +438,61 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
 // }
 
 export function usePair () {
-  const context = useContext(VennWalelt);
+  const context = useContext(Wallet);
   return context?.vennWallet?.pair;
 }
 
 export function useSmartAccount () {
-  const context = useContext(VennSmartAccont);
+  const context = useContext(SmartAccount);
   const provider = context?.vsaProvider;
   const address = context?.accountAddress;
   return { provider, address };
 }
 
 export function useSmartAccountAddress () {
-  const context = useContext(VennSmartAccont);
+  const context = useContext(SmartAccount);
   return context?.accountAddress;
 }
 
 export function useVsaUpdate () {
-  const context = useContext(VennSmartAccont);
+  const context = useContext(SmartAccount);
   return context?.triggerVsaUpdate;
 }
 
 // export function useSigner () {
-//   const context = useContext(VennSmartAccont);
+//   const context = useContext(SmartAccount);
 //   return context?.signer;
 // }
 
 // export function useSetSigner () {
-//   const context = useContext(VennSmartAccont);
+//   const context = useContext(SmartAccount);
 //   return context?.setSigner;
 // }
 
 export function useVennWallet () {
-  const context = useContext(VennWalelt);
+  const context = useContext(Wallet);
   const wallet = context?.vennWallet
   const updater = context?.updater
   return { wallet, updater }
 }
 
 export function useSessionProposal () {
-  const context = useContext(VennWalelt);
+  const context = useContext(Wallet);
   return context?.sessionProposal
 }
 
 export function useNamespaces () {
-  const context = useContext(VennWalelt);
+  const context = useContext(Wallet);
   return context?.namespaces;
 }
 
 export function useSessionRequest () {
-  const context = useContext(VennWalelt);
+  const context = useContext(Wallet);
   return context?.sessionRequest;
 }
 
 export function useSessionDemand () {
-  const context = useContext(VennWalelt);
+  const context = useContext(Wallet);
   const demandType = context?.sessionDemand;
   let data: any;
   switch(demandType) {
@@ -508,7 +508,7 @@ export function useSessionDemand () {
 }
 
 // export function setCurrentSmartAccountProvider (accountProvider: AlchemyProvider) {
-//   const context = useContext(VennSmartAccont);
+//   const context = useContext(SmartAccount);
 //   if(!context) throw new Error('context called outside scope');
 //   context.setVsaProvider(accountProvider);
 // }

@@ -17,11 +17,11 @@ import 'node_modules/@rainbow-me/rainbowkit/dist/index.css';
 // import { createWeb3AuthSigner } from '@/utils/web3auth';
 import { useSmartAccount, useVsaUpdate, useSessionDemand,
   useApproveSessionProposal, useApproveSessionRequest, 
-  useRejectSessionProposal, useRejectSessionRequest } from '@/app/venn-provider';
+  useRejectSessionProposal, useRejectSessionRequest } from '@/app/account/venn-provider';
 // import { useRouter } from 'next/navigation';
 import { TxResolved } from '@/components/common/approve-dialog/approve-dialog';
 import ApproveDialog from '@/components/common/approve-dialog/approve-dialog';
-import { SessionDemandType } from '@/app/venn-provider';
+import { SessionDemandType } from '@/app/account/venn-provider';
 
 export interface DashboardLayoutProps {
   address?: `0x${string}`;

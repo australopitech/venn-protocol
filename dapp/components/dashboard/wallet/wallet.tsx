@@ -6,7 +6,7 @@ import { useParams } from 'next/navigation'
 import { useState , useEffect, useCallback } from 'react';
 import { useAccount, useBalance, useNetwork, useWalletClient } from 'wagmi';
 import { parseEther, formatEther, isAddress } from 'viem';
-import { useSmartAccountAddress, usePair, useSmartAccount, useVennWallet } from '@/app/venn-provider';
+import { useSmartAccountAddress, usePair, useSmartAccount, useVennWallet } from '@/app/account/venn-provider';
 import { getSdkError } from '@walletconnect/utils';
 import styles from './wallet.module.css';
 

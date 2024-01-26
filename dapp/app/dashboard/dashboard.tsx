@@ -2,7 +2,7 @@
 import { NextPage } from 'next'
 import Head from 'next/head'
 import DashboardLayout from '@/components/dashboard/dashboard-layout/dashboard-layout';
-import { useSessionDemand, useApproveSessionProposal, useApproveSessionRequest, useRejectSessionProposal, useRejectSessionRequest } from '../venn-provider';
+import { useSessionDemand, useApproveSessionProposal, useApproveSessionRequest, useRejectSessionProposal, useRejectSessionRequest } from '../account/venn-provider';
 import ApproveDialog from '@/components/common/approve-dialog/approve-dialog';
 import { useEffect, useState, useCallback } from 'react';
 import { TxResolved } from '@/components/common/approve-dialog/approve-dialog';

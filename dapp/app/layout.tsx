@@ -1,6 +1,6 @@
 import '../styles/globals.css';
 import WagmiProvider from "@/app/wagmi";
-import { VennAccountProvider } from "./venn-provider";
+import { VennAccountProvider } from "./account/venn-provider";
 
 export default function RootLayout({
     // Layouts must accept a children prop.
