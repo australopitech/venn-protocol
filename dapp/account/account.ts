@@ -60,14 +60,14 @@ import {
      *
      * @param newOwner - the new owner of the account
      * @returns {Hex} the encoded function call
-     */
-    static encodeTransferOwnership(newOwner: Address): Hex {
-      return encodeFunctionData({
-        abi: ISmartAccount.abi,
-        functionName: "transferOwnership",
-        args: [newOwner],
-      });
-    }
+    //  */
+    // static encodeTransferOwnership(newOwner: Address): Hex {
+    //   return encodeFunctionData({
+    //     abi: ISmartAccount.abi,
+    //     functionName: "transferOwnership",
+    //     args: [newOwner],
+    //   });
+    // }
   
     /**
      * Transfers ownership of the account to the newOwner on-chain and also updates the owner of the account.
@@ -78,29 +78,29 @@ import {
      * @param waitForTxn - whether or not to wait for the transaction to be mined
      * @returns {Hash} the userOperation hash, or transaction hash if `waitForTxn` is true
      */
-    static async transferOwnership<
-      TTransport extends Transport | FallbackTransport = Transport
-    >(
-      provider: SmartAccountProvider<TTransport> & {
-        account: VennSmartAccount<TTransport>;
-      },
-      newOwner: SmartAccountSigner,
-      waitForTxn: boolean = false
-    ): Promise<Hash> {
-      const data = this.encodeTransferOwnership(await newOwner.getAddress());
-      const result = await provider.sendUserOperation({
-        target: await provider.getAddress(),
-        data,
-      });
+    // static async transferOwnership<
+    //   TTransport extends Transport | FallbackTransport = Transport
+    // >(
+    //   provider: SmartAccountProvider<TTransport> & {
+    //     account: VennSmartAccount<TTransport>;
+    //   },
+    //   newOwner: SmartAccountSigner,
+    //   waitForTxn: boolean = false
+    // ): Promise<Hash> {
+    //   const data = this.encodeTransferOwnership(await newOwner.getAddress());
+    //   const result = await provider.sendUserOperation({
+    //     target: await provider.getAddress(),
+    //     data,
+    //   });
   
-      provider.account.owner = newOwner;
+    //   provider.account.owner = newOwner;
   
-      if (waitForTxn) {
-        return provider.waitForUserOperationTransaction(result.hash);
-      }
+    //   if (waitForTxn) {
+    //     return provider.waitForUserOperationTransaction(result.hash);
+    //   }
   
-      return result.hash;
-    }
+    //   return result.hash;
+    // }
   
     protected override async getAccountInitCode(): Promise<`0x${string}`> {
       return concatHex([
