@@ -136,7 +136,7 @@ export default function ApproveDialog ({ onApprove, onReject, onClose, loading, 
                           <h1 className={styles.title}>Approve {approveData?.type}</h1>
                           {approveData?.type === 'Connection'
                             ?<div className={styles.approveDescription}>
-                              Connect to {approveData?.data.params.proposer.metadata.url} ?
+                              Connect to {approveData?.data.sessionProposal.params.proposer.metadata.url} ?
                             </div>
                             :  <div>
                                   <div className={styles.approveType}>

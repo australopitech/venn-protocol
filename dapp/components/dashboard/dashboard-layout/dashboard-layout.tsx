@@ -17,11 +17,13 @@ import 'node_modules/@rainbow-me/rainbowkit/dist/index.css';
 // import { createWeb3AuthSigner } from '@/utils/web3auth';
 import { useSmartAccount, useVsaUpdate, useSessionDemand,
   useApproveSessionProposal, useApproveSessionRequest, 
-  useRejectSessionProposal, useRejectSessionRequest } from '@/app/account/venn-provider';
+  useRejectSessionProposal, useRejectSessionRequest, 
+  SessionDemandType, useVennWallet } from '@/app/account/venn-provider';
+import { approveSessionProposal } from '@/app/account/wallet';
 // import { useRouter } from 'next/navigation';
 import { TxResolved } from '@/components/common/approve-dialog/approve-dialog';
 import ApproveDialog from '@/components/common/approve-dialog/approve-dialog';
-import { SessionDemandType } from '@/app/account/venn-provider';
+
 
 export interface DashboardLayoutProps {
   address?: `0x${string}`;
@@ -52,11 +54,11 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const [isCollectionOpen, setIsCollectionOpen] = useState(false);
   const [openTransfer, setOpenTransfer] = useState(false);
   const [openConnect, setOpenConnect] = useState(false);
-  
-  const { address: eoa } = useAccount();
-  
   const [nftsMode, setNftsMode] = useState<nftViewMode>("owned");
+
+  const { address: eoa } = useAccount();
   const { provider: vsa, address: vsaAddr } = useSmartAccount();
+  const { wallet, stateResetter } = useVennWallet();
 
   const userData = useAddressNfts(address?? eoa?? vsaAddr);
   const { openConnectModal } = useConnectModal();
@@ -65,7 +67,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const [error, setError] = useState<any>();
   const { demandType, data } = useSessionDemand();
   const [approveData, setApproveData] = useState<ApproveData>();
-  const [loggedIn, setLoggedIn] = useState<boolean>();
+  // const [loggedIn, setLoggedIn] = useState<boolean>();
   const onApproveProposal = useApproveSessionProposal();
   const onRejectProposal = useRejectSessionProposal();
   const onApproveRequest = useApproveSessionRequest();
@@ -110,7 +112,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
       switch (demandType) {
         case 'Connection':
           try{
-            await onApproveProposal();
+            await approveSessionProposal(data, stateResetter, wallet);
           } catch(err: any) {
             setError(err);
           } finally {

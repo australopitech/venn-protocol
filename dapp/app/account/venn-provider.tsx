@@ -1,6 +1,6 @@
 'use client'
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { WalletClientSigner, type SmartAccountSigner } from "@alchemy/aa-core";
+import { WalletClientSigner, type SmartAccountSigner, SmartAccountProvider } from "@alchemy/aa-core";
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
 import { Web3AuthSigner } from "@alchemy/aa-signers/web3auth";
 import { Web3Wallet as Web3WalletType } from "@walletconnect/web3wallet/dist/types/client";
@@ -10,7 +10,7 @@ import { Core } from '@walletconnect/core';
 import { buildApprovedNamespaces, getSdkError } from '@walletconnect/utils'
 import { baseGoerli, mainnet, polygonMumbai } from "viem/chains";
 import { factoryContract } from "@/utils/contractData";
-import { VennSmartAccount } from "./account";
+import { VennSmartAccount } from "../../account/account";
 import { createWeb3AuthSigner } from "@/utils/web3auth";
 import { SessionTypes } from "@walletconnect/types";
 import { formatParams } from "@/utils/utils";
@@ -27,7 +27,8 @@ type SmartAccountContextType = {
     triggerVsaUpdate: () => void;
 };
 
-export type SessionDemandType = 'Connection'|'Transaction'|'Signature';
+export type SessionDemandType = 'Connection' | 'Transaction' | 'Signature';
+
 
 type WalletContextType = {
   vennWallet?: Web3WalletType;
@@ -65,7 +66,7 @@ const createAccountProvider = (walletClient: WalletClient) => {
   }).connect(
     (rpcClient) =>
     new VennSmartAccount({
-        chain: activeNetwork,
+        chain,
         owner: signer,
         factoryAddress,
         rpcClient
@@ -306,7 +307,7 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
   }
   
 
-  const onSessionRequest = useCallback((request: Web3WalletTypes.SessionRequest) => {
+  const onSessionRequest = (request: Web3WalletTypes.SessionRequest) => {
     console.log('session_request', request);
     if(!sessionRequest && !sessionDemand){
       setSessionRequest(request);
@@ -325,12 +326,12 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
           break
       }
     }
-  }, [setSessionDemand, sessionDemand, sessionRequest]);
+  };
 
-  const onSessionDelete = useCallback(async (event: any) => {
+  const onSessionDelete = async (event: any) => {
     console.log('session_delete', event);
     triggerVsaUpdate()
-  },[vennWallet])
+  }
 
   useEffect(() => {
     if(walletClient) 
@@ -473,7 +474,8 @@ export function useVennWallet () {
   const context = useContext(Wallet);
   const wallet = context?.vennWallet
   const updater = context?.updater
-  return { wallet, updater }
+  const stateResetter = useWalletStateResetter();
+  return { wallet, updater, stateResetter }
 }
 
 export function useSessionProposal () {
@@ -497,7 +499,9 @@ export function useSessionDemand () {
   let data: any;
   switch(demandType) {
     case 'Connection':
-      data = context?.sessionProposal;
+      const sessionProposal = context?.sessionProposal;
+      const namespaces = context?.namespaces;
+      data = { sessionProposal, namespaces };
       break
     case 'Signature':
     case 'Transaction':
@@ -505,6 +509,22 @@ export function useSessionDemand () {
       break
   }
   return { demandType, data }
+}
+
+export function useWalletStateResetter () {
+  const context = useContext(Wallet);
+  return (event: 'proposal' | 'request') => {
+    switch(event) {
+      case 'proposal':
+        context?.setSessionProposal(undefined);
+        context?.setNamespaces(undefined);
+        context?.setSessionDemand(undefined);
+        break
+      case 'request':
+        context?.setSessionRequest(undefined);
+        context?.setSessionDemand(undefined);
+    }
+  }
 }
 
 // export function setCurrentSmartAccountProvider (accountProvider: AlchemyProvider) {
