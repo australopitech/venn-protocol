@@ -19,7 +19,7 @@ import { useSmartAccount, useVsaUpdate, useSessionDemand,
   useApproveSessionProposal, useApproveSessionRequest, 
   useRejectSessionProposal, useRejectSessionRequest, 
   SessionDemandType, useVennWallet } from '@/app/account/venn-provider';
-import { approveSessionProposal } from '@/app/account/wallet';
+import { approveSessionProposal, rejectSessionProposal } from '@/app/account/wallet';
 // import { useRouter } from 'next/navigation';
 import { TxResolved } from '@/components/common/approve-dialog/approve-dialog';
 import ApproveDialog from '@/components/common/approve-dialog/approve-dialog';
@@ -68,8 +68,8 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const { demandType, data } = useSessionDemand();
   const [approveData, setApproveData] = useState<ApproveData>();
   // const [loggedIn, setLoggedIn] = useState<boolean>();
-  const onApproveProposal = useApproveSessionProposal();
-  const onRejectProposal = useRejectSessionProposal();
+  // const onApproveProposal = useApproveSessionProposal();
+  // const onRejectProposal = useRejectSessionProposal();
   const onApproveRequest = useApproveSessionRequest();
   const onRejectRequest = useRejectSessionRequest();
 
@@ -178,7 +178,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
     }
     resetWalletUi();
   }, [
-    demandType, onApproveProposal, onApproveRequest,
+    demandType, onApproveRequest,
     setError, setLoading, setTxResolved, vsa
   ]);
 
@@ -188,7 +188,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
       switch (demandType) {
         case 'Connection':
           try {
-            await onRejectProposal();
+            await rejectSessionProposal(data, stateResetter, wallet);
           } catch (err: any) {
             setError(err);
           } finally {
@@ -209,8 +209,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
     } else 
       resetState()
   },[
-    demandType, onRejectProposal, 
-    onRejectRequest, setLoading, setError
+    demandType, onRejectRequest, setLoading, setError
   ]);
 
   const resetState = () => {
