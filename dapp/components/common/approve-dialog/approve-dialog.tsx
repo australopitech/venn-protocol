@@ -1,6 +1,6 @@
 'use client'
 import styles from './approve-dialog.module.css';
-import { useApproveSessionProposal, useApproveSessionRequest, useRejectSessionProposal, useRejectSessionRequest, useSessionDemand, useSmartAccount, SessionDemandType } from '@/app/account/venn-provider';
+import { useSmartAccount } from '@/app/account/venn-provider';
 import { useCallback, useState } from 'react';
 import { ApproveData } from '@/components/dashboard/dashboard-layout/dashboard-layout';
 import { useAccount, useNetwork } from 'wagmi';
