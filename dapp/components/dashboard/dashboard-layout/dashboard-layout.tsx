@@ -15,11 +15,16 @@ import { useConnectModal } from '@rainbow-me/rainbowkit';
 import 'node_modules/@rainbow-me/rainbowkit/dist/index.css';
 // import { ConnectButton } from '@rainbow-me/rainbowkit';
 // import { createWeb3AuthSigner } from '@/utils/web3auth';
-import { useSmartAccount, useVsaUpdate, useSessionDemand,
-  useApproveSessionProposal, useApproveSessionRequest, 
-  useRejectSessionProposal, useRejectSessionRequest, 
-  SessionDemandType, useVennWallet } from '@/app/account/venn-provider';
-import { approveSessionProposal, rejectSessionProposal } from '@/app/account/wallet';
+// import { useApproveSessionRequest } from '@/app/account/venn-provider';
+import { 
+  useSmartAccount, useVsaUpdate, useSessionEvent,
+  SessionEventType, useVennWallet 
+} from '@/app/account/venn-provider';
+import { 
+  approveSessionProposal, rejectSessionProposal,
+  resolveSessionRequest, rejectSessionRequest,
+  resolveApprovalExternal, resolveApprovalInternal
+} from '@/app/account/wallet';
 // import { useRouter } from 'next/navigation';
 import { TxResolved } from '@/components/common/approve-dialog/approve-dialog';
 import ApproveDialog from '@/components/common/approve-dialog/approve-dialog';
@@ -36,7 +41,7 @@ export interface ConnectButtonProps {
 }
 
 export interface ApproveData {
-  type: SessionDemandType | 'Transfer';
+  type: SessionEventType | 'Transfer';
   data: any;
 }
 
@@ -65,13 +70,13 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const [txResolved, setTxResolved] = useState<TxResolved>();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<any>();
-  const { demandType, data } = useSessionDemand();
+  const { event, data } = useSessionEvent();
   const [approveData, setApproveData] = useState<ApproveData>();
   // const [loggedIn, setLoggedIn] = useState<boolean>();
   // const onApproveProposal = useApproveSessionProposal();
   // const onRejectProposal = useRejectSessionProposal();
-  const onApproveRequest = useApproveSessionRequest();
-  const onRejectRequest = useRejectSessionRequest();
+  // const onApproveRequest = useApproveSessionRequest();
+  // const onRejectRequest = useRejectSessionRequest();
 
   const resetWalletUi = useCallback(() => {
     setOpenTransfer(false);
@@ -84,108 +89,118 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
     setIsClient(true);
   }, [])
   
-  // console.log('vsa', vsa)
-  // console.log('eoa', eoa);
-  
-  // useEffect(() => {
-  //   if(demandType){
-  //     setApproveData({type: demandType, data});
-  //     setOpenApproveDialog(true);
-  //   }
-  //   else
-  //     setOpenApproveDialog(false);
-  // }, [demandType, data]);
 
-  // useEffect(() => {
-  //   if(eoa)
-  //     setLoggedIn(true);
-  //   else 
-  //     setLoggedIn(false)
-  // }, [eoa])
-
-  console.log('demandType', demandType);
-
-  const onApprove = useCallback(async () => {
+  const onApprove = async () => {
     setLoading(true);
-    let _error: any;
-    if(demandType) {
-      switch (demandType) {
-        case 'Connection':
-          try{
-            await approveSessionProposal(data, stateResetter, wallet);
-          } catch(err: any) {
-            setError(err);
-          } finally {
-            setLoading(false);
-          }
-          break;
-        case 'Transaction':
-          let hash: any        
-          try {
-            hash = await onApproveRequest();
-          } catch(err: any) {
-            console.error(err);
-            _error = err;
-            setError(err);
-          } finally {
-            if(!hash && !_error)
-              setError({code: '001' , message: `Failed to catch tx confirmation: please verify last tx on block exporer for confirmation`})
-            else
-              setTxResolved({success: !_error, hash}); // checar confirmação que a tx passou
-            setLoading(false);
-          }
-          break;
-        case 'Signature':
-          try {
-            hash = await onApproveRequest();
-          } catch(err: any) {
-            _error = err;
-            setError(err);
-          } finally {
-            setLoading(false);
-          }
-          break;
+    let _hash: any;
+    let _err: any;
+    if(event) {
+      if(!wallet) {
+        setError({ message: 'no wallet found' });
+        setLoading(false);
+        return
       }
+      const { hash, error: err } = await resolveApprovalExternal(event, data, stateResetter, wallet, vsa);
+      _hash = hash;
+      _err = err;
     } else {
       if(!vsa) {
-        setError({ message: "no provider found" })
-        setLoading(false)
-        return;
-      }
-      let _error: any;
-      let hash: `0x${string}` | undefined;
-      const target = approveData?.data.targetAddress;
-      const value = approveData?.data.value;
-      console.log('onApprove: approveData', approveData);
-      try {
-        console.log('sending uo...');
-        const res = await vsa.sendUserOperation({
-          target,
-          data: '0x',
-          value
-      });
-      hash = res?.hash;
-      console.log('hash', hash);
-      } catch (err: any) {
-        console.error(err);
-        setError(err);
-        _error = err;
-      } finally {
+        setError({ message: 'no provider found '});
         setLoading(false);
-        setTxResolved({ success: !_error, hash });
-        setApproveData(undefined);
+        return
       }
+      const { hash, error: err} = await resolveApprovalInternal(data, vsa);
+      _hash = hash;
+      _err = err;
     }
-    resetWalletUi();
-  }, [
-    demandType, onApproveRequest,
-    setError, setLoading, setTxResolved, vsa
-  ]);
+    setError(_err);
+    setTxResolved({ success: !_err , hash: _hash });
+    setLoading(false);
+  }
+  
+  // const onApproveB = async () => {
+  //   setLoading(true);
+  //   let _error: any;
+  //   if(event) {
+  //     switch (event) {
+  //       case 'Connection':
+  //         try{
+  //           await approveSessionProposal(data, stateResetter, wallet);
+  //         } catch(err: any) {
+  //           setError(err);
+  //         } finally {
+  //           setLoading(false);
+  //         }
+  //         break;
+  //       case 'Transaction':
+  //         let hash: any        
+  //         try {
+  //           console.log('request data', data);
+  //           hash = await approveSessionRequest(data, stateResetter, vsa, wallet);
+  //           // hash = await onApproveRequest();
+  //         } catch(err: any) {
+  //           console.log('flag')
+  //           console.error(err);
+  //           _error = err;
+  //           setError(err);
+  //         } finally {
+  //           if(!hash && !_error)
+  //             setError({code: '001' , message: `Failed to catch tx confirmation: please verify last tx on block exporer for confirmation`})
+  //           else
+  //             setTxResolved({success: !_error, hash}); // checar confirmação que a tx passou
+  //           setLoading(false);
+  //         }
+  //         break;
+  //       case 'Signature':
+  //         try {
+  //           await approveSessionRequest(data, stateResetter, vsa, wallet);
+  //         } catch(err: any) {
+  //           _error = err;
+  //           setError(err);
+  //         } finally {
+  //           setLoading(false);
+  //         }
+  //         break;
+  //     }
+  //   } else {
+  //     if(!vsa) {
+  //       setError({ message: "no provider found" })
+  //       setLoading(false)
+  //       return;
+  //     }
+  //     let _error: any;
+  //     let hash: `0x${string}` | undefined;
+  //     const target = approveData?.data.targetAddress;
+  //     const value = approveData?.data.value;
+  //     console.log('onApprove: approveData', approveData);
+  //     try {
+  //       console.log('sending uo...');
+  //       const res = await vsa.sendUserOperation({
+  //         target,
+  //         data: '0x',
+  //         value
+  //     });
+  //     hash = res?.hash;
+  //     console.log('hash', hash);
+  //     } catch (err: any) {
+  //       console.error(err);
+  //       setError(err);
+  //       _error = err;
+  //     } finally {
+  //       setLoading(false);
+  //       setTxResolved({ success: !_error, hash });
+  //       setApproveData(undefined);
+  //     }
+  //   }
+  //   resetWalletUi();
+  // }
+
+
 
   const onReject = useCallback(async () => {
     setLoading(true);
-    if(demandType){
-      switch (demandType) {
+    if(event){
+      switch (event) {
         case 'Connection':
           try {
             await rejectSessionProposal(data, stateResetter, wallet);
@@ -198,7 +213,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
         case 'Transaction':
         case 'Signature':
           try {
-            await onRejectRequest();
+            await rejectSessionRequest(data, stateResetter, wallet);
           } catch (err: any) {
             setError(err);
           } finally {
@@ -209,7 +224,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
     } else 
       resetState()
   },[
-    demandType, onRejectRequest, setLoading, setError
+    event, setLoading, setError
   ]);
 
   const resetState = () => {
@@ -221,9 +236,9 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
 
   return (
     <>
-    {(demandType || approveData || error || txResolved) && 
+    {(event || approveData || error || txResolved) && 
       <ApproveDialog 
-      approveData={approveData? approveData : demandType? {type: demandType, data} : undefined}
+      approveData={approveData? approveData : event? {type: event, data} : undefined}
       onApprove={onApprove}
       onReject={onReject}
       onClose={resetState}
