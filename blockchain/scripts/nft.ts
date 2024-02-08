@@ -2,17 +2,20 @@ import { BigNumber, ethers } from "ethers";
 import { UserOperationBuilder, Client } from "userop";
 import uri from "../nft/uri.json";
 import dotenv from "dotenv";
-import nft from "../deployments/base_goerli/NFT.json";
-import walletAbi from "../artifacts/contracts/wallet/RWallet.sol/RWallet.json";
+import nft from "../deployments/polygon_mumbai/NFT.json";
+import vsa from "../artifacts/contracts/protocol/SmartAccount.sol/SmartAccount.json";
 import entrypoint from "../artifacts/contracts/core/EntryPoint.sol/EntryPoint.json";
 import mktplace from '../deployments/base_goerli/MarketPlace.json';
 import receipts from '../deployments/base_goerli/ReceiptNFT.json';
 import { arrayify } from "ethers/lib/utils";
 
+
 dotenv.config({ path: __dirname+'/../.env' });
 
-const networkID = 84531;
+// const networkID = 84531;
+const networkID = 80001 // mumbai
 const pkey = process.env.PRIVATE_KEY;
+const apikey = process.env.MUMBAI_ALCHEMY_API_KEY;
 const dummy = process.env.PUBLIC_KEY;
 const rpc = process.env.BASE_GOERLI_PROVIDER;
 const walletAddress = "0x088F73ADf40B43c74aEd612FC14186A9d44e7Cce";
@@ -29,16 +32,17 @@ const checkSupply = async () => {
 // checkSupply();
 
 const getOwner = async() => {
-    const provider = new ethers.providers.JsonRpcProvider(rpc)
+    // const provider = new ethers.providers.JsonRpcProvider(rpc)
+    const provider = new ethers.providers.AlchemyProvider(networkID, apikey)
     const contract  = new ethers.Contract(nft.address, nft.abi, provider);
     // 
     const tokenId = 2;
     // 
     const owner = await contract.ownerOf(tokenId);
-    console.log(owner);
+    console.log('owner', owner);
     console.log('address',nft.address)
 }
-getOwner()
+// getOwner()
 
 const test = async () => {
     if(!rpc) throw new Error("missing env");
@@ -65,10 +69,12 @@ const checkBal = async () => {
 
 
 const mint = async () => {
-    if(!pkey || !rpc) throw new Error("missing env");
-    const provider = new ethers.providers.JsonRpcProvider(rpc);
+    if(!pkey || !apikey) throw new Error("missing env");
+    // const provider = new ethers.providers.JsonRpcProvider(rpc);
+    const provider = new ethers.providers.AlchemyProvider(networkID, apikey);
     const signer = new ethers.Wallet(pkey, provider);
     const contract = new ethers.Contract(nft.address, nft.abi, signer);
+    console.log('contract address', contract.address);
 
     const tokenId = await contract.totalSupply();
     console.log(`\nminting token ${tokenId} ...`);
@@ -85,6 +91,8 @@ const mint = async () => {
     const owner = await contract.ownerOf(tokenId);
     console.log('owner == wallet : ',owner == to);
 }
+mint();
+
 
 const PKEY_2 = process.env.PRIVATE_KEY_2;
 const eoaTransfer = async (tokenId: number) =>{
@@ -122,8 +130,8 @@ const transfer = async () => {
     if(!walletSignerKey || !rpc || !dummy || !bundler) throw new Error("missing env");
     const provider = new ethers.providers.JsonRpcProvider(rpc);
     const signer = new ethers.Wallet(walletSignerKey, provider);
-    const account = new ethers.Contract(walletAddress, walletAbi.abi, signer);
-    const accountAbi = new ethers.utils.Interface(walletAbi.abi);
+    const account = new ethers.Contract(walletAddress, vsa.abi, signer);
+    const accountAbi = new ethers.utils.Interface(vsa.abi);
     console.log('flag 0');
     const epAbi = ["function getUserOpHash(UserOperation calldata userOp)"];
     const entryPoint = new ethers.Contract(entryPointAddress, entrypoint.abi, provider);
@@ -231,7 +239,7 @@ const WALLET_ADDR = '0x8957dBa32B08B904677F6c99994c88d6D39704Ca';
 const test2 = async() => {
     if(!rpc) throw new Error("missing env");
     const provider = new ethers.providers.JsonRpcProvider(rpc);
-    const wallet = new ethers.Contract(WALLET_ADDR, walletAbi.abi, provider );
+    const wallet = new ethers.Contract(WALLET_ADDR, vsa.abi, provider );
     const index = await wallet.getTokenIndex(nft.address, 0);
     const rentals = await wallet.getRentals();
     console.log('lender', rentals[index].lender);
@@ -241,6 +249,5 @@ const test2 = async() => {
 
 
 // checkBal();
-// mint();
 // eoaTransfer();
 // transfer();
