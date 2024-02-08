@@ -133,7 +133,7 @@ export async function approveSessionProposal (
         value: data.value,
         data: data.calldata ?? '0x'
       });
-      hash = res.hash;
+      hash = await accountProvider.waitForUserOperationTransaction(res.hash);
       console.log('tx', hash);
     } catch (err) {
       console.error(err);

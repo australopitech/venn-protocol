@@ -100,6 +100,11 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
         setLoading(false);
         return
       }
+      if(!data) {
+        setError({message: 'missing request metadata'})
+        setLoading(false)
+        return
+      }
       const { hash, error: err } = await resolveApprovalExternal(event, data, stateResetter, wallet, vsa);
       _hash = hash;
       _err = err;
@@ -109,7 +114,12 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
         setLoading(false);
         return
       }
-      const { hash, error: err} = await resolveApprovalInternal(data, vsa);
+      if(!approveData) {
+        setError({message: 'missing tx metadata'})
+        setLoading(false)
+        return
+      }
+      const { hash, error: err} = await resolveApprovalInternal(approveData.data, vsa);
       _hash = hash;
       _err = err;
     }
