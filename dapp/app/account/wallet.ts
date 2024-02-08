@@ -108,7 +108,7 @@ export async function approveSessionProposal (
       response = formatJsonRpcError(id, err.message);
       error = err;
     }
-    if(response)
+    if(response || topic)
       await wallet.respondSessionRequest({
         topic,
         response
