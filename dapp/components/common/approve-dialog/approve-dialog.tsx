@@ -81,18 +81,7 @@ export const CloseButton = ({onClick}: ButtonProps) => {
 
 
 export default function ApproveDialog ({ onApprove, onReject, onClose, loading, approveData, error, txResolved } : ApproveDialogProps) {
-  // const { demandType, data } = useSessionDemand();
-  // const demandType = 'Connection'
-  // const data = {
-  //   proposer: {
-  //     metadata: {
-  //       name: 'exchange tokens bla bla at Uniswap',
-  //       description: "exchange tokens bla bla at Uniswap",
-  //       url: 'wwww.uniswap.org',
-  //       icons: []
-  //     }
-  //   }
-  // }
+  
 
   const { address: eoa } = useAccount();
   const { address: vsa } = useSmartAccount();

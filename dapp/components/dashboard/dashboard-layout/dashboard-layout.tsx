@@ -72,11 +72,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const [error, setError] = useState<any>();
   const { event, data } = useSessionEvent();
   const [approveData, setApproveData] = useState<ApproveData>();
-  // const [loggedIn, setLoggedIn] = useState<boolean>();
-  // const onApproveProposal = useApproveSessionProposal();
-  // const onRejectProposal = useRejectSessionProposal();
-  // const onApproveRequest = useApproveSessionRequest();
-  // const onRejectRequest = useRejectSessionRequest();
+  
 
   const resetWalletUi = useCallback(() => {
     setOpenTransfer(false);
@@ -115,7 +111,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
         return
       }
       if(!approveData) {
-        setError({message: 'missing tx metadata'})
+        setError({message: 'missing tx metadata'});
         setLoading(false)
         return
       }
@@ -124,8 +120,10 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
       _err = err;
     }
     setError(_err);
-    setTxResolved({ success: !_err , hash: _hash });
+    if(!event || event === 'Transaction')
+      setTxResolved({ success: !_err , hash: _hash });
     setLoading(false);
+    resetWalletUi();
   }
   
   // const onApproveB = async () => {
@@ -242,6 +240,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
     setTxResolved(undefined);
     setApproveData(undefined);
     setLoading(false);
+    resetWalletUi();
   };
 
   return (
