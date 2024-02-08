@@ -33,13 +33,13 @@ const main = async () => {
         signer
     ) as SmartAccountFactory;
     console.log('factoryAddr',factory.address)
-    const stake = await factory.stake(
-        entryPointContract.address,
-        4294967295,
-        {value: ethers.utils.parseEther("0.3")}
-    );
-    const receipt = await stake.wait();
-    console.log('\nstake tx:', receipt.transactionHash);
+    // const stake = await factory.stake(
+    //     entryPointContract.address,
+    //     4294967295,
+    //     {value: ethers.utils.parseEther("0.3")}
+    // );
+    // const receipt = await stake.wait();
+    // console.log('\nstake tx:', receipt.transactionHash);
     const depositInfo = await entryPointContract.getDepositInfo(factory.address);
     console.log('stake:', ethers.utils.formatEther(depositInfo.stake.toString()));
 }
