@@ -60,7 +60,8 @@ export function useAddressNfts (address: string | undefined) : FetchNftDataRespo
       setIsLoading(true);
       const fetchData = async () => {
         try {
-          const apiData = await fetchAddressData("base-testnet", address);
+          // const apiData = await fetchAddressData("base-testnet", address);
+          const apiData = await fetchAddressData("matic-mumbai", address);
           let nfts = await processApiData(apiData, address);
           if (nfts) {
             nfts = await getRentalData(client, nfts);
