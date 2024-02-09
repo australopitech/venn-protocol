@@ -8,7 +8,7 @@ import { rent } from '@/utils/call';
 import { NftItem } from '@/types/typesNftApi.d';
 import { NftObj } from '@/types/nftObj';
 import { mktPlaceContract, receiptsContract } from '@/utils/contractData';
-import { isSmartAccount, getListData, getNFTByReceipt } from '../../../utils/utils';
+import { isSmartAccount, getListData, getNFTByReceipt } from '../../../utils/listing-data';
 import Router from 'next/router';
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { getAddress, formatEther } from 'viem';

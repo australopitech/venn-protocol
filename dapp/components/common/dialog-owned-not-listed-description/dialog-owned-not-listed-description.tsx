@@ -12,7 +12,7 @@ import { list, approve } from '@/utils/call';
 import { mktPlaceContract } from '@/utils/contractData';
 import erc721 from '../../../utils/contractData/ERC721.artifact.json';
 import Router from 'next/router';
-import { isApproved as getIsApproved } from '@/utils/utils';
+import { isApproved as getIsApproved } from '@/utils/listing-data';
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { parseEther } from 'viem';
 import { baseGoerli } from 'viem/chains';

@@ -6,8 +6,8 @@ import classNames from 'classnames';
 import { useMemo, useEffect, useState } from 'react';
 // import { useEthers } from '@usedapp/core';
 import { 
-  ownerOf, resolveIsListed, resolveIsRentedOut, getListData, getNFTByReceipt, checkIsRental, resolvePrice
- } from '@/utils/utils';
+  ownerOf, checkIsListed, checkIsRentedOut, getListData, getNFTByReceipt, isRental as checkIsRental, checkPrice
+ } from '@/utils/listing-data';
 import { receiptsContract } from '@/utils/contractData';
 import { useAccount, usePublicClient } from 'wagmi';
 import { baseGoerli } from 'viem/chains';
@@ -40,16 +40,14 @@ export default function NftCard ({
   holderAddress
 }: NftCardProps) {
   
-  // const { library, account } = useEthers();
-  // const client = usePublicClient();
   const { address: account } = useAccount();
   const [holder, setHolder] = useState<string>();
-  const [isListed, setIsListed] = useState<string>();
-  const [rentPrice , setRentPrice] = useState<string>();
+  const [isListed, setIsListed] = useState<boolean>();
+  const [rentPrice , setRentPrice] = useState<bigint>();
   const [isRentedOut, setIsRentedOut] = useState<boolean>();
   const [isRental, setIsRental] = useState<boolean>();
   const [loading, setLoading] = useState<boolean>(true);
-  const client = usePublicClient({ chainId: baseGoerli.id });
+  const client = usePublicClient();
   // console.log('tokenid/isrental',tokenId?.toString(),isRental)
   // console.log(
   //   name,
@@ -82,30 +80,44 @@ export default function NftCard ({
     
     const isReceipt = contractAddress === receiptsContract.address;
     
-    resolvePrice(setRentPrice, contractAddress, tokenId, isReceipt, client);
-    resolveIsListed(setIsListed, isReceipt, contractAddress, tokenId, client);
-    resolveIsRentedOut(setIsRentedOut, contractAddress, tokenId, isReceipt, holder, client);
+    const resolvePrice = async () => {
+      setRentPrice(await checkPrice(contractAddress, tokenId, isReceipt, client));
+    }
+
+    const resolveIsListed = async () => {
+      setIsListed( await checkIsListed(isReceipt, contractAddress, tokenId, client));
+    }
+    
+    const resolveIsRentedOut = async () => {
+      const res = await checkIsRentedOut(contractAddress, tokenId, isReceipt, holder, client);
+      // console.log('checkIsRentedOut response', res);
+      setIsRentedOut(res)
+    }
 
     const resolveIsRental = async() => {
       if(address) {
         setIsRental(await checkIsRental(
-          client,
           contractAddress,
           tokenId,
           address,
+          client          
         ));
         return
       }
       if(account)
         setIsRental( await checkIsRental(
-          client,
           contractAddress,
           tokenId,
           account,
+          client          
         ));
     }
 
+    resolvePrice();
+    resolveIsListed();
+    resolveIsRentedOut();
     resolveIsRental();
+
   }, [client, holder, account]);
 
   useEffect(() => {
@@ -116,37 +128,6 @@ export default function NftCard ({
     ) setLoading(false);
   },[isListed, isRentedOut, isRental])
 
-  // useEffect(() => {
-    // const resolvePrice = async() => {
-    //   let _contractAddr;
-    //   let _tokenId;
-    //   if(isReceipt){
-    //     const nftObj = await getNFTByReceipt(library, tokenId);
-    //     contractAddress = nftObj?.contractAddress;
-    //     tokenId = nftObj?.tokenId;  
-    //   } else{
-    //     _contractAddr = contractAddress;
-    //     _tokenId = tokenId;
-    //   }
-    //   const { price } = await getListData(
-    //     library, 
-    //     contractAddress,
-    //     tokenId
-    //   );
-    //   if(price) setRentPrice(ethers.utils.formatEther(price));
-    // }
-
-  //   resolvePrice();
-
-  // }, [library]);
-
-  // useEffect(() => {
-  //   resolveIsRentedOut(library, setIsRentedOut, tokenId, isReceipt, holder );
-  // }, [library, isReceipt, holder]);
-
-  // console.log(name, 'isRentedOut', isRentedOut)
-  
-  // console.log('contractAddress', contractAddress)
   return (
     <div className={classNames(styles.nftCardContainer, currentPage === 'market' ? styles.nftCardMarketContainer : '')}>
       <div className={styles.nftCardImageContainer} onClick={onClick}>
@@ -165,7 +146,7 @@ export default function NftCard ({
               : <span className={styles.listed}>
                   Rent price:
                   <span className={styles.price}>
-                    {`${rentPrice} ETH`}
+                    {`${rentPrice?.toString()} ETH`}
                   </span>
                 </span>
             )

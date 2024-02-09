@@ -3,7 +3,7 @@ import { BalancesResponse, BalanceItem, NftData, NftItem, FetchNftDataResponse }
 import { fetchAddressData } from '../utils/frontendUtils'
 import { useEffect, useState } from "react";
 // import { useEthers } from '@usedapp/core';
-import { checkIsRental } from '@/utils/utils';
+import { isRental } from '@/utils/listing-data';
 import { usePublicClient } from 'wagmi';
 import { baseGoerli } from 'viem/chains';
 
@@ -32,7 +32,7 @@ const processApiData = async (apiData: BalancesResponse, address: string | undef
 async function getRentalData(provider: any, nfts: NftItem[]): Promise<NftItem[]> {
   const promises = nfts.map((nft) => {
     return nft.nftData.token_id
-     ? checkIsRental(provider, nft.contractAddress, BigInt(nft.nftData.token_id), nft.owner)
+     ? isRental(nft.contractAddress, BigInt(nft.nftData.token_id), nft.owner, provider)
      : undefined;
   });
   try {
@@ -53,7 +53,7 @@ export function useAddressNfts (address: string | undefined) : FetchNftDataRespo
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   // const { library } = useEthers();
-  const client = usePublicClient({ chainId: baseGoerli.id });
+  const client = usePublicClient();
 
   useEffect(() => {
     if (address) {

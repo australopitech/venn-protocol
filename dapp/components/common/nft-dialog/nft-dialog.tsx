@@ -19,7 +19,7 @@ import walletAbi from '../../../utils/contractData/SmartAccount.json';
 import erc721 from '../../../utils/contractData/ERC721.artifact.json';
 import { mktPlaceContract, receiptsContract } from '@/utils/contractData';
 // import { ethers, BigNumber } from 'ethers';
-import { ownerOf, resolveIsRentedOut, resolveIsListed, resolveIsRental } from '@/utils/utils';
+import { ownerOf, checkIsRentedOut, checkIsRental, checkIsListed } from '@/utils/listing-data';
 import { useAccount, usePublicClient } from 'wagmi';
 import { getAddress } from 'viem';
 import { baseGoerli, polygonMumbai } from 'viem/chains';
@@ -97,17 +97,18 @@ export const NFTDialog = ({
     const [isReceipt, setIsReceipt] = useState<boolean>();
     const [loading, setLoading] = useState<boolean>(true);
     const [tokenId, setTokenId] = useState<bigint>();
-    const client = usePublicClient({ chainId: polygonMumbai.id });
+    const client = usePublicClient();
+    console.log('client ', client)
     const { address: account } = useAccount();
 
-    console.log('nft contract', nftItem?.contractAddress)
-    console.log('nft id', nftItem?.nftData.token_id)
+    // console.log('nft contract', nftItem?.contractAddress)
+    // console.log('nft id', nftItem?.nftData.token_id)
     if(nftItem)
      console.log(
       'nft_contract == receipts',
       getAddress(nftItem?.contractAddress) === receiptsContract.address
     )
-    console.log('receipts_contract', receiptsContract.address )
+    // console.log('receipts_contract', receiptsContract.address )
 
     useEffect(() => {
       if(nftItem){
@@ -128,89 +129,51 @@ export const NFTDialog = ({
     }, [nftItem, tokenId]);
 
 
-    useEffect(() => { 
-      if(!nftItem || !tokenId || isReceipt === undefined) 
+    useEffect(() => {
+      if(!nftItem || tokenId === undefined || isReceipt === undefined) 
         return
       
-      resolveIsRentedOut(
-        setIsRented_Out,
-        nftItem.contractAddress,
-        tokenId,
-        isReceipt,
-        holder,
-        client
-      );
+      const resolveIsRentedOut = async () => {
+        const res = await checkIsRentedOut(
+          nftItem.contractAddress,
+          tokenId,
+          isReceipt,
+          holder,
+          client
+        );
+        // console.log('checkIsRentedOut response', res);
+        setIsRented_Out(res)
+      }
       
-      resolveIsListed(
-        setIsListed,
+      const resolveIsListed = async () => {
+        const res = await checkIsListed(
         isReceipt,
         nftItem.contractAddress,
         tokenId,
         client
-      );
+        );
+        // console.log('checkIsListed Response', res);
+        setIsListed(res)
+      }
 
-      resolveIsRental(
-        setIsRental_signer,
-        isReceipt,
-        nftItem.contractAddress,
-        tokenId,
-        account,
-        client
-      );
+      const resolveIsRental = async () => {
+        const res = await checkIsRental(
+          isReceipt,
+          nftItem.contractAddress,
+          tokenId,
+          account,
+          client
+        );
+        // console.log('checkIsRental response', res)
+        setIsRental_signer(res)
+      }
 
+    resolveIsRentedOut();
+    resolveIsListed()
+    resolveIsRental();
 
     }, [holder, isReceipt, account])
 
-    // useEffect(() => {
-    //   const resolveIsListed = async () => {
-    //     if(isReceipt) {
-    //       setIsListed(
-    //         await checkIsListedByReceipt(library, BigNumber.from(nftItem?.nftData.token_id))
-    //       );
-    //       return
-    //     }
-    //     const { maxDur } : { maxDur: BigNumber | undefined } = await getListData(
-    //       library,
-    //       nftItem?.contractAddress,
-    //       BigNumber.from(nftItem?.nftData.token_id)
-    //     );
-    //     console.log('maxDur', maxDur)
-    //     if(maxDur) setIsListed(true);
-    //     if(maxDur?.eq(0)) setIsListed(false);
-    //   }
-
-    //   resolveIsListed();
-
-    // }, [holder, isReceipt]);
-
-    // useEffect(() => {
-    //   const resolveIsRental = async () => {
-    //     if(account) {
-    //       let contractAddr: string | undefined;
-    //       let tokenId: BigNumber | undefined;
-    //       if(isReceipt) {
-    //         const nftObj = await getNFTByReceipt(
-    //           library, 
-    //           BigNumber.from(nftItem?.nftData.token_id)
-    //         );
-    //         contractAddr = nftObj.contractAddress;
-    //         tokenId = nftObj.tokenId;
-    //       } else {
-    //         contractAddr = nftItem?.contractAddress;
-    //         tokenId = BigNumber.from(nftItem?.nftData.token_id);
-    //       }
-    //       setIsRental_signer(await checkIsRental(
-    //         library,
-    //         account,
-    //         contractAddr, 
-    //         tokenId
-    //       ));
-    //     }
-    //   }
-
-    //   resolveIsRental();
-
-    // }, [account]);
 
     useEffect(() => {
       if(holder && isRental_signer !== undefined) {

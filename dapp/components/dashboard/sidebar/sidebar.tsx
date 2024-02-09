@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 // import { useEtherBalance, useEthers, useSigner } from '@usedapp/core';
 import styles from './sidebar.module.css';
 import classNames from 'classnames';
-import compactString from '@/utils/compactString'
+import { compactString } from '@/utils/utils';
 import { nftViewMode, nftViewContext } from '@/types/nftContext';
 import Wallet from '../wallet/wallet';
 

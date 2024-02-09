@@ -5,8 +5,7 @@ import styles from './dialog-owned-rented-description.module.css';
 import { delist } from '@/utils/call';
 import { NftItem } from '@/types/typesNftApi.d';
 // import { BigNumber } from 'ethers';
-import { getEndTime, getNFTByReceipt, ownerOf } from '@/utils/utils';
-import { useTimestamp } from '@/hooks/block-data';
+import { getEndTime, getNFTByReceipt, ownerOf } from '@/utils/listing-data';
 import Router from 'next/router';
 import { useBlock, usePublicClient, useWalletClient } from 'wagmi';
 

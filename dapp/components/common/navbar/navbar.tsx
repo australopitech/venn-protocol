@@ -12,7 +12,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useAccount, useDisconnect } from 'wagmi';
 // import { signOut } from '@/app/venn-provider';
 import { useSmartAccountAddress, useVsaUpdate} from '@/app/account/venn-provider';
-import compactString from '@/utils/compactString';
+import { compactString } from '@/utils/utils';
 
 export interface NavBarProps {
   signInPage?: boolean;

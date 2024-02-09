@@ -6,7 +6,7 @@ import classNames from 'classnames';
 // import { useSigner, useEthers } from '@usedapp/core';
 import { NftItem } from '@/types/typesNftApi.d';
 import { delist  } from '@/utils/call';
-import { getListData, getNFTByReceipt } from '@/utils/utils';
+import { getListData, getNFTByReceipt } from '@/utils/listing-data';
 import Router from 'next/router';
 import { receiptsContract } from '@/utils/contractData';
 import { usePublicClient, useWalletClient } from 'wagmi';
