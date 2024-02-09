@@ -2,7 +2,6 @@
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { WalletClientSigner, type SmartAccountSigner, SmartAccountProvider } from "@alchemy/aa-core";
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
-import { Web3AuthSigner } from "@alchemy/aa-signers/web3auth";
 import { Web3Wallet as Web3WalletType } from "@walletconnect/web3wallet/dist/types/client";
 import { Web3Wallet, Web3WalletTypes  } from '@walletconnect/web3wallet';
 // import { SessionTypes } from "@walletconnect/types";
@@ -11,14 +10,10 @@ import { buildApprovedNamespaces, getSdkError } from '@walletconnect/utils'
 import { sepolia, baseGoerli, mainnet, polygonMumbai } from "viem/chains";
 import { factoryContract } from "@/utils/contractData";
 import { VennSmartAccount } from "../../account/account";
-import { createWeb3AuthSigner } from "@/utils/web3auth";
 import { SessionTypes } from "@walletconnect/types";
-import { formatParams } from "@/utils/utils";
-import { formatJsonRpcError, formatJsonRpcResult } from "@json-rpc-tools/utils";
 import { WalletClient } from "viem";
 import { useAccount, useNetwork, useWalletClient } from "wagmi";
 import { getDefaultEntryPointAddress } from "@alchemy/aa-core";
-import { chains as supportedChains } from "../wagmi";
 import { resolveProviderKey } from "../chain-provider";
 
 type SmartAccountContextType = {
@@ -49,9 +44,8 @@ const entryPointAddr = getDefaultEntryPointAddress(baseGoerli);
 //
 const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID;
 const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_BASE_API_KEY;
-const activeNetwork = baseGoerli;
 const factoryAddress = factoryContract.address;
-// const supportedChains = [baseGoerli];
+export const activeNetwork = polygonMumbai;
 
 
 const createAccountProvider = (walletClient: WalletClient) => {
@@ -278,22 +272,6 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
   const triggerVsaUpdate = useCallback(() => {
     setUpdater(!updater);
   }, [updater, setUpdater]);
-  
-  // const onSessionProposal = useCallback((proposal: Web3WalletTypes.SessionProposal) => {
-  //   console.log('session proposal', proposal);
-  //   // console.log('state', sessionProposal, sessionEvent)
-  //   if(!sessionProposal && !sessionEvent){
-  //     setSessionProposal(proposal);
-  //     setSessionEvent('Connection');
-  //     console.log('accountAddress in handler', accountAddress)
-  //     if(accountAddress) {
-  //       console.log('flag')
-  //       setNamespaces(getApprovedNamespaces(accountAddress, proposal));
-  //     }
-  //     else
-  //       setNamespaces(undefined);
-  //   }
-  // }, [accountAddress, setNamespaces, setSessionProposal]);
 
   const onSessionProposal = (proposal: Web3WalletTypes.SessionProposal) => {
     console.log('session_proposal', proposal);
