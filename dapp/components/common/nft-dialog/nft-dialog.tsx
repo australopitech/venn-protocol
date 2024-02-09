@@ -22,7 +22,7 @@ import { mktPlaceContract, receiptsContract } from '@/utils/contractData';
 import { ownerOf, resolveIsRentedOut, resolveIsListed, resolveIsRental } from '@/utils/utils';
 import { useAccount, usePublicClient } from 'wagmi';
 import { getAddress } from 'viem';
-import { baseGoerli } from 'viem/chains';
+import { baseGoerli, polygonMumbai } from 'viem/chains';
 // import { client } from '@/pages/client';
 
 function GetNftImage (nftItem: NftItem) {
@@ -97,7 +97,7 @@ export const NFTDialog = ({
     const [isReceipt, setIsReceipt] = useState<boolean>();
     const [loading, setLoading] = useState<boolean>(true);
     const [tokenId, setTokenId] = useState<bigint>();
-    const client = usePublicClient({ chainId: baseGoerli.id });
+    const client = usePublicClient({ chainId: polygonMumbai.id });
     const { address: account } = useAccount();
 
     console.log('nft contract', nftItem?.contractAddress)
