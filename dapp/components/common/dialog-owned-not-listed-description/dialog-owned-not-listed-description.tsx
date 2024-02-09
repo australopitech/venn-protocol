@@ -63,31 +63,21 @@ export const DialogOwnedNotListedDescription = ({
   nftItem,
   setIsNFTOpen
 }: DialogOwnedNotListedDescriptionProps) => {
-  // const provider = useProvider();
   const [price, setPrice] = useState<number>(0);
   const [duration, setDuration] = useState<number>();
   const [isPriceInvalid, setIsPriceInvalid] = useState<boolean>(false);
   const [isDurationInvalid, setIsDurationInvalid] = useState<boolean>(false);
-  // const [isLoading, setIsLoading] = useState<boolean>(false);
   const listButtonText = "List it!";
   const approveButtonText = "Approve Listing";
   const loadingText = "loading...";
   const [buttonText, setButtonText] = useState<string>();
   const [resolver, setResolver] = useState<boolean>(false);
-  // const signer = useSigner();
   const { data: signer } = useWalletClient();
-  // const {account, library} = useEthers();
   const { address: account } = useAccount();
-  // const client = usePublicClient();
   const [isApproved, setIsApproved] = useState<boolean>();
   const [tokenId, setTokenId] = useState<bigint>();
-  const client = usePublicClient({ chainId: baseGoerli.id });
+  const client = usePublicClient();
 
-  // const isApproved = useIsApproved(nftItem);
-
-  console.log('signer', signer);
-  console.log('account', account)
-  console.log('tokenId', tokenId)
 
   useEffect(() => {
     if(nftItem) {
@@ -128,7 +118,6 @@ export const DialogOwnedNotListedDescription = ({
       numValue = 0
     }
     console.log('numValue is ', numValue)
-    // console.log('price in wei', (ethers.utils.parseEther(price.toString())).toString())
     // If value is negative or not a number, set it to 0
     if ((numValue < 0 || isNaN(numValue)) ) {
       setIsPriceInvalid(true);

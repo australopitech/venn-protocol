@@ -11,7 +11,7 @@ import { getNFTByReceipt, ownerOf } from '@/utils/utils';
 import { getAddress, GetBlockReturnType } from 'viem';
 import { useAccount, useBlockNumber, usePublicClient } from 'wagmi';
 import { baseGoerli } from 'viem/chains';
-// import { client } from '@/pages/client';
+import { activeNetwork } from '@/app/account/venn-provider';
 
 export interface DialogNotOwnedBorrowedDescriptionProps {
   address?: `0x${string}`;
@@ -74,16 +74,9 @@ export const DialogNotOwnedBorrowedDescription = ({
 }: DialogNotOwnedBorrowedDescriptionProps) => {
   const [timeLeft, setTimeLeft] = useState<number>(0);
   const [block, setBlock] = useState<GetBlockReturnType>();
-  // const { account, library, chainId } = useEthers();
-  // const client = usePublicClient();
   const { address: account} = useAccount();
-  // const timestamp = useTimestamp({ chainId: chainId, isStatic: false, refresh: 5});
-  // const { data: block } = useBlock();
   const { data: blockNum, error: blockErr } = useBlockNumber({ watch: true });
-  const client = usePublicClient({
-    chainId: baseGoerli.id
-  });
-  // console.log('timestamp', timestamp, typeof timestamp);
+  const client = usePublicClient();
   
   useEffect(() => {
     const resolveBlock = async () => {
