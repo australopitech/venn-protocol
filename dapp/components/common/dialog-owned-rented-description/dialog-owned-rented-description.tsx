@@ -7,7 +7,8 @@ import { NftItem } from '@/types/typesNftApi.d';
 // import { BigNumber } from 'ethers';
 import { getEndTime, getNFTByReceipt, ownerOf } from '@/utils/listing-data';
 import Router from 'next/router';
-import { useBlock, usePublicClient, useWalletClient } from 'wagmi';
+import { useBlockNumber, usePublicClient, useWalletClient } from 'wagmi';
+import { useTimestamp } from '@/hooks/block-data';
 
 export interface DialogOwnedRentedDescriptionProps {
   isListed?: boolean;
@@ -54,15 +55,11 @@ export const DialogOwnedRentedDescription = ({
   const [timeLeft, setTimeLeft] = useState<bigint>(BigInt(0));
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [tokenId, setTokenId] = useState<bigint>();
-  // const signer = useSigner();
   const { data: signer } = useWalletClient();
-  // const { account, library, chainId } = useEthers();
   const client = usePublicClient();
-  const { data: block } = useBlock();
-
-  // const timestamp = useTimestamp({ chainId: chainId, isStatic: false, refresh: 5});
+  const timestamp = useTimestamp();
   
-  console.log('timeLeft', timeLeft)
+  // console.log('timeLeft', timeLeft)
   
   useEffect(() => {
     if(nftItem) {
@@ -88,7 +85,7 @@ export const DialogOwnedRentedDescription = ({
       const endTime = await getEndTime(client, nftHolder, nftItem);
       console.log('endTime', endTime?.toString())
       // const timestamp = await getTimestamp(library);
-      if(endTime && block) setTimeLeft(endTime - block.timestamp)
+      if(endTime && timestamp) setTimeLeft(endTime - timestamp)
     }
 
     resolveTimeLeft();
