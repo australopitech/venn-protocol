@@ -150,19 +150,36 @@ const ShowBalance = ({address, isSigner} : ShowBalanceProps) => {
 }
 
 const Buttons = ({setOpenTransfer, setOpenConnect, enabled}: {setOpenTransfer: any, setOpenConnect: any, enabled: boolean}) => {
-  const [style, setStyle] = useState(styles.balanceActionsContainerDisabled);
-  
-  // useEffect(() => {
-  //   if(enabled)
-  //     setStyle(styles.balanceActionsContainer);
-  // }, [enabled]);
+  // const [style1, setStyle1] = useState(styles.balanceActionsContainerDisabled);
+  const [style2, setStyle2] = useState(styles.actionContainerDisabled)
+  useEffect(() => {
+    if(enabled){
+      // setStyle1(styles.balanceActionsContainer);
+      setStyle2(styles.actionContainer)
+    } else {
+      // setStyle1(styles.balanceActionsContainerDisabled)
+      setStyle2(styles.actionContainerDisabled)
+    }
+  }, [enabled]);
+
+  const onClickTransfer = () => {
+    if(!enabled)
+      return
+    setOpenTransfer(true)
+  }
+
+  const onClickConnect = () => {
+    if(!enabled)
+      return
+    setOpenConnect(true)
+  }
 
   // console.log('style', style)
   // console.log('enabled', enabled);
   return (
-    <div className={style}>
-            <div className={styles.actionContainer} onClick={() => setOpenTransfer(true)}><SendIcon enabled={enabled} /></div>
-            <div className={styles.actionContainer} onClick={() => setOpenConnect(true)}><SwapIcon enabled={enabled}/></div>
+    <div className={styles.balanceActionsContainer}>
+            <div className={style2} onClick={onClickTransfer}><SendIcon enabled={enabled} /></div>
+            <div className={style2} onClick={onClickConnect}><SwapIcon enabled={enabled}/></div>
     </div>
   )
 }
