@@ -16,37 +16,33 @@ dotenv.config({ path: __dirname+'/../.env' });
 const networkID = 80001 // mumbai
 const pkey = process.env.PRIVATE_KEY;
 const apikey = process.env.MUMBAI_ALCHEMY_API_KEY;
-const dummy = process.env.PUBLIC_KEY;
-const rpc = process.env.BASE_GOERLI_PROVIDER;
+const dummy = process.env.DUMMY_ADDR;
+// const rpc = process.env.BASE_GOERLI_PROVIDER;
 const walletAddress = "0x088F73ADf40B43c74aEd612FC14186A9d44e7Cce";
 const walletSignerKey = process.env.WALLET_SIGNER_KEY;
 const entryPointAddress = "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789";
 const bundler = process.env.BUNDLER_API;
 const walletSignerAddr = process.env.WALLET_SIGNER_ADDR;
+const provider = new ethers.providers.AlchemyProvider(networkID, apikey);
 
 const checkSupply = async () => {
-    const provider = new ethers.providers.JsonRpcProvider(rpc);
     const contract  = new ethers.Contract(nft.address, nft.abi, provider);
     console.log('supply', (await contract.totalSupply()).toString())
 }
 // checkSupply();
 
 const getOwner = async() => {
-    // const provider = new ethers.providers.JsonRpcProvider(rpc)
-    const provider = new ethers.providers.AlchemyProvider(networkID, apikey)
     const contract  = new ethers.Contract(nft.address, nft.abi, provider);
     // 
-    const tokenId = 2;
+    const tokenId = 1;
     // 
     const owner = await contract.ownerOf(tokenId);
     console.log('owner', owner);
     console.log('address',nft.address)
 }
-// getOwner()
+getOwner()
 
 const test = async () => {
-    if(!rpc) throw new Error("missing env");
-    const provider = new ethers.providers.JsonRpcProvider(rpc);
     // const bytecode = await provider.getCode(entryPointAddress);
     // console.log(bytecode == entrypoint.bytecode);
     const gasData = await provider.getGasPrice();
@@ -54,10 +50,9 @@ const test = async () => {
 }
 
 const checkBal = async () => {
-    if(!pkey || !rpc) throw new Error('missing env');
+    if(!pkey) throw new Error('missing env');
     if(!walletSignerAddr) throw new Error('missing signer');
     // const provider = new ethers.providers.InfuraProvider(network, apikey);
-    const provider = new ethers.providers.JsonRpcProvider(rpc);
     // const signer = new ethers.Wallet(pkey, provider);
     // console.log(signer.address);
     // const bal = (await signer.getBalance()).toString();
@@ -71,7 +66,6 @@ const checkBal = async () => {
 const mint = async () => {
     if(!pkey || !apikey) throw new Error("missing env");
     // const provider = new ethers.providers.JsonRpcProvider(rpc);
-    const provider = new ethers.providers.AlchemyProvider(networkID, apikey);
     const signer = new ethers.Wallet(pkey, provider);
     const contract = new ethers.Contract(nft.address, nft.abi, signer);
     console.log('contract address', contract.address);
@@ -81,7 +75,7 @@ const mint = async () => {
     // 
     const to = await signer.getAddress();
     // 
-    const mint = await contract.safeMint(to, uri.helmet);
+    const mint = await contract.safeMint(to, uri.elf);
     const receipt = await mint.wait();
     console.log(receipt);
 
@@ -91,13 +85,12 @@ const mint = async () => {
     const owner = await contract.ownerOf(tokenId);
     console.log('owner == wallet : ',owner == to);
 }
-mint();
+// mint();
 
 
 const PKEY_2 = process.env.PRIVATE_KEY_2;
 const eoaTransfer = async (tokenId: number) =>{
-    if(!pkey || !rpc) throw new Error("missing env");
-    const provider = new ethers.providers.JsonRpcProvider(rpc);
+    if(!pkey ) throw new Error("missing env");
     const signer = new ethers.Wallet(pkey, provider);
     // 
     const contract = new ethers.Contract(receipts.address, receipts.abi, signer); // RECEIPTS
@@ -127,8 +120,7 @@ const batchEOAtransfer = async(nZero: number, n: number) => {
 // batchEOAtransfer(2, 9);
 
 const transfer = async () => {
-    if(!walletSignerKey || !rpc || !dummy || !bundler) throw new Error("missing env");
-    const provider = new ethers.providers.JsonRpcProvider(rpc);
+    if(!walletSignerKey || !dummy || !bundler) throw new Error("missing env");
     const signer = new ethers.Wallet(walletSignerKey, provider);
     const account = new ethers.Contract(walletAddress, vsa.abi, signer);
     const accountAbi = new ethers.utils.Interface(vsa.abi);
@@ -237,8 +229,6 @@ const transfer = async () => {
 
 const WALLET_ADDR = '0x8957dBa32B08B904677F6c99994c88d6D39704Ca';
 const test2 = async() => {
-    if(!rpc) throw new Error("missing env");
-    const provider = new ethers.providers.JsonRpcProvider(rpc);
     const wallet = new ethers.Contract(WALLET_ADDR, vsa.abi, provider );
     const index = await wallet.getTokenIndex(nft.address, 0);
     const rentals = await wallet.getRentals();
