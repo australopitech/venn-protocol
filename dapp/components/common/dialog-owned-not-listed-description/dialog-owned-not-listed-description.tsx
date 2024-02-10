@@ -11,7 +11,7 @@ import { list, approve } from '@/utils/call';
 // import { useSigner, useEthers } from '@usedapp/core';
 import { mktPlaceContract } from '@/utils/contractData';
 import erc721 from '../../../utils/contractData/ERC721.artifact.json';
-import Router from 'next/router';
+import { useRouter } from 'next/navigation';
 import { isApproved as getIsApproved } from '@/utils/listing-data';
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { parseEther } from 'viem';
@@ -77,8 +77,11 @@ export const DialogOwnedNotListedDescription = ({
   const [isApproved, setIsApproved] = useState<boolean>();
   const [tokenId, setTokenId] = useState<bigint>();
   const client = usePublicClient();
+  const router = useRouter();
 
-
+  const updateState = () => {
+    setResolver(!resolver);
+  }
   useEffect(() => {
     if(nftItem) {
       if(nftItem.nftData.token_id) {
@@ -181,7 +184,7 @@ export const DialogOwnedNotListedDescription = ({
       console.log('success');
       console.log('txhash', hash);
       alert('success');
-      setResolver(!resolver);
+      updateState()
       // setButtonText(listButtonText);
       return
     }
@@ -220,7 +223,7 @@ export const DialogOwnedNotListedDescription = ({
     console.log('txhash', hash);
     alert('success');
     // setIsNFTOpen(false);
-    Router.reload();
+    router.refresh();
   }
 
   console.log('isApproved?' , isApproved)
