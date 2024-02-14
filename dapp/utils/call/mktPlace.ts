@@ -1,4 +1,4 @@
-// import { BigNumber, ethers } from "ethers";
+import { encodeFunctionData } from "viem";
 import { mktPlaceContract } from "../contractData";
 import { writeContract } from "viem/actions";
 import { PublicClient, Abi, WalletClient } from "viem";
@@ -143,4 +143,38 @@ export const rent = async (
     // const mktPlace = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi, signer);
     // const tx = await mktPlace.rentNFT(nftContractAddr, tokenId, duration, {value: value});
     // return await tx.wait();    
+}
+
+export function rentCallData (
+    contract: `0x${string}`,
+    tokenId: bigint,
+    duration: number
+  ) {
+    return encodeFunctionData({
+      abi: mktPlaceAbi,
+      functionName: 'rentNFT',
+      args: [
+        contract,
+        tokenId,
+        duration
+      ]
+    })
+  }
+
+export function listCallData (
+    contract: `0x${string}`,
+    tokenId: bigint,
+    price: bigint,
+    maxDuration: number
+) {
+    return encodeFunctionData({
+        abi: mktPlaceAbi,
+        functionName: 'listNFT',
+        args: [
+            contract,
+            tokenId,
+            price,
+            maxDuration
+        ]
+    })
 }

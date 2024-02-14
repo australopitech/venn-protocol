@@ -1,4 +1,5 @@
 import { getAddress } from "viem";
+import { mktPlaceContract } from "./contractData";
 
 export function compactString(input?: string): string {
   if (!input) {
@@ -25,3 +26,4 @@ export function formatParams(method: string, params: any[]) {
     _params[1] = getAddress(params[1]) as `0x${string}`;
   return _params;
 }
+
