@@ -41,7 +41,7 @@ export interface ConnectButtonProps {
 }
 
 export interface ApproveData {
-  type: SessionEventType | 'Transfer';
+  type: SessionEventType | 'Transfer' | 'Internal';
   data: any;
 }
 
@@ -73,6 +73,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const { event, data } = useSessionEvent();
   const [approveData, setApproveData] = useState<ApproveData>();
   
+  // console.log('vsa', vsa)
 
   const resetWalletUi = useCallback(() => {
     setOpenTransfer(false);
@@ -125,84 +126,6 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
     setLoading(false);
     resetWalletUi();
   }
-  
-  // const onApproveB = async () => {
-  //   setLoading(true);
-  //   let _error: any;
-  //   if(event) {
-  //     switch (event) {
-  //       case 'Connection':
-  //         try{
-  //           await approveSessionProposal(data, stateResetter, wallet);
-  //         } catch(err: any) {
-  //           setError(err);
-  //         } finally {
-  //           setLoading(false);
-  //         }
-  //         break;
-  //       case 'Transaction':
-  //         let hash: any        
-  //         try {
-  //           console.log('request data', data);
-  //           hash = await approveSessionRequest(data, stateResetter, vsa, wallet);
-  //           // hash = await onApproveRequest();
-  //         } catch(err: any) {
-  //           console.log('flag')
-  //           console.error(err);
-  //           _error = err;
-  //           setError(err);
-  //         } finally {
-  //           if(!hash && !_error)
-  //             setError({code: '001' , message: `Failed to catch tx confirmation: please verify last tx on block exporer for confirmation`})
-  //           else
-  //             setTxResolved({success: !_error, hash}); // checar confirmação que a tx passou
-  //           setLoading(false);
-  //         }
-  //         break;
-  //       case 'Signature':
-  //         try {
-  //           await approveSessionRequest(data, stateResetter, vsa, wallet);
-  //         } catch(err: any) {
-  //           _error = err;
-  //           setError(err);
-  //         } finally {
-  //           setLoading(false);
-  //         }
-  //         break;
-  //     }
-  //   } else {
-  //     if(!vsa) {
-  //       setError({ message: "no provider found" })
-  //       setLoading(false)
-  //       return;
-  //     }
-  //     let _error: any;
-  //     let hash: `0x${string}` | undefined;
-  //     const target = approveData?.data.targetAddress;
-  //     const value = approveData?.data.value;
-  //     console.log('onApprove: approveData', approveData);
-  //     try {
-  //       console.log('sending uo...');
-  //       const res = await vsa.sendUserOperation({
-  //         target,
-  //         data: '0x',
-  //         value
-  //     });
-  //     hash = res?.hash;
-  //     console.log('hash', hash);
-  //     } catch (err: any) {
-  //       console.error(err);
-  //       setError(err);
-  //       _error = err;
-  //     } finally {
-  //       setLoading(false);
-  //       setTxResolved({ success: !_error, hash });
-  //       setApproveData(undefined);
-  //     }
-  //   }
-  //   resetWalletUi();
-  // }
-
 
 
   const onReject = useCallback(async () => {
@@ -245,6 +168,19 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
 
   return (
     <>
+    {isNFTOpen && 
+      <NFTDialog
+        setIsNFTOpen={setIsNFTOpen}
+        setApproveData={setApproveData}
+        setTxResolved={setTxResolved}
+        setError={setError}
+        txLoading={loading}
+        nftItem={
+          userData.nfts ? userData.nfts[selectedNFT] : undefined
+        }
+        address={address}
+      />
+    }
     {(event || approveData || error || txResolved) && 
       <ApproveDialog 
       approveData={approveData? approveData : event? {type: event, data} : undefined}
@@ -256,20 +192,11 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
       txResolved={txResolved}
       />
     }
-    {isNFTOpen && 
-      <NFTDialog
-        setIsNFTOpen={setIsNFTOpen} 
-        nftItem={
-          userData.nfts ? userData.nfts[selectedNFT] : undefined
-        }
-        address={address}
-      />
-    }
       <div className={styles.dashboard} >
         <NavBar navbarGridTemplate={styles.navbarGridTemplate} currentPage='dashboard' />
         { (eoa || address)
           ? <div className={styles.contentGridTemplate}> 
-              <SideBar address={address?? vsaAddr ?? ''}
+              <SideBar address={address?? vsaAddr ?? eoa ?? ''}
                       nftsContext={{mode: nftsMode, setNftsViewMode: setNftsMode}}
                       setApproveData={setApproveData}
                       openTransfer={openTransfer}

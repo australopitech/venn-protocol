@@ -23,6 +23,7 @@ import { ownerOf, checkIsRentedOut, checkIsRental, checkIsListed } from '@/utils
 import { useAccount, usePublicClient } from 'wagmi';
 import { getAddress } from 'viem';
 import { baseGoerli, polygonMumbai } from 'viem/chains';
+import { useSmartAccount } from '@/app/account/venn-provider';
 // import { client } from '@/pages/client';
 
 function GetNftImage (nftItem: NftItem) {
@@ -60,7 +61,11 @@ const CloseButton = () => {
 }
 
 export interface NFTDialogProps {
-    setIsNFTOpen?: any;
+    setIsNFTOpen: any;
+    setApproveData: any;
+    setTxResolved: any
+    setError: any,
+    txLoading: boolean
     nftItem?: NftItem;
     address?: `0x${string}`;
 }
@@ -75,6 +80,10 @@ const propImage =  "https://dl.openseauserdata.com/cache/originImage/files/9d6b9
  */
 export const NFTDialog = ({
     setIsNFTOpen,
+    setApproveData,
+    setTxResolved,
+    setError,
+    txLoading,
     nftItem,
     address
 }: NFTDialogProps) => {
@@ -98,8 +107,9 @@ export const NFTDialog = ({
     const [loading, setLoading] = useState<boolean>(true);
     const [tokenId, setTokenId] = useState<bigint>();
     const client = usePublicClient();
-    console.log('client ', client)
-    const { address: account } = useAccount();
+    const { address: eoa } = useAccount();
+    const { address: vsa } = useSmartAccount();
+    // const 
 
     // console.log('nft contract', nftItem?.contractAddress)
     // console.log('nft id', nftItem?.nftData.token_id)
@@ -161,7 +171,7 @@ export const NFTDialog = ({
           isReceipt,
           nftItem.contractAddress,
           tokenId,
-          account,
+          vsa?? eoa,
           client
         );
         // console.log('checkIsRental response', res)
@@ -172,12 +182,13 @@ export const NFTDialog = ({
     resolveIsListed()
     resolveIsRental();
 
-    }, [holder, isReceipt, account])
+    }, [holder, isReceipt, eoa])
 
 
     useEffect(() => {
       if(holder && isRental_signer !== undefined) {
-        if(holder === account) setIsOwned(!isRental_signer);
+        if(holder === vsa) setIsOwned(!isRental_signer)
+        else if(holder === eoa) setIsOwned(!isRental_signer);
         else setIsOwned(false);
       }
     },[holder, isRental_signer]);
@@ -229,7 +240,8 @@ export const NFTDialog = ({
                 
                 {!loading && !isOwned && isListed && !isRented_Out && !isRental_signer &&
                   <DialogNotOwnedListedDescription 
-                  nftItem={nftItem} setIsNFTOpen={setIsNFTOpen} isReceipt={isReceipt}
+                  nftItem={nftItem} setIsNFTOpen={setIsNFTOpen} isReceipt={isReceipt} 
+                  setApproveData={setApproveData} txLoading={txLoading} setError={setError}
                    />}   {/* available for rent */}
                 
                 {!loading && !isOwned && isRented_Out && !isRental_signer &&
@@ -243,7 +255,9 @@ export const NFTDialog = ({
                   {/* owned/listed by signer/not rented out */}
                 
                 {!loading && isOwned && !isListed && !isReceipt && 
-                  <DialogOwnedNotListedDescription nftItem={nftItem} setIsNFTOpen={setIsNFTOpen} />} 
+                  <DialogOwnedNotListedDescription nftItem={nftItem} setIsNFTOpen={setIsNFTOpen} 
+                  setError={setError} setApproveData={setApproveData} setTxResolved={setTxResolved}
+                  /> } 
                   {/* owned/not listed by signer/not rented out */}
                 
                 {!loading && isOwned && isReceipt && isRented_Out &&

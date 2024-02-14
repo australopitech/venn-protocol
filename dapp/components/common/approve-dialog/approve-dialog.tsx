@@ -122,16 +122,16 @@ export default function ApproveDialog ({ onApprove, onReject, onClose, loading, 
                           <div className={styles.buttonContainer}> <CloseButton onClick={() => onClose()}/> </div>
                         </div>
                       : <div className={styles.approveDescriptionContainer}>
-                          <h1 className={styles.title}>Approve {approveData?.type}</h1>
+                          <h1 className={styles.title}>Approve {approveData?.type === 'Internal' ? 'Transaction' : approveData?.type}</h1>
                           {approveData?.type === 'Connection'
                             ?<div className={styles.approveDescription}>
                               Connect to {approveData?.data.sessionProposal.params.proposer.metadata.url} ?
                             </div>
                             :  <div>
                                   <div className={styles.approveType}>
-                                    {approveData?.type === 'Signature' ? 'Signature Request' : 'Approve '}{approveData?.type}?
+                                    {approveData?.type === 'Signature' ? 'Signature Request' : 'Approve this '}{approveData?.type === 'Transfer' ? 'transfer' : 'transaction'}?
                                   </div>
-                                  {!(approveData?.type === 'Transfer') &&
+                                  {!(approveData?.type === 'Transfer' || approveData?.type === 'Internal') &&
                                     <p className={styles.approveDescription}>
                                       <br/>
                                       - Origin: 

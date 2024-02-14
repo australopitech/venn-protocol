@@ -9,25 +9,28 @@ import { NftItem } from '@/types/typesNftApi.d';
 import { NftObj } from '@/types/nftObj';
 import { mktPlaceContract, receiptsContract } from '@/utils/contractData';
 import { isSmartAccount, getListData, getNFTByReceipt } from '../../../utils/listing-data';
+import { rentCallData } from '@/utils/call';
 import Router from 'next/router';
-import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
+import { PublicClient, useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { getAddress, formatEther } from 'viem';
+import { useSmartAccount } from '@/app/account/venn-provider';
 
 export interface DialogNotOwnedListedDescriptionProps {
+  setIsNFTOpen: any;
+  setApproveData: any;
+  setError: any,
+  txLoading: boolean,
   index?: number;
   activeAccount?: string;
   nftItem?: NftItem;
-  setIsNFTOpen?: any;
   isReceipt?: boolean;
 }
 
 const mktPlaceAddr = mktPlaceContract.address as `0x${string}`;
 
 
-async function getFee(provider: any) : Promise<bigint> {
-  // const contract = new ethers.Contract(mktPlaceAddr, mktPlaceContract.abi, provider);
-  // return await contract.serviceAliquot();
-  return await provider.readContract({
+async function getFee(client: PublicClient) : Promise<any> {
+  return await client.readContract({
     address: mktPlaceAddr,
     abi: mktPlaceContract.abi,
     functionName: 'serviceAliquot',
@@ -43,7 +46,9 @@ async function getFee(provider: any) : Promise<bigint> {
  * This component was created using Codux's Default new component template.
  * To create custom component templates, see https://help.codux.com/kb/en/article/kb16522
  */
-export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem, setIsNFTOpen, isReceipt }: DialogNotOwnedListedDescriptionProps) => {
+export const DialogNotOwnedListedDescription = ({ 
+  txLoading, index, activeAccount, nftItem, setIsNFTOpen, isReceipt, setApproveData, setError 
+}: DialogNotOwnedListedDescriptionProps) => {
   const [duration, setDuration] = useState<number | undefined>();
   const [isDurationInvalid, setIsDurationInvalid] = useState<boolean | undefined>(false);
   // const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -52,23 +57,28 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
   const [buttonText, setButtonText] = useState<string>(defaultButtonText);
   const [rentPrice, setRentPrice] = useState<bigint>();
   const [maxDuration, setMaxDuration] = useState<bigint>();
-  // const signer = useSigner();
+  // 
   const { data: signer } = useWalletClient();
-  // const { account, library } = useEthers(); 
   const { address: account } = useAccount();
   const client = usePublicClient();
-  // const nft = {maxDuration: 10, price: 0.01}
-
+  const { provider, address: vsaAddr } = useSmartAccount();
 
   useEffect(() => {
     const resolveIsSmartAccount = async() => {
-      if(account) 
+      if(account)
         setIsSmartaccount(
-          await isSmartAccount(client, account)
+          await isSmartAccount(client, vsaAddr?? account)
         );
     }
     resolveIsSmartAccount();
   }, [account]);
+
+  useEffect(() => {
+    if(txLoading)
+      setButtonText('Loading...')
+    else 
+      setButtonText(defaultButtonText)
+  }, [txLoading]);
 
   useEffect(() => {
     const resolveListData = async() => {
@@ -124,8 +134,9 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
         return
       }
       if(buttonText !== defaultButtonText) return
-      if(!isSmartaccount) {
-        alert("Connect with a rWallet smart account to enable rent tx's");
+      if(!provider) {
+        alert("Connect with a Venn smart account to enable rent tx's");
+        return
       } 
       if(!nftItem || !nftItem.nftData.token_id) {
         console.error('missing nft info');
@@ -136,20 +147,21 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
         return
       }
       // const { price } = await getListData(signer, nftItem.contractAddress, BigNumber.from(nftItem.nftData.token_id));
-      const aliq = await getFee(signer);
+      const aliq = await getFee(client);
       if(rentPrice === undefined || aliq === undefined) {
-        console.log('error: could not get price or service-aliquot');
+        const err = 'error: could not get price or service-aliquot'
+        console.log(err);
+        setError(err);
         return
       }
-      setButtonText('Loading...');
+      // setButtonText('Loading...');
       const rentValue = rentPrice * BigInt(duration);
-      // console.log('aliq', aliq);
-      const fee = (rentValue * aliq) / BigInt(10000);
+      // console.log('aliq', aliq, typeof aliq);
+      // console.log('rentValue', rentValue)
+      const fee = (rentValue * BigInt(aliq)) / 10000n;
       let contractAddr;
       let tokenId;
       if(isReceipt){
-        // const mkt = new ethers.Contract(mktPlaceAddr, mktPlaceContract.abi, client);
-        // const nftObj = await mkt.getNFTbyReceipt(BigNumber.from(nftItem.nftData.token_id));
         const nftObj = await client.readContract({
           address: mktPlaceAddr,
           abi: mktPlaceContract.abi,
@@ -162,25 +174,34 @@ export const DialogNotOwnedListedDescription = ({ index, activeAccount, nftItem,
         contractAddr = getAddress(nftItem.contractAddress);
         tokenId = BigInt(nftItem.nftData.token_id);
       }
-      let txReceipt;
-      try {
-        txReceipt = await rent(
-          signer,
-          contractAddr,
-          tokenId, 
-          duration,
-          rentValue + fee 
-        );
-      } catch (error) {
-        console.error(error);
-        alert('tx failed');
-        setButtonText(defaultButtonText);
-        return
-      }
-      alert('tx successful');
-      setButtonText(defaultButtonText);
-      // setIsNFTOpen(false);
-      Router.reload();
+      // let hash;
+      // try {
+      //   // txReceipt = await rent(
+      //   //   signer,
+      //   //   contractAddr,
+      //   //   tokenId, 
+      //   //   duration,
+      //   //   rentValue + fee 
+      //   // );
+
+      // } catch (error) {
+      //   console.error(error);
+      //   alert('tx failed');
+      //   setButtonText(defaultButtonText);
+      //   return
+      // }
+      // alert('tx successful');
+      // setButtonText(defaultButtonText);
+      // // setIsNFTOpen(false);
+      // Router.reload();
+      setApproveData({
+        type: 'Internal',
+        data: {
+          targetAddress: mktPlaceContract.address,
+          value: rentValue + fee,
+          calldata: rentCallData(contractAddr, tokenId, duration)
+        }
+      });
     }
 
 
