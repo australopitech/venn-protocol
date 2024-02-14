@@ -1,7 +1,7 @@
 import erc721 from "./contractData/ERC721.artifact.json";
 import { mktPlaceContract, factoryContract } from "./contractData";
 import { NftItem } from '@/types/typesNftApi.d';
-import walletAbi from "./contractData/SmartAccount.json";
+import smartAccount from "./contractData/SmartAccount.json";
 import { readContract } from "viem/actions";
 import { PublicClient, createPublicClient } from "viem";
 import { formatEther } from "viem";
@@ -98,6 +98,7 @@ export async function isSmartAccount(client: any, address: string) {
         functionName: 'isSmartAccount',
         args: [address]
     }) as boolean;
+    // console.log('acc addr',address)
     // console.log('isSmartAccount ret', ret);
     return ret
 }
@@ -111,11 +112,9 @@ export async function isRental(
     const acc = accountAddr ?? await ownerOf(client, contractAddr, tokenId);
     const isSmartAccountRet = await isSmartAccount(client, acc); 
     if(isSmartAccountRet) {
-    //   const wallet = new ethers.Contract(accountAddr, walletAbi.abi, client);
-    //   const ret = await wallet.isRental(contractAddr, tokenId);
       const ret = await client.readContract({
         address: acc as `0x${string}`,
-        abi: walletAbi.abi,
+        abi: smartAccount.abi,
         functionName: 'isRental',
         args: [contractAddr, tokenId]
       }) as boolean;
@@ -132,11 +131,6 @@ export async function getListData(
     nftContractAddress: string,
     tokenId: bigint
   ) {
-    // if(!nftContractAddress || !tokenId)
-    //     return {price: undefined, maxDur: undefined};
-    // const contract = new ethers.Contract(mktPlaceAddr, mktPlaceAbi, client);
-    // console.log('contract in getList', contract.address);
-    // const price = await contract.getPrice(nftContractAddress, tokenId);
     const price = await client.readContract({
         address: mktPlaceAddr,
         abi: mktPlaceAbi,
@@ -159,29 +153,25 @@ export async function getEndTime(
     account?: string, 
     nftItem?: NftItem
 ) {
-    if(!account || !nftItem) return
-    if(!nftItem.nftData.token_id) return
-    // const wallet = new ethers.Contract(account, walletAbi.abi, client );
-    // const rentals = await wallet.getRentals();
+    if(!account || !nftItem) 
+        return
+    if(!nftItem.nftData.token_id) 
+        return
     const rentals = await client.readContract({
         address: account as `0x${string}`,
-        abi: walletAbi.abi,
+        abi: smartAccount.abi,
         functionName: 'getRentals',
         args: []
     }) as any[];
     const index = await client.readContract({
         address: account as `0x${string}`,
-        abi: walletAbi.abi,
+        abi: smartAccount.abi,
         functionName: 'getTokenIndex',
         args: [
             nftItem.contractAddress,
             BigInt(nftItem.nftData.token_id)
         ]
     }) as any;
-    // const index = await wallet.getTokenIndex(
-    //     nftItem.contractAddress,
-    //     BigNumber.from(nftItem.nftData.token_id)
-    // );
     if(rentals) return rentals[index].endTime as bigint;
   }
   
