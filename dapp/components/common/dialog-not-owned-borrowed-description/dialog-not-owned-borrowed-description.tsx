@@ -22,11 +22,11 @@ export interface DialogNotOwnedBorrowedDescriptionProps {
 const dayCutOff = 82800; // 23 h;
 const hourCutOff = 3540 // 59 min;
 
-async function getEndTime(
+async function _getEndTime(
   client: any, 
   account?: `0x${string}`, 
   nftItem?: NftItem,
-  ) {
+) {
   if(!account || !nftItem) return
   if(!nftItem.nftData.token_id) {
     console.error('no token id found');
@@ -48,8 +48,6 @@ async function getEndTime(
     tokenId = BigInt(nftItem.nftData.token_id);
     acc = account;
   }
-  // const wallet = new ethers.Contract(acc, walletabi.abi, client );
-  // const rentals = await wallet.getRentals();
   const rentals = await client.readContract({
     address: acc,
     abi: walletabi.abi,
@@ -62,8 +60,8 @@ async function getEndTime(
     functionName: 'getTokenIndex',
     args: [contractAddr, tokenId]
   }) as any;
-  console.log('tokenIndex', index);
-  console.log('rental', rentals[index]);
+  // console.log('tokenIndex', index);
+  // console.log('rental', rentals[index]);
   if(rentals) return rentals[index].endTime;
 }
 
@@ -72,7 +70,7 @@ export const DialogNotOwnedBorrowedDescription = ({
   nftItem,
   isRental
 }: DialogNotOwnedBorrowedDescriptionProps) => {
-  const [timeLeft, setTimeLeft] = useState<number>(0);
+  const [timeLeft, setTimeLeft] = useState<bigint>(0n);
   const [block, setBlock] = useState<GetBlockReturnType>();
   const { address: account} = useAccount();
   const { data: blockNum, error: blockErr } = useBlockNumber({ watch: true });
@@ -89,10 +87,10 @@ export const DialogNotOwnedBorrowedDescription = ({
     const resolveTimeLeft = async() => {
       const addr = address ?? account;
       // console.log('addr', addr)
-      const endTime = await getEndTime(client, addr, nftItem);
-      console.log('endTime', endTime?.toString());
+      const endTime = await _getEndTime(client, addr, nftItem);
+      // console.log('endTime', endTime?.toString());
       const timestamp = block?.timestamp;
-      if(endTime && timestamp) setTimeLeft(endTime.sub(timestamp).toNumber())
+      if(endTime && timestamp) setTimeLeft(endTime - timestamp)
     }
 
     resolveTimeLeft();
@@ -110,11 +108,11 @@ export const DialogNotOwnedBorrowedDescription = ({
           </span>
           <span className={styles.timeLeftValue}> 
             {timeLeft >= dayCutOff
-              ? `${parseFloat(String(timeLeft/86400)).toFixed(1)} ${timeLeft/86400 <= 2 ? 'day' : 'days'}`
+              ? `${parseFloat(String(timeLeft/86400n)).toFixed(1)} ${timeLeft/86400n <= 2 ? 'day' : 'days'}`
               : timeLeft >= hourCutOff
-                ? `${parseFloat(String(timeLeft/3600)).toFixed(1)} ${timeLeft/3600 <= 2 ? 'hour' : 'hours'}`
+                ? `${parseFloat(String(timeLeft/3600n)).toFixed(1)} ${timeLeft/3600n <= 2 ? 'hour' : 'hours'}`
                 : timeLeft >= 60
-                  ? `${parseFloat(String(timeLeft/60)).toFixed(1)} ${timeLeft <= 120 ? 'minute' : 'minutes' }`
+                  ? `${parseFloat(String(timeLeft/60n)).toFixed(1)} ${timeLeft <= 120 ? 'minute' : 'minutes' }`
                   : 'less than a minute'
             } 
           </span></>
