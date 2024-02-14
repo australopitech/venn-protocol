@@ -267,7 +267,7 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
   const [activeSessions, setActiveSessions] = useState<any>();
   const { chain } = useNetwork();
 
-  // console.log('sessionProposal', sessionProposal);
+  const { connector } = useAccount()
 
   const triggerVsaUpdate = useCallback(() => {
     setUpdater(!updater);
@@ -315,8 +315,12 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
   }
 
   useEffect(() => {
-    if(walletClient) 
-      setVsaProvider(createAccountProvider(walletClient));
+    if(walletClient) {
+      if(connector?.id === "web3auth")
+        setVsaProvider(createAccountProvider(walletClient));
+      else
+      setVsaProvider(undefined);  
+    }
     else
       setVsaProvider(undefined);
   }, [walletClient, updater]);
