@@ -2,16 +2,13 @@
 import Image from 'next/image';
 import styles from './nft-card.module.css';
 import classNames from 'classnames';
-// import { ethers } from 'ethers';
 import { useMemo, useEffect, useState } from 'react';
-// import { useEthers } from '@usedapp/core';
 import { 
   ownerOf, checkIsListed, checkIsRentedOut, getListData, getNFTByReceipt, isRental as checkIsRental, checkPrice
  } from '@/utils/listing-data';
 import { receiptsContract } from '@/utils/contractData';
 import { useAccount, usePublicClient } from 'wagmi';
 import { baseGoerli } from 'viem/chains';
-// import { client } from '../../../pages/client';
 
 export interface NftCardProps {
   imageURI: string;
