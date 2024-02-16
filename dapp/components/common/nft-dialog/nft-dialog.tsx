@@ -1,9 +1,5 @@
 'use client'
-import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
-// import { useEthers, useSigner } from '@usedapp/core';
-// import { DialogBorrowedDescription } from '../dialog-borrowed-description/dialog-borrowed-description';
-// import { DialogExploreDescription } from '../dialog-explore-description/dialog-explore-description';
-// import { DialogOwnedDescription } from '../dialog-owned-description/dialog-owned-description';
+import React, { useEffect, useState } from 'react';
 import styles from './nft-dialog.module.css';
 import { DialogNotOwnedBorrowedDescription } from '../dialog-not-owned-borrowed-description/dialog-not-owned-borrowed-description';
 import { DialogNotOwnedListedDescription } from '../dialog-not-owned-listed-description/dialog-not-owned-listed-description';
@@ -11,20 +7,12 @@ import { DialogOwnedListedDescription } from '../dialog-owned-listed-description
 import { DialogOwnedNotListedDescription } from '../dialog-owned-not-listed-description/dialog-owned-not-listed-description';
 import { DialogOwnedRentedDescription } from '../dialog-owned-rented-description/dialog-owned-rented-description';
 import { DialogNotOwnedNotListedDescription } from '../dialog-not-owned-not-listed-description/dialog-not-owned-not-listed-description';
-// import classNames from 'classnames';
-// import { getNFTobj, useNFTtitle, useNFTname, useTokenImage, useTokenMetaData } from '../../../hooks/nfts';
-// import { Context } from 'wagmi';
-import { NftItem } from '../../../types/typesNftApi';
-import walletAbi from '../../../utils/contractData/SmartAccount.json';
-import erc721 from '../../../utils/contractData/ERC721.artifact.json';
-import { mktPlaceContract, receiptsContract } from '@/utils/contractData';
-// import { ethers, BigNumber } from 'ethers';
+import { NftItem, ApproveData } from '@/types';
+import { receiptsContract } from '@/utils/contractData';
 import { ownerOf, checkIsRentedOut, checkIsRental, checkIsListed } from '@/utils/listing-data';
 import { useAccount, usePublicClient } from 'wagmi';
 import { getAddress } from 'viem';
-import { baseGoerli, polygonMumbai } from 'viem/chains';
 import { useSmartAccount } from '@/app/account/venn-provider';
-// import { client } from '@/pages/client';
 
 function GetNftImage (nftItem: NftItem) {
   return nftItem.nftData.external_data.image_1024 ? 
@@ -62,7 +50,7 @@ const CloseButton = () => {
 
 export interface NFTDialogProps {
     setIsNFTOpen: any;
-    setApproveData: any;
+    setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>;
     setTxResolved: any
     setError: any,
     txLoading: boolean
@@ -109,7 +97,6 @@ export const NFTDialog = ({
     const client = usePublicClient();
     const { address: eoa } = useAccount();
     const { address: vsa } = useSmartAccount();
-    // const 
 
     // console.log('nft contract', nftItem?.contractAddress)
     // console.log('nft id', nftItem?.nftData.token_id)
@@ -142,7 +129,7 @@ export const NFTDialog = ({
     useEffect(() => {
       if(!nftItem || tokenId === undefined || isReceipt === undefined) 
         return
-      
+      console.log('enter useefect')
       const resolveIsRentedOut = async () => {
         const res = await checkIsRentedOut(
           nftItem.contractAddress,
@@ -178,11 +165,11 @@ export const NFTDialog = ({
         setIsRental_signer(res)
       }
 
-    resolveIsRentedOut();
-    resolveIsListed()
-    resolveIsRental();
+      resolveIsRentedOut();
+      resolveIsListed()
+      resolveIsRental();
 
-    }, [holder, isReceipt, eoa])
+    }, [client, holder, isReceipt, eoa, vsa])
 
 
     useEffect(() => {
@@ -208,6 +195,7 @@ export const NFTDialog = ({
     console.log('isListed', isListed)
     console.log('isOwned', isOwned)
     console.log('isRental_signer', isRental_signer)
+    console.log('eoa', eoa)
     console.log('isReceipt', isReceipt)
     console.log('isRented_Out', isRented_Out)
     console.log('loading', loading)

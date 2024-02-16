@@ -1,33 +1,23 @@
 'use client'
 import styles from './dashboard-layout.module.css';
-import classNames from 'classnames';
 import NavBar from '@/components/common/navbar/navbar'
 import SideBar from '@/components/dashboard/sidebar/sidebar'
 import NftArea from '@/components/dashboard/nft-area/nft-area'
-// import { useSigner } from '@usedapp/core';
 import { useEffect, useState, useCallback } from 'react';
-// import { ConnectButton } from '@/components/common/navbar/navbar';
 import { NFTDialog } from '@/components/common/nft-dialog/nft-dialog';
 import { useAddressNfts } from '../../../hooks/address-data';
-import { nftViewMode, nftViewContext } from '@/types/nftContext';
 import { useAccount } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import 'node_modules/@rainbow-me/rainbowkit/dist/index.css';
-// import { ConnectButton } from '@rainbow-me/rainbowkit';
-// import { createWeb3AuthSigner } from '@/utils/web3auth';
-// import { useApproveSessionRequest } from '@/app/account/venn-provider';
 import { 
-  useSmartAccount, useVsaUpdate, useSessionEvent,
-  SessionEventType, useVennWallet 
+  useSmartAccount, useSessionEvent, useVennWallet 
 } from '@/app/account/venn-provider';
 import { 
-  approveSessionProposal, rejectSessionProposal,
-  resolveSessionRequest, rejectSessionRequest,
+  rejectSessionProposal, rejectSessionRequest,
   resolveApprovalExternal, resolveApprovalInternal
 } from '@/app/account/wallet';
-// import { useRouter } from 'next/navigation';
-import { TxResolved } from '@/components/common/approve-dialog/approve-dialog';
 import ApproveDialog from '@/components/common/approve-dialog/approve-dialog';
+import { ApproveData, TxResolved, nftViewMode } from '@/types';
 
 
 export interface DashboardLayoutProps {
@@ -40,10 +30,6 @@ export interface ConnectButtonProps {
   connectText?: string
 }
 
-export interface ApproveData {
-  type: SessionEventType | 'Transfer' | 'Internal';
-  data: any;
-}
 
 export function ConnectButton ({handler, style, connectText}: ConnectButtonProps) {
   return (
@@ -65,7 +51,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const { provider: vsa, address: vsaAddr } = useSmartAccount();
   const { wallet, stateResetter } = useVennWallet();
 
-  const userData = useAddressNfts(address?? eoa?? vsaAddr);
+  const userData = useAddressNfts(address?? vsaAddr?? eoa);
   const { openConnectModal } = useConnectModal();
   const [txResolved, setTxResolved] = useState<TxResolved>();
   const [loading, setLoading] = useState(false);
@@ -165,6 +151,8 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
     setLoading(false);
     resetWalletUi();
   };
+
+  console.log('userData', userData)
 
   return (
     <>
