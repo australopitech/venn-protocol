@@ -1,13 +1,11 @@
 'use client'
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styles from './dialog-owned-rented-description.module.css';
-// import { useSigner, useEthers } from '@usedapp/core';
 import { delist } from '@/utils/call';
-import { NftItem } from '@/types/typesNftApi.d';
-// import { BigNumber } from 'ethers';
+import { NftItem } from '@/types';
 import { getEndTime, getNFTByReceipt, ownerOf } from '@/utils/listing-data';
 import Router from 'next/router';
-import { useBlockNumber, usePublicClient, useWalletClient } from 'wagmi';
+import { usePublicClient, useWalletClient } from 'wagmi';
 import { useTimestamp } from '@/hooks/block-data';
 
 export interface DialogOwnedRentedDescriptionProps {
@@ -60,6 +58,7 @@ export const DialogOwnedRentedDescription = ({
   const timestamp = useTimestamp();
   
   // console.log('timeLeft', timeLeft)
+  console.log('timestamp', timestamp)
   
   useEffect(() => {
     if(nftItem) {

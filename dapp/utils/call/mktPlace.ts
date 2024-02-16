@@ -1,8 +1,7 @@
 import { encodeFunctionData } from "viem";
 import { mktPlaceContract } from "../contractData";
-import { writeContract } from "viem/actions";
 import { PublicClient, Abi, WalletClient } from "viem";
-import { NftObj } from "@/types/nftObj";
+import { NftObj } from "@/types";
 
 const success_msg = "tx successfull!!";
 const mktPlaceAddr = mktPlaceContract.address as `0x${string}`;
@@ -25,8 +24,6 @@ export const list = async (
         alert('Connect your wallet');
         return
     }
-    // const mktPlace = new ethers.Contract(mktPlaceContract.address, mktPlaceContract.abi, signer);
-    // const tx = await mktPlace.listNFT(nftContractAddr, tokenId, price, maxDuration);
     const account = signer.account;
     const { request } = await provider.simulateContract({
         account,

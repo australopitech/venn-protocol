@@ -1,5 +1,4 @@
-// Importing types
-import { BalancesResponse } from '../types/typesNftApi';
+import { BalancesResponse } from "@/types";
 
 // Function to fetch address data
 export async function fetchAddressData (network: string, address: string): Promise<BalancesResponse> {

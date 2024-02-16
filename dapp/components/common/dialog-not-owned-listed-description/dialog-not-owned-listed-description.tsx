@@ -1,23 +1,18 @@
 'use client'
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 import styles from './dialog-not-owned-listed-description.module.css';
 import { useState } from 'react';
-// import { ethers, BigNumber } from 'ethers';
-import { rent } from '@/utils/call';
-// import { useSigner, useEthers } from '@usedapp/core';
-import { NftItem } from '@/types/typesNftApi.d';
-import { NftObj } from '@/types/nftObj';
 import { mktPlaceContract, receiptsContract } from '@/utils/contractData';
 import { isSmartAccount, getListData, getNFTByReceipt } from '../../../utils/listing-data';
 import { rentCallData } from '@/utils/call';
-import Router from 'next/router';
 import { PublicClient, useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { getAddress, formatEther } from 'viem';
 import { useSmartAccount } from '@/app/account/venn-provider';
+import { ApproveData, NftObj, NftItem } from '@/types';
 
 export interface DialogNotOwnedListedDescriptionProps {
   setIsNFTOpen: any;
-  setApproveData: any;
+  setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>;
   setError: any,
   txLoading: boolean,
   index?: number;
@@ -197,7 +192,7 @@ export const DialogNotOwnedListedDescription = ({
       setApproveData({
         type: 'Internal',
         data: {
-          targetAddress: mktPlaceContract.address,
+          targetAddress: mktPlaceContract.address as `0x${string}`,
           value: rentValue + fee,
           calldata: rentCallData(contractAddr, tokenId, duration)
         }

@@ -3,9 +3,7 @@ import NftCard from '@/components/common/nft-card/nft-card';
 import styles from './nft-area.module.css';
 import classNames from 'classnames';
 import { useState } from 'react';
-// import { ethers } from 'ethers';
-import { NftItem, FetchNftDataResponse } from '../../../types/typesNftApi';
-import { fetchAddressData } from '@/utils/frontendUtils';
+import { FetchNftDataResponse } from '@/types';
 import { nftViewMode } from '@/types/nftContext';
 import { getAddress } from 'viem';
 

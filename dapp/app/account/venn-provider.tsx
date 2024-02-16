@@ -4,7 +4,6 @@ import { WalletClientSigner, type SmartAccountSigner, SmartAccountProvider } fro
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
 import { Web3Wallet as Web3WalletType } from "@walletconnect/web3wallet/dist/types/client";
 import { Web3Wallet, Web3WalletTypes  } from '@walletconnect/web3wallet';
-// import { SessionTypes } from "@walletconnect/types";
 import { Core } from '@walletconnect/core';
 import { buildApprovedNamespaces, getSdkError } from '@walletconnect/utils'
 import { sepolia, baseGoerli, mainnet, polygonMumbai } from "viem/chains";
@@ -15,14 +14,13 @@ import { WalletClient } from "viem";
 import { useAccount, useNetwork, useWalletClient } from "wagmi";
 import { getDefaultEntryPointAddress } from "@alchemy/aa-core";
 import { resolveProviderKey } from "../chain-provider";
+import { SessionEventType } from "@/types";
 
 type SmartAccountContextType = {
     vsaProvider?: AlchemyProvider;
     accountAddress?: `0x${string}`;
     triggerVsaUpdate: () => void;
 };
-
-export type SessionEventType = 'Connection' | 'Transaction' | 'Signature';
 
 
 type WalletContextType = {

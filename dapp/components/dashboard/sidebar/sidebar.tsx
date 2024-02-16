@@ -1,13 +1,9 @@
 'use client'
-// import { ethers } from 'ethers';
-// import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-// import { useEtherBalance, useEthers, useSigner } from '@usedapp/core';
+
 import styles from './sidebar.module.css';
-import classNames from 'classnames';
 import { compactString } from '@/utils/utils';
-import { nftViewMode, nftViewContext } from '@/types/nftContext';
 import Wallet from '../wallet/wallet';
+import { ApproveData, nftViewContext } from '@/types';
 
 interface QueryParams {
   address: string;
@@ -17,7 +13,7 @@ export interface SideBarProps {
   sidebarGridTemplate?: string;
   address?: string;
   nftsContext: nftViewContext;
-  setApproveData: any;
+  setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>;
   openTransfer?: boolean,
   setOpenTransfer: any
   openConnect: boolean,

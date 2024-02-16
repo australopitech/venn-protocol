@@ -1,8 +1,6 @@
 'use client'
-// import { AlchemyProvider } from '@alchemy/aa-alchemy'
-// import { Chain } from 'viem';
-// import { useRouter } from 'next/router';
-import { useParams } from 'next/navigation'
+
+import { ApproveData } from '@/types';
 import { useState , useEffect, useCallback } from 'react';
 import { useAccount, useBalance, useNetwork, useWalletClient } from 'wagmi';
 import { parseEther, formatEther, isAddress } from 'viem';
@@ -18,7 +16,7 @@ import styles from './wallet.module.css';
 
 interface WalletProps {
   address?: string,
-  setApproveData: any,
+  setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>;
   openTransfer?: boolean,
   setOpenTransfer: any
   openConnect: boolean,

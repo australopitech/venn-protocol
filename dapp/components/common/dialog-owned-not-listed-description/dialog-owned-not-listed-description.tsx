@@ -1,23 +1,15 @@
 'use client'
-import React, { useLayoutEffect, useEffect, useRef, useState } from 'react';
-// import { ethers, BigNumber } from 'ethers';
+import React, { useLayoutEffect, useEffect, useState } from 'react';
 import styles from './dialog-owned-not-listed-description.module.css';
-import classNames from 'classnames';
-// import { useProvider } from 'wagmi';
-// import ReleaseAsset from '../../wallet';
-// import { getNFTobj, useNFTname, useNFTtitle } from '../../../hooks/nfts';
-import { NftItem } from '@/types/typesNftApi.d';
 import { list, approve } from '@/utils/call';
-// import { useSigner, useEthers } from '@usedapp/core';
 import { mktPlaceContract } from '@/utils/contractData';
-import erc721 from '../../../utils/contractData/ERC721.artifact.json';
 import { useRouter } from 'next/navigation';
 import { isApproved as getIsApproved } from '@/utils/listing-data';
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { parseEther } from 'viem';
 import { listCallData } from '@/utils/call';
 import { useSmartAccount } from '@/app/account/venn-provider';
-// import { client } from '@/pages/client';
+import { ApproveData, NftItem } from '@/types';
 
 export interface DialogOwnedNotListedDescriptionProps {
     className?: string;
@@ -27,7 +19,7 @@ export interface DialogOwnedNotListedDescriptionProps {
     nftItem?: NftItem;
     setIsNFTOpen: any;
     setError: any;
-    setApproveData: any;
+    setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>;
     setTxResolved: any;
 }
 
@@ -201,7 +193,7 @@ export const DialogOwnedNotListedDescription = ({
       setApproveData({
         type: 'Internal',
         data: {
-          targetAddress: mktPlaceContract.address,
+          targetAddress: mktPlaceContract.address as `0x${string}`,
           value: 0n,
           calldata: listCallData(
             nftItem.contractAddress as `0x${string}`,

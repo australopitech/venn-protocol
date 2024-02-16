@@ -1,16 +1,8 @@
 import erc721 from "./contractData/ERC721.artifact.json";
 import { mktPlaceContract, factoryContract } from "./contractData";
-import { NftItem } from '@/types/typesNftApi.d';
 import smartAccount from "./contractData/SmartAccount.json";
-import { readContract } from "viem/actions";
-import { PublicClient, createPublicClient } from "viem";
-import { formatEther } from "viem";
-import { getAddress } from "viem";
-
-interface NftObj {
-    contractAddress: `0x${string}`,
-    tokenId: bigint
-}
+import { PublicClient } from "viem";
+import { NftObj, NftItem  } from "@/types";
 
 const erc721abi = erc721.abi as any;
 const mktPlaceAddr = mktPlaceContract.address as `0x${string}`;

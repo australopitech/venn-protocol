@@ -1,17 +1,13 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import styles from './dialog-not-owned-borrowed-description.module.css';
-// import { useBlockMeta, useEthers } from '@usedapp/core';
-import { NftItem } from '@/types/typesNftApi.d';
-import walletabi from '../../../utils/contractData/SmartAccount.json';
+import { NftItem } from '@/types';
+import smartAccount from '../../../utils/contractData/SmartAccount.json';
 import { receiptsContract } from '@/utils/contractData';
-// import { BigNumber, ethers } from 'ethers';
-// import { useTimestamp } from '@/hooks/block-data';
 import { getNFTByReceipt, ownerOf } from '@/utils/listing-data';
 import { getAddress, GetBlockReturnType } from 'viem';
 import { useAccount, useBlockNumber, usePublicClient } from 'wagmi';
-import { baseGoerli } from 'viem/chains';
-import { activeNetwork } from '@/app/account/venn-provider';
+
 
 export interface DialogNotOwnedBorrowedDescriptionProps {
   address?: `0x${string}`;
@@ -50,13 +46,13 @@ async function _getEndTime(
   }
   const rentals = await client.readContract({
     address: acc,
-    abi: walletabi.abi,
+    abi: smartAccount.abi,
     functionName: 'getRentals',
   }) as any[];
   // const index = await wallet.getTokenIndex(contractAddr, tokenId);
   const index = await client.readContract({
     address: acc,
-    abi: walletabi.abi,
+    abi: smartAccount.abi,
     functionName: 'getTokenIndex',
     args: [contractAddr, tokenId]
   }) as any;

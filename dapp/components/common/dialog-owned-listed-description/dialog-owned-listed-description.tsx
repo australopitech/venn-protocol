@@ -4,7 +4,7 @@ import styles from './dialog-owned-listed-description.module.css';
 import classNames from 'classnames';
 // import { ethers, BigNumber } from 'ethers';
 // import { useSigner, useEthers } from '@usedapp/core';
-import { NftItem } from '@/types/typesNftApi.d';
+import { NftItem } from '@/types';
 import { delist  } from '@/utils/call';
 import { getListData, getNFTByReceipt } from '@/utils/listing-data';
 import Router from 'next/router';

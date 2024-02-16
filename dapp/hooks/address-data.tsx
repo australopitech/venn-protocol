@@ -1,11 +1,9 @@
 
-import { BalancesResponse, BalanceItem, NftData, NftItem, FetchNftDataResponse } from '../types/typesNftApi';
+import { BalancesResponse, NftItem, FetchNftDataResponse } from '@/types';
 import { fetchAddressData } from '../utils/frontendUtils'
 import { useEffect, useState } from "react";
-// import { useEthers } from '@usedapp/core';
 import { isRental } from '@/utils/listing-data';
 import { usePublicClient } from 'wagmi';
-import { baseGoerli } from 'viem/chains';
 
 
 const processApiData = async (apiData: BalancesResponse, address: string | undefined) => {
