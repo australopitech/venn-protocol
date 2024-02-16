@@ -3,6 +3,14 @@ import { SessionTypes } from "@walletconnect/types";
 
 export type SessionEventType = 'Connection' | 'Transaction' | 'Signature';
 
+
+type SessionRequest = Web3WalletTypes.SessionRequest
+
+type SessionProposal = {
+    sessionProposal: Web3WalletTypes.SessionProposal,
+    namespaces: SessionTypes.Namespaces
+}
+
 type txInputs = {
     targetAddress: `0x${string}`,
     value?: bigint,
@@ -10,12 +18,11 @@ type txInputs = {
 }
 
 export type ApproveData = {
-    type: SessionEventType,
-    data: {
-        sessionProposal?: Web3WalletTypes.SessionProposal,
-        namespaces?: SessionTypes.Namespaces
-        sessionRequest?: Web3WalletTypes.SessionRequest,
-    }
+    type: 'Connection',
+    data: SessionProposal
+} | {
+    type: 'Transaction' | 'Signature',
+    data: SessionRequest
 } | {
     type: 'Transfer' | 'Internal';
     data: txInputs
