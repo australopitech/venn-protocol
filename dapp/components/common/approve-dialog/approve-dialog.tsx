@@ -1,12 +1,13 @@
 'use client'
 import styles from './approve-dialog.module.css';
 import { useSmartAccount } from '@/app/account/venn-provider';
-import { useCallback, useState } from 'react';
-import { ApproveData } from '@/components/dashboard/dashboard-layout/dashboard-layout';
+import { useCallback, useEffect, useState } from 'react';
+import { ApproveData, TxResolved } from '@/types';
 import { useAccount, useNetwork } from 'wagmi';
+import { useGasEstimation } from '@/hooks/tx-data';
+import { formatUnits } from 'viem';
 
 interface ApproveDialogProps {
-  // setOpenApproveDialog: any;
   onApprove: () => Promise<void>;
   onReject: () => Promise<void>;
   onClose: () => void;
@@ -16,10 +17,6 @@ interface ApproveDialogProps {
   txResolved?: TxResolved
 }
 
-export interface TxResolved {
-  success: boolean;
-  hash?: string;
-}
 
 interface ButtonProps {
   onClick?: any
@@ -82,11 +79,20 @@ export const CloseButton = ({onClick}: ButtonProps) => {
 
 export default function ApproveDialog ({ onApprove, onReject, onClose, loading, approveData, error, txResolved } : ApproveDialogProps) {
   
-
+  const decimals = 18
   const { address: eoa } = useAccount();
   const { address: vsa } = useSmartAccount();
   const { chain } = useNetwork();
   console.log('approveData', approveData)
+  const { data: gas, gasFee, isLoading, error: gasError } = useGasEstimation(approveData);
+  console.log('gas', gas, 'gasFee', gasFee, 'isLoading', isLoading, 'gasError', gasError);
+
+  const value = approveData?.type === 'Transaction'
+    ? approveData.data.params.request.params[0].value ? BigInt(approveData.data.params.request.params[0].value) : 0n
+    : approveData?.type === 'Transfer' || approveData?.type === 'Internal'
+      ? approveData?.data.value ? approveData?.data.value : 0n
+      : undefined
+
 
   return (
     <>
@@ -125,7 +131,7 @@ export default function ApproveDialog ({ onApprove, onReject, onClose, loading, 
                           <h1 className={styles.title}>Approve {approveData?.type === 'Internal' ? 'Transaction' : approveData?.type}</h1>
                           {approveData?.type === 'Connection'
                             ?<div className={styles.approveDescription}>
-                              Connect to {approveData?.data.sessionProposal.params.proposer.metadata.url} ?
+                              Connect to {approveData?.data.sessionProposal?.params.proposer.metadata.url} ?
                             </div>
                             :  <div>
                                   <div className={styles.approveType}>
@@ -134,17 +140,28 @@ export default function ApproveDialog ({ onApprove, onReject, onClose, loading, 
                                   {!(approveData?.type === 'Transfer' || approveData?.type === 'Internal') &&
                                     <p className={styles.approveDescription}>
                                       <br/>
-                                      - Origin: 
+                                      - Origin: {approveData?.type === 'Transaction' || approveData?.type === 'Signature'
+                                      ? approveData.data.verifyContext.verified.origin
+                                      : ''}
                                     </p>}
                                   {!(approveData?.type === 'Signature') &&
                                     <>
                                     <p className={styles.approveDescription}>
                                       <br/>
-                                      - Value: 
+                                      - Gas Fee<span className={styles.approveDescriptionMeta}>(estimated)</span>: 
+                                      {isLoading? ' loading...' : (gas && gasFee)? ' ' + formatUnits(gas * gasFee, decimals)+' MATIC' : ` error fetching gas: ${gasError?.message}`}
                                     </p>
                                     <p className={styles.approveDescription}>
                                       <br/>
-                                      - Gas: 
+                                      - Total Value: {isLoading
+                                      ? 'loading...'
+                                      : (value !== undefined && gas && gasFee)
+                                        ? <span>
+                                          {formatUnits(value, decimals)} + <span className={styles.approveDescriptionMeta}>gas fee </span>
+                                          = {formatUnits(value + (gas * gasFee), decimals)} MATIC
+                                          </span>
+                                        : null
+                                      }
                                     </p>
                                     </>}
                                 </div>
