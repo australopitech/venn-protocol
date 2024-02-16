@@ -27,3 +27,19 @@ export function formatParams(method: string, params: any[]) {
   return _params;
 }
 
+export function formatGasParams(params: any[]) {
+  const ret: bigint[] = new Array();
+  params.map((p) => {
+    ret.push(p ? BigInt(p) : p)
+  });
+  return ret;
+}
+
+export function bigint_min(a: bigint, b: bigint) {
+  if(typeof a !== typeof b)
+    throw new Error("can't compare different types");
+  if(a > b)
+    return b
+  else
+    return a
+}
