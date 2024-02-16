@@ -15,7 +15,6 @@ export type ApproveData = {
         sessionProposal?: Web3WalletTypes.SessionProposal,
         namespaces?: SessionTypes.Namespaces
         sessionRequest?: Web3WalletTypes.SessionRequest,
-        tx?: txInputs
     }
 } | {
     type: 'Transfer' | 'Internal';
