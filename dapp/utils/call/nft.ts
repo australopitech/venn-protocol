@@ -1,17 +1,17 @@
 // import { BigNumber, ethers } from 'ethers';
-import { PublicClient, WalletClient } from 'viem';
-import erc721 from '../contractData/ERC721.artifact.json';
+import { PublicClient, WalletClient, encodeFunctionData } from 'viem';
+import { erc721abi } from '../contractData';
 
-const erc721abi = erc721.abi as any;
+// const erc721abi = erc721.abi as any;
 
 // TODO: (APPROVE FOR ALL??????)
-export const approve = async (
+export async function approve (
     provider: PublicClient,
     signer: WalletClient,
     contractAddr: string,
     tokenId: bigint,
     to: string
-) => {
+) {
     // const contract = new ethers.Contract(contractAddr, erc721abi, signer);
     // const tx = await contract.approve(to, tokenId);
     // return tx.wait();
@@ -25,4 +25,18 @@ export const approve = async (
         args: [to, tokenId]
     });
     return signer.writeContract(request);
+}
+
+export function approveCallData (
+    to: string,
+    tokenId: bigint
+) {
+    return encodeFunctionData({
+        abi: erc721abi,
+        functionName: 'approve',
+        args: [ 
+            to,
+            tokenId
+        ]
+    })
 }
