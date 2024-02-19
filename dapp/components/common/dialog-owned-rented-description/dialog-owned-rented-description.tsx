@@ -1,17 +1,21 @@
 'use client'
 import React, { useEffect, useState } from 'react';
 import styles from './dialog-owned-rented-description.module.css';
-import { delist } from '@/utils/call';
-import { NftItem } from '@/types';
-import { getEndTime, getNFTByReceipt, ownerOf } from '@/utils/listing-data';
+import { delist, delistCallData } from '@/utils/call';
+import { ApproveData, NftItem } from '@/types';
+import { getEndTime, getNFTByReceipt, getRealNft, ownerOf } from '@/utils/listing-data';
 import Router from 'next/router';
 import { usePublicClient, useWalletClient } from 'wagmi';
 import { useTimestamp } from '@/hooks/block-data';
+import { mktPlaceContract, receiptsContract } from '@/utils/contractData';
+import { getAddress } from 'viem';
+import { useSmartAccount } from '@/app/account/venn-provider';
 
 export interface DialogOwnedRentedDescriptionProps {
   isListed?: boolean;
   nftItem?: NftItem;
   setIsNFTOpen: any;
+  setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>
 }
 
 // time in secs
@@ -48,47 +52,55 @@ const WarningIcon = () => {
 export const DialogOwnedRentedDescription = ({ 
   isListed,
   nftItem,
-  setIsNFTOpen
+  setIsNFTOpen,
+  setApproveData
 }: DialogOwnedRentedDescriptionProps) => {
   const [timeLeft, setTimeLeft] = useState<bigint>(BigInt(0));
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [tokenId, setTokenId] = useState<bigint>();
+  const [error, setError] = useState<any>(null);
   const { data: signer } = useWalletClient();
+  const { provider } = useSmartAccount();
   const client = usePublicClient();
-  const timestamp = useTimestamp();
+  const timestampResponse = useTimestamp();
   
   // console.log('timeLeft', timeLeft)
-  console.log('timestamp', timestamp)
+  console.log('timestamp', timestampResponse.data)
   
   useEffect(() => {
     if(nftItem) {
       if(nftItem.nftData.token_id) {
         setTokenId(BigInt(nftItem.nftData.token_id));
-      } else console.error('no token id found');
+      } else {
+        console.error('no token id found');
+        setError({message: 'error: no token id found'})
+      }
     }
   },[nftItem]);
   
   useEffect(() => {
     const resolveTimeLeft = async() => {
-      if(tokenId === undefined)
+      if(tokenId === undefined || !nftItem)
         return;
-      const nftObj = await getNFTByReceipt(
-        client, 
-        tokenId
-      );
-      const nftHolder = await ownerOf(
+      const nft = await getRealNft(client, nftItem.contractAddress, tokenId);
+      const holder = await ownerOf(client, nft.contractAddress, nft.tokenId );
+      const endTime = await getEndTime(
         client,
-        nftObj.contractAddress, 
-        nftObj.tokenId
+        holder,
+        nft.contractAddress,
+        nft.tokenId
       );
-      const endTime = await getEndTime(client, nftHolder, nftItem);
       console.log('endTime', endTime?.toString())
       // const timestamp = await getTimestamp(library);
-      if(endTime && timestamp) setTimeLeft(endTime - timestamp)
+      if(endTime && timestampResponse.data) setTimeLeft(endTime - timestampResponse.data)
     }
-
-    resolveTimeLeft();
-  }, [tokenId]);
+    try {
+      resolveTimeLeft();  
+    } catch (err) {
+      setError(err)
+    }
+    
+  }, [tokenId, timestampResponse]);
 
   const handleButtonClick = async() => {
     if(!signer) {
@@ -98,6 +110,7 @@ export const DialogOwnedRentedDescription = ({
     if(isLoading) return
     if(!nftItem) {
       console.error('error: no nft found');
+      setError({ message: 'error: no nft found' });
       return
     }
     if(tokenId === undefined) {
@@ -105,26 +118,51 @@ export const DialogOwnedRentedDescription = ({
       return
     }
     setIsLoading(true);
-    let hash;
-    try {
-      hash = await delist(
-        client,
-        signer, 
-        tokenId
-      );  
-    } catch (error) {
-      console.error(error);
-      alert('tx failed');
+    if(provider) {
+      const nft = await getRealNft(client, nftItem.contractAddress, tokenId);
+      setApproveData({
+        type: 'Internal',
+        data: {
+          targetAddress: mktPlaceContract.address as `0x${string}`,
+          value: 0n,
+          calldata: delistCallData(
+            nft.contractAddress as `0x${string}`, 
+            nft.tokenId
+          )
+        }
+      })
+    } else {
+      let hash;
+      try {
+        hash = await delist(
+          client,
+          signer, 
+          tokenId
+        );
+      } catch (err) {
+        console.error(err);
+        setError(err)
+        setIsLoading(false);
+        return;
+      }
+      console.log('txHash', hash);
+      alert('success');
       setIsLoading(false);
-      return;
+      setIsNFTOpen(false);
+      // refetch
     }
-    console.log('txHash', hash);
-    alert('success');
-    // setIsLoading(false);
-    setIsNFTOpen(false);
-    Router.reload();
   }
 
+  if(error || timestampResponse.error) return (
+    <div className={styles.bodyDescriptionContainer}>
+      <div className={styles.divider}></div>
+      <div className={styles.bodyDescription}>
+        An error ocurred!
+        <span>{error.message}</span>
+      </div>
+    </div>
+
+  )
 
   return (
     <div className={styles.bodyDescriptionContainer}>
@@ -151,7 +189,9 @@ export const DialogOwnedRentedDescription = ({
           <div>
           <button className={styles.unlistButton} onClick={handleButtonClick}> {isLoading? 'loading...' : 'Unlist NFT'} </button>
           <div className={styles.warning}>
-            <WarningIcon /><span className={styles.warningText}>{`If you choose to unlist your NFT, it'll be removed from the market after the current rental ends and won't be available for rent again until you relist it.`}</span>
+            <WarningIcon /><span className={styles.warningText}>{
+            `If you choose to unlist your NFT, it'll be removed from the market after the current rental ends and won't be available for rent again until you relist it.`
+            }</span>
           </div>
           </div>
         }
