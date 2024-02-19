@@ -141,13 +141,12 @@ export async function getListData(
 }
 
 export async function getEndTime(
-    client: any, 
+    client: PublicClient, 
     account?: string, 
-    nftItem?: NftItem
+    contractAddress?: string,
+    tokenId?: bigint
 ) {
-    if(!account || !nftItem) 
-        return
-    if(!nftItem.nftData.token_id) 
+    if(!account || !contractAddress || tokenId === undefined) 
         return
     const rentals = await client.readContract({
         address: account as `0x${string}`,
@@ -160,8 +159,8 @@ export async function getEndTime(
         abi: smartAccount.abi,
         functionName: 'getTokenIndex',
         args: [
-            nftItem.contractAddress,
-            BigInt(nftItem.nftData.token_id)
+            contractAddress,
+            tokenId
         ]
     }) as any;
     if(rentals) return rentals[index].endTime as bigint;
