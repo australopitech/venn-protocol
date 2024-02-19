@@ -47,7 +47,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const [openConnect, setOpenConnect] = useState(false);
   const [nftsMode, setNftsMode] = useState<nftViewMode>("owned");
 
-  const { address: eoa } = useAccount();
+  const { address: eoa, connector } = useAccount();
   const { provider: vsa, address: vsaAddr } = useSmartAccount();
   const { wallet, stateResetter } = useVennWallet();
 
@@ -72,6 +72,9 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
     setIsClient(true);
   }, [])
   
+  const resolveDashBoardAccountAddress = () : `0x${string}` | undefined => {
+    return address ? address : connector?.id === "web3auth" ? vsaAddr : eoa
+  }
 
   const onApprove = async () => {
     setLoading(true);
@@ -184,7 +187,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
         <NavBar navbarGridTemplate={styles.navbarGridTemplate} currentPage='dashboard' />
         { (eoa || address)
           ? <div className={styles.contentGridTemplate}> 
-              <SideBar address={address?? vsaAddr ?? eoa ?? ''}
+              <SideBar address={resolveDashBoardAccountAddress()}
                       nftsContext={{mode: nftsMode, setNftsViewMode: setNftsMode}}
                       setApproveData={setApproveData}
                       openTransfer={openTransfer}
