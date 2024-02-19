@@ -155,7 +155,7 @@ export function rentCallData (
         tokenId,
         duration
       ]
-    })
+    });
   }
 
 export function listCallData (
@@ -173,5 +173,19 @@ export function listCallData (
             price,
             maxDuration
         ]
-    })
+    });
+}
+
+export function delistCallData (
+    contract: `0x${string}`,
+    tokenId: bigint,
+) {
+    return encodeFunctionData({
+        abi: mktPlaceAbi,
+        functionName: 'deList',
+        args: [
+            contract,
+            tokenId
+        ]
+    });
 }
