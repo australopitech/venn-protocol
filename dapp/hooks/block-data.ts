@@ -2,33 +2,64 @@ import { useEffect, useState } from "react";
 import { useBlockNumber, usePublicClient } from "wagmi";
 import { LatesBlockReturnType } from "@/types";
 
-export function useTimestamp () {
-  const [timestamp, setTimestamp] = useState<bigint>();
-  const { data: block } = useBlockNumber();
-  const client = usePublicClient();
-  useEffect(() => {
-    const resolveTimestamp = async () => {
-      const _block = await client.getBlock({blockNumber: block})
-      setTimestamp(_block.timestamp)
-    }
-  }, [block]);
-  return timestamp;
+type UseBlockDataArgs = {
+  watch?: boolean
 }
 
-export function useLatestBlock ({watch} : {watch?: boolean}) : LatesBlockReturnType {
-  const [data, setData] = useState<any>();
-  const { data: blockNumber, error, isLoading } = useBlockNumber({ watch });
+export function useTimestamp (args? : UseBlockDataArgs) {
+  const [data, setData] = useState<bigint>();
+  const [error, setError] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>();
+  const { watch } = args ?? { undefined };
+  const { data: block, error: blockErr, isLoading: blockIsLoading } = useBlockNumber({ watch });
   const client = usePublicClient();
   useEffect(() => {
+    if(blockErr){
+      setError(blockErr)
+      return
+    }
+    const resolveTimestamp = async () => {
+      setError(null);
+      setIsLoading(true);
+      try {
+        const _block = await client.getBlock({blockNumber: block})
+        setData(_block.timestamp)
+      } catch(err) {
+        console.error(err);
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    resolveTimestamp();
+  }, [block]);
+  return { data, error, isLoading: isLoading?? blockIsLoading };
+}
+
+export function useLatestBlock (args?: UseBlockDataArgs) : LatesBlockReturnType {
+  const [data, setData] = useState<any>();
+  const [error, setError] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>();
+  const { watch } = args ?? { undefined };
+  const { data: blockNumber, error: blockErr, isLoading: blockIsLoading } = useBlockNumber({ watch });
+  const client = usePublicClient();
+  // TODO use isLoading
+  useEffect(() => {
     const resolveBlock = async () => {
-      setData( await client.getBlock({ blockNumber }))
+      try {
+        setData( await client.getBlock({ blockNumber }))
+      } catch(err) {
+        console.error(err);
+        setError(err);
+      }
     }
     resolveBlock();
   }, [blockNumber]);
-  return { data, error, isLoading }
+  return { data, error: error?? blockErr, isLoading: isLoading?? blockIsLoading }
 }
 
-export function useBaseFee ({watch} : {watch?: boolean}) {
+export function useBaseFee (args?: UseBlockDataArgs) {
+  const { watch } = args ?? { undefined };
   const { data: block, error, isLoading } = useLatestBlock({ watch });
   return { data: block?.baseFeePerGas, error, isLoading }
 }
