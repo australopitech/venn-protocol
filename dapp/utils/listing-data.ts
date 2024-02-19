@@ -3,6 +3,8 @@ import { mktPlaceContract, factoryContract } from "./contractData";
 import smartAccount from "./contractData/SmartAccount.json";
 import { PublicClient } from "viem";
 import { NftObj, NftItem  } from "@/types";
+import { getAddress } from "viem";
+import { receiptsContract } from "./contractData";
 
 const erc721abi = erc721.abi as any;
 const mktPlaceAddr = mktPlaceContract.address as `0x${string}`;
@@ -66,15 +68,15 @@ export const isListed = async (
 
 export const ownerOf = async (
     client: PublicClient,
-    nftContractAddr: string,
+    contractAddr: string,
     tokenId: bigint
 ) => {
-    console.log(
-        'nftContractAddr', nftContractAddr,
-        'tokenId', tokenId
-    )
+    // console.log(
+    //     'contractAddr', contractAddr,
+    //     'tokenId', tokenId
+    // )
     const owner =  await client.readContract({
-        address: nftContractAddr as `0x${string}`,
+        address: contractAddr as `0x${string}`,
         abi: erc721.abi,
         functionName: 'ownerOf',
         args: [tokenId]
@@ -185,13 +187,26 @@ export async function checkIsListedByReceipt(
 export async function getNFTByReceipt(
     client: any,
     receiptId: bigint
-) {
+) : Promise<NftObj> {
     return client.readContract({
         address: mktPlaceAddr,
         abi: mktPlaceAbi,
         functionName: 'getNFTbyReceipt',
         args: [receiptId]
     }) as unknown as NftObj ;
+}
+
+export async function getRealNft (
+    client: any,
+    contractAddr: string,
+    tokenId_: bigint
+) {
+    if(getAddress(contractAddr) === getAddress(receiptsContract.address) ) {
+        const { contractAddress, tokenId } = await getNFTByReceipt(client, tokenId_);
+        return { contractAddress, tokenId }
+    } else {
+        return { contractAddress: contractAddr, tokenId: tokenId_}
+    }
 }
 
 export async function checkIsListed (
