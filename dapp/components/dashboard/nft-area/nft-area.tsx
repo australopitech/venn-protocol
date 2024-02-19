@@ -118,7 +118,7 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
               onClick={() => {handleOnCardClick(i)} }
               holderAddress={nft.owner}
             />) :
-            nftFetchData?.isLoading ? "Loading..." : "Error" + nftFetchData?.error
+            nftFetchData?.isLoading ? "Loading..." : nftFetchData?.error ? "Error: " + nftFetchData?.error : ""
           }
 
         </div>
