@@ -1,6 +1,6 @@
 'use client'
 import React, { createContext, useCallback, useContext, useEffect, useState } from "react";
-import { WalletClientSigner, type SmartAccountSigner, SmartAccountProvider } from "@alchemy/aa-core";
+import { WalletClientSigner } from "@alchemy/aa-core";
 import { AlchemyProvider } from "@alchemy/aa-alchemy";
 import { Web3Wallet as Web3WalletType } from "@walletconnect/web3wallet/dist/types/client";
 import { Web3Wallet, Web3WalletTypes  } from '@walletconnect/web3wallet';

@@ -11,7 +11,7 @@ type SessionProposal = {
     namespaces: SessionTypes.Namespaces
 }
 
-type txInputs = {
+type TxInputs = {
     targetAddress: `0x${string}`,
     value?: bigint,
     calldata?: `0x${string}`
@@ -25,7 +25,7 @@ export type ApproveData = {
     data: SessionRequest
 } | {
     type: 'Transfer' | 'Internal';
-    data: txInputs
+    data: TxInputs
 }
 
 export interface TxResolved {

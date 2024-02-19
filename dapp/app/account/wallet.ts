@@ -4,7 +4,7 @@ import { AlchemyProvider } from "@alchemy/aa-alchemy";
 import { SmartAccountProvider } from "@alchemy/aa-core";
 import { formatJsonRpcResult, formatJsonRpcError } from "@json-rpc-tools/utils";
 import { formatParams } from "@/utils/utils";
-import { SessionEventType } from "./venn-provider";
+import { SessionEventType } from "@/types";
 
 export async function approveSessionProposal (
     data: any,
