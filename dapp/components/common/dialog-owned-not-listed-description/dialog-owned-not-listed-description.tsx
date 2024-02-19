@@ -1,7 +1,7 @@
 'use client'
 import React, { useLayoutEffect, useEffect, useState } from 'react';
 import styles from './dialog-owned-not-listed-description.module.css';
-import { list, approve } from '@/utils/call';
+import { list, approve, approveCallData } from '@/utils/call';
 import { mktPlaceContract } from '@/utils/contractData';
 import { useRouter } from 'next/navigation';
 import { isApproved as getIsApproved } from '@/utils/listing-data';
@@ -154,16 +154,29 @@ export const DialogOwnedNotListedDescription = ({
     if(!isApproved) {
       setButtonText(loadingText);
       try {
-        hash = await approve(
-          client,
-          signer,
-          nftItem.contractAddress,
-          tokenId,
-          mktPlaceContract.address
-        );  
+        //TODO: VSA CALL
+        if(provider) {
+          const res = await provider.sendUserOperation({
+            target: nftItem.contractAddress as `0x${string}`,
+            value: 0n,
+            data: approveCallData(
+              mktPlaceContract.address,
+              tokenId
+            )
+          });
+          hash = await provider.waitForUserOperationTransaction(res.hash);
+        } else {
+          hash = await approve(
+            client,
+            signer,
+            nftItem.contractAddress,
+            tokenId,
+            mktPlaceContract.address
+          );
+        }  
       } catch (err: any) {
         console.log(err);
-        setError(err.message)
+        setError(err)
         setButtonText(approveButtonText);
         return
       }
