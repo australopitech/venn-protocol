@@ -4,9 +4,11 @@ import styles from './dialog-not-owned-borrowed-description.module.css';
 import { NftItem } from '@/types';
 import smartAccount from '../../../utils/contractData/SmartAccount.json';
 import { receiptsContract } from '@/utils/contractData';
-import { getNFTByReceipt, ownerOf } from '@/utils/listing-data';
+import { getEndTime, getNFTByReceipt, ownerOf } from '@/utils/listing-data';
 import { getAddress, GetBlockReturnType } from 'viem';
 import { useAccount, useBlockNumber, usePublicClient } from 'wagmi';
+import { useTimestamp } from '@/hooks/block-data';
+import { useSmartAccount } from '@/app/account/venn-provider';
 
 
 export interface DialogNotOwnedBorrowedDescriptionProps {
@@ -24,10 +26,8 @@ async function _getEndTime(
   nftItem?: NftItem,
 ) {
   if(!account || !nftItem) return
-  if(!nftItem.nftData.token_id) {
-    console.error('no token id found');
-    return
-  }
+  if(!nftItem.nftData.token_id) 
+    throw new Error('no token id found');
   let contractAddr: string;
   let tokenId: bigint;
   let acc: `0x${string}`;
@@ -44,21 +44,8 @@ async function _getEndTime(
     tokenId = BigInt(nftItem.nftData.token_id);
     acc = account;
   }
-  const rentals = await client.readContract({
-    address: acc,
-    abi: smartAccount.abi,
-    functionName: 'getRentals',
-  }) as any[];
-  // const index = await wallet.getTokenIndex(contractAddr, tokenId);
-  const index = await client.readContract({
-    address: acc,
-    abi: smartAccount.abi,
-    functionName: 'getTokenIndex',
-    args: [contractAddr, tokenId]
-  }) as any;
-  // console.log('tokenIndex', index);
-  // console.log('rental', rentals[index]);
-  if(rentals) return rentals[index].endTime;
+  console.log('getEndTime inputs', acc, contractAddr, tokenId)
+  return getEndTime(client, acc, contractAddr, tokenId)
 }
 
 export const DialogNotOwnedBorrowedDescription = ({ 
@@ -66,59 +53,78 @@ export const DialogNotOwnedBorrowedDescription = ({
   nftItem,
   isRental
 }: DialogNotOwnedBorrowedDescriptionProps) => {
-  const [timeLeft, setTimeLeft] = useState<bigint>(0n);
-  const [block, setBlock] = useState<GetBlockReturnType>();
-  const { address: account} = useAccount();
-  const { data: blockNum, error: blockErr } = useBlockNumber({ watch: true });
+  const [timeLeft, setTimeLeft] = useState<bigint>();
+  // const [block, setBlock] = useState<GetBlockReturnType>();
+  const [isLoading, setIsLoading] = useState<boolean>();
+  const [error, setError] = useState<any>(null);
+  // const { address: eoa } = useAccount();
+  const { address: vsa } = useSmartAccount()
+  // const { data: blockNum, error: blockErr } = useBlockNumber({ watch: true });
   const client = usePublicClient();
+  const timestampResponse = useTimestamp();
+  console.log('timestamp', timestampResponse.data)
   
-  useEffect(() => {
-    const resolveBlock = async () => {
-      setBlock(await client.getBlock());
-    }
-    resolveBlock();
-  }, [blockNum, client]);
 
   useEffect(() => {
     const resolveTimeLeft = async() => {
-      const addr = address ?? account;
-      // console.log('addr', addr)
-      const endTime = await _getEndTime(client, addr, nftItem);
+      const addr = address ?? vsa;
+      let endTime: bigint | undefined;
+      // setIsLoading(true)
+      try {
+        endTime = await _getEndTime(client, addr, nftItem);
+        console.log('endTime', endTime)  
+      } catch (err) {
+        console.error(err)
+        setError(err)
+      } 
+      // finally {
+      //   setIsLoading(false)
+      // }
       // console.log('endTime', endTime?.toString());
-      const timestamp = block?.timestamp;
-      if(endTime && timestamp) setTimeLeft(endTime - timestamp)
+      if(timestampResponse.error)
+        setError(timestampResponse.error)
+      if(endTime && timestampResponse.data) 
+        setTimeLeft(endTime - timestampResponse.data)
     }
 
     resolveTimeLeft();
     console.log('timeLeft', timeLeft)
-  }, [block, client]);
+  }, [vsa, client, timestampResponse]);
 
   return (
     <div className={styles.bodyDescriptionContainer}>
       <div className={styles.divider}></div>
       <div className={styles.bodyDescription}>
-        {timeLeft > 0 &&
-          <>
-          <span>
-          This NFT is {isRental? "rented by you" : "rented"}. The rent <span className={styles.textHilight}>expires in</span>
-          </span>
-          <span className={styles.timeLeftValue}> 
-            {timeLeft >= dayCutOff
-              ? `${parseFloat(String(timeLeft/86400n)).toFixed(1)} ${timeLeft/86400n <= 2 ? 'day' : 'days'}`
-              : timeLeft >= hourCutOff
-                ? `${parseFloat(String(timeLeft/3600n)).toFixed(1)} ${timeLeft/3600n <= 2 ? 'hour' : 'hours'}`
-                : timeLeft >= 60
-                  ? `${parseFloat(String(timeLeft/60n)).toFixed(1)} ${timeLeft <= 120 ? 'minute' : 'minutes' }`
-                  : 'less than a minute'
-            } 
-          </span></>
-        }
-        {timeLeft <= 0 &&
-          <>
-          <span>
-          This NFT is {isRental? 'rented by you' : 'rented'}.<br></br> The rent <span className={styles.textHilight}>is expired.</span>
-          </span>
-          </>
+        {
+        timeLeft
+          ? timeLeft > 0
+            ? <>
+            <span>
+            This NFT is {isRental? "rented by you" : "rented"}. The rent <span className={styles.textHilight}>expires in</span>
+            </span>
+            <span className={styles.timeLeftValue}> 
+              {timeLeft >= dayCutOff
+                ? `${parseFloat(String(timeLeft/86400n)).toFixed(1)} ${timeLeft/86400n <= 2 ? 'day' : 'days'}`
+                : timeLeft >= hourCutOff
+                  ? `${parseFloat(String(timeLeft/3600n)).toFixed(1)} ${timeLeft/3600n <= 2 ? 'hour' : 'hours'}`
+                  : timeLeft >= 60
+                    ? `${parseFloat(String(timeLeft/60n)).toFixed(1)} ${timeLeft <= 120 ? 'minute' : 'minutes' }`
+                    : 'less than a minute'
+              } 
+            </span>
+            </>
+            : <>
+                <span>
+                This NFT is {isRental? 'rented by you' : 'rented'}.<br></br> The rent <span className={styles.textHilight}>is expired.</span>
+                </span>
+                </>
+          : error &&
+            <>
+            <span>
+              There was an error fectching info about the renting period. Please try again later <br/>
+              {error?.message}
+            </span>
+            </>
         }
         {/** holder === signer.address &&
          *  <`Release NFT` button /> */}
