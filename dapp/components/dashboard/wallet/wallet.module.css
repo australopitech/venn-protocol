@@ -336,6 +336,7 @@
     /* color: #5E5E5D; */
     cursor: pointer;
   }
+
   
   .primaryButton:hover {
     transform: scale(1.05); 
@@ -343,6 +344,24 @@
   
   .primaryButton:active { 
     transform: scale(0.95); 
+  }
+
+  .primaryButtonDisabled {
+    /* background: linear-gradient(to right top, rgb(240, 166, 202, 0.4), rgb(240, 166, 202, 1)); */
+    background: linear-gradient(to right top, rgba(240, 166, 202, 0.2), rgb(240, 166, 202, 0.4));
+    /* background: linear-gradient(to right bottom, rgba(87, 87, 87, 0.4), rgb(87, 87, 87, 0.5)); */
+    transition: all 0.125s ease 0s;
+    padding: 12px;
+    border-radius: 18px;
+    border: 3px solid rgba(233, 125, 177, 0.8);
+    /* color: rgb(251, 50, 141); */
+    /* color: rgb(255, 101, 160); */
+    /* color: #EFE6EF; */
+    color: rgba(233, 125, 177, 0.8);
+    /* color: rgba(255, 255, 255, 0.9); */
+    /* color: #5E5E5D; */
+    cursor: not-allowed;
+    opacity: 0.3;
   }
 
   .secondaryButton {
@@ -373,4 +392,10 @@
 
   .sessions {
     cursor: pointer;
+  }
+
+  .activeSessionsContainer {
+    margin-top: 24px;
+    margin-bottom: 24px;
+    padding-top: 6px;
   }

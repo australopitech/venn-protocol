@@ -8,7 +8,7 @@ import { useSmartAccountAddress, usePair, useSmartAccount, useVennWallet } from 
 import { getSdkError } from '@walletconnect/utils';
 import { LinkIcon, SwapIcon, SendIcon } from './icons';
 import styles from './wallet.module.css';
-
+import classNames from 'classnames';
 // const zeroAddress = "0x0000000000000000000000000000000000000000";
 
 // interface QueryParams {
@@ -33,19 +33,9 @@ interface ShowBalanceProps {
 
 
 const ShowBalance = ({address, isSigner} : ShowBalanceProps) => {
-    // const router = useRouter();
-    // const address = router.query.address as QueryParams['address'] as `0x${string}`;
     const [isClient, setIsClient] = useState(false);
-    // const { address } = useParams();
-    // const { data: paramBal } = useBalance({ address: address as `0x${string}` });
-    // const { address: eoa } = useAccount();
-    // const { data: eoaBal } = useBalance({ address: eoa });
-    // const vsa = useSmartAccountAddress();
-    // const { data: vsaBal } = useBalance({ address: vsa}) 
-
     const { data: bal } = useBalance({ address: address as `0x${string}`, watch: true });
     const { chain } = useNetwork();
- 
 
     useEffect(() => {
       setIsClient(true);
@@ -54,26 +44,14 @@ const ShowBalance = ({address, isSigner} : ShowBalanceProps) => {
     return (
       <div className={styles.yourBalanceContainer}>
         <span className={styles.profileSectionTitle}>
-          {// ((address&&eoa&&address===eoa) ||
-          // (address&&vsa&&address===vsa)  ||
-          // ((vsa || eoa )&&!address))  &&
-          isClient&&isSigner&&'YOUR'} BALANCE
+          {isClient&&isSigner&&'YOUR'} BALANCE
         </span>
         {isClient && <div>
           <div className={styles.balanceValueContainer}>
             <span className={styles.balanceValue}>
-              {/* {paramBal
-              ? parseFloat(formatEther(paramBal.value)).toFixed(4)
-              : eoaBal 
-                ? parseFloat(formatEther(eoaBal.value)).toFixed(4)
-                : vsaBal
-                  ?  parseFloat(formatEther(vsaBal.value)).toFixed(4)
-                  : "Loading..."
-            }  */}
             {bal? parseFloat(formatEther(bal.value)).toFixed(4) : ''}
             </span>
             <span className={styles.balanceCurrency}>
-              {/* {(paramBal||eoaBal||vsaBal) && 'ETH'} */}
               {bal && chain?.nativeCurrency.symbol}
             </span>
           </div>
@@ -107,8 +85,6 @@ const Buttons = ({setOpenTransfer, setOpenConnect, enabled}: {setOpenTransfer: a
     setOpenConnect(true)
   }
 
-  // console.log('style', style)
-  // console.log('enabled', enabled);
   return (
     <div className={styles.balanceActionsContainer}>
             <div className={style2} onClick={onClickTransfer}><SendIcon enabled={enabled} /></div>
@@ -195,10 +171,8 @@ const Transfer = ({ setApproveData } : { setApproveData: any }) => {
           onChange={(e) => handleAddressChange(e)}
           />
       </div>
-      <div className={disabled? styles.disabled : ''}>
-        <div className={styles.primaryButton} onClick={() => onTransfer()}>
-          Transfer
-        </div>
+      <div className={disabled ? styles.primaryButtonDisabled : styles.primaryButton} onClick={() => onTransfer()}>
+        Transfer
       </div>
     </div>
   )
@@ -246,10 +220,8 @@ const Connect = () => {
           onChange={(e) => setUri(e.target.value)}
           />
       </div>
-      <div className={(disabled || loading)? styles.disabled : ''}>
-        <div className={styles.primaryButton} onClick={() => onConnect()}>
-           Connect
-        </div>
+      <div className={(disabled || loading) ? styles.primaryButtonDisabled : styles.primaryButton} onClick={() => onConnect()}>
+        Connect
       </div>
     </div>
   )
@@ -292,7 +264,7 @@ const Sessions = ({setOpenConnect} : {setOpenConnect: any}) => {
   
   /// A LISTA DO MAP ABAIXO NAO TA ATUALIZANDO QDO DESCONECTA
   return (
-    <>
+    <div className={styles.activeSessionsContainer}>
       <div className={styles.profileSectionTitle}>ACTIVE SESSIONS</div>
       {activeSessions
         ? Object.keys(activeSessions).map((key) => {
@@ -304,7 +276,7 @@ const Sessions = ({setOpenConnect} : {setOpenConnect: any}) => {
           })
         : ''
       }
-    </>
+    </div>
   )
 }
 
