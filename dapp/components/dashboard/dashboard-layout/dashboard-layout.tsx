@@ -187,6 +187,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
         <NavBar navbarGridTemplate={styles.navbarGridTemplate} currentPage='dashboard' />
         { (eoa || address)
           ? <div className={styles.contentGridTemplate}> 
+            {eoa &&
               <SideBar address={resolveDashBoardAccountAddress()}
                       nftsContext={{mode: nftsMode, setNftsViewMode: setNftsMode}}
                       setApproveData={setApproveData}
@@ -194,7 +195,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
                       setOpenTransfer={setOpenTransfer}
                       openConnect={openConnect}
                       setOpenConnect={setOpenConnect}
-              />
+              />}
               <NftArea address={address}
                       nftFetchData={userData}
                       setIsNFTOpen={setIsNFTOpen}
