@@ -6,6 +6,10 @@ import { useState } from 'react';
 import { FetchNftDataResponse } from '@/types';
 import { nftViewMode } from '@/types/nftContext';
 import { getAddress } from 'viem';
+import { useAccount } from 'wagmi';
+import { useSmartAccount } from '@/app/account/venn-provider';
+import { compactString, copyAddress } from '@/utils/utils';
+import Tooltip from '@/components/common/tooltip/tooltip';
 
 export interface NftAreaProps {
   nftAreaGridTemplate?: string;
@@ -13,7 +17,7 @@ export interface NftAreaProps {
   setSelectedNFT: any;
   nftFetchData?: FetchNftDataResponse;
   address?: string;
-  viewMode: nftViewMode;
+  viewMode?: nftViewMode;
 }
 
 interface ToggleSwitchProps {
@@ -71,8 +75,14 @@ const ToggleSwitch = ({ onToggle }: ToggleSwitchProps) => {
   )
 }
 
+const tooltipDefaultText = "Click to copy";
+const tootipAltText = "Copied!"
+
 export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchData, setSelectedNFT, address, viewMode}: NftAreaProps) {
   const [toggleState, setToggleState] = useState<boolean>(false);
+  const [tooltipText, setTooltipText] = useState(tooltipDefaultText);
+  const { address: eoa } = useAccount();
+  const { address: vsa } = useSmartAccount();
 
   const handleToggle = (state: boolean) => {
     setToggleState(state);
@@ -84,10 +94,24 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
     setIsNFTOpen(true);
   }
 
+  const handleAddressClick = async () => {
+    await copyAddress(address);
+    setTooltipText(tootipAltText);
+    setTimeout(() => {
+      setTooltipText(tooltipDefaultText);
+    }, 5000)
+  }
+
   return (
     <div className={styles.nftArea}>
       <div className={styles.nftGridTitle}>
-        <span className={styles.titleText}>Owned</span>
+        <span className={styles.titleText}>
+          Owned/Rented by {(address === vsa || address === eoa) 
+          ? 'You' 
+          : <span className={styles.address} onClick={() => handleAddressClick()}>
+            <Tooltip text={tooltipText}>{compactString(address)}</Tooltip>
+            </span>}
+        </span>
         <div className={styles.gridFunctionalitiesContainer}>
           <ToggleSwitch onToggle={handleToggle} />
         </div>

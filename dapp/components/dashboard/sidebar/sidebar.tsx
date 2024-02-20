@@ -4,6 +4,7 @@ import styles from './sidebar.module.css';
 import { compactString } from '@/utils/utils';
 import Wallet from '../wallet/wallet';
 import { ApproveData, nftViewContext } from '@/types';
+import { copyAddress } from '@/utils/utils';
 
 interface QueryParams {
   address: string;
@@ -20,12 +21,6 @@ export interface SideBarProps {
   setOpenConnect: any
 }
 
-
-const copyAddress = async (address?: string) => {
-  if(!address) return;
-  await navigator.clipboard.writeText(address);
-  // setTooltipMessage('Address copied');
-}
 
 const CopyIcon = () => {
   return (

@@ -43,6 +43,12 @@
   height: 24px;
 }
 
+.titleText {
+  /* white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; */
+}
+
 .nftGridContent {
   /* padding-top: 12px;
   padding-left: 8px; */
@@ -180,4 +186,14 @@
 
 .labelRight:not(.allNfts) {
   color: #454544;
+}
+
+.address {
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 12px;
+}
+
+.address:hover {
+  background-color: #EEE6EF;
 }
