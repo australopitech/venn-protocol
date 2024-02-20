@@ -43,3 +43,8 @@ export function bigint_min(a: bigint, b: bigint) {
   else
     return a
 }
+
+export async function copyAddress (address?: string) {
+  if(!address) return;
+  await navigator.clipboard.writeText(address);
+}
