@@ -4,7 +4,7 @@ import smartAccount from "./contractData/SmartAccount.json";
 import { PublicClient } from "viem";
 import { NftObj, NftItem  } from "@/types";
 import { getAddress } from "viem";
-import { receiptsContract } from "./contractData";
+import { getReceiptsContractAddress } from "@/utils/contractData";
 
 const erc721abi = erc721.abi as any;
 const mktPlaceAddr = mktPlaceContract.address as `0x${string}`;
@@ -199,13 +199,20 @@ export async function getNFTByReceipt(
 export async function getRealNft (
     client: any,
     contractAddr: string,
-    tokenId_: bigint
+    tokenId_: bigint,
+    chainId?: number
 ) {
-    if(getAddress(contractAddr) === getAddress(receiptsContract.address) ) {
+    if(getAddress(contractAddr) === getReceiptsContractAddress(chainId)) {
         const { contractAddress, tokenId } = await getNFTByReceipt(client, tokenId_);
-        return { contractAddress, tokenId }
+        return { 
+            contractAddress: contractAddress as `0x${string}`,
+            tokenId 
+        }
     } else {
-        return { contractAddress: contractAddr, tokenId: tokenId_}
+        return { 
+            contractAddress: contractAddr as `0x${string}`,
+            tokenId: tokenId_
+        }
     }
 }
 
