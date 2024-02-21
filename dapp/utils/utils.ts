@@ -48,3 +48,20 @@ export async function copyAddress (address?: string) {
   if(!address) return;
   await navigator.clipboard.writeText(address);
 }
+
+// time in secs
+const dayCutOff = 82800n; // 23 h;
+const hourCutOff = 3540n; // 59 min;
+const day = 86400n; // 24h
+const hour = 3600n;
+const min = 60n;
+
+export function timeLeftString (timeLeft: bigint) {
+  return timeLeft >= dayCutOff
+  ? `${timeLeft/day} ${timeLeft/day < 2 ? 'day' : 'days'}`
+  : timeLeft >= hourCutOff
+    ? `${timeLeft/hour} ${timeLeft/hour < 2 ? 'hour' : 'hours'}`
+    : timeLeft >= min
+      ? `${timeLeft/min} ${timeLeft < 120 ? 'minute' : 'minutes' }`
+      : timeLeft > 0 ? 'less than a minute' : 'expired'
+}
