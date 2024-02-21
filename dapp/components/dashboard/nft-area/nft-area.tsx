@@ -113,7 +113,7 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
             </span>}
         </span>
         <div className={styles.gridFunctionalitiesContainer}>
-          <ToggleSwitch onToggle={handleToggle} />
+          <Tooltip text='Filters comming soon'><ToggleSwitch onToggle={handleToggle} /></Tooltip>
         </div>
       </div>
       <div className={styles.invisibleDivider}></div>
