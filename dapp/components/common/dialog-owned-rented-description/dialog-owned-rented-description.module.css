@@ -93,6 +93,7 @@
   align-items: flex-start;
   gap: 4px;
   padding: 0px 20px 0px 12px;
+  margin-top: 2px;
 }
 
 .warningIcon {
