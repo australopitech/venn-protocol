@@ -1,6 +1,8 @@
 import { polygonMumbai } from 'viem/chains';
 import contracts from './contracts.json';
-import erc721 from './ERC721.artifact.json'
+import erc721 from './ERC721.artifact.json';
+
+export * from './contracts';
 
 export const erc721abi = erc721.abi;
 
