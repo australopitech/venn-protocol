@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { NftObj } from "@/types";
 import { useNetwork, usePublicClient } from "wagmi";
-import { getRealNft, ownerOf } from "@/utils/listing-data";
+import { getListData, getRealNft, ownerOf } from "@/utils/listing-data";
 
 interface NftDataArgs {
     contract?: `0x${string}`,
@@ -65,5 +65,36 @@ export function useHolder(args? : NftDataArgs) {
     resolveHolder();
   }, [args, client]);
   
+  return { data, error, isLoading }
+}
+
+export function useListingData(args?: NftDataArgs) {
+  const [data, setData] = useState<{price: bigint, maxDur: bigint}>();
+  const [error, setError] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const client = usePublicClient();
+
+  useEffect(() => {
+    if(!args)
+      return
+    const { contract, tokenId } = args;
+    if(!contract || !tokenId) {
+      console.error('missing args');
+      setError({ message: 'error: missing args'});
+      return
+    }
+    const resolveListingData = async () => {
+      // setIsLoading(true)
+      try {
+        setData( await getListData(client, contract, tokenId))
+      } catch (err) {
+        console.error(err);
+        setError(err);
+      }
+      // setIsLoading(false)
+    }
+    resolveListingData();
+  }, [args, client]);
+
   return { data, error, isLoading }
 }
