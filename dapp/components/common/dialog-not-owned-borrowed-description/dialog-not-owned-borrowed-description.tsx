@@ -104,11 +104,11 @@ export const DialogNotOwnedBorrowedDescription = ({
             </span>
             <span className={styles.timeLeftValue}> 
               {timeLeft >= dayCutOff
-                ? `${parseFloat(String(timeLeft/86400n)).toFixed(1)} ${timeLeft/86400n <= 2 ? 'day' : 'days'}`
+                ? `${parseFloat(String(timeLeft/86400n)).toFixed(1)} ${timeLeft/86400n < 2n ? 'day' : 'days'}`
                 : timeLeft >= hourCutOff
-                  ? `${parseFloat(String(timeLeft/3600n)).toFixed(1)} ${timeLeft/3600n <= 2 ? 'hour' : 'hours'}`
-                  : timeLeft >= 60
-                    ? `${parseFloat(String(timeLeft/60n)).toFixed(1)} ${timeLeft <= 120 ? 'minute' : 'minutes' }`
+                  ? `${parseFloat(String(timeLeft/3600n)).toFixed(1)} ${timeLeft/3600n < 2n ? 'hour' : 'hours'}`
+                  : timeLeft >= 60n
+                    ? `${parseFloat(String(timeLeft/60n)).toFixed(1)} ${timeLeft < 120n ? 'minute' : 'minutes' }`
                     : 'less than a minute'
               } 
             </span>

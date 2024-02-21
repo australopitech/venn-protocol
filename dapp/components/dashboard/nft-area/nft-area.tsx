@@ -106,7 +106,7 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
     <div className={styles.nftArea}>
       <div className={styles.nftGridTitle}>
         <span className={styles.titleText}>
-          Owned/Rented by {(address === vsa || address === eoa) 
+          Owned/Rented by {(address === vsa || address === eoa || !address && (vsa || eoa)) 
           ? 'You' 
           : <span className={styles.address} onClick={() => handleAddressClick()}>
             <Tooltip text={tooltipText}>{compactString(address)}</Tooltip>

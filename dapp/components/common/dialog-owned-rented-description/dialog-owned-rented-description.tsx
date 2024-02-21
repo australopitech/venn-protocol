@@ -215,11 +215,11 @@ export const DialogOwnedRentedDescription = ({
         <span className={styles.timeLeftValue}> 
           Time Left: {
           timeLeft >= dayCutOff
-          ? `${timeLeft/day} ${timeLeft/day <= 2 ? 'day' : 'days'}`
+          ? `${timeLeft/day} ${timeLeft/day < 2 ? 'day' : 'days'}`
           : timeLeft >= hourCutOff
-            ? `${timeLeft/hour} ${timeLeft/hour <= 2 ? 'hour' : 'hours'}`
+            ? `${timeLeft/hour} ${timeLeft/hour < 2 ? 'hour' : 'hours'}`
             : timeLeft >= hour
-              ? `${timeLeft/hour} ${timeLeft <= 120 ? 'minute' : 'minutes' }`
+              ? `${timeLeft/hour} ${timeLeft < 120 ? 'minute' : 'minutes' }`
               : timeLeft > 0 ? 'less than a minute' : 'expired'
           } 
         </span>
