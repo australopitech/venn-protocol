@@ -9,6 +9,7 @@ import { getSdkError } from '@walletconnect/utils';
 import { LinkIcon, SwapIcon, SendIcon } from './icons';
 import styles from './wallet.module.css';
 import classNames from 'classnames';
+import Tooltip from '@/components/common/tooltip/tooltip';
 // const zeroAddress = "0x0000000000000000000000000000000000000000";
 
 // interface QueryParams {
@@ -60,6 +61,8 @@ const ShowBalance = ({address, isSigner} : ShowBalanceProps) => {
     )
 }
 
+const tooltipDisabledText = "Reserved for Smart Accounts";
+
 const Buttons = ({setOpenTransfer, setOpenConnect, enabled}: {setOpenTransfer: any, setOpenConnect: any, enabled: boolean}) => {
   // const [style1, setStyle1] = useState(styles.balanceActionsContainerDisabled);
   const [style2, setStyle2] = useState(styles.actionContainerDisabled)
@@ -87,8 +90,12 @@ const Buttons = ({setOpenTransfer, setOpenConnect, enabled}: {setOpenTransfer: a
 
   return (
     <div className={styles.balanceActionsContainer}>
-            <div className={style2} onClick={onClickTransfer}><SendIcon enabled={enabled} /></div>
-            <div className={style2} onClick={onClickConnect}><LinkIcon enabled={enabled}/></div>
+            <div className={style2} onClick={onClickTransfer}>
+              <Tooltip text={enabled ? 'Send' : tooltipDisabledText}><SendIcon enabled={enabled} /></Tooltip>
+            </div>
+            <div className={style2} onClick={onClickConnect}>
+              <Tooltip text={enabled ? 'Send' : tooltipDisabledText}><LinkIcon enabled={enabled}/></Tooltip>
+            </div>
     </div>
   )
 }
