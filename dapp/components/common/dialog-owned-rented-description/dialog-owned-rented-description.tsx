@@ -1,16 +1,13 @@
 'use client'
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import styles from './dialog-owned-rented-description.module.css';
-import { delist, delistCallData, pull, pullCallData, resolvePullOrDelistCallData } from '@/utils/call';
+import { delist, pull, resolvePullOrDelistCallData } from '@/utils/call';
 import { ApproveData, NftItem } from '@/types';
-import { getEndTime, getNFTByReceipt, getRealNft, ownerOf } from '@/utils/listing-data';
-import Router from 'next/router';
 import { usePublicClient, useWalletClient } from 'wagmi';
-import { useTimestamp } from '@/hooks/block-data';
-import { getMktPlaceContractAddress, mktPlaceContract, receiptsContract } from '@/utils/contractData';
-import { getAddress } from 'viem';
+import { getMktPlaceContractAddress } from '@/utils/contractData';
 import { useSmartAccount } from '@/app/account/venn-provider';
-import { useHolder, useRealNft } from '@/hooks/nft-data';
+import { useHolder, useRealNft, useTimeLeft } from '@/hooks/nft-data';
+import { timeLeftString } from '@/utils/utils';
 
 export interface DialogOwnedRentedDescriptionProps {
   isListed?: boolean;
@@ -18,20 +15,6 @@ export interface DialogOwnedRentedDescriptionProps {
   setIsNFTOpen: any;
   setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>
 }
-
-// time in secs
-const dayCutOff = BigInt(82800); // 23 h;
-const hourCutOff = BigInt(3540); // 59 min;
-const day = BigInt(86400); // 24h
-const hour = BigInt(3600);
-const min = BigInt(60);
-
-const getTimestamp = async(provider: any) => {
-  if(!provider) return
-  const blockNum = await provider.getBlockNumber();
-  return (await provider.getBlock(blockNum))?.timestamp;
-}
-
 
 const WarningIcon = () => {
   return (
@@ -56,23 +39,27 @@ export const DialogOwnedRentedDescription = ({
   setIsNFTOpen,
   setApproveData
 }: DialogOwnedRentedDescriptionProps) => {
-  const [timeLeft, setTimeLeft] = useState<bigint>(BigInt(0));
+  // const [timeLeft, setTimeLeft] = useState<bigint>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [tokenId, setTokenId] = useState<bigint>();
   const [error, setError] = useState<any>(null);
   const { data: signer } = useWalletClient();
   const { provider } = useSmartAccount();
   const client = usePublicClient();
-  const timestampResponse = useTimestamp();
   const nft = useRealNft({ 
     contract: nftItem?.contractAddress as `0x${string}`,
-    tokenId  
+    tokenId
   });
-  const holder = useHolder(nft.data);
+
+  const memoizedData = useMemo(() => nft.data, [nft.data?.contract, nft.data?.tokenId]);
+  const holder = useHolder(memoizedData);
+  // const timestamp = useTimestamp();
+  const timeLeft = useTimeLeft({
+    contract: nftItem?.contractAddress as `0x${string}`, 
+    tokenId: tokenId
+  })
   
-  // console.log('timeLeft', timeLeft)
-  console.log('timestamp', timestampResponse.data)
-  // console.log('in description: holder', holder, '=== mktplace', holder === getMktPlaceContractAddress());
+  // console.log('timeLeft', timeLeft);
   
   useEffect(() => {
     if(nftItem) {
@@ -85,30 +72,29 @@ export const DialogOwnedRentedDescription = ({
     }
   },[nftItem]);
   
-  useEffect(() => {
-    const resolveTimeLeft = async() => {
-      if(tokenId === undefined || !nftItem)
-        return;
-      if(!nft.data || !holder.data)
-        return
-      const endTime = await getEndTime(
-        client,
-        holder.data,
-        nft.data.contractAddress,
-        nft.data.tokenId
-      );
-      console.log('endTime', endTime?.toString())
-      // const timestamp = await getTimestamp(library);
-      if(endTime && timestampResponse.data) setTimeLeft(endTime - timestampResponse.data)
-    }
-    try {
-      resolveTimeLeft();  
-    } catch (err) {
-      console.error(err);
-      setError(err)
-    }
+  // useEffect(() => {
+  //   const resolveTimeLeft = async() => {
+  //     if(tokenId === undefined || !nftItem)
+  //       return;
+  //     if(!nft.data || !holder.data)
+  //       return
+  //     const endTime = await getEndTime(
+  //       client,
+  //       holder.data,
+  //       nft.data.contract,
+  //       nft.data.tokenId
+  //     );
+  //     // console.log('endTime', endTime?.toString())
+  //     if(endTime && timestamp.data) setTimeLeft(endTime - timestamp.data)
+  //   }
+  //   try {
+  //     resolveTimeLeft();  
+  //   } catch (err) {
+  //     console.error(err);
+  //     setError(err)
+  //   }
     
-  }, [tokenId, timestampResponse, nft, holder]);
+  // }, [tokenId, timestamp, nft, holder]);
 
   const handleButtonClick = async(method: 'delist' | 'pull') => {
     if(!signer) {
@@ -116,20 +102,20 @@ export const DialogOwnedRentedDescription = ({
       return
     }
     if(isLoading) return
-    if(!nft.data) {
-      console.error('error: no nft found');
-      setError({ message: 'error: no nft found' });
+    if(!nft.data?.contract || !nft.data.tokenId) {
+      console.error('error: nft info not found');
+      setError({ message: 'error: nft info not found' });
       return
     }
     if(tokenId === undefined) {
-      console.error('no token id found');
-      setError({ message: 'error: no token id found' });
+      console.error('no token/receipt id found');
+      setError({ message: 'error: no token/receipt id found' });
       return
     }
     setIsLoading(true);
     if(provider) {
       try {
-        const calldata = resolvePullOrDelistCallData(method, nft.data.contractAddress, nft.data.tokenId);
+        const calldata = resolvePullOrDelistCallData(method, nft.data.contract, nft.data.tokenId);
         setApproveData({
           type: 'Internal',
           data: {
@@ -174,7 +160,6 @@ export const DialogOwnedRentedDescription = ({
   }
 
   if(
-    tokenId === undefined ||
     nft.isLoading ||
     holder.isLoading
     ) 
@@ -187,14 +172,13 @@ export const DialogOwnedRentedDescription = ({
         </div>
       )
 
-  if(error || timestampResponse.error) return (
+  if(error || nft.error || holder.error) return (
     <div className={styles.bodyDescriptionContainer}>
       <div className={styles.divider}></div>
       <div className={styles.bodyDescription}>
         An error ocurred!
         <span>
           {error ? error.message
-            : timestampResponse.error ? timestampResponse.error.message
             : nft.error ? nft.error.message
             : holder.error ? holder.error.message
             : ''
@@ -213,20 +197,12 @@ export const DialogOwnedRentedDescription = ({
           This NFT is currently rented to another user.
         </span>
         <span className={styles.timeLeftValue}> 
-          Time Left: {
-          timeLeft >= dayCutOff
-          ? `${timeLeft/day} ${timeLeft/day < 2 ? 'day' : 'days'}`
-          : timeLeft >= hourCutOff
-            ? `${timeLeft/hour} ${timeLeft/hour < 2 ? 'hour' : 'hours'}`
-            : timeLeft >= hour
-              ? `${timeLeft/hour} ${timeLeft < 120 ? 'minute' : 'minutes' }`
-              : timeLeft > 0 ? 'less than a minute' : 'expired'
-          } 
+          {timeLeft.data !== undefined ? 'Time Left: ' + timeLeftString(timeLeft.data) : ''}
         </span>
       </div>
       
       <div className={styles.unlistContainer}>
-        {timeLeft <= 0 && holder.data !== getMktPlaceContractAddress() &&
+        {timeLeft.data!==undefined && timeLeft.data <= 0n && holder.data !== getMktPlaceContractAddress() &&
           <div>
             <button className={styles.unlistButton} onClick={() => handleButtonClick('pull')}> {isLoading? 'loading...' : isListed? 'Pull NFT' : 'Retrieve NFT'} </button>
             <div className={styles.warning}>
@@ -241,9 +217,11 @@ export const DialogOwnedRentedDescription = ({
             <button className={styles.unlistButton} onClick={() => handleButtonClick('delist')}> {isLoading? 'loading...' : 'Unlist NFT'} </button>
             <div className={styles.warning}>
               <WarningIcon /><span className={styles.warningText}>{
-              timeLeft > 0 
-                ? `If you unlist your NFT, it'll be removed from the market after the current rental ends and won't be available for rent until you relist it.`
-                : `If you unlist your NFT, it'll be retrieved and sent straight to your account. It won't be available for rent until you relist it. You will be refunded the 'Pull Fee'.`
+              timeLeft.data
+              ? timeLeft.data > 0 
+                  ? `If you unlist your NFT, it'll be removed from the market after the current rental ends and won't be available for rent until you relist it.`
+                  : `If you unlist your NFT, it'll be retrieved and sent straight to your account. It won't be available for rent until you relist it. You will be refunded the 'Pull Fee'.`
+              :''
               }</span>
             </div>
           </div>

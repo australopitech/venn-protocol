@@ -81,7 +81,7 @@ export const ownerOf = async (
         functionName: 'ownerOf',
         args: [tokenId]
     }) as unknown as `0x${string}`;''
-    console.log('ownerOf return', owner);
+    // console.log('ownerOf return', owner);
     return owner
 }
 
@@ -205,12 +205,12 @@ export async function getRealNft (
     if(getAddress(contractAddr) === getReceiptsContractAddress(chainId)) {
         const { contractAddress, tokenId } = await getNFTByReceipt(client, tokenId_);
         return { 
-            contractAddress: contractAddress as `0x${string}`,
+            contract: contractAddress as `0x${string}`,
             tokenId 
         }
     } else {
         return { 
-            contractAddress: contractAddr as `0x${string}`,
+            contract: contractAddr as `0x${string}`,
             tokenId: tokenId_
         }
     }

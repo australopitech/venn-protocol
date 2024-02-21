@@ -1,6 +1,4 @@
-import { useState } from "react";
-import { useEffect } from "react";
-import { NftObj } from "@/types";
+import { useState, useEffect, useMemo } from "react";
 import { useNetwork, usePublicClient } from "wagmi";
 import { getEndTime, getListData, getRealNft, ownerOf } from "@/utils/listing-data";
 import { useTimestamp } from "./block-data";
@@ -10,8 +8,13 @@ interface NftDataArgs {
     tokenId?: bigint,
 }
 
+interface NftDataObj {
+  contract: `0x${string}`,
+  tokenId: bigint
+}
+
 export function useRealNft(args?: NftDataArgs) {
-  const [data, setData] = useState<NftObj>();
+  const [data, setData] = useState<NftDataObj>();
   const [error, setError] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const client = usePublicClient();
@@ -21,8 +24,12 @@ export function useRealNft(args?: NftDataArgs) {
     if(!args)
       return
     const { contract, tokenId } = args;
-    if(!contract || ! tokenId)
-        return
+    if(!contract || tokenId === undefined) {
+      console.error('error: missing args')
+      setError({ message: 'error: missing args' })
+      return
+    }
+    setError(null);
     const resolveRealNft = async () => {
     //   setIsLoading(true)
       try {
@@ -35,7 +42,7 @@ export function useRealNft(args?: NftDataArgs) {
       }
     }
     resolveRealNft();
-  }, [args, client]);
+  }, [args]);
   
   return { data, error, isLoading }
 }
@@ -50,12 +57,14 @@ export function useHolder(args? : NftDataArgs) {
     if(!args)
         return
     const { contract, tokenId } = args;
-    if(!contract || !tokenId) {
-        console.error('missing args');
+    console.log('args', args)
+    if(!contract || tokenId === undefined) {
+        console.error('error: missing args');
         setError({ message: 'error: missing args'});
         return
     }
     const resolveHolder = async() => {
+      setError(null);
     //   setIsLoading(true);
       try {
         setData(await ownerOf(client, contract, tokenId ));
@@ -67,7 +76,7 @@ export function useHolder(args? : NftDataArgs) {
       }
     }
     resolveHolder();
-  }, [args, client]);
+  }, [args]);
   
   return { data, error, isLoading }
 }
@@ -82,12 +91,13 @@ export function useListingData(args?: NftDataArgs) {
     if(!args)
       return
     const { contract, tokenId } = args;
-    if(!contract || !tokenId) {
+    if(!contract || tokenId === undefined) {
       console.error('missing args');
       setError({ message: 'error: missing args'});
       return
     }
     const resolveListingData = async () => {
+      setError(null);
       // setIsLoading(true)
       try {
         setData( await getListData(client, contract, tokenId))
@@ -109,21 +119,26 @@ export function useTimeLeft(args?: NftDataArgs) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const client = usePublicClient();
   const nft = useRealNft(args);
-  const holder = useHolder(nft.data);
+  const memoizedNFT = useMemo(() => nft.data, [nft.data?.contract, nft.data?.tokenId]);
+  const holder = useHolder(memoizedNFT);
+  const memoizedHolder = useMemo(() => holder.data, [holder.data]);
   const timestamp = useTimestamp();
+  const memoizedTimestamp = useMemo(() => timestamp.data, [timestamp.data])
 
   useEffect(() => {
+    console.log('render')
     if(!nft.data || !holder.data || !timestamp.data)
       return
-    const { contractAddress, tokenId } = nft.data;
-    if(!contractAddress || !tokenId) {
+    const { contract, tokenId } = nft.data;
+    if(!contract || tokenId === undefined) {
       console.error('missing args');
       setError({ message: 'error: missing args'});
       return
     }
     const resolveTimeLeft = async () => {
+      setError(null);
       try {
-        const endTime = await getEndTime(client, holder.data, contractAddress, tokenId )
+        const endTime = await getEndTime(client, holder.data, contract, tokenId )
         if(!endTime)
           throw new Error('could not fecth endTime')
         setData( endTime - timestamp.data!)
@@ -133,7 +148,7 @@ export function useTimeLeft(args?: NftDataArgs) {
       }
     }
     resolveTimeLeft();
-  }, [client, args, nft, holder, timestamp]);
+  }, [client, memoizedNFT, memoizedHolder, memoizedTimestamp]);
 
   return { 
     data,
