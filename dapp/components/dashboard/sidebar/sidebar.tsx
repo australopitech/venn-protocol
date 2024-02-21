@@ -5,6 +5,8 @@ import { compactString } from '@/utils/utils';
 import Wallet from '../wallet/wallet';
 import { ApproveData, nftViewContext } from '@/types';
 import { copyAddress } from '@/utils/utils';
+import { useState } from 'react';
+import Tooltip from '@/components/common/tooltip/tooltip';
 
 interface QueryParams {
   address: string;
@@ -31,7 +33,20 @@ const CopyIcon = () => {
   )
 }
 
+const tooltipDefaultText = 'Click to copy';
+const toooltipAltText = 'Copied!'
+
 const Profile = ({ address }: {address?: string}) => {
+  const [tooltipText, setTooltipText] = useState(tooltipDefaultText);
+
+  const onCopy = async () => {
+    await copyAddress(address);
+    setTooltipText(toooltipAltText);
+    setTimeout(() => {
+      setTooltipText(tooltipDefaultText)
+    }, 5000);
+  }
+
   return (
     <div className={styles.userInfoContainer}>
       <div className={styles.avatar}>
@@ -42,8 +57,8 @@ const Profile = ({ address }: {address?: string}) => {
           {/* 0x123...4567 */}
           {compactString(address)}
         </span>
-        <div className={styles.copyIcon} onClick={() => copyAddress(address)}>
-          <CopyIcon />
+        <div className={styles.copyIcon} onClick={() => onCopy()}>
+          <Tooltip text={tooltipText}><CopyIcon /></Tooltip>
         </div>
       </div>
     </div>
