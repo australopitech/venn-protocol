@@ -165,7 +165,7 @@ export const DialogOwnedListedDescription = ({
     // let error = null;
     let hash;
     try {
-      hash = await delist(client, signer, tokenId);
+      hash = await delist(tokenId, client, signer);
     } catch (err) {
       console.log(err);
       alert('de-listing failed!');
@@ -197,7 +197,7 @@ export const DialogOwnedListedDescription = ({
         <div className={styles.unlistContainer}>
           <button className={styles.unlistButton} onClick={handleButtonClick}> {isLoading? "loading..." : "Unlist NFT"}</button>
           <div className={styles.warning}>
-            <WarningIcon /><span className={styles.warningText}>{`If you choose to unlist your NFT, it'll be removed from the market and won't be available for rent again until you relist it.`}</span>
+            <WarningIcon /><span className={styles.warningText}>{`If you unlist your NFT, it'll be removed from the market and won't be available for rent until you relist it.`}</span>
           </div>
         </div>
       </div>

@@ -242,8 +242,8 @@ export const DialogOwnedRentedDescription = ({
             <div className={styles.warning}>
               <WarningIcon /><span className={styles.warningText}>{
               timeLeft > 0 
-                ? `If you unlist your NFT, it'll be removed from the market after the current rental ends and won't be available for rent again until you relist it.`
-                : `If you unlist your NFT, it'll be retrieved and sent straight to your account. You will be refunded the 'Pull Fee'.`
+                ? `If you unlist your NFT, it'll be removed from the market after the current rental ends and won't be available for rent until you relist it.`
+                : `If you unlist your NFT, it'll be retrieved and sent straight to your account. It won't be available for rent until you relist it. You will be refunded the 'Pull Fee'.`
               }</span>
             </div>
           </div>
