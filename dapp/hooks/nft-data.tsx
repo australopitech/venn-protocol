@@ -19,30 +19,32 @@ export function useRealNft(args?: NftDataArgs) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const client = usePublicClient();
 //   const { chain } = useNetwork();
+  const memoizedArgs = useMemo(() => args, [args?.contract, args?.tokenId]);
   
   useEffect(() => {
+    console.log('render')
     if(!args)
       return
     const { contract, tokenId } = args;
     if(!contract || tokenId === undefined) {
-      console.error('error: missing args')
-      setError({ message: 'error: missing args' })
+      // console.error('error: missing args')
+      // setError({ message: 'error: missing args' })
       return
     }
     setError(null);
     const resolveRealNft = async () => {
-    //   setIsLoading(true)
+      setIsLoading(true)
       try {
         setData( await getRealNft(client, contract, tokenId))
       } catch (err) {
         console.error(err);
         setError(err)
       } finally {
-        // setIsLoading(false);
+        setIsLoading(false);
       }
     }
     resolveRealNft();
-  }, [args]);
+  }, [memoizedArgs]);
   
   return { data, error, isLoading }
 }
@@ -53,30 +55,32 @@ export function useHolder(args? : NftDataArgs) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const client = usePublicClient();
 
+  const memoizedArgs = useMemo(() => args, [args?.contract, args?.tokenId]);
+
   useEffect(() => {
     if(!args)
         return
     const { contract, tokenId } = args;
     console.log('args', args)
     if(!contract || tokenId === undefined) {
-        console.error('error: missing args');
-        setError({ message: 'error: missing args'});
+        // console.error('error: missing args');
+        // setError({ message: 'error: missing args'});
         return
     }
     const resolveHolder = async() => {
       setError(null);
-    //   setIsLoading(true);
+      setIsLoading(true);
       try {
         setData(await ownerOf(client, contract, tokenId ));
       } catch (err) {
         console.error(err);
         setError(err);
       } finally {
-        // setIsLoading(false);
+        setIsLoading(false);
       }
     }
     resolveHolder();
-  }, [args]);
+  }, [memoizedArgs]);
   
   return { data, error, isLoading }
 }
@@ -92,20 +96,21 @@ export function useListingData(args?: NftDataArgs) {
       return
     const { contract, tokenId } = args;
     if(!contract || tokenId === undefined) {
-      console.error('missing args');
-      setError({ message: 'error: missing args'});
+      // console.error('missing args');
+      // setError({ message: 'error: missing args'});
       return
     }
     const resolveListingData = async () => {
       setError(null);
-      // setIsLoading(true)
+      setIsLoading(true)
       try {
         setData( await getListData(client, contract, tokenId))
       } catch (err) {
         console.error(err);
         setError(err);
+      } finally {
+        setIsLoading(false)
       }
-      // setIsLoading(false)
     }
     resolveListingData();
   }, [args, client]);
@@ -131,12 +136,13 @@ export function useTimeLeft(args?: NftDataArgs) {
       return
     const { contract, tokenId } = nft.data;
     if(!contract || tokenId === undefined) {
-      console.error('missing args');
-      setError({ message: 'error: missing args'});
+      // console.error('missing args');
+      // setError({ message: 'error: missing args'});
       return
     }
     const resolveTimeLeft = async () => {
       setError(null);
+      setIsLoading(true);
       try {
         const endTime = await getEndTime(client, holder.data, contract, tokenId )
         if(!endTime)
@@ -145,6 +151,8 @@ export function useTimeLeft(args?: NftDataArgs) {
       } catch (err) {
         console.error(err)
         setError(err);
+      } finally {
+        setIsLoading(false)
       }
     }
     resolveTimeLeft();
