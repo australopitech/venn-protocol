@@ -11,7 +11,8 @@ import { timeLeftString } from '@/utils/utils';
 
 export interface DialogOwnedRentedDescriptionProps {
   isListed?: boolean;
-  nftItem?: NftItem;
+  contractAddress?: string;
+  tokenId?: bigint;
   setIsNFTOpen: any;
   setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>
 }
@@ -35,42 +36,43 @@ const WarningIcon = () => {
 
 export const DialogOwnedRentedDescription = ({ 
   isListed,
-  nftItem,
+  contractAddress,
+  tokenId,
   setIsNFTOpen,
   setApproveData
 }: DialogOwnedRentedDescriptionProps) => {
   // const [timeLeft, setTimeLeft] = useState<bigint>();
   const [loadingInfo, setLoadingInfo] = useState(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [tokenId, setTokenId] = useState<bigint>();
+  // const [tokenId, setTokenId] = useState<bigint>();
   const [error, setError] = useState<any>(null);
   const { data: signer } = useWalletClient();
   const { provider } = useSmartAccount();
   const client = usePublicClient();
   const nft = useRealNft({ 
-    contract: nftItem?.contractAddress as `0x${string}`,
+    contract: contractAddress as `0x${string}`,
     tokenId
   });
 
   const holder = useHolder(nft.data);
   // const timestamp = useTimestamp();
   const timeLeft = useTimeLeft({
-    contract: nftItem?.contractAddress as `0x${string}`, 
-    tokenId: tokenId
+    contract: contractAddress as `0x${string}`, 
+    tokenId
   })
   
   // console.log('timeLeft', timeLeft);
   
-  useEffect(() => {
-    if(nftItem) {
-      if(nftItem.nftData.token_id) {
-        setTokenId(BigInt(nftItem.nftData.token_id));
-      } else {
-        console.error('no token id found');
-        setError({message: 'error: no token id found'})
-      }
-    }
-  },[nftItem]);
+  // useEffect(() => {
+  //   if(nftItem) {
+  //     if(nftItem.nftData.token_id) {
+  //       setTokenId(BigInt(nftItem.nftData.token_id));
+  //     } else {
+  //       console.error('no token id found');
+  //       setError({message: 'error: no token id found'})
+  //     }
+  //   }
+  // },[nftItem]);
 
   useEffect(() => {
     if(!nft.isLoading && !holder.isLoading && !timeLeft.isLoading)

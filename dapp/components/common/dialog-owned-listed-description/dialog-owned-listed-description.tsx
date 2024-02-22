@@ -14,7 +14,8 @@ import { useSmartAccount } from '@/app/account/venn-provider';
 
 export interface DialogOwnedListedDescriptionProps {
   setIsNFTOpen?: any
-  nftItem?: NftItem;
+  contractAddress?: string;
+  tokenId?: bigint;
   setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>
 }
 
@@ -75,28 +76,26 @@ const WarningIcon = () => {
 
 export const DialogOwnedListedDescription = ({ 
   setIsNFTOpen,
-  nftItem,
+  contractAddress,
+  tokenId,
   setApproveData
 }: DialogOwnedListedDescriptionProps) => {
-  const [duration, setDuration] = useState<number | undefined>();
-  const [isDurationInvalid, setIsDurationInvalid] = useState<boolean | undefined>(false);
+  // const [duration, setDuration] = useState<number | undefined>();
+  // const [isDurationInvalid, setIsDurationInvalid] = useState<boolean | undefined>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
   // const [rentPrice, setRentPrice] = useState<bigint>();
   // const [maxDuration, setMaxDuration] = useState<bigint>();
-  const [tokenId, setTokenId] = useState<bigint>();
+  // const [tokenId, setTokenId] = useState<bigint>();
   const client = usePublicClient();
   const { chain } = useNetwork();
   const { data: signer } = useWalletClient();
   const { provider } = useSmartAccount();
   const nft = useRealNft({
-    contract: nftItem?.contractAddress as `0x${string}`,
+    contract: contractAddress as `0x${string}`,
     tokenId
   })
-  const listing = useListingData({
-    contract: nft.data?.contractAddress,
-    tokenId: nft.data?.tokenId
-  });
+  const listing = useListingData(nft.data);
   const router = useRouter();
 
   // console.log('signer', signer);
@@ -105,13 +104,13 @@ export const DialogOwnedListedDescription = ({
   // console.log('maxDuration', maxDuration?.toString())
   // console.log('tokenId', tokenId)
 
-  useEffect(() => {
-    if(nftItem) {
-      if(nftItem.nftData.token_id) {
-        setTokenId(BigInt(nftItem.nftData.token_id));
-      } else console.error('no token id found');
-    }
-  },[nftItem]);
+  // useEffect(() => {
+  //   if(nftItem) {
+  //     if(nftItem.nftData.token_id) {
+  //       setTokenId(BigInt(nftItem.nftData.token_id));
+  //     } else console.error('no token id found');
+  //   }
+  // },[nftItem]);
 
   // useEffect(() => { 
   //   const resolveListData = async() => {
@@ -140,22 +139,22 @@ export const DialogOwnedListedDescription = ({
   //   resolveListData();
   // }, [client, tokenId]);
   
-  const handleChange = (e: any) => {
-    let numValue = parseInt(e.target.value);
+  // const handleChange = (e: any) => {
+  //   let numValue = parseInt(e.target.value);
 
-    if (e.target.value === '') {
-      numValue = 0
-    }
-    console.log('numValue is ', numValue)
-    // If value is negative or not a number, set it to 0
-    if ((numValue < 0 || isNaN(numValue)) ) {
-      setIsDurationInvalid(true);
-      setDuration(0);
-    } else {
-      setIsDurationInvalid(false);
-      setDuration(numValue);
-    }
-  }
+  //   if (e.target.value === '') {
+  //     numValue = 0
+  //   }
+  //   console.log('numValue is ', numValue)
+  //   // If value is negative or not a number, set it to 0
+  //   if ((numValue < 0 || isNaN(numValue)) ) {
+  //     setIsDurationInvalid(true);
+  //     setDuration(0);
+  //   } else {
+  //     setIsDurationInvalid(false);
+  //     setDuration(numValue);
+  //   }
+  // }
 
 
   const handleButtonClick = async() => {
@@ -170,7 +169,6 @@ export const DialogOwnedListedDescription = ({
     if(isLoading)
       return
     setIsLoading(true);
-    // let error = null;
     let hash;
     if(provider) {
       try {
@@ -181,7 +179,7 @@ export const DialogOwnedListedDescription = ({
           data: {
             targetAddress: getMktPlaceContractAddress(chain?.id),
             value: 0n,
-            calldata: delistCallData(nft.data.contractAddress, nft.data.tokenId)
+            calldata: delistCallData(nft.data.contract, nft.data.tokenId)
           }
         })
       } catch (err) {
@@ -206,10 +204,6 @@ export const DialogOwnedListedDescription = ({
     }
   }
 
-  // const name = "Awesome NFT #1"
-  // const description = "This is an awesome NFT uhul."
-  // const price = 0.0001
-  // const maxDuration = 10
 
   return (
     <div className={styles.bodyDescriptionContainer}>

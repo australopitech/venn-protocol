@@ -8,7 +8,7 @@ import { DialogOwnedNotListedDescription } from '../dialog-owned-not-listed-desc
 import { DialogOwnedRentedDescription } from '../dialog-owned-rented-description/dialog-owned-rented-description';
 import { DialogNotOwnedNotListedDescription } from '../dialog-not-owned-not-listed-description/dialog-not-owned-not-listed-description';
 import { NftItem, ApproveData } from '@/types';
-import { receiptsContract } from '@/utils/contractData';
+import { getReceiptsContractAddress } from '@/utils/contractData';
 import { ownerOf, checkIsRentedOut, checkIsRental, checkIsListed } from '@/utils/listing-data';
 import { useAccount, usePublicClient } from 'wagmi';
 import { getAddress } from 'viem';
@@ -100,16 +100,16 @@ export const NFTDialog = ({
 
     // console.log('nft contract', nftItem?.contractAddress)
     // console.log('nft id', nftItem?.nftData.token_id)
-    if(nftItem)
-     console.log(
-      'nft_contract == receipts',
-      getAddress(nftItem?.contractAddress) === receiptsContract.address
-    )
+    // if(nftItem)
+    //  console.log(
+    //   'nft_contract == receipts',
+    //   getAddress(nftItem?.contractAddress) === receiptsContract.address
+    // )
     // console.log('receipts_contract', receiptsContract.address )
 
     useEffect(() => {
       if(nftItem){
-        setIsReceipt(getAddress(nftItem.contractAddress) === receiptsContract.address);
+        setIsReceipt(getAddress(nftItem.contractAddress) === getReceiptsContractAddress());
         if(nftItem.nftData.token_id) {
           setTokenId(BigInt(nftItem.nftData.token_id));
         } else console.error('no token id found');
@@ -239,18 +239,21 @@ export const NFTDialog = ({
                   <DialogNotOwnedNotListedDescription />} {/* not available for rent*/}
                 
                 {!loading && isOwned && isListed && isReceipt && !isRented_Out && 
-                  <DialogOwnedListedDescription nftItem={nftItem} setIsNFTOpen={setIsNFTOpen} setApproveData={setApproveData}/>} 
+                  <DialogOwnedListedDescription contractAddress={nftItem?.contractAddress} tokenId={tokenId}
+                  setIsNFTOpen={setIsNFTOpen} setApproveData={setApproveData}/>} 
                   {/* owned/listed by signer/not rented out */}
                 
                 {!loading && isOwned && !isListed && !isReceipt && 
-                  <DialogOwnedNotListedDescription nftItem={nftItem} setIsNFTOpen={setIsNFTOpen} 
-                  setError={setError} setApproveData={setApproveData} setTxResolved={setTxResolved}
+                  <DialogOwnedNotListedDescription 
+                  contractAddress={nftItem?.contractAddress} tokenId={tokenId}
+                  owner={nftItem?.owner} setIsNFTOpen={setIsNFTOpen} setError={setError} 
+                  setApproveData={setApproveData} setTxResolved={setTxResolved}
                   /> } 
                   {/* owned/not listed by signer/not rented out */}
                 
                 {!loading && isOwned && isReceipt && isRented_Out &&
                   <DialogOwnedRentedDescription 
-                    isListed={isListed} nftItem={nftItem} setIsNFTOpen={setIsNFTOpen} setApproveData={setApproveData}
+                    isListed={isListed} contractAddress={nftItem?.contractAddress} tokenId={tokenId} setIsNFTOpen={setIsNFTOpen} setApproveData={setApproveData}
                   />} {/* owned / rented out */}
                 {/* {!isOwned && isReceipt && 
                   <DialogOwnedRentedDescription />} receipt held by 3rd party; NFT available */}

@@ -16,16 +16,14 @@ export interface DialogOwnedNotListedDescriptionProps {
     index?: number;
     activeAccount?: string;
     context?: string;
-    nftItem?: NftItem;
+    contractAddress?: string;
+    tokenId?: bigint;
+    owner?: string;
     setIsNFTOpen: any;
     setError: any;
     setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>;
     setTxResolved: any;
 }
-
-let nft: any;
-let _title: string | undefined;
-let _name: string | undefined;
 
 /** TODO:
  * - make component re-render on approval call completion
@@ -38,11 +36,9 @@ let _name: string | undefined;
  * To create custom component templates, see https://help.codux.com/kb/en/article/kb16522
  */
 export const DialogOwnedNotListedDescription = ({ 
-  className, 
-  index, 
-  activeAccount, 
-  context,
-  nftItem,
+  contractAddress,
+  tokenId,
+  owner,
   setIsNFTOpen,
   setError,
   setApproveData,
@@ -61,39 +57,40 @@ export const DialogOwnedNotListedDescription = ({
   const { address: eoa } = useAccount();
   const { provider, address: vsaAddr } = useSmartAccount();
   const [isApproved, setIsApproved] = useState<boolean>();
-  const [tokenId, setTokenId] = useState<bigint>();
+  // const [tokenId, setTokenId] = useState<bigint>();
   const client = usePublicClient();
   const router = useRouter();
 
   const updateState = () => {
     setResolver(!resolver);
   }
-  useEffect(() => {
-    if(nftItem) {
-      if(nftItem.nftData.token_id) {
-        setTokenId(BigInt(nftItem.nftData.token_id));
-      } else console.error('no token id found');
-    }
-  },[nftItem]);
+
+  // useEffect(() => {
+  //   if(nftItem) {
+  //     if(nftItem.nftData.token_id) {
+  //       setTokenId(BigInt(nftItem.nftData.token_id));
+  //     } else console.error('no token id found');
+  //   }
+  // },[nftItem]);
 
   useEffect(() => {
     const resolveIsApproved = async () => {
-      if(nftItem && tokenId !== undefined){
-        if(!nftItem.owner) {
+      if(contractAddress && tokenId !== undefined){
+        if(!owner) {
           console.error('no owner found')
           return
         }
         setIsApproved(await getIsApproved(
           client,
-          nftItem.contractAddress as `0x${string}`,
+          contractAddress as `0x${string}`,
           tokenId,
-          nftItem.owner,
+          owner,
           mktPlaceContract.address
         ));
       }
     }
     resolveIsApproved();
-  }, [resolver, nftItem, tokenId]);
+  }, [resolver, contractAddress, owner, tokenId]);
 
   useLayoutEffect(() => {
     if(isApproved) setButtonText(listButtonText);
@@ -141,12 +138,8 @@ export const DialogOwnedNotListedDescription = ({
     }
     if(!buttonText || buttonText === loadingText)
       return
-    if(!nftItem) {
-      console.error('nft data not found');
-      return
-    }
-    if(tokenId === undefined){
-      console.error('no token id found');
+    if(tokenId === undefined || !contractAddress){
+      console.error('nft info not found');
       return
     }
     let hash;
@@ -157,7 +150,7 @@ export const DialogOwnedNotListedDescription = ({
         //TODO: VSA CALL
         if(provider) {
           const res = await provider.sendUserOperation({
-            target: nftItem.contractAddress as `0x${string}`,
+            target: contractAddress as `0x${string}`,
             value: 0n,
             data: approveCallData(
               mktPlaceContract.address,
@@ -169,7 +162,7 @@ export const DialogOwnedNotListedDescription = ({
           hash = await approve(
             client,
             signer,
-            nftItem.contractAddress,
+            contractAddress,
             tokenId,
             mktPlaceContract.address
           );
@@ -209,7 +202,7 @@ export const DialogOwnedNotListedDescription = ({
           targetAddress: mktPlaceContract.address as `0x${string}`,
           value: 0n,
           calldata: listCallData(
-            nftItem.contractAddress as `0x${string}`,
+            contractAddress as `0x${string}`,
             tokenId,
             priceInWei,
             duration          
@@ -223,7 +216,7 @@ export const DialogOwnedNotListedDescription = ({
       hash = await list(
         client,
         signer,
-        nftItem.contractAddress,
+        contractAddress,
         tokenId,
         priceInWei,
         BigInt(duration)
