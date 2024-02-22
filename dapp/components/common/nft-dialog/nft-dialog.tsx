@@ -99,7 +99,7 @@ export const NFTDialog = ({
     const { address: vsa } = useSmartAccount();
 
     // console.log('nft contract', nftItem?.contractAddress)
-    // console.log('nft id', nftItem?.nftData.token_id)
+    console.log('nft id', nftItem?.nftData.token_id)
     // if(nftItem)
     //  console.log(
     //   'nft_contract == receipts',
@@ -240,7 +240,7 @@ export const NFTDialog = ({
                 
                 {!loading && isOwned && isListed && isReceipt && !isRented_Out && 
                   <DialogOwnedListedDescription contractAddress={nftItem?.contractAddress} tokenId={tokenId}
-                  setIsNFTOpen={setIsNFTOpen} setApproveData={setApproveData}/>} 
+                  setIsNFTOpen={setIsNFTOpen} setTxResolved={setTxResolved} setApproveData={setApproveData}/>} 
                   {/* owned/listed by signer/not rented out */}
                 
                 {!loading && isOwned && !isListed && !isReceipt && 

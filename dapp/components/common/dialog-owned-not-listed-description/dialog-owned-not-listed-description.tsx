@@ -10,6 +10,7 @@ import { parseEther } from 'viem';
 import { listCallData } from '@/utils/call';
 import { useSmartAccount } from '@/app/account/venn-provider';
 import { ApproveData, NftItem } from '@/types';
+import { useIsAppoved } from '@/hooks/nft-data';
 
 export interface DialogOwnedNotListedDescriptionProps {
     className?: string;
@@ -50,19 +51,25 @@ export const DialogOwnedNotListedDescription = ({
   const [isDurationInvalid, setIsDurationInvalid] = useState<boolean>(false);
   const listButtonText = "List it!";
   const approveButtonText = "Approve Listing";
-  const loadingText = "loading...";
+  const [isLoading, setIsLoading] = useState(false);
   const [buttonText, setButtonText] = useState<string>();
-  const [resolver, setResolver] = useState<boolean>(false);
+  const [trigger, setTrigger] = useState<boolean>(false);
   const { data: signer } = useWalletClient();
-  const { address: eoa } = useAccount();
-  const { provider, address: vsaAddr } = useSmartAccount();
-  const [isApproved, setIsApproved] = useState<boolean>();
+  const { provider } = useSmartAccount();
+  // const [isApproved, setIsApproved] = useState<boolean>();
   // const [tokenId, setTokenId] = useState<bigint>();
+  const [hash, setHash] = useState<string>();
+  const isApproved = useIsAppoved({
+    contract: contractAddress as `0x${string}`,
+    tokenId,
+    owner: owner as `0x${string}`,
+    trigger
+  });
   const client = usePublicClient();
   const router = useRouter();
 
   const updateState = () => {
-    setResolver(!resolver);
+    setTrigger(!trigger);
   }
 
   // useEffect(() => {
@@ -73,29 +80,29 @@ export const DialogOwnedNotListedDescription = ({
   //   }
   // },[nftItem]);
 
-  useEffect(() => {
-    const resolveIsApproved = async () => {
-      if(contractAddress && tokenId !== undefined){
-        if(!owner) {
-          console.error('no owner found')
-          return
-        }
-        setIsApproved(await getIsApproved(
-          client,
-          contractAddress as `0x${string}`,
-          tokenId,
-          owner,
-          mktPlaceContract.address
-        ));
-      }
-    }
-    resolveIsApproved();
-  }, [resolver, contractAddress, owner, tokenId]);
-
+  // useEffect(() => {
+  //   const resolveIsApproved = async () => {
+  //     if(contractAddress && tokenId !== undefined){
+  //       if(!owner) {
+  //         console.error('no owner found')
+  //         return
+  //       }
+  //       setIsApproved(await getIsApproved(
+  //         client,
+  //         contractAddress as `0x${string}`,
+  //         tokenId,
+  //         owner,
+  //         mktPlaceContract.address
+  //       ));
+  //     }
+  //   }
+  //   resolveIsApproved();
+  // }, [resolver, contractAddress, owner, tokenId]);
+  console.log('button text', buttonText)
   useLayoutEffect(() => {
-    if(isApproved) setButtonText(listButtonText);
-    else if(isApproved !== undefined) setButtonText(approveButtonText);
-  }, [isApproved])
+    if(isApproved.data) setButtonText(listButtonText);
+    else if(isApproved.data !== undefined) setButtonText(approveButtonText);
+  }, [isApproved, trigger, hash]);
   
   const handlePriceChange = (e: any) => {
     // let numValue = parseInt(e.target.value);
@@ -131,68 +138,40 @@ export const DialogOwnedNotListedDescription = ({
     }
   }
 
-  const handleButtonClick = async() => {
-    if(!signer) {
-      alert('Connect your wallet!')
+  const handleApprove = async () => {
+    if(!tokenId || !contractAddress)
+      throw new Error('missing nft info')
+    if(provider) {
+      const res = await provider.sendUserOperation({
+        target: contractAddress as `0x${string}`,
+        value: 0n,
+        data: approveCallData(
+          mktPlaceContract.address,
+          tokenId
+        )
+      });
+      setHash(await provider.waitForUserOperationTransaction(res.hash));
+    } else if(signer){
+      setHash( await approve(
+        client,
+        signer,
+        contractAddress,
+        tokenId,
+        mktPlaceContract.address
+      ));
+    } else throw new Error('no account connected');
+    return hash;
+  }
+
+  const handleList = async () => {
+    if(isPriceInvalid || isDurationInvalid)
       return
-    }
-    if(!buttonText || buttonText === loadingText)
-      return
-    if(tokenId === undefined || !contractAddress){
-      console.error('nft info not found');
-      return
-    }
-    let hash;
-    /** approval call */
-    if(!isApproved) {
-      setButtonText(loadingText);
-      try {
-        //TODO: VSA CALL
-        if(provider) {
-          const res = await provider.sendUserOperation({
-            target: contractAddress as `0x${string}`,
-            value: 0n,
-            data: approveCallData(
-              mktPlaceContract.address,
-              tokenId
-            )
-          });
-          hash = await provider.waitForUserOperationTransaction(res.hash);
-        } else {
-          hash = await approve(
-            client,
-            signer,
-            contractAddress,
-            tokenId,
-            mktPlaceContract.address
-          );
-        }  
-      } catch (err: any) {
-        console.log(err);
-        setError(err)
-        setButtonText(approveButtonText);
-        return
-      }
-      console.log('success');
-      console.log('txhash', hash);
-      // alert('success');
-      updateState()
-      // setButtonText(listButtonText);
-      return
-    }
-    /** */
-    console.log('isPriceInvalid', isPriceInvalid)
-    console.log('isDurationInvalid', isDurationInvalid)
-    if(isPriceInvalid || isDurationInvalid) {
-      // alert('Set valid values for price and max duration!');
-      return
-    }
     if(!duration){
       setIsDurationInvalid(true)
       return;
     }
-
-    /** list call */
+    if(!tokenId || !contractAddress)
+      throw new Error('missinf nft info');
     const priceInWei = parseEther(price.toString());
     // const durationInSec = BigNumber.from(duration*24*60*60);
     if(provider) {
@@ -209,32 +188,47 @@ export const DialogOwnedNotListedDescription = ({
           )
         }
       })
-      return
-    }
-    setButtonText(loadingText);
-    try {
-      hash = await list(
+    } else if (signer) {
+      const hash = await list(
         client,
         signer,
         contractAddress,
         tokenId,
         priceInWei,
         BigInt(duration)
-      );  
-    } catch (err: any) {
-      console.log(err);
-      // alert('Listing failed')
-      setError(err.message)
-      setButtonText(listButtonText);
+      );
+      setIsNFTOpen(false);
+      setTxResolved({ success: true, hash }); 
+    } else throw new Error('no account connected');
+  }
+
+  const handleButtonClick = async () => {
+    if(!signer) {
+      alert('Connect your wallet!')
       return
     }
-    console.log('success');
-    console.log('txhash', hash);
-    // alert('success');
-    setTxResolved({ success: true, hash })
-    setIsNFTOpen(false);
-    // router.refresh();
-    // =======> RE-FECTCH <========
+    if(!buttonText || isLoading)
+      return
+    if(tokenId === undefined || !contractAddress){
+      console.error('nft info not found');
+      return
+    }
+    setIsLoading(true)
+    try{
+      if(!isApproved.data) {
+        await handleApprove();
+        updateState();
+      }
+      else
+        await handleList();
+    } catch(err) {
+      console.error(err);
+      setError(err)
+    } finally {
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+    }
   }
 
   console.log('isApproved?' , isApproved)
@@ -279,7 +273,7 @@ export const DialogOwnedNotListedDescription = ({
         {isDurationInvalid && <span className={styles.invalidValue}>Set a valid duration. Must be greater than zero!</span>}
       </div>
       <br />
-      <button className={styles.listButton} onClick={handleButtonClick}>{buttonText}</button>
+      <button className={styles.listButton} onClick={handleButtonClick}>{isLoading ? 'Loading...' : buttonText}</button>
     </div>
   );
 };

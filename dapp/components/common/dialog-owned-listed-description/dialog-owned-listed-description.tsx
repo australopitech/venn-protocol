@@ -13,7 +13,8 @@ import { useListingData, useRealNft } from '@/hooks/nft-data';
 import { useSmartAccount } from '@/app/account/venn-provider';
 
 export interface DialogOwnedListedDescriptionProps {
-  setIsNFTOpen?: any
+  setIsNFTOpen: any;
+  setTxResolved: any;
   contractAddress?: string;
   tokenId?: bigint;
   setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>
@@ -76,6 +77,7 @@ const WarningIcon = () => {
 
 export const DialogOwnedListedDescription = ({ 
   setIsNFTOpen,
+  setTxResolved,
   contractAddress,
   tokenId,
   setApproveData
@@ -170,10 +172,10 @@ export const DialogOwnedListedDescription = ({
       return
     setIsLoading(true);
     let hash;
-    if(provider) {
-      try {
+    try {
+      if(provider) {
         if(!nft.data)
-          throw new Error('could not fecth nft info')
+          throw new Error('could not fecth nft info');
         setApproveData({
           type: 'Internal',
           data: {
@@ -181,27 +183,50 @@ export const DialogOwnedListedDescription = ({
             value: 0n,
             calldata: delistCallData(nft.data.contract, nft.data.tokenId)
           }
-        })
-      } catch (err) {
-        console.error(err);
-        setError(err)
-      } finally {
-        setIsLoading(false)
-        // refetch
-      }
-    } else {
-      try {
-        hash = await delist(tokenId, client, signer);
-      } catch (err) {
-        console.error(err);
-        setError(err);
-        setIsLoading(false);
-        return
-      }
-      console.log('txHash', hash);
-      setIsLoading(false);
-      // refetch
+        });
+      } else hash = await delist(tokenId, client, signer);
+    } catch (err) {
+      console.error(err);
+      setError(err);
+      setIsLoading(false)
+      return
     }
+    //refetch
+    setIsNFTOpen(false);
+    setTxResolved({ success: true, hash })
+
+    // if(provider) {
+    //   try {
+    //     if(!nft.data)
+    //       throw new Error('could not fecth nft info')
+    //     setApproveData({
+    //       type: 'Internal',
+    //       data: {
+    //         targetAddress: getMktPlaceContractAddress(chain?.id),
+    //         value: 0n,
+    //         calldata: delistCallData(nft.data.contract, nft.data.tokenId)
+    //       }
+    //     })
+    //   } catch (err) {
+    //     console.error(err);
+    //     setError(err)
+    //   } finally {
+    //     setIsLoading(false)
+    //     // refetch
+    //   }
+    // } else {
+    //   try {
+    //     hash = await delist(tokenId, client, signer);
+    //   } catch (err) {
+    //     console.error(err);
+    //     setError(err);
+    //     setIsLoading(false);
+    //     return
+    //   }
+    //   console.log('txHash', hash);
+    //   setIsLoading(false);
+    //   // refetch
+    // }
   }
 
 
