@@ -2,11 +2,9 @@
 import { PublicClient, WalletClient, encodeFunctionData } from 'viem';
 import { erc721abi } from '../contractData';
 
-// const erc721abi = erc721.abi as any;
-
-// TODO: (APPROVE FOR ALL??????)
+/**EOA Call */
 export async function approve (
-    provider: PublicClient,
+    client: PublicClient,
     signer: WalletClient,
     contractAddr: string,
     tokenId: bigint,
@@ -17,14 +15,16 @@ export async function approve (
     // return tx.wait();
     const account = signer.account;
     const address = contractAddr as `0x${string}`;
-    const { request } = await provider.simulateContract({
+    const { request } = await client.simulateContract({
         account,
         address,
         abi: erc721abi,
         functionName: 'approve',
         args: [to, tokenId]
     });
-    return signer.writeContract(request);
+    const hash = await signer.writeContract(request);
+    await client.waitForTransactionReceipt({ hash });
+    return hash;
 }
 
 export function approveCallData (

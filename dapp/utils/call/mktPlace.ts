@@ -33,82 +33,75 @@ export const vsaPull = async (
 /** EOA CALLERS */
 
 export const list = async (
-    provider: PublicClient | undefined,
+    client: PublicClient | undefined,
     signer: WalletClient | undefined,
     nftContractAddr: string,
     tokenId: bigint,
     price: bigint,
     maxDuration: bigint
 ) => {
-    if(!provider) {
-        console.error('no provider found');
-        return
-    }
-    if(!signer) {
-        console.error('signer undefined');
-        alert('Connect your wallet');
-        return
-    }
+    if(!client)
+        throw new Error('client undefined')
+    if(!signer)
+        throw new Error('signer undefined');
     const account = signer.account;
-    const { request } = await provider.simulateContract({
+    const { request } = await client.simulateContract({
         account,
         address: mktPlaceAddr,
         abi: mktPlaceAbi,
         functionName: 'listNFT',
         args: [nftContractAddr, tokenId, price, maxDuration]
     });
-    return await signer.writeContract(request);
+    const hash = await signer.writeContract(request);
+    await client.waitForTransactionReceipt({ hash });
+    return hash;
 }
 
 export const delist = async (
     receiptId: bigint,
-    provider?: PublicClient,
+    client?: PublicClient,
     signer?: WalletClient,
 ) => {
-    if(!provider) {
-        console.error('no provider found');
-        return
-    }
-    if(!signer) {
-        console.error('signer undefined');
-        alert('Connect your wallet');
-        return
-    }
-    const nftObj = await provider.readContract({
+    if(!client)
+        throw new Error('client undefined');
+    if(!signer)
+        throw new Error('signer undefined');
+    const nftObj = await client.readContract({
         address: mktPlaceAddr,
         abi: mktPlaceAbi,
         functionName: 'getNFTbyReceipt',
         args: [receiptId]
     }) as NftObj;
-    // console.log('nftObj', nftObj)
     const account = signer.account;
-    const { request } = await provider.simulateContract({
+    const { request } = await client.simulateContract({
         account,
         address: mktPlaceAddr,
         abi: mktPlaceAbi,
-        functionName: 'listNFT',
+        functionName: 'deList',
         args: [nftObj.contractAddress, nftObj.tokenId]
     });
-    return await signer.writeContract(request);
+    const hash = await signer.writeContract(request);
+    await client.waitForTransactionReceipt({ hash });
+    return hash
 }
 
 export const pull = async (
     receiptId: bigint,
-    provider?: PublicClient,
+    client?: PublicClient,
     signer?: WalletClient,
 ) => {
-    if(!provider)
-        throw new Error('no provider found');
+    if(!client)
+        throw new Error('client undefined');
     if(!signer)
         throw new Error('signer undefined');
-    const nftObj = await provider.readContract({
+    const nftObj = await client.readContract({
         address: mktPlaceAddr,
         abi: mktPlaceAbi,
         functionName: 'getNFTbyReceipt',
         args: [receiptId]
     }) as NftObj;
     const account = signer.account;
-    const { request } = await provider.simulateContract({
+    const { request } = await client.simulateContract({
         account,
         address: mktPlaceAddr,
         abi: mktPlaceAbi,
@@ -118,23 +111,26 @@ export const pull = async (
             nftObj.tokenId
         ]
     });
-    return await signer.writeContract(request);
+    const hash = await signer.writeContract(request);
+    client.waitForTransactionReceipt({ hash });
+    return hash
 }
 
+/**not used */
 export const rent = async (
     signer: WalletClient | undefined,
     nftContractAddr: string,
     tokenId: bigint,
     duration: number,
     value: bigint,
-    provider?: PublicClient
+    client?: PublicClient
 ) => {
-    if(!provider)
-        throw new Error('no provider found');
+    if(!client)
+        throw new Error('client undedined');
     if(!signer)
         throw new Error('signer undefined');
     const account = signer.account;
-    const { request } = await provider.simulateContract({
+    const { request } = await client.simulateContract({
         account,
         address: mktPlaceAddr,
         abi: mktPlaceAbi,
