@@ -40,6 +40,7 @@ export const DialogOwnedRentedDescription = ({
   setApproveData
 }: DialogOwnedRentedDescriptionProps) => {
   // const [timeLeft, setTimeLeft] = useState<bigint>();
+  const [loadingInfo, setLoadingInfo] = useState(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [tokenId, setTokenId] = useState<bigint>();
   const [error, setError] = useState<any>(null);
@@ -51,8 +52,7 @@ export const DialogOwnedRentedDescription = ({
     tokenId
   });
 
-  const memoizedData = useMemo(() => nft.data, [nft.data?.contract, nft.data?.tokenId]);
-  const holder = useHolder(memoizedData);
+  const holder = useHolder(nft.data);
   // const timestamp = useTimestamp();
   const timeLeft = useTimeLeft({
     contract: nftItem?.contractAddress as `0x${string}`, 
@@ -71,6 +71,13 @@ export const DialogOwnedRentedDescription = ({
       }
     }
   },[nftItem]);
+
+  useEffect(() => {
+    if(!nft.isLoading && !holder.isLoading && !timeLeft.isLoading)
+      setTimeout(() => {
+        setLoadingInfo(false)
+      }, 2000);
+  }, [nft.isLoading, holder.isLoading, timeLeft.isLoading])
   
   // useEffect(() => {
   //   const resolveTimeLeft = async() => {
@@ -159,10 +166,7 @@ export const DialogOwnedRentedDescription = ({
     }
   }
 
-  if(
-    nft.isLoading ||
-    holder.isLoading
-    ) 
+  if(loadingInfo) 
       return (
         <div className={styles.bodyDescriptionContainer}>
           <div className={styles.divider}></div>
