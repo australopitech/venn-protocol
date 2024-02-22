@@ -1,4 +1,4 @@
-import { useQuery } from 'react-query';
+import { useQuery, useQueryClient } from 'react-query';
 import { BalancesResponse, NftItem, FetchNftDataResponse } from '@/types';
 import { fetchAddressData } from '../utils/frontendUtils'
 import { useEffect, useState } from "react";
@@ -79,3 +79,19 @@ export function useAddressNfts (address: string | undefined): FetchNftDataRespon
     isLoading 
   };
 }
+
+// Custom hook that returns the refetchAddressData function
+export const useRefetchAddressData = () => {
+  const queryClient = useQueryClient();
+
+  const refetchAddressData = (address: string, force: boolean = false) => {
+    const queryKey = ['addressData', address];
+    if (force) {
+      queryClient.refetchQueries(queryKey);
+    } else {
+      queryClient.invalidateQueries(queryKey);
+    }
+  };
+
+  return refetchAddressData;
+};
