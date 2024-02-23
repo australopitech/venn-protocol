@@ -1,0 +1,42 @@
+@keyframes scaleUp {
+    0%, 20%, 100% {
+      transform: scale(1);
+    }
+    10% {
+      transform: scale(1.5);
+    }
+}
+
+.ellipses {
+    display: inline-block;
+    color: (93, 93, 93, 1);    
+    /* font-size: 48px; */
+}
+  
+
+.ellipses > span {
+    /* display: inline-block;
+    width: 18px;    
+    height: 18px;   
+    animation: scaleUp 1.5s infinite; 
+    margin-left: 4px;
+    margin-right: 4px;
+    border-radius: 50%; */
+  
+    display: inline-block;
+    width: 12px;    
+    height: 12px;   
+    background-color: currentColor;
+    border-radius: 50%;  
+    animation: scaleUp 1.5s infinite; 
+    margin-left: 4px;
+    margin-right: 4px;
+}
+  
+.ellipses > span:nth-child(2) {
+    animation-delay: 0.5s;
+}
+  
+.ellipses > span:nth-child(3) {
+    animation-delay: 1s;
+}
