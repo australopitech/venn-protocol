@@ -7,6 +7,7 @@ import { ApproveData, nftViewContext } from '@/types';
 import { copyAddress } from '@/utils/utils';
 import { useState } from 'react';
 import Tooltip from '@/components/common/tooltip/tooltip';
+import { LoadingDots } from '../dashboard-layout/dashboard-layout';
 
 interface QueryParams {
   address: string;
@@ -15,6 +16,7 @@ interface QueryParams {
 export interface SideBarProps {
   sidebarGridTemplate?: string;
   address?: string;
+  isConnecting?: boolean;
   nftsContext: nftViewContext;
   setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>;
   openTransfer?: boolean,
@@ -36,7 +38,7 @@ const CopyIcon = () => {
 const tooltipDefaultText = 'Click to copy';
 const toooltipAltText = 'Copied!'
 
-const Profile = ({ address }: {address?: string}) => {
+const Profile = ({ address, isConnecting }: {address?: string, isConnecting?: boolean}) => {
   const [tooltipText, setTooltipText] = useState(tooltipDefaultText);
 
   const onCopy = async () => {
@@ -55,7 +57,10 @@ const Profile = ({ address }: {address?: string}) => {
       <div className={styles.addressContainer}>
         <span className={styles.address}>
           {/* 0x123...4567 */}
-          {compactString(address)}
+          {isConnecting
+            ? <LoadingDots />
+            : compactString(address)
+          }
         </span>
         <div className={styles.copyIcon} onClick={() => onCopy()}>
           <Tooltip text={tooltipText}><CopyIcon /></Tooltip>
@@ -146,8 +151,15 @@ const SelectedIcon = () => {
 
 
 export default function SideBar ({
-   sidebarGridTemplate, address, nftsContext,  
-   setApproveData, openTransfer, setOpenTransfer, openConnect, setOpenConnect 
+   sidebarGridTemplate, 
+   address,
+   isConnecting,
+   nftsContext, 
+   setApproveData,
+   openTransfer,
+   setOpenTransfer, 
+   openConnect,
+   setOpenConnect 
 }: SideBarProps) {
   // const nftsContext: string =  "owned"
   // console.log('sidebar addr', address)
@@ -155,7 +167,7 @@ export default function SideBar ({
     <div className={sidebarGridTemplate}>
       <div className={styles.sidebar}>
         <div className={styles.profileInfo}>
-          <Profile address={address} />
+          <Profile address={address} isConnecting={isConnecting} />
         </div>
         {/* <div className={styles.profileInfo}>
           <YourNfts nftsContext={nftsContext} />

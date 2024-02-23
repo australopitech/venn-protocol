@@ -30,6 +30,29 @@ export interface ConnectButtonProps {
   connectText?: string
 }
 
+export function LoadingDots () {
+  return (
+    <div className={styles.ellipses}>
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  )
+}
+
+export function LoadingPage () {
+  return (
+    <div style={{ 
+      position: 'fixed', 
+      top: '50%', 
+      left: '50%', 
+      transform: 'translate(-50%, -50%)' 
+    }}>
+      <LoadingDots />
+    </div>
+  )
+}
+
 
 export function ConnectButton ({handler, style, connectText}: ConnectButtonProps) {
   return (
@@ -40,14 +63,15 @@ export function ConnectButton ({handler, style, connectText}: ConnectButtonProps
 }
 
 export default function DashboardLayout ({ address }: DashboardLayoutProps) {
+  const [isLoadingPage, setIsLoadingPage] = useState(true);
   const [isNFTOpen, setIsNFTOpen] = useState(false);
   const [selectedNFT, setSelectedNFT] = useState(0);
-  const [isCollectionOpen, setIsCollectionOpen] = useState(false);
+  // const [isCollectionOpen, setIsCollectionOpen] = useState(false);
   const [openTransfer, setOpenTransfer] = useState(false);
   const [openConnect, setOpenConnect] = useState(false);
   const [nftsMode, setNftsMode] = useState<nftViewMode>("owned");
 
-  const { address: eoa, connector } = useAccount();
+  const { address: eoa, connector, isConnecting } = useAccount();
   const { provider: vsa, address: vsaAddr } = useSmartAccount();
   const { wallet, stateResetter } = useVennWallet();
 
@@ -67,6 +91,12 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   }, [setOpenTransfer, setOpenConnect]);
 
   const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setIsLoadingPage(false);
+    }, 3000);
+  }, [])
 
   useEffect(() => {
     setIsClient(true);
@@ -165,6 +195,11 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   console.log('userData', userData)
   console.log('txResolved', txResolved)
 
+  if(isLoadingPage)
+    return (
+      <LoadingPage />
+    )
+  
   return (
     <>
     {isNFTOpen && 
@@ -198,6 +233,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
           ? <div className={styles.contentGridTemplate}> 
             {eoa &&
               <SideBar address={resolveDashBoardAccountAddress()}
+                      isConnecting={isConnecting}
                       nftsContext={{mode: nftsMode, setNftsViewMode: setNftsMode}}
                       setApproveData={setApproveData}
                       openTransfer={openTransfer}

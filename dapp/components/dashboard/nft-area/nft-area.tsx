@@ -2,7 +2,7 @@
 import NftCard from '@/components/common/nft-card/nft-card';
 import styles from './nft-area.module.css';
 import classNames from 'classnames';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { FetchNftDataResponse } from '@/types';
 import { nftViewMode } from '@/types/nftContext';
 import { getAddress } from 'viem';
@@ -10,6 +10,7 @@ import { useAccount } from 'wagmi';
 import { useSmartAccount } from '@/app/account/venn-provider';
 import { compactString, copyAddress } from '@/utils/utils';
 import Tooltip from '@/components/common/tooltip/tooltip';
+import { LoadingPage } from '../dashboard-layout/dashboard-layout';
 
 export interface NftAreaProps {
   nftAreaGridTemplate?: string;
@@ -79,10 +80,18 @@ const tooltipDefaultText = "Click to copy";
 const tootipAltText = "Copied!"
 
 export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchData, setSelectedNFT, address, viewMode}: NftAreaProps) {
+  const [isLoadingData, setIsLoadingData] = useState(true);
   const [toggleState, setToggleState] = useState<boolean>(false);
   const [tooltipText, setTooltipText] = useState(tooltipDefaultText);
-  const { address: eoa } = useAccount();
+  const { address: eoa, isConnecting } = useAccount();
   const { address: vsa } = useSmartAccount();
+
+  useEffect(() => {
+    if(!isConnecting && !nftFetchData?.isLoading)
+      setTimeout(() => {
+        setIsLoadingData(false);
+      }, 2000);
+  }, [isConnecting, nftFetchData])
 
   const handleToggle = (state: boolean) => {
     setToggleState(state);
@@ -102,6 +111,11 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
     }, 5000)
   }
 
+  // if(isLoadingData)
+  //   return (
+  //     <LoadingPage />
+  //   )
+
   return (
     <div className={styles.nftArea}>
       <div className={styles.nftGridTitle}>
@@ -119,30 +133,33 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
       <div className={styles.invisibleDivider}></div>
       <div className={styles.nftGridContent}>
         <div className={styles.cardGrid}>
-          {nftFetchData?.nfts ? 
-           nftFetchData?.nfts.length == 0 ?
-           "No nfts" :
-           nftFetchData.nfts
-            //  .filter(nft => nft.isRental === (viewMode === 'rented'))
-             .map((nft, i) =>
-            <NftCard
-              imageURI={
-                nft.nftData?.external_data?.image_1024 ?
-                nft.nftData?.external_data?.image_1024 :
-                nft.nftData?.external_data?.image
-              }
-              name={nft.nftData?.external_data?.name}
-              contractAddress={getAddress(nft.contractAddress)}
-              tokenId={nft.nftData.token_id ? BigInt(nft.nftData.token_id) : undefined}
-              // price={0}
-              // isRented={false}
-              address={address}
-              expireDate={'0'}
-              key={nft.contractAddress + nft.nftData?.token_id}
-              onClick={() => {handleOnCardClick(i)} }
-              holderAddress={nft.owner}
-            />) :
-            nftFetchData?.isLoading ? "Loading..." : nftFetchData?.error ? "Error: " + nftFetchData?.error : ""
+          {isLoadingData
+            ? <LoadingPage />
+            : nftFetchData?.error 
+              ? "Error: " + nftFetchData?.error
+              : nftFetchData?.nfts 
+                ? nftFetchData?.nfts.length == 0 ?
+                  "No nfts" :
+                  nftFetchData.nfts
+                    //  .filter(nft => nft.isRental === (viewMode === 'rented'))
+                    .map((nft, i) =>
+                    <NftCard
+                      imageURI={
+                        nft.nftData?.external_data?.image_1024 ?
+                        nft.nftData?.external_data?.image_1024 :
+                        nft.nftData?.external_data?.image
+                      }
+                      name={nft.nftData?.external_data?.name}
+                      contractAddress={getAddress(nft.contractAddress)}
+                      tokenId={nft.nftData.token_id ? BigInt(nft.nftData.token_id) : undefined}
+                      // price={0}
+                      // isRented={false}
+                      address={address}
+                      expireDate={'0'}
+                      key={nft.contractAddress + nft.nftData?.token_id}
+                      onClick={() => {handleOnCardClick(i)} }
+                      holderAddress={nft.owner}
+                    />) : "Something went wrong"
           }
 
         </div>
