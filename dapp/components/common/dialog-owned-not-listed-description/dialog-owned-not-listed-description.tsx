@@ -56,8 +56,6 @@ export const DialogOwnedNotListedDescription = ({
   const [trigger, setTrigger] = useState<boolean>(false);
   const { data: signer } = useWalletClient();
   const { provider } = useSmartAccount();
-  // const [isApproved, setIsApproved] = useState<boolean>();
-  // const [tokenId, setTokenId] = useState<bigint>();
   const [hash, setHash] = useState<string>();
   const isApproved = useIsAppoved({
     contract: contractAddress as `0x${string}`,
@@ -72,33 +70,8 @@ export const DialogOwnedNotListedDescription = ({
     setTrigger(!trigger);
   }
 
-  // useEffect(() => {
-  //   if(nftItem) {
-  //     if(nftItem.nftData.token_id) {
-  //       setTokenId(BigInt(nftItem.nftData.token_id));
-  //     } else console.error('no token id found');
-  //   }
-  // },[nftItem]);
 
-  // useEffect(() => {
-  //   const resolveIsApproved = async () => {
-  //     if(contractAddress && tokenId !== undefined){
-  //       if(!owner) {
-  //         console.error('no owner found')
-  //         return
-  //       }
-  //       setIsApproved(await getIsApproved(
-  //         client,
-  //         contractAddress as `0x${string}`,
-  //         tokenId,
-  //         owner,
-  //         mktPlaceContract.address
-  //       ));
-  //     }
-  //   }
-  //   resolveIsApproved();
-  // }, [resolver, contractAddress, owner, tokenId]);
-  console.log('button text', buttonText)
+
   useLayoutEffect(() => {
     if(isApproved.data) setButtonText(listButtonText);
     else if(isApproved.data !== undefined) setButtonText(approveButtonText);

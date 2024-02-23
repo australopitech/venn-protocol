@@ -82,13 +82,9 @@ export const DialogOwnedListedDescription = ({
   tokenId,
   setApproveData
 }: DialogOwnedListedDescriptionProps) => {
-  // const [duration, setDuration] = useState<number | undefined>();
-  // const [isDurationInvalid, setIsDurationInvalid] = useState<boolean | undefined>(false);
+  const [loadingInfo, setLoadingInfo] = useState(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<any>(null);
-  // const [rentPrice, setRentPrice] = useState<bigint>();
-  // const [maxDuration, setMaxDuration] = useState<bigint>();
-  // const [tokenId, setTokenId] = useState<bigint>();
   const client = usePublicClient();
   const { chain } = useNetwork();
   const { data: signer } = useWalletClient();
@@ -100,64 +96,12 @@ export const DialogOwnedListedDescription = ({
   const listing = useListingData(nft.data);
   const router = useRouter();
 
-  // console.log('signer', signer);
-  
-  // console.log('rentPrice', rentPrice?.toString())
-  // console.log('maxDuration', maxDuration?.toString())
-  // console.log('tokenId', tokenId)
-
-  // useEffect(() => {
-  //   if(nftItem) {
-  //     if(nftItem.nftData.token_id) {
-  //       setTokenId(BigInt(nftItem.nftData.token_id));
-  //     } else console.error('no token id found');
-  //   }
-  // },[nftItem]);
-
-  // useEffect(() => { 
-  //   const resolveListData = async() => {
-  //     if(!nftItem) 
-  //       return
-  //     if(tokenId === undefined)
-  //       return
-  //     let _contractAddress: string;
-  //     let _tokenId: bigint;
-  //     if(getAddress(nftItem.contractAddress) === receiptsContract.address){
-  //       const nftObj = await getNFTByReceipt(client, tokenId);
-  //       _contractAddress = nftObj.contractAddress;
-  //       _tokenId = nftObj.tokenId;  
-  //     } else{
-  //       _contractAddress = nftItem.contractAddress;
-  //       _tokenId = tokenId;
-  //     }
-  //     const {price, maxDur} = await getListData(
-  //       client, 
-  //       _contractAddress,
-  //       _tokenId
-  //     );
-  //     setRentPrice(price);
-  //     setMaxDuration(maxDur);
-  //   }
-  //   resolveListData();
-  // }, [client, tokenId]);
-  
-  // const handleChange = (e: any) => {
-  //   let numValue = parseInt(e.target.value);
-
-  //   if (e.target.value === '') {
-  //     numValue = 0
-  //   }
-  //   console.log('numValue is ', numValue)
-  //   // If value is negative or not a number, set it to 0
-  //   if ((numValue < 0 || isNaN(numValue)) ) {
-  //     setIsDurationInvalid(true);
-  //     setDuration(0);
-  //   } else {
-  //     setIsDurationInvalid(false);
-  //     setDuration(numValue);
-  //   }
-  // }
-
+  useEffect(() => {
+    if(!listing.isLoading && !nft.isLoading)
+      setTimeout(() => {
+        setLoadingInfo(false);
+      }, 2000);
+  }, [listing, nft]);
 
   const handleButtonClick = async() => {
     if(!signer) {
@@ -165,7 +109,7 @@ export const DialogOwnedListedDescription = ({
       return
     }
     if(tokenId === undefined) {
-      console.error('no token id found');
+      setError('no token id found');
       return
     }
     if(isLoading)
@@ -184,50 +128,27 @@ export const DialogOwnedListedDescription = ({
             calldata: delistCallData(nft.data.contract, nft.data.tokenId)
           }
         });
-      } else hash = await delist(tokenId, client, signer);
+      } else {
+        hash = await delist(tokenId, client, signer);
+        setTxResolved({ success: true, hash });
+      }
     } catch (err) {
       console.error(err);
       setError(err);
       setIsLoading(false)
       return
     }
-    //refetch
-    setIsNFTOpen(false);
-    setTxResolved({ success: true, hash })
-
-    // if(provider) {
-    //   try {
-    //     if(!nft.data)
-    //       throw new Error('could not fecth nft info')
-    //     setApproveData({
-    //       type: 'Internal',
-    //       data: {
-    //         targetAddress: getMktPlaceContractAddress(chain?.id),
-    //         value: 0n,
-    //         calldata: delistCallData(nft.data.contract, nft.data.tokenId)
-    //       }
-    //     })
-    //   } catch (err) {
-    //     console.error(err);
-    //     setError(err)
-    //   } finally {
-    //     setIsLoading(false)
-    //     // refetch
-    //   }
-    // } else {
-    //   try {
-    //     hash = await delist(tokenId, client, signer);
-    //   } catch (err) {
-    //     console.error(err);
-    //     setError(err);
-    //     setIsLoading(false);
-    //     return
-    //   }
-    //   console.log('txHash', hash);
-    //   setIsLoading(false);
-    //   // refetch
-    // }
   }
+
+  if(loadingInfo)
+    return (
+      <div className={styles.bodyDescriptionContainer}>
+        <div className={styles.divider}></div>
+        <div className={styles.bodyDescription}>
+          Please Wait.<br />Loading NFT info...
+        </div>
+      </div>
+  )
 
 
   return (
