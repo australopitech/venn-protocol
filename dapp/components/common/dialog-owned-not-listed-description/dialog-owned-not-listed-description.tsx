@@ -11,6 +11,8 @@ import { listCallData } from '@/utils/call';
 import { useSmartAccount } from '@/app/account/venn-provider';
 import { ApproveData, NftItem } from '@/types';
 import { useIsAppoved } from '@/hooks/nft-data';
+import { useRefetchAddressData } from '@/hooks/address-data';
+import { LoadingComponent } from '../loading/loading';
 
 export interface DialogOwnedNotListedDescriptionProps {
     className?: string;
@@ -55,7 +57,7 @@ export const DialogOwnedNotListedDescription = ({
   const [buttonText, setButtonText] = useState<string>();
   const [trigger, setTrigger] = useState<boolean>(false);
   const { data: signer } = useWalletClient();
-  const { provider } = useSmartAccount();
+  const { provider, address: vsa } = useSmartAccount();
   const [hash, setHash] = useState<string>();
   const isApproved = useIsAppoved({
     contract: contractAddress as `0x${string}`,
@@ -70,7 +72,7 @@ export const DialogOwnedNotListedDescription = ({
     setTrigger(!trigger);
   }
 
-
+  const refecthData = useRefetchAddressData();
 
   useLayoutEffect(() => {
     if(isApproved.data) setButtonText(listButtonText);
@@ -144,7 +146,7 @@ export const DialogOwnedNotListedDescription = ({
       return;
     }
     if(!tokenId || !contractAddress)
-      throw new Error('missinf nft info');
+      throw new Error('missing nft info');
     const priceInWei = parseEther(price.toString());
     // const durationInSec = BigNumber.from(duration*24*60*60);
     if(provider) {
@@ -170,8 +172,9 @@ export const DialogOwnedNotListedDescription = ({
         priceInWei,
         BigInt(duration)
       );
-      setIsNFTOpen(false);
-      setTxResolved({ success: true, hash }); 
+      const acc = vsa ?? signer.account.address;
+      if(acc) refecthData(acc, true);
+      setTxResolved({ success: true, hash });
     } else throw new Error('no account connected');
   }
 
@@ -190,7 +193,6 @@ export const DialogOwnedNotListedDescription = ({
     try{
       if(!isApproved.data) {
         await handleApprove();
-        updateState();
       }
       else
         await handleList();
@@ -198,6 +200,7 @@ export const DialogOwnedNotListedDescription = ({
       console.error(err);
       setError(err)
     } finally {
+      updateState();
       setTimeout(() => {
         setIsLoading(false);
       }, 1000);
@@ -246,7 +249,7 @@ export const DialogOwnedNotListedDescription = ({
         {isDurationInvalid && <span className={styles.invalidValue}>Set a valid duration. Must be greater than zero!</span>}
       </div>
       <br />
-      <button className={styles.listButton} onClick={handleButtonClick}>{isLoading ? 'Loading...' : buttonText}</button>
+      <button className={styles.listButton} onClick={handleButtonClick}>{isLoading ? <LoadingComponent/> : buttonText}</button>
     </div>
   );
 };
