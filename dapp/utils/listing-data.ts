@@ -180,8 +180,8 @@ export async function checkIsListedByReceipt(
         console.warn('error: getListData: no return value');
         return
     }
-    // console.log('maxDur in check', maxDur.toString(), maxDur.gt(0));
-    if(maxDur) return maxDur > 0;
+    // console.log('maxDur in check', maxDur.toString());
+    if(maxDur !== undefined) return maxDur > 0n;
   }
   
 export async function getNFTByReceipt(
