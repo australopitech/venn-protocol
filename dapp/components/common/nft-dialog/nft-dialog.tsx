@@ -51,9 +51,10 @@ const CloseButton = () => {
 export interface NFTDialogProps {
     setIsNFTOpen: any;
     setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>;
-    setTxResolved: any
-    setError: any,
-    txLoading: boolean
+    setTxResolved: any;
+    setError: any;
+    txLoading: boolean;
+    txResolved?: any;
     nftItem?: NftItem;
     address?: `0x${string}`;
 }
@@ -72,6 +73,7 @@ export const NFTDialog = ({
     setTxResolved,
     setError,
     txLoading,
+    txResolved,
     nftItem,
     address
 }: NFTDialogProps) => {
@@ -98,14 +100,7 @@ export const NFTDialog = ({
     const { address: eoa } = useAccount();
     const { address: vsa } = useSmartAccount();
 
-    // console.log('nft contract', nftItem?.contractAddress)
     console.log('nft id', nftItem?.nftData.token_id)
-    // if(nftItem)
-    //  console.log(
-    //   'nft_contract == receipts',
-    //   getAddress(nftItem?.contractAddress) === receiptsContract.address
-    // )
-    // console.log('receipts_contract', receiptsContract.address )
 
     useEffect(() => {
       if(nftItem){
@@ -228,7 +223,7 @@ export const NFTDialog = ({
                 
                 {!loading && !isOwned && isListed && !isRented_Out && !isRental_signer &&
                   <DialogNotOwnedListedDescription 
-                  nftItem={nftItem} setIsNFTOpen={setIsNFTOpen} isReceipt={isReceipt} 
+                  contractAddress={nftItem?.contractAddress} tokenId={tokenId} setIsNFTOpen={setIsNFTOpen} isReceipt={isReceipt} 
                   setApproveData={setApproveData} txLoading={txLoading} setError={setError}
                    />}   {/* available for rent */}
                 
@@ -239,7 +234,8 @@ export const NFTDialog = ({
                   <DialogNotOwnedNotListedDescription />} {/* not available for rent*/}
                 
                 {!loading && isOwned && isListed && isReceipt && !isRented_Out && 
-                  <DialogOwnedListedDescription contractAddress={nftItem?.contractAddress} tokenId={tokenId}
+                  <DialogOwnedListedDescription 
+                  contractAddress={nftItem?.contractAddress} tokenId={tokenId}
                   setIsNFTOpen={setIsNFTOpen} setTxResolved={setTxResolved} setApproveData={setApproveData}/>} 
                   {/* owned/listed by signer/not rented out */}
                 
@@ -253,7 +249,8 @@ export const NFTDialog = ({
                 
                 {!loading && isOwned && isReceipt && isRented_Out &&
                   <DialogOwnedRentedDescription 
-                    isListed={isListed} contractAddress={nftItem?.contractAddress} tokenId={tokenId} setIsNFTOpen={setIsNFTOpen} setApproveData={setApproveData}
+                    isListed={isListed} contractAddress={nftItem?.contractAddress} tokenId={tokenId}
+                    setIsNFTOpen={setIsNFTOpen} setApproveData={setApproveData} setTxResolved={txResolved}
                   />} {/* owned / rented out */}
                 {/* {!isOwned && isReceipt && 
                   <DialogOwnedRentedDescription />} receipt held by 3rd party; NFT available */}

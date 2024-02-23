@@ -15,6 +15,7 @@ export interface DialogOwnedRentedDescriptionProps {
   tokenId?: bigint;
   setIsNFTOpen: any;
   setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>
+  setTxResolved: any;
 }
 
 const WarningIcon = () => {
@@ -39,7 +40,8 @@ export const DialogOwnedRentedDescription = ({
   contractAddress,
   tokenId,
   setIsNFTOpen,
-  setApproveData
+  setApproveData,
+  setTxResolved
 }: DialogOwnedRentedDescriptionProps) => {
   // const [timeLeft, setTimeLeft] = useState<bigint>();
   const [loadingInfo, setLoadingInfo] = useState(true);
@@ -161,9 +163,8 @@ export const DialogOwnedRentedDescription = ({
         return;
       }
       console.log('txHash', hash);
-      alert('success');
+      setTxResolved({ success: true, hash });
       setIsLoading(false);
-      setIsNFTOpen(false);
       // refetch
     }
   }
