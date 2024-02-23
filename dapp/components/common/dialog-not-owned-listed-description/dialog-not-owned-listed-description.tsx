@@ -5,10 +5,11 @@ import { useState } from 'react';
 import { mktPlaceContract, receiptsContract } from '@/utils/contractData';
 import { isSmartAccount, getListData, getNFTByReceipt } from '../../../utils/listing-data';
 import { rentCallData } from '@/utils/call';
-import { PublicClient, useAccount, usePublicClient, useWalletClient } from 'wagmi';
+import { PublicClient, useAccount, useNetwork, usePublicClient, useWalletClient } from 'wagmi';
 import { getAddress, formatEther } from 'viem';
 import { useSmartAccount } from '@/app/account/venn-provider';
 import { ApproveData, NftObj, NftItem } from '@/types';
+import { useListingData, useRealNft } from '@/hooks/nft-data';
 
 export interface DialogNotOwnedListedDescriptionProps {
   setIsNFTOpen: any;
@@ -17,7 +18,8 @@ export interface DialogNotOwnedListedDescriptionProps {
   txLoading: boolean,
   index?: number;
   activeAccount?: string;
-  nftItem?: NftItem;
+  contractAddress?: string;
+  tokenId?: bigint;
   isReceipt?: boolean;
 }
 
@@ -42,32 +44,50 @@ async function getFee(client: PublicClient) : Promise<any> {
  * To create custom component templates, see https://help.codux.com/kb/en/article/kb16522
  */
 export const DialogNotOwnedListedDescription = ({ 
-  txLoading, index, activeAccount, nftItem, setIsNFTOpen, isReceipt, setApproveData, setError 
+  txLoading, contractAddress, tokenId, isReceipt, setApproveData, setError 
 }: DialogNotOwnedListedDescriptionProps) => {
+  const [loadingInfo, setLoadingInfo] = useState(true);
   const [duration, setDuration] = useState<number | undefined>();
   const [isDurationInvalid, setIsDurationInvalid] = useState<boolean | undefined>(false);
   // const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isSmartaccount, setIsSmartaccount] = useState<boolean>();
+  // const [isSmartaccount, setIsSmartaccount] = useState<boolean>();
   const defaultButtonText = "Rent It!";
   const [buttonText, setButtonText] = useState<string>(defaultButtonText);
-  const [rentPrice, setRentPrice] = useState<bigint>();
-  const [maxDuration, setMaxDuration] = useState<bigint>();
+  // const [rentPrice, setRentPrice] = useState<bigint>();
+  // const [maxDuration, setMaxDuration] = useState<bigint>();
   // 
+  const nft = useRealNft({
+    contract: contractAddress as `0x${string}`,
+    tokenId
+  })
+  const listingData = useListingData({
+    contract: contractAddress as `0x${string}`,
+    tokenId
+  });
   const { data: signer } = useWalletClient();
   const { address: account } = useAccount();
   const client = usePublicClient();
   const { provider, address: vsaAddr } = useSmartAccount();
+  const { chain } = useNetwork();
+
+  // useEffect(() => {
+  //   const resolveIsSmartAccount = async() => {
+  //     if(account)
+  //       setIsSmartaccount(
+  //         await isSmartAccount(client, vsaAddr?? account)
+  //       );
+  //   }
+  //   resolveIsSmartAccount();
+  // }, [account]);
 
   useEffect(() => {
-    const resolveIsSmartAccount = async() => {
-      if(account)
-        setIsSmartaccount(
-          await isSmartAccount(client, vsaAddr?? account)
-        );
-    }
-    resolveIsSmartAccount();
-  }, [account]);
-
+    console.log('render')
+    if(!nft.isLoading && !nft.isLoading)
+      setTimeout(() => {
+        setLoadingInfo(false);
+      }, 2000);
+  }, [nft, listingData])
+  
   useEffect(() => {
     if(txLoading)
       setButtonText('Loading...')
@@ -75,32 +95,32 @@ export const DialogNotOwnedListedDescription = ({
       setButtonText(defaultButtonText)
   }, [txLoading]);
 
-  useEffect(() => {
-    const resolveListData = async() => {
-      if(!nftItem) return
-      if(!nftItem.nftData.token_id) {
-        console.error('no token id found');
-        return
-      }
-      let contractAddr: string;
-      let tokenId: bigint;
-      if(getAddress(nftItem.contractAddress) === receiptsContract.address) { /**isReceipt */
-        const nftObj = await getNFTByReceipt(client, BigInt(nftItem.nftData.token_id));
-        contractAddr = nftObj.contractAddress;
-        tokenId = nftObj.tokenId;
-      } else {
-        contractAddr = nftItem.contractAddress;
-        tokenId = BigInt(nftItem.nftData.token_id);
-      }
-      if(!contractAddr || tokenId === undefined) return
-      const { price, maxDur } = await getListData(client, contractAddr, tokenId);
-      setRentPrice(price);
-      setMaxDuration(maxDur);
-    }
+  // useEffect(() => {
+  //   const resolveListData = async() => {
+  //     if(!nftItem) return
+  //     if(!nftItem.nftData.token_id) {
+  //       console.error('no token id found');
+  //       return
+  //     }
+  //     let contractAddr: string;
+  //     let tokenId: bigint;
+  //     if(getAddress(nftItem.contractAddress) === receiptsContract.address) { /**isReceipt */
+  //       const nftObj = await getNFTByReceipt(client, BigInt(nftItem.nftData.token_id));
+  //       contractAddr = nftObj.contractAddress;
+  //       tokenId = nftObj.tokenId;
+  //     } else {
+  //       contractAddr = nftItem.contractAddress;
+  //       tokenId = BigInt(nftItem.nftData.token_id);
+  //     }
+  //     if(!contractAddr || tokenId === undefined) return
+  //     const { price, maxDur } = await getListData(client, contractAddr, tokenId);
+  //     setRentPrice(price);
+  //     setMaxDuration(maxDur);
+  //   }
 
-    resolveListData();
+  //   resolveListData();
     
-  }, [client])
+  // }, [client])
 
 
   const handleChange = (e: any) => {
@@ -114,7 +134,7 @@ export const DialogNotOwnedListedDescription = ({
     if (numValue < 0 || isNaN(numValue)) {
       setIsDurationInvalid(true);
       setDuration(0);
-    } else if ( maxDuration! < BigInt(numValue) ) {
+    } else if ( listingData.data?.maxDur! < BigInt(numValue) ) {
       setIsDurationInvalid(true);
       setDuration(0);
     } else {
@@ -133,7 +153,7 @@ export const DialogNotOwnedListedDescription = ({
         alert("Connect with a Venn smart account to enable rent tx's");
         return
       } 
-      if(!nftItem || !nftItem.nftData.token_id) {
+      if(!nft.data?.contract || !nft.data.tokenId) {
         console.error('missing nft info');
         return
       }
@@ -141,73 +161,49 @@ export const DialogNotOwnedListedDescription = ({
         alert('Enter a value for duration');
         return
       }
-      // const { price } = await getListData(signer, nftItem.contractAddress, BigNumber.from(nftItem.nftData.token_id));
       const aliq = await getFee(client);
-      if(rentPrice === undefined || aliq === undefined) {
+      if(listingData.data === undefined || aliq === undefined) {
         const err = 'error: could not get price or service-aliquot'
         console.log(err);
         setError(err);
         return
       }
       // setButtonText('Loading...');
-      const rentValue = rentPrice * BigInt(duration);
+      const rentValue = listingData.data.price * BigInt(duration);
       // console.log('aliq', aliq, typeof aliq);
       // console.log('rentValue', rentValue)
       const fee = (rentValue * BigInt(aliq)) / 10000n;
-      let contractAddr;
-      let tokenId;
-      if(isReceipt){
-        const nftObj = await client.readContract({
-          address: mktPlaceAddr,
-          abi: mktPlaceContract.abi,
-          functionName: 'getNFTbyReceipt',
-          args: [BigInt(nftItem.nftData.token_id)]
-        }) as NftObj;
-        contractAddr = nftObj.contractAddress;
-        tokenId = nftObj.tokenId;
-      } else {
-        contractAddr = getAddress(nftItem.contractAddress);
-        tokenId = BigInt(nftItem.nftData.token_id);
-      }
-      // let hash;
-      // try {
-      //   // txReceipt = await rent(
-      //   //   signer,
-      //   //   contractAddr,
-      //   //   tokenId, 
-      //   //   duration,
-      //   //   rentValue + fee 
-      //   // );
-
-      // } catch (error) {
-      //   console.error(error);
-      //   alert('tx failed');
-      //   setButtonText(defaultButtonText);
-      //   return
-      // }
-      // alert('tx successful');
-      // setButtonText(defaultButtonText);
-      // // setIsNFTOpen(false);
-      // Router.reload();
       setApproveData({
         type: 'Internal',
         data: {
           targetAddress: mktPlaceContract.address as `0x${string}`,
           value: rentValue + fee,
-          calldata: rentCallData(contractAddr, tokenId, duration)
+          calldata: rentCallData(
+            nft.data.contract,
+            nft.data.tokenId,
+            duration
+          )
         }
       });
     }
 
-
+    if(loadingInfo)
+      return (
+        <div className={styles['bodyDescriptionContainer']}>
+          <div className={styles.divider}></div>
+          <div className={styles.bodyDescription}>
+            Please Wait.<br/>Loading NFT info...  
+          </div>
+        </div>
+      )
     return (
       <div className={styles['bodyDescriptionContainer']}>
         <div className={styles.divider}></div>
         <h2 className={styles['bodyDescription']}><span className={styles.textHilight}>Rent</span> this NFT!</h2>
         <h3 className={styles['priceDescription']}>
-            Price: <span className={styles['priceCurrency']}>{rentPrice ? formatEther(rentPrice) : ""} ETH/day</span>
+            Price: <span className={styles['priceCurrency']}>{listingData.data?.price ? formatEther(listingData.data.price) : ""} {chain?.nativeCurrency.symbol}/day</span>
         </h3>
-        <div className={styles.priceDescription}>{`Maximum loan period: ${maxDuration?.toString()} ${maxDuration === BigInt(1)  ? 'day' : 'days'}`}</div>
+        <div className={styles.priceDescription}>{`Maximum loan period: ${listingData.data?.maxDur.toString()} ${listingData.data?.maxDur === 1n  ? 'day' : 'days'}`}</div>
         <div className={styles.priceWrapper}>
             <div className={styles.priceInputContainer}>
                 <input 
@@ -224,9 +220,9 @@ export const DialogNotOwnedListedDescription = ({
             </div>
             {isDurationInvalid && <span className={styles.invalidDuration}>{`Set a valid duration. Value cannot be negative and must respect the maximum loan period.`}</span>}
         </div>
-        {isSmartaccount &&
+        {vsaAddr &&
           <button className={styles.borrowButton} onClick={handleButtonClick}>{ buttonText}</button>}
-        {!isSmartaccount && 
+        {!vsaAddr && 
           <div className={styles.notConnectedMessage}> 
             <button className={styles.notConnectedButton} onClick={handleButtonClick}>{ buttonText}</button>
             <p>
