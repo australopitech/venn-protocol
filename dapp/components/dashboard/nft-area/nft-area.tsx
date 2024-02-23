@@ -16,6 +16,7 @@ export interface NftAreaProps {
   nftAreaGridTemplate?: string;
   setIsNFTOpen: any;
   setSelectedNFT: any;
+  // trigger: boolean;
   nftFetchData?: FetchNftDataResponse;
   address?: string;
   viewMode?: nftViewMode;
@@ -86,11 +87,15 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
   const { address: eoa, isConnecting } = useAccount();
   const { address: vsa } = useSmartAccount();
 
+  console.log('isLoadingData', isLoadingData)
   useEffect(() => {
+    console.log('render')
     if(!isConnecting && !nftFetchData?.isLoading)
       setTimeout(() => {
         setIsLoadingData(false);
       }, 2000);
+    else
+      setIsLoadingData(true)
   }, [isConnecting, nftFetchData])
 
   const handleToggle = (state: boolean) => {
@@ -110,11 +115,6 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
       setTooltipText(tooltipDefaultText);
     }, 5000)
   }
-
-  // if(isLoadingData)
-  //   return (
-  //     <LoadingPage />
-  //   )
 
   return (
     <div className={styles.nftArea}>
