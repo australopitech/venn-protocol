@@ -5,7 +5,7 @@ import SideBar from '@/components/dashboard/sidebar/sidebar'
 import NftArea from '@/components/dashboard/nft-area/nft-area'
 import { useEffect, useState, useCallback } from 'react';
 import { NFTDialog } from '@/components/common/nft-dialog/nft-dialog';
-import { useAddressNfts } from '../../../hooks/address-data';
+import { useAddressNfts, useRefetchAddressData } from '../../../hooks/address-data';
 import { useAccount } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import 'node_modules/@rainbow-me/rainbowkit/dist/index.css';
@@ -82,8 +82,8 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const [error, setError] = useState<any>();
   const { event, data } = useSessionEvent();
   const [approveData, setApproveData] = useState<ApproveData>();
-  
-  // console.log('vsa', vsa)
+  const refecthData = useRefetchAddressData();
+  const [nftAreaTrigger, setNftAreaTrigger] = useState(false);
 
   const resetWalletUi = useCallback(() => {
     setOpenTransfer(false);
@@ -103,8 +103,13 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   }, []);
 
   useEffect(() => {
+    console.log('render');
     if(txResolved) {
-      // ===> REFETCH
+      // const resolveAddr = address ?? vsaAddr ?? eoa
+      // if(resolveAddr) {
+      //   refecthData(resolveAddr, true);
+      //   setNftAreaTrigger(!nftAreaTrigger);
+      // }
       setIsNFTOpen(false);
     }
   }, [txResolved])
