@@ -78,14 +78,22 @@ export const CloseButton = ({onClick}: ButtonProps) => {
 
 
 export default function ApproveDialog ({ onApprove, onReject, onClose, loading, approveData, error, txResolved } : ApproveDialogProps) {
-  
+  const [blocker, setBlocker] = useState(false);
   const decimals = 18
   const { address: eoa } = useAccount();
   const { address: vsa } = useSmartAccount();
   const { chain } = useNetwork();
   console.log('approveData', approveData)
-  const { data: gas, gasFee, isLoading, error: gasError } = useGasEstimation(approveData);
-  console.log('gas', gas, 'gasFee', gasFee, 'isLoading', isLoading, 'gasError', gasError);
+  const { data: gas, gasFee, isLoading, error: gasError } = useGasEstimation({ approveData, blocker });
+  // console.log('gas', gas, 'gasFee', gasFee, 'isLoading', isLoading, 'gasError', gasError);
+  // console.log('txResolved', txResolved)
+
+  useEffect(() => {
+    console.log('render');
+    if(loading || error || txResolved)
+      setBlocker(true);
+  }, [loading, error, txResolved])
+
 
   const value = approveData?.type === 'Transaction'
     ? approveData.data.params.request.params[0].value ? BigInt(approveData.data.params.request.params[0].value) : 0n

@@ -5,7 +5,12 @@ import { useBlockNumber } from "wagmi";
 import { useBaseFee } from "./block-data";
 import { extractGasEstimate } from "@/utils/userOp";
 
-export function useGasEstimation(approveData?: ApproveData) {
+interface GasEstimationArgs {
+    approveData?: ApproveData;
+    blocker?: boolean;
+}
+
+export function useGasEstimation({approveData, blocker}: GasEstimationArgs) {
   const [data, setData] = useState<bigint>();
   const [gasFee, setGasFee] = useState<bigint>();
   const [error, setError] = useState<any>();
@@ -15,6 +20,8 @@ export function useGasEstimation(approveData?: ApproveData) {
   const { data: baseFee, error: feeErr } = useBaseFee({ watch: true });
 
   useEffect(() => {
+    if(blocker)
+        return
     if(approveData && provider && baseFee && blockNum) {
         const resolveGas = async () => {
             if(approveData.type === 'Signature' || approveData.type === 'Connection')
