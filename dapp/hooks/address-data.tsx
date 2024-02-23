@@ -1,4 +1,4 @@
-
+import { useQuery, useQueryClient } from 'react-query';
 import { BalancesResponse, NftItem, FetchNftDataResponse } from '@/types';
 import { fetchAddressData } from '../utils/frontendUtils'
 import { useEffect, useState } from "react";
@@ -45,40 +45,53 @@ async function getRentalData(provider: any, nfts: NftItem[]): Promise<NftItem[]>
   }
 }
 
-
-export function useAddressNfts (address: string | undefined) : FetchNftDataResponse {
-  const [nfts, setNfts] = useState<NftItem[] | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  // const { library } = useEthers();
+export function useAddressNfts (address: string | undefined): FetchNftDataResponse {
   const client = usePublicClient();
 
-  useEffect(() => {
-    if (address) {
-      setIsLoading(true);
-      const fetchData = async () => {
-        try {
-          // const apiData = await fetchAddressData("base-testnet", address);
-          const apiData = await fetchAddressData("matic-mumbai", address);
-          let nfts = await processApiData(apiData, address);
-          if (nfts) {
-            nfts = await getRentalData(client, nfts);
-          }
-          setNfts(nfts);
-        } catch (err) {
-          if (err instanceof Error) {
-            setError(err.message);
-          } else {
-            setError('An unknown error occurred.');
-          }
-        } finally {
-          setIsLoading(false);
-        }
-      };
-      fetchData();
-    }
-  }, [address]);
+  // First useQuery to fetch and process address data
+  const addressDataQuery = useQuery({
+    queryKey: ['addressData', address],
+    queryFn: () => fetchAddressData("matic-mumbai", address!).then(apiData => processApiData(apiData, address)),
+    enabled: !!address,
+    staleTime: 60000, // Data is considered fresh for 1 minute
+    refetchInterval: 60000, // Data will be refetched every 1 minute
+  });
 
-  return { nfts, error, isLoading };
+  // Second useQuery to fetch rental data, dependent on the result of the first query
+  const rentalDataQuery = useQuery({
+    queryKey: ['rentalData', address, addressDataQuery.data],
+    queryFn: () => getRentalData(client, addressDataQuery.data!),
+    enabled: !!address && !!addressDataQuery.data,
+    staleTime: 60000,
+    refetchInterval: 60000,
+  });
+
+  // Combine loading states and errors
+  const isLoading = addressDataQuery.isLoading || rentalDataQuery.isLoading;
+  const error = addressDataQuery.error || rentalDataQuery.error;
+
+  // Transform the error into the expected shape if needed
+  const transformedError = error ? (error instanceof Error ? error.message : 'An unknown error occurred.') : null;
+
+  return { 
+    nfts: rentalDataQuery.data ?? null, 
+    error: transformedError, 
+    isLoading 
+  };
 }
 
+// Custom hook that returns the refetchAddressData function
+export const useRefetchAddressData = () => {
+  const queryClient = useQueryClient();
+
+  const refetchAddressData = (address: string, force: boolean = false) => {
+    const queryKey = ['addressData', address];
+    if (force) {
+      queryClient.refetchQueries(queryKey);
+    } else {
+      queryClient.invalidateQueries(queryKey);
+    }
+  };
+
+  return refetchAddressData;
+};
