@@ -70,7 +70,14 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
 
   useEffect(() => {
     setIsClient(true);
-  }, [])
+  }, []);
+
+  useEffect(() => {
+    if(txResolved) {
+      // ===> REFETCH
+      setIsNFTOpen(false);
+    }
+  }, [txResolved])
   
   const resolveDashBoardAccountAddress = () : `0x${string}` | undefined => {
     return address ? address : connector?.id === "web3auth" ? vsaAddr : eoa
@@ -156,6 +163,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   };
 
   console.log('userData', userData)
+  console.log('txResolved', txResolved)
 
   return (
     <>
@@ -166,6 +174,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
         setTxResolved={setTxResolved}
         setError={setError}
         txLoading={loading}
+        txResolved={txResolved}
         nftItem={
           userData.nfts ? userData.nfts[selectedNFT] : undefined
         }
