@@ -11,10 +11,13 @@ import { useNetwork, usePublicClient, useWalletClient } from 'wagmi';
 import { formatEther } from 'viem';
 import { useListingData, useRealNft } from '@/hooks/nft-data';
 import { useSmartAccount } from '@/app/account/venn-provider';
+import { useRefetchAddressData } from '@/hooks/address-data';
+import { LoadingComponent } from '../loading/loading';
 
 export interface DialogOwnedListedDescriptionProps {
   setIsNFTOpen: any;
   setTxResolved: any;
+  setError: any;
   contractAddress?: string;
   tokenId?: bigint;
   setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>
@@ -78,23 +81,24 @@ const WarningIcon = () => {
 export const DialogOwnedListedDescription = ({ 
   setIsNFTOpen,
   setTxResolved,
+  setError,
   contractAddress,
   tokenId,
   setApproveData
 }: DialogOwnedListedDescriptionProps) => {
   const [loadingInfo, setLoadingInfo] = useState(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<any>(null);
+  // const [error, setError] = useState<any>(null);
   const client = usePublicClient();
   const { chain } = useNetwork();
   const { data: signer } = useWalletClient();
-  const { provider } = useSmartAccount();
+  const { provider, address: vsa } = useSmartAccount();
   const nft = useRealNft({
     contract: contractAddress as `0x${string}`,
     tokenId
   })
   const listing = useListingData(nft.data);
-  const router = useRouter();
+  const refecthData = useRefetchAddressData();
 
   useEffect(() => {
     if(!listing.isLoading && !nft.isLoading)
@@ -131,6 +135,8 @@ export const DialogOwnedListedDescription = ({
       } else {
         hash = await delist(tokenId, client, signer);
         setTxResolved({ success: true, hash });
+        const acc = vsa ?? signer.account.address
+        if(acc) refecthData(acc, true)
       }
     } catch (err) {
       console.error(err);
@@ -145,7 +151,10 @@ export const DialogOwnedListedDescription = ({
       <div className={styles.bodyDescriptionContainer}>
         <div className={styles.divider}></div>
         <div className={styles.bodyDescription}>
-          Please Wait.<br />Loading NFT info...
+          {/* Please Wait.<br />Loading NFT info... */}
+          <div className={styles.loadingContainer}>
+            <LoadingComponent />
+          </div>
         </div>
       </div>
   )
@@ -163,7 +172,7 @@ export const DialogOwnedListedDescription = ({
         <br />
         {/* <span className={styles.unlistInfo}>Would you like to unlist this NFT?</span> */}
         <div className={styles.unlistContainer}>
-          <button className={styles.unlistButton} onClick={handleButtonClick}> {isLoading? "loading..." : "Unlist NFT"}</button>
+          <button className={styles.unlistButton} onClick={handleButtonClick}> {isLoading? <LoadingComponent/> : "Unlist NFT"}</button>
           <div className={styles.warning}>
             <WarningIcon /><span className={styles.warningText}>{`If you unlist your NFT, it'll be removed from the market and won't be available for rent until you relist it.`}</span>
           </div>

@@ -270,3 +270,12 @@
   text-align: justify;
   color: #D52941;
 }
+
+.loadingContainer {
+  justify-content: 'center';
+  display: 'flex';
+  justify-content: center;
+  align-items: 'center';
+  height: '100%';
+  color: rgb(37, 41, 46);
+}
