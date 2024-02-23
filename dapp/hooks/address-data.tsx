@@ -53,8 +53,8 @@ export function useAddressNfts (address: string | undefined): FetchNftDataRespon
     queryKey: ['addressData', address],
     queryFn: () => fetchAddressData("matic-mumbai", address!).then(apiData => processApiData(apiData, address)),
     enabled: !!address,
-    staleTime: 60000, // Data is considered fresh for 1 minute
-    refetchInterval: 60000, // Data will be refetched every 1 minute
+    staleTime: 600000, // Data is considered fresh for 1 minute
+    refetchInterval: 600000, // Data will be refetched every 1 minute
   });
 
   // Second useQuery to fetch rental data, dependent on the result of the first query
@@ -85,6 +85,7 @@ export const useRefetchAddressData = () => {
   const queryClient = useQueryClient();
 
   const refetchAddressData = (address: string, force: boolean = false) => {
+    console.log('refetch force', force, address);
     const queryKey = ['addressData', address];
     if (force) {
       queryClient.refetchQueries(queryKey);
