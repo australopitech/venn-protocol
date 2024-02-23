@@ -3,13 +3,14 @@ import React, { useEffect } from 'react';
 import styles from './dialog-not-owned-listed-description.module.css';
 import { useState } from 'react';
 import { mktPlaceContract, receiptsContract } from '@/utils/contractData';
-import { isSmartAccount, getListData, getNFTByReceipt } from '../../../utils/listing-data';
 import { rentCallData } from '@/utils/call';
 import { PublicClient, useAccount, useNetwork, usePublicClient, useWalletClient } from 'wagmi';
 import { getAddress, formatEther } from 'viem';
 import { useSmartAccount } from '@/app/account/venn-provider';
 import { ApproveData, NftObj, NftItem } from '@/types';
 import { useListingData, useRealNft } from '@/hooks/nft-data';
+import { LoadingComponent } from '../loading/loading';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
 
 export interface DialogNotOwnedListedDescriptionProps {
   setIsNFTOpen: any;
@@ -55,6 +56,7 @@ export const DialogNotOwnedListedDescription = ({
   const [buttonText, setButtonText] = useState<string>(defaultButtonText);
   // const [rentPrice, setRentPrice] = useState<bigint>();
   // const [maxDuration, setMaxDuration] = useState<bigint>();
+  const { openConnectModal } = useConnectModal();
   // 
   const nft = useRealNft({
     contract: contractAddress as `0x${string}`,
@@ -65,20 +67,10 @@ export const DialogNotOwnedListedDescription = ({
     tokenId
   });
   const { data: signer } = useWalletClient();
-  const { address: account } = useAccount();
+  // const { address: account } = useAccount();
   const client = usePublicClient();
-  const { provider, address: vsaAddr } = useSmartAccount();
+  const { provider } = useSmartAccount();
   const { chain } = useNetwork();
-
-  // useEffect(() => {
-  //   const resolveIsSmartAccount = async() => {
-  //     if(account)
-  //       setIsSmartaccount(
-  //         await isSmartAccount(client, vsaAddr?? account)
-  //       );
-  //   }
-  //   resolveIsSmartAccount();
-  // }, [account]);
 
   useEffect(() => {
     console.log('render')
@@ -187,21 +179,26 @@ export const DialogNotOwnedListedDescription = ({
       });
     }
 
+    console.log('listingData', listingData.data)
+
+
     if(loadingInfo)
       return (
-        <div className={styles['bodyDescriptionContainer']}>
+        <div className={styles.bodyDescriptionContainer}>
           <div className={styles.divider}></div>
           <div className={styles.bodyDescription}>
-            Please Wait.<br/>Loading NFT info...  
+            {/* Please Wait.<br/>Loading NFT info...   */}
+            <div style={{justifyContent: 'center'}}> <LoadingComponent /></div>
           </div>
         </div>
       )
+
     return (
       <div className={styles['bodyDescriptionContainer']}>
         <div className={styles.divider}></div>
         <h2 className={styles['bodyDescription']}><span className={styles.textHilight}>Rent</span> this NFT!</h2>
         <h3 className={styles['priceDescription']}>
-            Price: <span className={styles['priceCurrency']}>{listingData.data?.price ? formatEther(listingData.data.price) : ""} {chain?.nativeCurrency.symbol}/day</span>
+            Price: <span className={styles['priceCurrency']}>{listingData.data?.price !==undefined ? formatEther(listingData.data.price) : ""} {chain?.nativeCurrency.symbol ?? "MATIC"}/day</span>
         </h3>
         <div className={styles.priceDescription}>{`Maximum loan period: ${listingData.data?.maxDur.toString()} ${listingData.data?.maxDur === 1n  ? 'day' : 'days'}`}</div>
         <div className={styles.priceWrapper}>
@@ -220,16 +217,15 @@ export const DialogNotOwnedListedDescription = ({
             </div>
             {isDurationInvalid && <span className={styles.invalidDuration}>{`Set a valid duration. Value cannot be negative and must respect the maximum loan period.`}</span>}
         </div>
-        {vsaAddr &&
-          <button className={styles.borrowButton} onClick={handleButtonClick}>{ buttonText}</button>}
-        {!vsaAddr && 
-          <div className={styles.notConnectedMessage}> 
-            <button className={styles.notConnectedButton} onClick={handleButtonClick}>{ buttonText}</button>
-            <p>
-              <span className={styles.textLink}>Click here</span> to create a rWallet Smart Account!
-            </p>
-          </div>
-        } 
+        {provider?.isConnected() 
+          ? <button className={styles.borrowButton} onClick={handleButtonClick}>{ buttonText}</button>
+          : <div className={styles.notConnectedMessage}> 
+              <button className={styles.notConnectedButton} onClick={handleButtonClick}>{ buttonText}</button>
+              <p>
+                <span className={styles.textLink} onClick={openConnectModal}>Log In</span> with <span className={styles.textHilight}>Venn Smart Wallet</span> to rent this NFT!
+              </p>
+            </div>
+        }
       </div>
   );
 };
