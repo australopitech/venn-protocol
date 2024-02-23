@@ -211,3 +211,7 @@
 .warningText {
   color: violet;
 }
+
+.loadingPage {
+  color: rgb(237, 149, 192);
+}

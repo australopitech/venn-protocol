@@ -202,7 +202,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
 
   if(isLoadingPage)
     return (
-      <LoadingPage />
+      <div className={styles.loadingPage}><LoadingPage /></div>
     )
   
   return (
