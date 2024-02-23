@@ -136,11 +136,13 @@ export function useListingData(args?: NftDataArgs) {
   const [error, setError] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const client = usePublicClient();
+  const nft = useRealNft(args);
+  const memoizedData = useMemo(() => nft, [nft.data?.contract, nft.data?.tokenId])
 
   useEffect(() => {
-    if(!args)
+    if(!nft.data)
       return
-    const { contract, tokenId } = args;
+    const { contract, tokenId } = nft.data;
     if(!contract || tokenId === undefined) {
       // console.error('missing args');
       // setError({ message: 'error: missing args'});
@@ -159,9 +161,13 @@ export function useListingData(args?: NftDataArgs) {
       }
     }
     resolveListingData();
-  }, [args, client]);
+  }, [memoizedData]);
 
-  return { data, error, isLoading }
+  return {
+    data,
+    error: error ?? nft.error,
+    isLoading: isLoading ?? nft.isLoading
+  }
 }
 
 export function useTimeLeft(args?: NftDataArgs) {
