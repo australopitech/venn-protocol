@@ -90,4 +90,5 @@ export class FetchNftDataResponse {
     nfts: NftItem[] | null;
     error: string | null;
     isLoading: boolean;
+    isFetching: boolean;
 }

@@ -199,6 +199,11 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
 
   console.log('userData', userData)
   console.log('txResolved', txResolved)
+  
+  const refetchTest = () => {
+    const acc = address ?? eoa;
+    if(acc) refecthData(acc, true)
+  } 
 
   if(isLoadingPage)
     return (
@@ -273,6 +278,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
           </div>
         </div>
         }
+        <button onClick={refetchTest}>Refetch</button>
       </div>
 
     </>

@@ -90,7 +90,7 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
   console.log('isLoadingData', isLoadingData)
   useEffect(() => {
     console.log('render')
-    if(!isConnecting && !nftFetchData?.isLoading)
+    if(!isConnecting && !nftFetchData?.isLoading && !nftFetchData?.isFetching)
       setTimeout(() => {
         setIsLoadingData(false);
       }, 2000);

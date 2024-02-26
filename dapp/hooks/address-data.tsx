@@ -59,15 +59,16 @@ export function useAddressNfts (address: string | undefined): FetchNftDataRespon
 
   // Second useQuery to fetch rental data, dependent on the result of the first query
   const rentalDataQuery = useQuery({
-    queryKey: ['rentalData', address, addressDataQuery.data],
+    queryKey: ['rentalData', address],
     queryFn: () => getRentalData(client, addressDataQuery.data!),
     enabled: !!address && !!addressDataQuery.data,
-    staleTime: 60000,
-    refetchInterval: 60000,
+    staleTime: 600000,
+    refetchInterval: 600000,
   });
 
   // Combine loading states and errors
   const isLoading = addressDataQuery.isLoading || rentalDataQuery.isLoading;
+  const isFetching = addressDataQuery.isFetching || rentalDataQuery.isFetching;
   const error = addressDataQuery.error || rentalDataQuery.error;
 
   // Transform the error into the expected shape if needed
@@ -76,7 +77,8 @@ export function useAddressNfts (address: string | undefined): FetchNftDataRespon
   return { 
     nfts: rentalDataQuery.data ?? null, 
     error: transformedError, 
-    isLoading 
+    isLoading,
+    isFetching
   };
 }
 
@@ -86,11 +88,17 @@ export const useRefetchAddressData = () => {
 
   const refetchAddressData = (address: string, force: boolean = false) => {
     console.log('refetch force', force, address);
-    const queryKey = ['addressData', address];
+    const addressKey = ['addressData', address];
+    const rentalKey = ['rentalData', address];
+    queryClient.invalidateQueries(addressKey);
     if (force) {
-      queryClient.refetchQueries(queryKey);
+      console.log('flag 1')
+      queryClient.refetchQueries({stale: true});
+      // queryClient.refetchQueries(rentalKey);
+      // console.log('query client', queryClient)
     } else {
-      queryClient.invalidateQueries(queryKey);
+      queryClient.invalidateQueries(addressKey);
+      queryClient.refetchQueries(rentalKey);
     }
   };
 
