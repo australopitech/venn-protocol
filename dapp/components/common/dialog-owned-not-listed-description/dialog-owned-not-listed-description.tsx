@@ -13,6 +13,7 @@ import { ApproveData, NftItem } from '@/types';
 import { useIsAppoved } from '@/hooks/nft-data';
 import { useRefetchAddressData } from '@/hooks/address-data';
 import { LoadingComponent } from '../loading/loading';
+import { fetchTxData } from '@/utils/frontendUtils';
 
 export interface DialogOwnedNotListedDescriptionProps {
     className?: string;
@@ -172,6 +173,8 @@ export const DialogOwnedNotListedDescription = ({
         priceInWei,
         BigInt(duration)
       );
+      const txData = await fetchTxData("matic-mumbai", hash);
+      console.log('txData:', txData);
       const acc = vsa ?? signer.account.address;
       if(acc) refecthData(acc, true);
       setTxResolved({ success: true, hash });
