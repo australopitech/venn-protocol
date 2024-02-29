@@ -1,31 +1,8 @@
 import { useQuery, useQueryClient } from 'react-query';
-import { BalancesResponse, NftItem, FetchNftDataResponse } from '@/types';
+import { NftItem, FetchNftDataResponse } from '@/types';
 import { fetchAddressData } from '../utils/frontendUtils'
-import { useEffect, useState } from "react";
 import { isRental } from '@/utils/listing-data';
 import { usePublicClient } from 'wagmi';
-
-
-const processApiData = async (apiData: BalancesResponse, address: string | undefined) => {
-  if (!apiData) {
-    return null;
-  }
-  let curAddress = '';
-  let nfts : NftItem[] | null = [];
-  for (let item of apiData.items) {
-    if (curAddress != item.contract_address) {
-      curAddress = item.contract_address;
-    }
-    if (item.nft_data) {
-      for (let nft of item.nft_data) {
-        if (nft.external_data) {
-          nfts.push({nftData: nft, contractAddress: curAddress, owner: address, isRental: undefined})
-        }
-      } 
-    }
-  }
-  return nfts;
-}
 
 async function getRentalData(provider: any, nfts: NftItem[]): Promise<NftItem[]> {
   const promises = nfts.map((nft) => {
@@ -51,7 +28,7 @@ export function useAddressNfts (address: string | undefined): FetchNftDataRespon
   // First useQuery to fetch and process address data
   const addressDataQuery = useQuery({
     queryKey: ['addressData', address],
-    queryFn: () => fetchAddressData("matic-mumbai", address!).then(apiData => processApiData(apiData, address)),
+    queryFn: () => fetchAddressData("matic-mumbai", address!),
     enabled: !!address,
     staleTime: 600000, // Data is considered fresh for 1 minute
     refetchInterval: 600000, // Data will be refetched every 1 minute
@@ -60,7 +37,7 @@ export function useAddressNfts (address: string | undefined): FetchNftDataRespon
   // Second useQuery to fetch rental data, dependent on the result of the first query
   const rentalDataQuery = useQuery({
     queryKey: ['rentalData', address],
-    queryFn: () => getRentalData(client, addressDataQuery.data!),
+    queryFn: () => getRentalData(client, addressDataQuery.data!.nftItems || []),
     enabled: !!address && !!addressDataQuery.data,
     staleTime: 600000,
     refetchInterval: 600000,
@@ -75,7 +52,8 @@ export function useAddressNfts (address: string | undefined): FetchNftDataRespon
   const transformedError = error ? (error instanceof Error ? error.message : 'An unknown error occurred.') : null;
 
   return { 
-    nfts: rentalDataQuery.data ?? null, 
+    nfts: rentalDataQuery.data ?? null,
+    validAt: addressDataQuery.data?.validAt ?? null,
     error: transformedError, 
     isLoading,
     isFetching

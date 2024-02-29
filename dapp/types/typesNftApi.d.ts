@@ -88,7 +88,17 @@ export class NftItem {
 }
 export class FetchNftDataResponse {
     nfts: NftItem[] | null;
+    validAt: BlockData | null;
     error: string | null;
     isLoading: boolean;
     isFetching: boolean;
+}
+export class BlockData {
+    blockNumber: number;
+    blockHash: string;
+    blockTimestamp: string;
+}
+export class RouteNftResponse {
+    nftItems: NftItem[] | null;
+    validAt: BlockData | null;
 }

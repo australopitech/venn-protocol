@@ -1,7 +1,7 @@
-import { BalancesResponse } from "@/types";
+import { RouteNftResponse } from "@/types";
 
 // Function to fetch address data
-export async function fetchAddressData (network: string, address: string): Promise<BalancesResponse> {
+export async function fetchAddressData (network: string, address: string): Promise<RouteNftResponse> {
   const response = await fetch(`/api/addressData?network=${network}&address=${address}`);
   
   if (!response.ok) {
@@ -9,7 +9,7 @@ export async function fetchAddressData (network: string, address: string): Promi
     throw new Error(data.error || 'Something went wrong');
   }
 
-  const data: BalancesResponse = await response.json();
+  const data: RouteNftResponse = await response.json();
   console.log(data);
   return data;
 };

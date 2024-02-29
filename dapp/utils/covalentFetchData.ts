@@ -1,5 +1,6 @@
 import { Client } from '@covalenthq/client-sdk';
 import { Chains } from '@covalenthq/client-sdk/dist/services/Client';
+import { BalancesResponse, NftItem, RouteNftResponse } from '@/types';
 
 const apiKey = process.env.COVALENT_KEY;
 
@@ -16,10 +17,38 @@ function bigintReplacer(key: string, value: any) {
   return value;
 }
 
+function getNftsFromData (apiData: BalancesResponse, address:string) {
+  let curAddress = '';
+  let nfts : NftItem[] | null = [];
+  for (let item of apiData.items) {
+    if (curAddress != item.contract_address) {
+      curAddress = item.contract_address;
+    }
+    if (item.nft_data) {
+      for (let nft of item.nft_data) {
+        if (nft.external_data) {
+          nfts.push({nftData: nft, contractAddress: curAddress, owner: address, isRental: undefined})
+        }
+      } 
+    }
+  }
+  return nfts;
+}
+
+function processApiData (apiData: BalancesResponse, address: string): RouteNftResponse {
+  const nftItems = getNftsFromData(apiData, address);
+  const validAt = null;
+  return {
+    nftItems,
+    validAt
+  }
+}
+
 export async function fetchBalancesData(network: string, address: string) {
   try {
     const response = await client.BalanceService.getTokenBalancesForWalletAddress(network as Chains, address, { nft: true });
-    const data = JSON.stringify(response.data, bigintReplacer);
+    const apiData = processApiData(response.data as BalancesResponse, address);
+    const data = JSON.stringify(apiData, bigintReplacer);
     return JSON.parse(data);
   } catch (error) {
     console.error(error);
