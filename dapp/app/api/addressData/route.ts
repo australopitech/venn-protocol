@@ -1,4 +1,4 @@
-import { fetchBalancesData } from '../../../utils/covalentFetchData';
+import { fetchBalancesDataCovalent } from '../../../utils/covalentFetchData';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -17,7 +17,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    const data = await fetchBalancesData(network, address);
+    const data = await fetchBalancesDataCovalent(network, address);
     return new Response(JSON.stringify(data), {
       status: 200,
       headers: {

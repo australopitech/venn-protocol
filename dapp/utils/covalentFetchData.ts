@@ -44,7 +44,7 @@ function processApiData (apiData: BalancesResponse, address: string): RouteNftRe
   }
 }
 
-export async function fetchBalancesData(network: string, address: string) {
+export async function fetchBalancesDataCovalent (network: string, address: string) {
   try {
     const response = await client.BalanceService.getTokenBalancesForWalletAddress(network as Chains, address, { nft: true });
     const apiData = processApiData(response.data as BalancesResponse, address);
