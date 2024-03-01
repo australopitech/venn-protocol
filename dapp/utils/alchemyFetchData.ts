@@ -33,7 +33,7 @@ function getNftsFromData (alchemyResponse: any, address: string) {
 
 function processApiData (apiData: any, address: string): RouteNftResponse {
   const nftItems = getNftsFromData(apiData, address);
-  const validAt = null;
+  const validAt = apiData.validAt;
   return {
     nfts: nftItems,
     validAt
