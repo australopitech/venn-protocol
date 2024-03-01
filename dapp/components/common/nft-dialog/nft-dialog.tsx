@@ -7,17 +7,15 @@ import { DialogOwnedListedDescription } from '../dialog-owned-listed-description
 import { DialogOwnedNotListedDescription } from '../dialog-owned-not-listed-description/dialog-owned-not-listed-description';
 import { DialogOwnedRentedDescription } from '../dialog-owned-rented-description/dialog-owned-rented-description';
 import { DialogNotOwnedNotListedDescription } from '../dialog-not-owned-not-listed-description/dialog-not-owned-not-listed-description';
-import { NftItem, ApproveData } from '@/types';
+import { NftItem, ApproveData, VennNftItem } from '@/types';
 import { getReceiptsContractAddress } from '@/utils/contractData';
 import { ownerOf, checkIsRentedOut, checkIsRental, checkIsListed } from '@/utils/listing-data';
 import { useAccount, usePublicClient } from 'wagmi';
 import { getAddress } from 'viem';
 import { useSmartAccount } from '@/app/account/venn-provider';
 
-function GetNftImage (nftItem: NftItem) {
-  return nftItem.nftData.external_data.image_1024 ? 
-         nftItem.nftData.external_data.image_1024 :
-         nftItem.nftData.external_data.image;
+function GetNftImage (nftItem: VennNftItem) {
+  return nftItem.imageCached ? nftItem.imageCached : nftItem.image;
 }
 
 // async function getOwner(provider: any, nftItem: NftItem) {
@@ -55,7 +53,7 @@ export interface NFTDialogProps {
     setError: any;
     txLoading: boolean;
     txResolved?: any;
-    nftItem?: NftItem;
+    nftItem?: VennNftItem;
     address?: `0x${string}`;
 }
 
@@ -100,13 +98,13 @@ export const NFTDialog = ({
     const { address: eoa } = useAccount();
     const { address: vsa } = useSmartAccount();
 
-    console.log('nft id', nftItem?.nftData.token_id)
+    // console.log('nft id', nftItem?.nftData.token_id)
 
     useEffect(() => {
       if(nftItem){
-        setIsReceipt(getAddress(nftItem.contractAddress) === getReceiptsContractAddress());
-        if(nftItem.nftData.token_id) {
-          setTokenId(BigInt(nftItem.nftData.token_id));
+        setIsReceipt(getAddress(nftItem.contractAddress ?? "") === getReceiptsContractAddress());
+        if(nftItem.tokenId) {
+          setTokenId(BigInt(nftItem.tokenId));
         } else console.error('no token id found');
       } 
     }, [nftItem]);
@@ -195,9 +193,8 @@ export const NFTDialog = ({
     console.log('isRented_Out', isRented_Out)
     console.log('loading', loading)
 
-    const name = nftItem ? nftItem.nftData.external_data.name : "Awesome NFT #1"
-    const description = nftItem ? nftItem.nftData.external_data.description : "This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhul."
-    // const description = "Bla blabla blablabla."
+    const name = nftItem ? nftItem.name : "Awesome NFT #1"
+    const description = nftItem ? nftItem.description : "This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhul."
 
     return (
         <div className={styles.nftDialogBackdrop} onClick={onCloseDialog}>
@@ -212,7 +209,7 @@ export const NFTDialog = ({
                 </div>
               </div>
               <div className={styles.nftDescriptionContainer} onClick={stopPropagation}>
-                <h1 className={styles.title} title={name}>{name}</h1>
+                <h1 className={styles.title} title={name ?? ""}>{name}</h1>
                 <p className={styles.nftDescription}>
                   {description}
                 </p>

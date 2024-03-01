@@ -34,26 +34,25 @@ export function useAddressNfts (address: string | undefined): FetchNftDataRespon
     refetchInterval: 600000, // Data will be refetched every 1 minute
   });
 
-  // Second useQuery to fetch rental data, dependent on the result of the first query
-  const rentalDataQuery = useQuery({
-    queryKey: ['rentalData', address],
-    queryFn: () => getRentalData(client, addressDataQuery.data!.nftItems || []),
-    enabled: !!address && !!addressDataQuery.data,
-    staleTime: 600000,
-    refetchInterval: 600000,
-  });
+  // // Second useQuery to fetch rental data, dependent on the result of the first query
+  // const rentalDataQuery = useQuery({
+  //   queryKey: ['rentalData', address],
+  //   queryFn: () => getRentalData(client, addressDataQuery.data!.nftItems || []),
+  //   enabled: !!address && !!addressDataQuery.data,
+  //   staleTime: 600000,
+  //   refetchInterval: 600000,
+  // });
 
   // Combine loading states and errors
-  const isLoading = addressDataQuery.isLoading || rentalDataQuery.isLoading;
-  const isFetching = addressDataQuery.isFetching || rentalDataQuery.isFetching;
-  const error = addressDataQuery.error || rentalDataQuery.error;
+  const isLoading = addressDataQuery.isLoading; // || rentalDataQuery.isLoading;
+  const isFetching = addressDataQuery.isFetching; // || rentalDataQuery.isFetching;
+  const error = addressDataQuery.error; // || rentalDataQuery.error;
 
   // Transform the error into the expected shape if needed
   const transformedError = error ? (error instanceof Error ? error.message : 'An unknown error occurred.') : null;
 
   return { 
-    nfts: rentalDataQuery.data ?? null,
-    validAt: addressDataQuery.data?.validAt ?? null,
+    data: addressDataQuery.data ?? null,
     error: transformedError, 
     isLoading,
     isFetching

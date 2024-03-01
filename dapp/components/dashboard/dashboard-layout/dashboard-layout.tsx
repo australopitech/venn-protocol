@@ -221,7 +221,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
         txLoading={loading}
         txResolved={txResolved}
         nftItem={
-          userData.nfts ? userData.nfts[selectedNFT] : undefined
+          userData.data?.nfts ? userData.data.nfts[selectedNFT] : undefined
         }
         address={address}
       />

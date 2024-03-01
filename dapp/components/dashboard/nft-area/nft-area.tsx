@@ -137,26 +137,24 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
             ? <LoadingPage />
             : nftFetchData?.error 
               ? "Error: " + nftFetchData?.error
-              : nftFetchData?.nfts 
-                ? nftFetchData?.nfts.length == 0 ?
+              : nftFetchData?.data?.nfts 
+                ? nftFetchData?.data.nfts.length == 0 ?
                   "No nfts" :
-                  nftFetchData.nfts
+                  nftFetchData.data.nfts
                     //  .filter(nft => nft.isRental === (viewMode === 'rented'))
                     .map((nft, i) =>
                     <NftCard
                       imageURI={
-                        nft.nftData?.external_data?.image_1024 ?
-                        nft.nftData?.external_data?.image_1024 :
-                        nft.nftData?.external_data?.image
+                        nft.imageCached ?? nft.image ?? "" // TODO substitute for no image symbol
                       }
-                      name={nft.nftData?.external_data?.name}
+                      name={nft.name ?? ""}
                       contractAddress={getAddress(nft.contractAddress)}
-                      tokenId={nft.nftData.token_id ? BigInt(nft.nftData.token_id) : undefined}
+                      tokenId={nft.tokenId ? BigInt(nft.tokenId) : undefined}
                       // price={0}
                       // isRented={false}
                       address={address}
                       expireDate={'0'}
-                      key={nft.contractAddress + nft.nftData?.token_id}
+                      key={nft.contractAddress + nft.tokenId}
                       onClick={() => {handleOnCardClick(i)} }
                       holderAddress={nft.owner}
                     />) : "Something went wrong"
