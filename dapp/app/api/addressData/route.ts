@@ -1,4 +1,5 @@
 import { fetchBalancesDataCovalent } from '../../../utils/covalentFetchData';
+import { fetchAddressDataAlchemy } from '../../../utils/alchemyFetchData';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -17,7 +18,8 @@ export async function GET(request: Request) {
   }
 
   try {
-    const data = await fetchBalancesDataCovalent(network, address);
+    // const data = await fetchBalancesDataCovalent(network, address);
+    const data = await fetchAddressDataAlchemy(network, address);
     return new Response(JSON.stringify(data), {
       status: 200,
       headers: {
