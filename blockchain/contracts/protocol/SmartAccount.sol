@@ -263,8 +263,12 @@ contract SmartAccount is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Ini
     
     function _subAssetFromList(uint256 index) private {
         uint256 lastIndex = _rentals.length - 1;
-        _rentals[index] = _rentals[lastIndex];
-        _rentals[index].index = index;
+        if(lastIndex > 0) {
+            _rentals[index] = _rentals[lastIndex];
+            _rentals[index].index = index;
+            NFT memory replacer = _rentals[index];
+            _tokenIndex[replacer.contract_][replacer.id] = index;
+        }
         _rentals.pop();
         // // lastIndex = _rentalsByContract[contract_].length - 1;
         // _rentalsByContract[contract_][indexByContract] = _rentalsByContract[contract_][lastIndex];

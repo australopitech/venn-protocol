@@ -185,7 +185,7 @@ describe("Testing account", function () {
         
     })
 
-    it("should update list of rentals", async () => {
+    it("should increment list of rentals", async () => {
         const duration = 1000/5;
         const startTime = (await provider.getBlock('latest')).timestamp;
         const rentals = await account.getRentals();
@@ -196,6 +196,49 @@ describe("Testing account", function () {
         expect(rentals[1].endTime).to.eq(startTime + duration);
         const endTime = await account.getEndTime(nft.address, newerToken);
         expect(endTime).to.eq(startTime + duration);
+    })
+
+    it("should decrement list of rentals / update index in struct and mapping", async () => {
+        const token = await mint(nft, signer_2, signer_1.address);
+        const price = ethers.utils.parseEther('0.00001');
+        const maxDuration = 1000;
+        // 1st listing
+        let approve = await nft.connect(signer_1).approve(mktPlace.address, token);
+        await approve.wait();
+
+        let listTx = await mktPlace.connect(signer_1).listNFT(nft.address, token, price, maxDuration );
+        await listTx.wait();
+        
+        const rentalsBefore = await account.getRentals();
+
+        let rentTx = await rentNFT(
+            account,
+            owner,
+            mktPlace,
+            nft.address,
+            token,
+            1,
+            price.toNumber()
+        );
+
+        const rentalsAfter = await account.getRentals();
+        expect(rentalsAfter.length).to.eq(rentalsBefore.length + 1);
+        expect(await account.getTokenIndex(nft.address, token)).to.eq(rentalsAfter.length - 1);
+        const endTime = await account.getEndTime(nft.address, newToken)
+        // console.log('endTime', endTime.toString());
+        await mine(10, {interval: 20});
+        const block = await provider.getBlock('latest');
+        expect(endTime.lt(block.timestamp))
+        const _index = await account.getTokenIndex(nft.address, newToken);
+        const release = await account.connect(owner).releaseSingleAsset(_index);
+        await release.wait();
+        const rentalsAfterRelease = await account.getRentals();
+        expect(rentalsAfterRelease.length).to.eq(rentalsAfter.length - 1);
+        const replacerIndex = await account.getTokenIndex(nft.address, token);
+        expect(replacerIndex).to.eq(_index);
+        expect(rentalsAfterRelease[_index.toNumber()].index).to.eq(_index);
+        
+        
     })
 
     it("should block transfers and approvals for rentals", async () => {
