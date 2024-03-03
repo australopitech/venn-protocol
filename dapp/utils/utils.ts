@@ -62,6 +62,6 @@ export function timeLeftString (timeLeft: bigint) {
   : timeLeft >= hourCutOff
     ? `${parseFloat(String(timeLeft/3600n)).toFixed(1)} ${timeLeft/3600n < 2n ? 'hour' : 'hours'}`
     : timeLeft >= 60n
-      ? `${parseFloat(String(timeLeft/60n)).toFixed(1)} ${timeLeft < 120n ? 'minute' : 'minutes' }`
+      ? `${parseFloat(String(timeLeft/60n)).toFixed(0)} ${timeLeft < 120n ? 'minute' : 'minutes' }`
       : timeLeft > 0 ? 'less than a minute' : 'expired'
 }

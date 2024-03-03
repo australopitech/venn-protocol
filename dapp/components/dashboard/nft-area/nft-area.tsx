@@ -138,9 +138,9 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
             : nftFetchData?.error 
               ? "Error: " + nftFetchData?.error
               : nftFetchData?.data?.nfts 
-                ? nftFetchData?.data.nfts.length == 0 ?
-                  "No nfts" :
-                  nftFetchData.data.nfts
+                ? nftFetchData?.data.nfts.length == 0 
+                 ? "No nfts" 
+                 : nftFetchData.data.nfts
                     //  .filter(nft => nft.isRental === (viewMode === 'rented'))
                     .map((nft, i) =>
                     <NftCard
