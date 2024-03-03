@@ -29,6 +29,14 @@
   margin-bottom: 40px;
 }
 
+.bodyLoading {
+  color: rgb(37, 41, 46);
+  /* font-size: 24px; */
+  display: flex;
+  margin-bottom: 40px;
+  justify-content: center;
+}
+
 
 /* .bodyMessage {
   margin-bottom: 40px;

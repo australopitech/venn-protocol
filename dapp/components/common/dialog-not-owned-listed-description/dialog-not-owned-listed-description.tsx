@@ -186,11 +186,10 @@ export const DialogNotOwnedListedDescription = ({
 
     if(loadingInfo)
       return (
-        <div className={styles.bodyDescriptionContainer}>
+        <div className={styles.bodyLoadingContainer}>
           <div className={styles.divider}></div>
-          <div className={styles.bodyDescription}>
-            {/* Please Wait.<br/>Loading NFT info...   */}
-            <div style={{justifyContent: 'center'}}> <LoadingComponent /></div>
+          <div className={styles.loadingContainer}>
+            <LoadingComponent />
           </div>
         </div>
       )

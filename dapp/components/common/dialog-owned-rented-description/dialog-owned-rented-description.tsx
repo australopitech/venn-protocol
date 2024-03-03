@@ -8,6 +8,7 @@ import { getMktPlaceContractAddress } from '@/utils/contractData';
 import { useSmartAccount } from '@/app/account/venn-provider';
 import { useHolder, useRealNft, useTimeLeft } from '@/hooks/nft-data';
 import { timeLeftString } from '@/utils/utils';
+import { LoadingComponent, LoadingDots } from '../loading/loading';
 
 export interface DialogOwnedRentedDescriptionProps {
   isListed?: boolean;
@@ -16,6 +17,7 @@ export interface DialogOwnedRentedDescriptionProps {
   setIsNFTOpen: any;
   setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>
   setTxResolved: any;
+  txLoading: boolean;
 }
 
 const WarningIcon = () => {
@@ -41,7 +43,8 @@ export const DialogOwnedRentedDescription = ({
   tokenId,
   setIsNFTOpen,
   setApproveData,
-  setTxResolved
+  setTxResolved,
+  txLoading
 }: DialogOwnedRentedDescriptionProps) => {
   // const [timeLeft, setTimeLeft] = useState<bigint>();
   const [loadingInfo, setLoadingInfo] = useState(true);
@@ -63,18 +66,6 @@ export const DialogOwnedRentedDescription = ({
     tokenId
   })
   
-  // console.log('timeLeft', timeLeft);
-  
-  // useEffect(() => {
-  //   if(nftItem) {
-  //     if(nftItem.nftData.token_id) {
-  //       setTokenId(BigInt(nftItem.nftData.token_id));
-  //     } else {
-  //       console.error('no token id found');
-  //       setError({message: 'error: no token id found'})
-  //     }
-  //   }
-  // },[nftItem]);
 
   useEffect(() => {
     if(!nft.isLoading && !holder.isLoading && !timeLeft.isLoading)
@@ -112,7 +103,7 @@ export const DialogOwnedRentedDescription = ({
       alert('Connect your wallet!')
       return
     }
-    if(isLoading) return
+    if(isLoading || txLoading) return
     if(!nft.data?.contract || nft.data.tokenId === undefined) {
       console.error('error: nft info not found');
       setError({ message: 'error: nft info not found' });
@@ -173,8 +164,8 @@ export const DialogOwnedRentedDescription = ({
       return (
         <div className={styles.bodyDescriptionContainer}>
           <div className={styles.divider}></div>
-          <div className={styles.bodyDescription}>
-            Please Wait. Loading NFT info...
+          <div className={styles.bodyLoading}>
+            <LoadingComponent />
           </div>
         </div>
       )
@@ -211,7 +202,7 @@ export const DialogOwnedRentedDescription = ({
       <div className={styles.unlistContainer}>
         {timeLeft.data!==undefined && timeLeft.data <= 0n && holder.data !== getMktPlaceContractAddress() &&
           <div>
-            <button className={styles.unlistButton} onClick={() => handleButtonClick('pull')}> {isLoading? 'loading...' : isListed? 'Pull NFT' : 'Retrieve NFT'} </button>
+            <button className={styles.unlistButton} onClick={() => handleButtonClick('pull')}> {(isLoading || txLoading)? <LoadingDots /> : isListed? 'Pull NFT' : 'Retrieve NFT'} </button>
             <div className={styles.warning}>
               <WarningIcon /><span className={styles.warningText}>{
               isListed ? `Pull your NFT back to the Market so it can be rented again.` : `Get your NFT back to your account and get refunded the 'Pull Fee'.`
