@@ -26,6 +26,7 @@ export interface DialogOwnedNotListedDescriptionProps {
     setError: any;
     setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>;
     setTxResolved: any;
+    txLoading: boolean;
 }
 
 /** TODO:
@@ -45,7 +46,8 @@ export const DialogOwnedNotListedDescription = ({
   setIsNFTOpen,
   setError,
   setApproveData,
-  setTxResolved
+  setTxResolved,
+  txLoading
 }: DialogOwnedNotListedDescriptionProps) => {
   const [price, setPrice] = useState<number>(0);
   const [duration, setDuration] = useState<number>();
@@ -172,8 +174,8 @@ export const DialogOwnedNotListedDescription = ({
         priceInWei,
         BigInt(duration)
       );
-      const acc = vsa ?? signer.account.address;
-      if(acc) refecthData(acc, true);
+      // const acc = vsa ?? signer.account.address;
+      // if(acc) refecthData(acc, true);
       setTxResolved({ success: true, hash });
     } else throw new Error('no account connected');
   }
@@ -183,7 +185,7 @@ export const DialogOwnedNotListedDescription = ({
       alert('Connect your wallet!')
       return
     }
-    if(!buttonText || isLoading)
+    if(!buttonText || isLoading || txLoading)
       return
     if(tokenId === undefined || !contractAddress){
       console.error('nft info not found');
@@ -249,7 +251,7 @@ export const DialogOwnedNotListedDescription = ({
         {isDurationInvalid && <span className={styles.invalidValue}>Set a valid duration. Must be greater than zero!</span>}
       </div>
       <br />
-      <button className={styles.listButton} onClick={handleButtonClick}>{isLoading ? <LoadingComponent/> : buttonText}</button>
+      <button className={styles.listButton} onClick={handleButtonClick}>{(isLoading || txLoading) ? <LoadingComponent/> : buttonText}</button>
     </div>
   );
 };

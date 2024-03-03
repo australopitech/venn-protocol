@@ -232,13 +232,13 @@ export const NFTDialog = ({
                 
                 {!loading && isOwned && isListed && isReceipt && !isRented_Out && 
                   <DialogOwnedListedDescription 
-                  contractAddress={nftItem?.contractAddress} tokenId={tokenId} setError={setError}
+                  contractAddress={nftItem?.contractAddress} tokenId={tokenId} setError={setError} txLoading={txLoading}
                   setIsNFTOpen={setIsNFTOpen} setTxResolved={setTxResolved} setApproveData={setApproveData}/>} 
                   {/* owned/listed by signer/not rented out */}
                 
                 {!loading && isOwned && !isListed && !isReceipt && 
                   <DialogOwnedNotListedDescription 
-                  contractAddress={nftItem?.contractAddress} tokenId={tokenId}
+                  contractAddress={nftItem?.contractAddress} tokenId={tokenId} txLoading={txLoading}
                   owner={nftItem?.owner} setIsNFTOpen={setIsNFTOpen} setError={setError} 
                   setApproveData={setApproveData} setTxResolved={setTxResolved}
                   /> } 
@@ -247,7 +247,7 @@ export const NFTDialog = ({
                 {!loading && isOwned && isReceipt && isRented_Out &&
                   <DialogOwnedRentedDescription 
                     isListed={isListed} contractAddress={nftItem?.contractAddress} tokenId={tokenId}
-                    setIsNFTOpen={setIsNFTOpen} setApproveData={setApproveData} setTxResolved={txResolved}
+                    setIsNFTOpen={setIsNFTOpen} setApproveData={setApproveData} setTxResolved={setTxResolved}
                   />} {/* owned / rented out */}
                 {/* {!isOwned && isReceipt && 
                   <DialogOwnedRentedDescription />} receipt held by 3rd party; NFT available */}

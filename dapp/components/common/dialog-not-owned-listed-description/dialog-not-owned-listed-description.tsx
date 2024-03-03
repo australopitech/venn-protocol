@@ -50,10 +50,10 @@ export const DialogNotOwnedListedDescription = ({
   const [loadingInfo, setLoadingInfo] = useState(true);
   const [duration, setDuration] = useState<number | undefined>();
   const [isDurationInvalid, setIsDurationInvalid] = useState<boolean | undefined>(false);
-  // const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   // const [isSmartaccount, setIsSmartaccount] = useState<boolean>();
   const defaultButtonText = "Rent It!";
-  const [buttonText, setButtonText] = useState<string>(defaultButtonText);
+  // const [buttonText, setButtonText] = useState<string>(defaultButtonText);
   // const [rentPrice, setRentPrice] = useState<bigint>();
   // const [maxDuration, setMaxDuration] = useState<bigint>();
   const { openConnectModal } = useConnectModal();
@@ -80,12 +80,12 @@ export const DialogNotOwnedListedDescription = ({
       }, 2000);
   }, [nft, listingData])
   
-  useEffect(() => {
-    if(txLoading)
-      setButtonText('Loading...')
-    else 
-      setButtonText(defaultButtonText)
-  }, [txLoading]);
+  // useEffect(() => {
+  //   if(txLoading)
+  //     setButtonText('Loading...')
+  //   else 
+  //     setButtonText(defaultButtonText)
+  // }, [txLoading]);
 
   // useEffect(() => {
   //   const resolveListData = async() => {
@@ -140,19 +140,20 @@ export const DialogNotOwnedListedDescription = ({
         alert('Connect your wallet!')
         return
       }
-      if(buttonText !== defaultButtonText) return
+      if(isLoading || txLoading) return
       if(!provider) {
         alert("Connect with a Venn smart account to enable rent tx's");
         return
       } 
-      if(!nft.data?.contract || !nft.data.tokenId) {
+      if(!nft.data?.contract || nft.data.tokenId === undefined) {
         console.error('missing nft info');
         return
       }
       if(!duration) {
-        alert('Enter a value for duration');
+        setIsDurationInvalid(true)
         return
       }
+      setIsLoading(true)
       const aliq = await getFee(client);
       if(listingData.data === undefined || aliq === undefined) {
         const err = 'error: could not get price or service-aliquot'
@@ -177,6 +178,7 @@ export const DialogNotOwnedListedDescription = ({
           )
         }
       });
+      setIsLoading(false);
     }
 
     console.log('listingData', listingData.data)
@@ -215,12 +217,12 @@ export const DialogNotOwnedListedDescription = ({
                     <span className={styles.eth}>Days</span>
                 </div>
             </div>
-            {isDurationInvalid && <span className={styles.invalidDuration}>{`Set a valid duration. Value cannot be negative and must respect the maximum loan period.`}</span>}
+            {isDurationInvalid && <span className={styles.invalidDuration}>{`Set a valid duration. Value must be positive and must respect the maximum loan period.`}</span>}
         </div>
         {provider?.isConnected() 
-          ? <button className={styles.borrowButton} onClick={handleButtonClick}>{ buttonText}</button>
+          ? <button className={styles.borrowButton} onClick={handleButtonClick}>{(isLoading || txLoading) ? <LoadingComponent /> : defaultButtonText}</button>
           : <div className={styles.notConnectedMessage}> 
-              <button className={styles.notConnectedButton} onClick={handleButtonClick}>{ buttonText}</button>
+              <button className={styles.notConnectedButton} onClick={handleButtonClick}>{ defaultButtonText}</button>
               <p>
                 <span className={styles.textLink} onClick={openConnectModal}>Log In</span> with <span className={styles.textHilight}>Venn Smart Wallet</span> to rent this NFT!
               </p>

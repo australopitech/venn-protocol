@@ -17,6 +17,7 @@ import { LoadingComponent } from '../loading/loading';
 export interface DialogOwnedListedDescriptionProps {
   setIsNFTOpen: any;
   setTxResolved: any;
+  txLoading: boolean;
   setError: any;
   contractAddress?: string;
   tokenId?: bigint;
@@ -81,6 +82,7 @@ const WarningIcon = () => {
 export const DialogOwnedListedDescription = ({ 
   setIsNFTOpen,
   setTxResolved,
+  txLoading,
   setError,
   contractAddress,
   tokenId,
@@ -98,7 +100,7 @@ export const DialogOwnedListedDescription = ({
     tokenId
   })
   const listing = useListingData(nft.data);
-  const refecthData = useRefetchAddressData();
+  // const refecthData = useRefetchAddressData();
 
   useEffect(() => {
     if(!listing.isLoading && !nft.isLoading)
@@ -116,7 +118,7 @@ export const DialogOwnedListedDescription = ({
       setError('no token id found');
       return
     }
-    if(isLoading)
+    if(isLoading || txLoading)
       return
     setIsLoading(true);
     let hash;
@@ -132,11 +134,10 @@ export const DialogOwnedListedDescription = ({
             calldata: delistCallData(nft.data.contract, nft.data.tokenId)
           }
         });
+        setIsLoading(false)
       } else {
         hash = await delist(tokenId, client, signer);
         setTxResolved({ success: true, hash });
-        const acc = vsa ?? signer.account.address
-        if(acc) refecthData(acc, true)
       }
     } catch (err) {
       console.error(err);
@@ -172,7 +173,7 @@ export const DialogOwnedListedDescription = ({
         <br />
         {/* <span className={styles.unlistInfo}>Would you like to unlist this NFT?</span> */}
         <div className={styles.unlistContainer}>
-          <button className={styles.unlistButton} onClick={handleButtonClick}> {isLoading? <LoadingComponent/> : "Unlist NFT"}</button>
+          <button className={styles.unlistButton} onClick={handleButtonClick}> {(isLoading || txLoading) ? <LoadingComponent/> : "Unlist NFT"}</button>
           <div className={styles.warning}>
             <WarningIcon /><span className={styles.warningText}>{`If you unlist your NFT, it'll be removed from the market and won't be available for rent until you relist it.`}</span>
           </div>
