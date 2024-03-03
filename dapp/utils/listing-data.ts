@@ -150,22 +150,32 @@ export async function getEndTime(
 ) {
     if(!account || !contractAddress || tokenId === undefined) 
         return
-    const rentals = await client.readContract({
+    // const rentals = await client.readContract({
+    //     address: account as `0x${string}`,
+    //     abi: smartAccount.abi,
+    //     functionName: 'getRentals',
+    //     args: []
+    // }) as any[];
+    // const index = await client.readContract({
+    //     address: account as `0x${string}`,
+    //     abi: smartAccount.abi,
+    //     functionName: 'getTokenIndex',
+    //     args: [
+    //         contractAddress,
+    //         tokenId
+    //     ]
+    // }) as any;
+    const endTime = await client.readContract({
         address: account as `0x${string}`,
         abi: smartAccount.abi,
-        functionName: 'getRentals',
-        args: []
-    }) as any[];
-    const index = await client.readContract({
-        address: account as `0x${string}`,
-        abi: smartAccount.abi,
-        functionName: 'getTokenIndex',
+        functionName: 'getEndTime',
         args: [
             contractAddress,
             tokenId
         ]
     }) as any;
-    if(rentals) return rentals[index].endTime as bigint;
+    console.log('getEndTime response', endTime);
+    return endTime as bigint;
   }
   
 export async function checkIsListedByReceipt(
