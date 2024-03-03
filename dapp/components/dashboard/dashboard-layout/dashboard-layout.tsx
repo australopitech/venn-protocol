@@ -115,7 +115,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   }, [txResolved])
   
   const resolveDashBoardAccountAddress = () : `0x${string}` | undefined => {
-    return address ? address : connector?.id === "web3auth" ? vsa : eoa
+    return connector?.id === "web3auth" ? vsa : eoa
   }
 
   const onApprove = async () => {
