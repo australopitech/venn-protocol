@@ -105,9 +105,10 @@
 }
 
 .warningIcon {
-  width: 40px;
-  height: 28px;
-  margin-top: -6px;
+  flex-shrink: 0;
+  width: 20px;
+  height: 18px;
+  /* margin-top: -6px; */
 }
 
 .warningText {

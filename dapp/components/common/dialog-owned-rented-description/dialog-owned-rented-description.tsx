@@ -25,8 +25,8 @@ const WarningIcon = () => {
     // <svg width="20px" height="20px" viewBox="0 0 61.44 61.44" xmlns="http://www.w3.org/2000/svg">
     //   <path fill="#000000" d="M30.72 3.84a26.88 26.88 0 1 1 0 53.76 26.88 26.88 0 0 1 0 -53.76zm0 49.92a23.04 23.04 0 0 0 0 -46.08 23.04 23.04 0 0 0 0 46.08zm2.88 -10.56a2.88 2.88 0 1 1 -5.76 0 2.88 2.88 0 0 1 5.76 0zm-2.88 -27.84a1.92 1.92 0 0 1 1.92 1.92v17.28a1.92 1.92 0 0 1 -3.84 0V17.28a1.92 1.92 0 0 1 1.92 -1.92z"/>
     // </svg>
-    <svg className={styles.warningIcon} width="18px" height="18px" viewBox="0 0 61.44 61.44" xmlns="http://www.w3.org/2000/svg">
-    <path 
+    <svg className={styles.warningIcon}  viewBox="0 0 61.44 61.44" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path 
       fill="#D52941" 
       stroke="#D52941" 
       stroke-width="2" 
@@ -212,7 +212,7 @@ export const DialogOwnedRentedDescription = ({
         }
         {isListed &&
           <div>
-            <button className={styles.unlistButton} onClick={() => handleButtonClick('delist')}> {isLoading? 'loading...' : 'Unlist NFT'} </button>
+            <button className={styles.unlistButton} onClick={() => handleButtonClick('delist')}> {(isLoading || txLoading)? <LoadingDots /> : 'Unlist NFT'} </button>
             <div className={styles.warning}>
               <WarningIcon /><span className={styles.warningText}>{
               timeLeft.data
