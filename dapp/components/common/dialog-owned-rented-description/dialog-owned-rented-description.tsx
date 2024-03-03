@@ -113,7 +113,7 @@ export const DialogOwnedRentedDescription = ({
       return
     }
     if(isLoading) return
-    if(!nft.data?.contract || !nft.data.tokenId) {
+    if(!nft.data?.contract || nft.data.tokenId === undefined) {
       console.error('error: nft info not found');
       setError({ message: 'error: nft info not found' });
       return
