@@ -72,10 +72,10 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   const [nftsMode, setNftsMode] = useState<nftViewMode>("owned");
 
   const { address: eoa, connector, isConnecting } = useAccount();
-  const { provider: vsa, address: vsaAddr } = useSmartAccount();
+  const { provider, address: vsa } = useSmartAccount();
   const { wallet, stateResetter } = useVennWallet();
 
-  const userData = useAddressNfts(address?? vsaAddr?? eoa);
+  const userData = useAddressNfts(address?? vsa?? eoa);
   const { openConnectModal } = useConnectModal();
   const [txResolved, setTxResolved] = useState<TxResolved>();
   const [loading, setLoading] = useState(false);
@@ -105,17 +105,17 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   useEffect(() => {
     console.log('render');
     if(txResolved) {
-      // const resolveAddr = address ?? vsaAddr ?? eoa
-      // if(resolveAddr) {
-      //   refecthData(resolveAddr, true);
-      //   setNftAreaTrigger(!nftAreaTrigger);
-      // }
+      const resolveAddr = address ?? vsa ?? eoa
+      if(resolveAddr) {
+        refecthData(resolveAddr, true);
+        setNftAreaTrigger(!nftAreaTrigger);
+      }
       setIsNFTOpen(false);
     }
   }, [txResolved])
   
   const resolveDashBoardAccountAddress = () : `0x${string}` | undefined => {
-    return address ? address : connector?.id === "web3auth" ? vsaAddr : eoa
+    return address ? address : connector?.id === "web3auth" ? vsa : eoa
   }
 
   const onApprove = async () => {
@@ -133,11 +133,11 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
         setLoading(false)
         return
       }
-      const { hash, error: err } = await resolveApprovalExternal(event, data, stateResetter, wallet, vsa);
+      const { hash, error: err } = await resolveApprovalExternal(event, data, stateResetter, wallet, provider);
       _hash = hash;
       _err = err;
     } else {
-      if(!vsa) {
+      if(!provider) {
         setError({ message: 'no provider found '});
         setLoading(false);
         return
@@ -147,7 +147,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
         setLoading(false)
         return
       }
-      const { hash, error: err} = await resolveApprovalInternal(approveData.data, vsa);
+      const { hash, error: err} = await resolveApprovalInternal(approveData.data, provider);
       _hash = hash;
       _err = err;
     }
@@ -201,7 +201,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
   console.log('txResolved', txResolved)
   
   const refetchTest = () => {
-    const acc = address ?? eoa;
+    const acc = address ?? vsa ?? eoa;
     if(acc) refecthData(acc, true)
   } 
 
@@ -218,7 +218,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
         setApproveData={setApproveData}
         setTxResolved={setTxResolved}
         setError={setError}
-        txLoading={loading}
+        txLoading={loading || !!event || !!approveData}
         txResolved={txResolved}
         nftItem={
           userData.data?.nfts ? userData.data.nfts[selectedNFT] : undefined
