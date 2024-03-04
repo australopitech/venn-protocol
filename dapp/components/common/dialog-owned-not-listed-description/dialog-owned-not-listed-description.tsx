@@ -116,15 +116,13 @@ export const DialogOwnedNotListedDescription = ({
   }
 
   const handleApprove = async () => {
-    if(!tokenId || !contractAddress)
-      throw new Error('missing nft info')
     if(provider) {
       const res = await provider.sendUserOperation({
         target: contractAddress as `0x${string}`,
         value: 0n,
         data: approveCallData(
           mktPlaceContract.address,
-          tokenId
+          tokenId!
         )
       });
       setHash(await provider.waitForUserOperationTransaction(res.hash));
@@ -132,8 +130,8 @@ export const DialogOwnedNotListedDescription = ({
       setHash( await approve(
         client,
         signer,
-        contractAddress,
-        tokenId,
+        contractAddress!,
+        tokenId!,
         mktPlaceContract.address
       ));
     } else throw new Error('no account connected');
@@ -147,8 +145,6 @@ export const DialogOwnedNotListedDescription = ({
       setIsDurationInvalid(true)
       return;
     }
-    if(!tokenId || !contractAddress)
-      throw new Error('missing nft info');
     const priceInWei = parseEther(price.toString());
     // const durationInSec = BigNumber.from(duration*24*60*60);
     if(provider) {
@@ -159,7 +155,7 @@ export const DialogOwnedNotListedDescription = ({
           value: 0n,
           calldata: listCallData(
             contractAddress as `0x${string}`,
-            tokenId,
+            tokenId!,
             priceInWei,
             duration          
           )
@@ -169,8 +165,8 @@ export const DialogOwnedNotListedDescription = ({
       const hash = await list(
         client,
         signer,
-        contractAddress,
-        tokenId,
+        contractAddress!,
+        tokenId!,
         priceInWei,
         BigInt(duration)
       );
