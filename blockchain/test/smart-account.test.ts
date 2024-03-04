@@ -21,6 +21,7 @@ describe("Testing account", function () {
         let tokenId: BigNumber;
         let newToken: BigNumber;
         let newerToken: BigNumber;
+        let oneMoreToken: BigNumber;
         let uri = "uri";
         let receiptsContract: ReceiptNFT;
         let mktPlace: MarketPlace;
@@ -199,14 +200,14 @@ describe("Testing account", function () {
     })
 
     it("should decrement list of rentals / update index in struct and mapping", async () => {
-        const token = await mint(nft, signer_2, signer_1.address);
+        oneMoreToken = await mint(nft, signer_2, signer_1.address);
         const price = ethers.utils.parseEther('0.00001');
         const maxDuration = 1000;
         // 1st listing
-        let approve = await nft.connect(signer_1).approve(mktPlace.address, token);
+        let approve = await nft.connect(signer_1).approve(mktPlace.address, oneMoreToken);
         await approve.wait();
 
-        let listTx = await mktPlace.connect(signer_1).listNFT(nft.address, token, price, maxDuration );
+        let listTx = await mktPlace.connect(signer_1).listNFT(nft.address, oneMoreToken, price, maxDuration );
         await listTx.wait();
         
         const rentalsBefore = await account.getRentals();
@@ -216,14 +217,14 @@ describe("Testing account", function () {
             owner,
             mktPlace,
             nft.address,
-            token,
+            oneMoreToken,
             1,
             price.toNumber()
         );
 
         const rentalsAfter = await account.getRentals();
         expect(rentalsAfter.length).to.eq(rentalsBefore.length + 1);
-        expect(await account.getTokenIndex(nft.address, token)).to.eq(rentalsAfter.length - 1);
+        expect(await account.getTokenIndex(nft.address, oneMoreToken)).to.eq(rentalsAfter.length - 1);
         const endTime = await account.getEndTime(nft.address, newToken)
         // console.log('endTime', endTime.toString());
         await mine(10, {interval: 20});
@@ -234,7 +235,7 @@ describe("Testing account", function () {
         await release.wait();
         const rentalsAfterRelease = await account.getRentals();
         expect(rentalsAfterRelease.length).to.eq(rentalsAfter.length - 1);
-        const replacerIndex = await account.getTokenIndex(nft.address, token);
+        const replacerIndex = await account.getTokenIndex(nft.address, oneMoreToken);
         expect(replacerIndex).to.eq(_index);
         expect(rentalsAfterRelease[_index.toNumber()].index).to.eq(_index);
         
@@ -249,7 +250,7 @@ describe("Testing account", function () {
         const calldata_ = iface.encodeFunctionData("transferFrom", [
             account.address,
             signer_2.address,
-            newToken
+            oneMoreToken
         ]);
         await expect( 
             account.connect(owner).execute(nft.address, 0, calldata_ ) 
@@ -262,7 +263,7 @@ describe("Testing account", function () {
         const calldata_0 = iface_0.encodeFunctionData("safeTransferFrom", [
             account.address,
             signer_2.address,
-            newToken,
+            oneMoreToken,
             "0x00"
         ]);
         await expect( 
@@ -276,7 +277,7 @@ describe("Testing account", function () {
         const calldata_1 = iface_1.encodeFunctionData("safeTransferFrom", [
             account.address,
             signer_2.address,
-            newToken            
+            oneMoreToken            
         ]);
         await expect( 
             account.connect(owner).execute(nft.address, 0, calldata_1 ) 
@@ -288,7 +289,7 @@ describe("Testing account", function () {
         const iface_2 = new ethers.utils.Interface(abi_2);
         const calldata_2= iface_2.encodeFunctionData("approve", [
             signer_2.address,
-            newToken
+            oneMoreToken
         ]);
         await expect(
             account.connect(owner).execute(nft.address, 0 , calldata_2)
