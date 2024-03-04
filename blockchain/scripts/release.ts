@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import dotenv from "dotenv";
 import vsa from "../artifacts/contracts/protocol/SmartAccount.sol/SmartAccount.json";
 import entryPoint from "../artifacts/contracts/core/EntryPoint.sol/EntryPoint.json";
-import nft from "../deployments/base_goerli/NFT.json";
+import nft from "../deployments/polygon_mumbai/NFT.json";
 import { error } from "console";
 dotenv.config();
 
@@ -17,7 +17,7 @@ const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const networkID = 80001
 const provider = new ethers.providers.AlchemyProvider(networkID, API_KEY);
 
-const acc = "0x7828A950ee5F76655245457dF7D14B5bBF491ee6";
+const acc = "0x58530cB75bD6a084DBe5bceF65416262625018BE";
 
 
 const tokenUri = async() => {
@@ -92,8 +92,19 @@ const pull = async () => {
     console.log(rec);
 }
 
-pull().catch((err) => {
-    console.error(err);
-    process.exitCode = 1;
-});
+// pull().catch((err) => {
+//     console.error(err);
+//     process.exitCode = 1;
+// });
 
+const getIndex = async () => {
+  if(!provider) throw new Error('missing provider');
+  if(!PRIVATE_KEY) throw new Error('missing env');
+  const signer = new ethers.Wallet(PRIVATE_KEY, provider);
+  const account = new ethers.Contract(acc, vsa.abi, signer);
+  
+  const index = await account.getTokenIndex(nft.address, 5);
+  console.log('index', index.toString());
+}
+
+getIndex();
