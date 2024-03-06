@@ -13,6 +13,7 @@ import { useAccount, useDisconnect } from 'wagmi';
 // import { signOut } from '@/app/venn-provider';
 import { useSmartAccountAddress, useVsaUpdate} from '@/app/account/venn-provider';
 import { compactString } from '@/utils/utils';
+import Tooltip from '../tooltip/tooltip';
 
 export interface NavBarProps {
   signInPage?: boolean;
@@ -173,7 +174,7 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
       </div>
       <div className={styles.functionalitiesContainer}>
         <div className={styles.searchBoxContainer}>
-          <SearchBox />
+          <Tooltip text='Search comming soon'><SearchBox /></Tooltip>
         </div>
         <div className={styles.menuButtonsContainer}>
           {/* <div className={currentPage === 'market'? styles.secondaryButtonSelected : styles.secondaryButton}>Market</div>
