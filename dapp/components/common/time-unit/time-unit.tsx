@@ -4,8 +4,8 @@ import styles from "./time-unit.module.css";
 import { TimeUnitType } from "@/types";
 
 interface TimeUnitSelectProps {
-  isOpen: boolean;
-  setIsOpen: React.Dispatch<SetStateAction<boolean>>;
+  // isOpen: boolean;
+  // setIsOpen: React.Dispatch<SetStateAction<boolean>>;
   selected: TimeUnitType;
   setSelected: React.Dispatch<SetStateAction<TimeUnitType>>;
   plural?: boolean;
@@ -27,8 +27,8 @@ const DownIcon = () => {
   )
 }
 
-export const TimeUnitSelect = ({ isOpen, setIsOpen, selected, setSelected, plural} : TimeUnitSelectProps) => {
-//   const [isOpen, setIsOpen] = useState(false);
+export const TimeUnitSelect = ({ selected, setSelected, plural} : TimeUnitSelectProps) => {
+  const [isOpen, setIsOpen] = useState(false);
 
   const onBlur = () => {
     // console.log('blur');

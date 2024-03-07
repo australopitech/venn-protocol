@@ -93,7 +93,7 @@ export const DialogOwnedListedDescription = ({
   const [loadingInfo, setLoadingInfo] = useState(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [timeUnit, setTimeUnit] = useState<TimeUnitType>('hour');
-  const [openTimeUnitSel, setOpenTimeUnitSel] = useState(false);
+  // const [openTimeUnitSel, setOpenTimeUnitSel] = useState(false);
   // const [error, setError] = useState<any>(null);
   const client = usePublicClient();
   const { chain } = useNetwork();
@@ -172,7 +172,7 @@ export const DialogOwnedListedDescription = ({
         {/* <span>Price: </span><EditableInput /> */}
         <span className={styles.nftLoanInfo}>
           {`Price: ${listing.data?.price !== undefined? parseFloat(formatEther(convertUnitToSec(listing.data.price, timeUnit))).toPrecision(4) : ""} ${chain?.nativeCurrency.symbol}/`}
-          <TimeUnitSelect selected={timeUnit} setSelected={setTimeUnit} isOpen={openTimeUnitSel} setIsOpen={setOpenTimeUnitSel}/>
+          <TimeUnitSelect selected={timeUnit} setSelected={setTimeUnit} />
         </span>
         <span className={styles.nftLoanInfo}>
           {`Maximum loan duration: ${listing.data?.maxDur? timeLeftString(listing.data.maxDur) : ""}`}
@@ -180,7 +180,7 @@ export const DialogOwnedListedDescription = ({
         <br />
         {/* <span className={styles.unlistInfo}>Would you like to unlist this NFT?</span> */}
         <div className={styles.unlistContainer}>
-          <button disabled={openTimeUnitSel} className={styles.unlistButton} onClick={handleButtonClick}> {(isLoading || txLoading) ? <LoadingComponent/> : "Unlist NFT"}</button>
+          <button className={styles.unlistButton} onClick={handleButtonClick}> {(isLoading || txLoading) ? <LoadingComponent/> : "Unlist NFT"}</button>
           <div className={styles.warning}>
             <WarningIcon /><span className={styles.warningText}>{`If you unlist your NFT, it'll be removed from the market and won't be available for rent until you relist it.`}</span>
           </div>

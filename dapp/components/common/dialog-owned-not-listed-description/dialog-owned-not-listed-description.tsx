@@ -54,7 +54,7 @@ export const DialogOwnedNotListedDescription = ({
   const [price, setPrice] = useState<number>(0);
   const [duration, setDuration] = useState<number>();
   const [timeUnit, setTimeUnit] = useState<TimeUnitType>('hour');
-  const [openTimeUnitSel, setOpenTimeUnitSel] = useState(false);
+  // const [openTimeUnitSel, setOpenTimeUnitSel] = useState(false);
   const [isPriceInvalid, setIsPriceInvalid] = useState<boolean>(false);
   const [isDurationInvalid, setIsDurationInvalid] = useState<boolean>(false);
   const listButtonText = "List it!";
@@ -226,7 +226,7 @@ export const DialogOwnedNotListedDescription = ({
           />
           <div className={styles.eth}>
               {/* <span className={styles.eth}>{duration === 1 ? 'Day' : 'Days'}</span> */}
-              <TimeUnitSelect isOpen={openTimeUnitSel} setIsOpen={setOpenTimeUnitSel} selected={timeUnit} setSelected={setTimeUnit}/>
+              <TimeUnitSelect plural={true} selected={timeUnit} setSelected={setTimeUnit}/>
           </div>
         </div>
         {isDurationInvalid && <span className={styles.invalidValue}>Set a valid duration. Must be greater than zero!</span>}
@@ -248,7 +248,7 @@ export const DialogOwnedNotListedDescription = ({
         {isPriceInvalid && <span className={styles.invalidValue}>Set a valid price. Value cannot be negative!</span>}
       </div>
       <br />
-      <button className={openTimeUnitSel ? styles.listButtonNoHover : styles.listButton} onClick={handleButtonClick}>{(isLoading || txLoading) ? <LoadingComponent/> : buttonText}</button>
+      <button className={styles.listButton} onClick={handleButtonClick}>{(isLoading || txLoading) ? <LoadingComponent/> : buttonText}</button>
     </div>
   );
 };
