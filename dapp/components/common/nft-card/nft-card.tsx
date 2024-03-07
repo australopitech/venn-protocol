@@ -17,9 +17,9 @@ export interface NftCardProps {
   name: string;
   contractAddress: string;
   tokenId?: bigint;
-  price?: number; 
+  // price?: number;
   // isRented?: boolean;
-  expireDate?: string;
+  // expireDate?: string;
   address?: string;
   currentPage?: string | '';
   onClick: any;
@@ -31,8 +31,6 @@ export default function NftCard ({
   name,
   contractAddress,
   tokenId, 
-  // isRented, 
-  expireDate,
   address, 
   currentPage,
   onClick,

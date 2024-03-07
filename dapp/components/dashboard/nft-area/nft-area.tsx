@@ -153,7 +153,7 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
                       // price={0}
                       // isRented={false}
                       address={address}
-                      expireDate={'0'}
+                      // expireDate={'0'}
                       key={nft.contractAddress + nft.tokenId}
                       onClick={() => {handleOnCardClick(i)} }
                       holderAddress={nft.owner}
