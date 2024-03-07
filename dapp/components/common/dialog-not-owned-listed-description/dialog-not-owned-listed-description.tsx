@@ -12,7 +12,7 @@ import { useListingData, useRealNft } from '@/hooks/nft-data';
 import { LoadingComponent } from '../loading/loading';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { TimeUnitSelect } from '../time-unit/time-unit';
-import { convertFromSec, timeLeftString } from '@/utils/utils';
+import { convertFromSec, convertUnitToSec, timeLeftString } from '@/utils/utils';
 
 export interface DialogNotOwnedListedDescriptionProps {
   setIsNFTOpen: any;
@@ -168,8 +168,8 @@ export const DialogNotOwnedListedDescription = ({
         <h3 className={styles['priceDescription']}>
             Price:
             <span className={styles['priceCurrency']}>
-              {listingData.data?.price !==undefined ? formatEther(convertFromSec(listingData.data.price, timeUnit)) : ""} {chain?.nativeCurrency.symbol ?? "MATIC"}/
-              <TimeUnitSelect selected={timeUnit} setSelected={setTimeUnit} isOpen={openTimeUnitSel} setIsOpen={setOpenTimeUnitSel} />
+              {listingData.data?.price !==undefined ? parseFloat(formatEther(convertUnitToSec(listingData.data.price, timeUnit))).toPrecision(4) : ""} {chain?.nativeCurrency.symbol ?? "MATIC"}/
+              <TimeUnitSelect selected={timeUnit} setSelected={setTimeUnit} />
             </span>
         </h3>
         <div className={styles.priceDescription}>{`Maximum loan period: ${listingData.data?.maxDur ? timeLeftString(listingData.data.maxDur) : "error fetching max duration"}`}</div>
@@ -184,7 +184,7 @@ export const DialogNotOwnedListedDescription = ({
                   onChange={(e) => handleChange(e)}
                 />
                 <div>
-                    <span className={styles.eth}>Days</span>
+                    <span className={styles.eth}><TimeUnitSelect selected={timeUnit} setSelected={setTimeUnit} plural={true} /></span>
                 </div>
             </div>
             {isDurationInvalid && <span className={styles.invalidDuration}>{`Set a valid duration. Value must be positive and must respect the maximum loan period.`}</span>}
