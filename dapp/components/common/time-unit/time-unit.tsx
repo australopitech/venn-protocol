@@ -34,12 +34,12 @@ export const TimeUnitSelect = ({ selected, setSelected, plural} : TimeUnitSelect
     // console.log('blur');
     setTimeout(() => {
         setIsOpen(false);
-    }, 150);
+    }, 250);
   }
 
   return (
-    <div className={styles.timeUnitSelector}>
-        <button className={styles.timeUnitCurrentContainer} onClick={() => setIsOpen(!isOpen)} onBlur={onBlur} tabIndex={2}>
+    <div className={styles.timeUnitSelector} onBlur={onBlur}>
+        <button className={styles.timeUnitCurrentContainer} onClick={() => setIsOpen(!isOpen)} tabIndex={2}>
             <span className={styles.timeUnitCurrent}>
                 {selected === 'minute'
                  ? plural ? "Minutes" : "Minute" 
