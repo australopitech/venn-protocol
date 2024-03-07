@@ -17,6 +17,7 @@ import {
   resolveApprovalExternal, resolveApprovalInternal, rejectSessionProposal, rejectSessionRequest 
 } from '@/app/account/wallet';
 import ApproveDialog from '@/components/common/approve-dialog/approve-dialog';
+import { LoadingComponent } from '@/components/common/loading/loading';
 // import Swipe from 'react-swipe';
 
 interface TrendingCollectionsSliderProps {
@@ -99,6 +100,24 @@ const HeroSection = () => {
     </div>
   )
 }
+
+const LoadingSliderContent = () => {
+  return (
+    <div className={styles.slider}>
+      <LoadingComponent />
+    </div>
+  )
+}
+
+const ErrorFetchingSliderContent = () => {
+  return (
+    <div className={styles.sliderErr}>
+      There was an error fetching this content. Please check back later.
+      <br />
+      <span style={{fontWeight: 'normal'}}>error msg</span>
+    </div>
+  )
+} 
 
 const ContentSlider = ({ title, contentType, contentSliderData, setIsOpen, setSelected }: ContentSliderProps) => {
   const [isDragging, setDragging] = useState(false);
@@ -184,7 +203,11 @@ export default function MarketLayout ({ somePropHere }: MarketLayoutProps) {
   const [selectedNFT, setSelectedNFT] = useState(0);
   const [isCollectionOpen, setIsCollectionOpen] = useState(false);
   // const [isConnectOpen, setIsConnectOpen] = useState(false);
-  const marketNfts = useAddressNfts(getMktPlaceContractAddress());
+  const { 
+    data: fetchData, 
+    isLoading: loadingNFTData, 
+    error: fetchDataErr  
+  } = useAddressNfts(getMktPlaceContractAddress());
 
   const [approveData, setApproveData] = useState<ApproveData>();
   const [txResolved, setTxResolved] = useState<TxResolved>();
@@ -290,7 +313,7 @@ export default function MarketLayout ({ somePropHere }: MarketLayoutProps) {
           txLoading={loading || !!event || !!approveData}
           txResolved={txResolved}
           nftItem={
-            marketNfts.data?.nfts ? marketNfts.data.nfts[selectedNFT] : undefined
+            fetchData?.nfts ? fetchData.nfts[selectedNFT] : undefined
           }
           setIsNFTOpen={setIsNFTOpen} 
         />
@@ -316,7 +339,19 @@ export default function MarketLayout ({ somePropHere }: MarketLayoutProps) {
         <NavBar navbarGridTemplate={styles.navbarGridTemplate} currentPage='market' />
         {<div className={styles.contentGridTemplate}> 
           <HeroSection />
-          <ContentSlider title={"Latest NFTs"} contentType={"nft"} contentSliderData={marketNfts.data?.nfts} setIsOpen={setIsNFTOpen} setSelected={setSelectedNFT} />
+          {loadingNFTData
+           ? <LoadingSliderContent />
+           : fetchDataErr
+              ? <ErrorFetchingSliderContent />
+              : <ContentSlider 
+                title={"Latest NFTs"} 
+                contentType={"nft"} 
+                contentSliderData={fetchData?.nfts} 
+                setIsOpen={setIsNFTOpen} 
+                setSelected={setSelectedNFT} 
+                />
+          }
+          {/* <ErrorFetchingSliderContent /> */}
           <ContentSlider title={"Trending Collections"} contentType={"collection"} contentSliderData={collectionsData} setIsOpen={setIsCollectionOpen} />
         </div>}
       </div>
