@@ -7,10 +7,12 @@ import { rentCallData } from '@/utils/call';
 import { PublicClient, useAccount, useNetwork, usePublicClient, useWalletClient } from 'wagmi';
 import { getAddress, formatEther } from 'viem';
 import { useSmartAccount } from '@/app/account/venn-provider';
-import { ApproveData, NftObj, NftItem } from '@/types';
+import { ApproveData, NftObj, NftItem, TimeUnitType } from '@/types';
 import { useListingData, useRealNft } from '@/hooks/nft-data';
 import { LoadingComponent } from '../loading/loading';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { TimeUnitSelect } from '../time-unit/time-unit';
+import { convertFromSec, timeLeftString } from '@/utils/utils';
 
 export interface DialogNotOwnedListedDescriptionProps {
   setIsNFTOpen: any;
@@ -49,13 +51,12 @@ export const DialogNotOwnedListedDescription = ({
 }: DialogNotOwnedListedDescriptionProps) => {
   const [loadingInfo, setLoadingInfo] = useState(true);
   const [duration, setDuration] = useState<number | undefined>();
+  const [timeUnit, setTimeUnit] = useState<TimeUnitType>('hour');
+  const [openTimeUnitSel, setOpenTimeUnitSel] = useState(false);
   const [isDurationInvalid, setIsDurationInvalid] = useState<boolean | undefined>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  // const [isSmartaccount, setIsSmartaccount] = useState<boolean>();
+  
   const defaultButtonText = "Rent It!";
-  // const [buttonText, setButtonText] = useState<string>(defaultButtonText);
-  // const [rentPrice, setRentPrice] = useState<bigint>();
-  // const [maxDuration, setMaxDuration] = useState<bigint>();
   const { openConnectModal } = useConnectModal();
   // 
   const nft = useRealNft({
@@ -80,40 +81,6 @@ export const DialogNotOwnedListedDescription = ({
       }, 2000);
   }, [nft, listingData])
   
-  // useEffect(() => {
-  //   if(txLoading)
-  //     setButtonText('Loading...')
-  //   else 
-  //     setButtonText(defaultButtonText)
-  // }, [txLoading]);
-
-  // useEffect(() => {
-  //   const resolveListData = async() => {
-  //     if(!nftItem) return
-  //     if(!nftItem.nftData.token_id) {
-  //       console.error('no token id found');
-  //       return
-  //     }
-  //     let contractAddr: string;
-  //     let tokenId: bigint;
-  //     if(getAddress(nftItem.contractAddress) === receiptsContract.address) { /**isReceipt */
-  //       const nftObj = await getNFTByReceipt(client, BigInt(nftItem.nftData.token_id));
-  //       contractAddr = nftObj.contractAddress;
-  //       tokenId = nftObj.tokenId;
-  //     } else {
-  //       contractAddr = nftItem.contractAddress;
-  //       tokenId = BigInt(nftItem.nftData.token_id);
-  //     }
-  //     if(!contractAddr || tokenId === undefined) return
-  //     const { price, maxDur } = await getListData(client, contractAddr, tokenId);
-  //     setRentPrice(price);
-  //     setMaxDuration(maxDur);
-  //   }
-
-  //   resolveListData();
-    
-  // }, [client])
-
 
   const handleChange = (e: any) => {
     let numValue = parseInt(e.target.value);
@@ -199,9 +166,13 @@ export const DialogNotOwnedListedDescription = ({
         <div className={styles.divider}></div>
         <h2 className={styles['bodyDescription']}><span className={styles.textHilight}>Rent</span> this NFT!</h2>
         <h3 className={styles['priceDescription']}>
-            Price: <span className={styles['priceCurrency']}>{listingData.data?.price !==undefined ? formatEther(listingData.data.price) : ""} {chain?.nativeCurrency.symbol ?? "MATIC"}/day</span>
+            Price:
+            <span className={styles['priceCurrency']}>
+              {listingData.data?.price !==undefined ? formatEther(convertFromSec(listingData.data.price, timeUnit)) : ""} {chain?.nativeCurrency.symbol ?? "MATIC"}/
+              <TimeUnitSelect selected={timeUnit} setSelected={setTimeUnit} isOpen={openTimeUnitSel} setIsOpen={setOpenTimeUnitSel} />
+            </span>
         </h3>
-        <div className={styles.priceDescription}>{`Maximum loan period: ${listingData.data?.maxDur.toString()} ${listingData.data?.maxDur === 1n  ? 'day' : 'days'}`}</div>
+        <div className={styles.priceDescription}>{`Maximum loan period: ${listingData.data?.maxDur ? timeLeftString(listingData.data.maxDur) : "error fetching max duration"}`}</div>
         <div className={styles.priceWrapper}>
             <div className={styles.priceInputContainer}>
                 <input 
@@ -219,7 +190,7 @@ export const DialogNotOwnedListedDescription = ({
             {isDurationInvalid && <span className={styles.invalidDuration}>{`Set a valid duration. Value must be positive and must respect the maximum loan period.`}</span>}
         </div>
         {provider?.isConnected() 
-          ? <button className={styles.borrowButton} onClick={handleButtonClick}>{(isLoading || txLoading) ? <LoadingComponent /> : defaultButtonText}</button>
+          ? <button disabled={openTimeUnitSel} className={styles.borrowButton} onClick={handleButtonClick}>{(isLoading || txLoading) ? <LoadingComponent /> : defaultButtonText}</button>
           : <div className={styles.notConnectedMessage}> 
               <button className={styles.notConnectedButton} onClick={handleButtonClick}>{ defaultButtonText}</button>
               <p>

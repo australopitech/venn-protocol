@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import styles from './dialog-owned-listed-description.module.css';
 import classNames from 'classnames';
 import { useRouter } from 'next/navigation';
-import { ApproveData, NftItem } from '@/types';
+import { ApproveData, NftItem, TimeUnitType } from '@/types';
 import { delist, delistCallData  } from '@/utils/call';
 import { getListData, getNFTByReceipt } from '@/utils/listing-data';
 import { getMktPlaceContractAddress, receiptsContract } from '@/utils/contractData';
@@ -13,6 +13,8 @@ import { useListingData, useRealNft } from '@/hooks/nft-data';
 import { useSmartAccount } from '@/app/account/venn-provider';
 import { useRefetchAddressData } from '@/hooks/address-data';
 import { LoadingComponent } from '../loading/loading';
+import { convertFromSec, timeLeftString } from '@/utils/utils';
+import { TimeUnitSelect } from '../time-unit/time-unit';
 
 export interface DialogOwnedListedDescriptionProps {
   setIsNFTOpen: any;
@@ -90,6 +92,8 @@ export const DialogOwnedListedDescription = ({
 }: DialogOwnedListedDescriptionProps) => {
   const [loadingInfo, setLoadingInfo] = useState(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [timeUnit, setTimeUnit] = useState<TimeUnitType>('hour');
+  const [openTimeUnitSel, setOpenTimeUnitSel] = useState(false);
   // const [error, setError] = useState<any>(null);
   const client = usePublicClient();
   const { chain } = useNetwork();
@@ -166,12 +170,17 @@ export const DialogOwnedListedDescription = ({
         <span>This NFT <span className={styles.textHilight}>is listed!</span></span>
         <br />
         {/* <span>Price: </span><EditableInput /> */}
-        <span className={styles.nftLoanInfo}>{`Price: ${listing.data?.price !== undefined? formatEther(listing.data.price): ""} ${chain?.nativeCurrency.symbol}/Day`}</span>
-        <span className={styles.nftLoanInfo}>{`Maximum loan duration: ${listing.data?.maxDur? listing.data.maxDur.toString() : ""} ${listing.data?.maxDur? listing.data.maxDur <= 1n ? 'Day' : 'Days' : 'Days'}`}</span>
+        <span className={styles.nftLoanInfo}>
+          {`Price: ${listing.data?.price !== undefined? formatEther(convertFromSec(listing.data.price, timeUnit)): ""} ${chain?.nativeCurrency.symbol}/`}
+          <TimeUnitSelect selected={timeUnit} setSelected={setTimeUnit} isOpen={openTimeUnitSel} setIsOpen={setOpenTimeUnitSel}/>
+        </span>
+        <span className={styles.nftLoanInfo}>
+          {`Maximum loan duration: ${listing.data?.maxDur? timeLeftString(listing.data.maxDur) : ""}`}
+        </span>
         <br />
         {/* <span className={styles.unlistInfo}>Would you like to unlist this NFT?</span> */}
         <div className={styles.unlistContainer}>
-          <button className={styles.unlistButton} onClick={handleButtonClick}> {(isLoading || txLoading) ? <LoadingComponent/> : "Unlist NFT"}</button>
+          <button disabled={openTimeUnitSel} className={styles.unlistButton} onClick={handleButtonClick}> {(isLoading || txLoading) ? <LoadingComponent/> : "Unlist NFT"}</button>
           <div className={styles.warning}>
             <WarningIcon /><span className={styles.warningText}>{`If you unlist your NFT, it'll be removed from the market and won't be available for rent until you relist it.`}</span>
           </div>

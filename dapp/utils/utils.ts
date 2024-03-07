@@ -1,5 +1,6 @@
 import { getAddress } from "viem";
 import { mktPlaceContract } from "./contractData";
+import { TimeUnitType } from "@/types";
 
 export function compactString(input?: string): string {
   if (!input) {
@@ -64,4 +65,32 @@ export function timeLeftString (timeLeft: bigint) {
     : timeLeft >= 60n
       ? `${parseFloat(String(timeLeft/60n)).toFixed(0)} ${timeLeft < 120n ? 'minute' : 'minutes' }`
       : timeLeft > 0 ? 'less than a minute' : 'expired'
+}
+
+export const convertUnitToSec = (value: bigint | number, unit: TimeUnitType) => {
+  if(typeof value === 'number') {
+    return unit === 'day'
+     ? value * 60 * 60 * 24
+     : unit === 'hour'
+      ? value * 60 * 60
+      : value * 60
+  }
+  return unit === 'day'
+     ? value * 60n * 60n * 24n
+     : unit === 'hour'
+      ? value * 60n * 60n
+      : value * 60n
+}
+
+export const convertFromSec = (value: bigint | number | string, unit: TimeUnitType) => {
+  let _value: bigint;
+  if(typeof value !== 'bigint')
+    _value = BigInt(value);
+  else
+    _value = value;
+  return unit === 'day'
+    ? _value / 60n / 60n / 24n
+    : unit === 'hour'
+      ? _value / 60n / 60n
+      : _value / 60n
 }

@@ -1,4 +1,5 @@
 .bodyDescriptionContainer {
+  position: relative;
   width: 100%;
   display: flex;
   align-items: flex-start;
@@ -58,6 +59,7 @@
     rgba(240, 166, 202, 0.1) 0%,
     rgba(240, 166, 202, 0.2) 100%
   ); */
+  position: relative;
   border: 2px solid rgba(240, 166, 202, 0.5);
   border-radius: 25px;
   /* margin: 0px 10px 10px 0px; */
@@ -117,7 +119,37 @@
   font-style: normal;
 }
 
+.listButtonNoHover {
+  position: relative;
+  pointer-events: none;
+  align-items: center;
+  /* background-color: blue; */
+  background: radial-gradient(
+    100% 200% at 0% 50%,
+    rgba(240, 166, 202, 0.8) 0%,
+    rgba(240, 166, 202, 0.5) 100%
+  );
+  border-radius: 25px;
+  box-sizing: border-box;
+  color: #3a3939;
+  /* cursor: pointer; */
+  display: flex;
+  font-size: 20px;
+  font-weight: 800;
+  height: 46px;
+  justify-content: center;
+  /* margin-top: 20px; */
+  padding: 0px 15px;
+  text-align: center;
+  transition: all 0.125s ease 0s;
+  user-select: none;
+  /* z-index: 5; */
+  border: none;
+  width: 100%;
+}
+
 .listButton {
+  /* position: absolute; */
   align-items: center;
   background: radial-gradient(
     100% 200% at 0% 50%,

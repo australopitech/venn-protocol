@@ -28,6 +28,7 @@
 }
 
 .priceDescription {
+  display: flex;
   color: rgb(84, 91, 100);
   font-size: 20px;
   font-style: normal;
@@ -38,6 +39,8 @@
 }
 
 .priceCurrency {
+  display: flex;
+  margin-left: 2px;
   color: rgba(84, 91, 100);
 }
 

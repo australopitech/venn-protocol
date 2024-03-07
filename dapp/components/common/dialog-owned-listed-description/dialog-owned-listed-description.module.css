@@ -46,6 +46,7 @@
 }
 
 .bodyDescription {
+  position: relative;
   color: rgb(37, 41, 46);
   font-size: 32px;
   font-style: normal;
@@ -58,6 +59,7 @@
 }
 
 .nftLoanInfo {
+  display: flex;
   font-size: 26px;
   margin-bottom: 12px;
 }

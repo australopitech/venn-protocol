@@ -9,10 +9,12 @@ import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { parseEther } from 'viem';
 import { listCallData } from '@/utils/call';
 import { useSmartAccount } from '@/app/account/venn-provider';
-import { ApproveData, NftItem } from '@/types';
+import { ApproveData, NftItem, TimeUnitType } from '@/types';
 import { useIsAppoved } from '@/hooks/nft-data';
 import { useRefetchAddressData } from '@/hooks/address-data';
 import { LoadingComponent } from '../loading/loading';
+import { TimeUnitSelect } from '../time-unit/time-unit';
+import { convertUnitToSec } from '@/utils/utils';
 
 export interface DialogOwnedNotListedDescriptionProps {
     className?: string;
@@ -51,6 +53,8 @@ export const DialogOwnedNotListedDescription = ({
 }: DialogOwnedNotListedDescriptionProps) => {
   const [price, setPrice] = useState<number>(0);
   const [duration, setDuration] = useState<number>();
+  const [timeUnit, setTimeUnit] = useState<TimeUnitType>('hour');
+  const [openTimeUnitSel, setOpenTimeUnitSel] = useState(false);
   const [isPriceInvalid, setIsPriceInvalid] = useState<boolean>(false);
   const [isDurationInvalid, setIsDurationInvalid] = useState<boolean>(false);
   const listButtonText = "List it!";
@@ -59,7 +63,7 @@ export const DialogOwnedNotListedDescription = ({
   const [buttonText, setButtonText] = useState<string>();
   const [trigger, setTrigger] = useState<boolean>(false);
   const { data: signer } = useWalletClient();
-  const { provider, address: vsa } = useSmartAccount();
+  const { provider } = useSmartAccount();
   const [hash, setHash] = useState<string>();
   const isApproved = useIsAppoved({
     contract: contractAddress as `0x${string}`,
@@ -68,13 +72,11 @@ export const DialogOwnedNotListedDescription = ({
     trigger
   });
   const client = usePublicClient();
-  const router = useRouter();
 
   const updateState = () => {
     setTrigger(!trigger);
   }
 
-  const refecthData = useRefetchAddressData();
 
   useLayoutEffect(() => {
     if(isApproved.data) setButtonText(listButtonText);
@@ -145,8 +147,8 @@ export const DialogOwnedNotListedDescription = ({
       setIsDurationInvalid(true)
       return;
     }
-    const priceInWei = parseEther(price.toString());
-    // const durationInSec = BigNumber.from(duration*24*60*60);
+    const durationInSec = convertUnitToSec(duration, timeUnit);
+    const priceInWeiPerSec = convertUnitToSec(parseEther(price.toString()), timeUnit);
     if(provider) {
       setApproveData({
         type: 'Internal',
@@ -156,8 +158,8 @@ export const DialogOwnedNotListedDescription = ({
           calldata: listCallData(
             contractAddress as `0x${string}`,
             tokenId!,
-            priceInWei,
-            duration          
+            BigInt(priceInWeiPerSec),
+            durationInSec   
           )
         }
       })
@@ -167,7 +169,7 @@ export const DialogOwnedNotListedDescription = ({
         signer,
         contractAddress!,
         tokenId!,
-        priceInWei,
+        BigInt(priceInWeiPerSec),
         BigInt(duration)
       );
       // const acc = vsa ?? signer.account.address;
@@ -205,15 +207,30 @@ export const DialogOwnedNotListedDescription = ({
     }
   }
 
-  console.log('isApproved?' , isApproved)
-  const name = "Awesome NFT #1"
-  const description = "This is an awesome NFT uhul."  
 
   return (
     <div className={styles['bodyDescriptionContainer']}>
       <div className={styles.divider}></div>
       <div className={styles['bodyDescription']}>
         <span className={styles.bodyText}>Fill out the fields below to <span className={styles.textHilight}>list your NFT</span>:</span>
+        
+        <span className={styles.priceInputLabel}>Maximum loan duration</span>
+        <div className={styles['priceInputContainer']}>
+          <input 
+            className={styles['priceInput']}
+            placeholder="0"
+            type="number"
+            min="0"
+            // value={duration}
+            onChange={(e) => handleDurationChange(e)}
+          />
+          <div className={styles.eth}>
+              {/* <span className={styles.eth}>{duration === 1 ? 'Day' : 'Days'}</span> */}
+              <TimeUnitSelect isOpen={openTimeUnitSel} setIsOpen={setOpenTimeUnitSel} selected={timeUnit} setSelected={setTimeUnit}/>
+          </div>
+        </div>
+        {isDurationInvalid && <span className={styles.invalidValue}>Set a valid duration. Must be greater than zero!</span>}
+
         <span className={styles.priceInputLabel}>Price</span>
         <div className={styles['priceInputContainer']}>
           <input 
@@ -225,29 +242,13 @@ export const DialogOwnedNotListedDescription = ({
             onChange={(e) => handlePriceChange(e)}
           />
           <div>
-              <span className={styles.eth}>ETH/Day</span>
+              <span className={styles.eth}>MATIC/{timeUnit === 'day' ? "Day" : timeUnit === 'hour' ? "Hour" : "Minute"}</span>
           </div>
         </div>
         {isPriceInvalid && <span className={styles.invalidValue}>Set a valid price. Value cannot be negative!</span>}
-
-        <span className={styles.priceInputLabel}>Maximum loan duration</span>
-        <div className={styles['priceInputContainer']}>
-          <input 
-            className={styles['priceInput']}
-            placeholder="0"
-            type="number"
-            min="0"
-            // value={duration}
-            onChange={(e) => handleDurationChange(e)}
-          />
-          <div>
-              <span className={styles.eth}>{duration === 1 ? 'Day' : 'Days'}</span>
-          </div>
-        </div>
-        {isDurationInvalid && <span className={styles.invalidValue}>Set a valid duration. Must be greater than zero!</span>}
       </div>
       <br />
-      <button className={styles.listButton} onClick={handleButtonClick}>{(isLoading || txLoading) ? <LoadingComponent/> : buttonText}</button>
+      <button className={openTimeUnitSel ? styles.listButtonNoHover : styles.listButton} onClick={handleButtonClick}>{(isLoading || txLoading) ? <LoadingComponent/> : buttonText}</button>
     </div>
   );
 };

@@ -162,7 +162,7 @@ export function listCallData (
     contract: `0x${string}`,
     tokenId: bigint,
     price: bigint,
-    maxDuration: number
+    maxDuration: number | bigint
 ) {
     return encodeFunctionData({
         abi: mktPlaceAbi,

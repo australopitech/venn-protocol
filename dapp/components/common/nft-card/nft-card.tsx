@@ -143,7 +143,7 @@ export default function NftCard ({
               : <span className={styles.listed}>
                   Rent price:
                   <span className={styles.price}>
-                    {`${rentPrice?.toString()} ETH`}
+                    {`${rentPrice?.toString()} MATIC`}
                   </span>
                 </span>
             )
