@@ -94,13 +94,10 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
 
   useEffect(() => {
     setTimeout(() => {
+      setIsClient(true);
       setIsLoadingPage(false);
     }, 3000);
   }, [])
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
 
   useEffect(() => {
     console.log('render');
