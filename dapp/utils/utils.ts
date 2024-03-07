@@ -59,35 +59,25 @@ const min = 60n;
 
 export function timeLeftString (timeLeft: bigint) {
   return timeLeft >= dayCutOff
-  ? `${parseFloat(String(timeLeft/86400n)).toFixed(1)} ${timeLeft/86400n < 2n ? 'day' : 'days'}`
+  ? `${parseFloat(String(timeLeft/day)).toFixed(1)} ${timeLeft/day < 2n ? 'day' : 'days'}`
   : timeLeft >= hourCutOff
-    ? `${parseFloat(String(timeLeft/3600n)).toFixed(1)} ${timeLeft/3600n < 2n ? 'hour' : 'hours'}`
+    ? `${parseFloat(String(timeLeft/hour)).toFixed(1)} ${timeLeft/hour < 2n ? 'hour' : 'hours'}`
     : timeLeft >= 60n
-      ? `${parseFloat(String(timeLeft/60n)).toFixed(0)} ${timeLeft < 120n ? 'minute' : 'minutes' }`
+      ? `${parseFloat(String(timeLeft/min)).toFixed(0)} ${timeLeft/min < 2n ? 'minute' : 'minutes' }`
       : timeLeft > 0 ? 'less than a minute' : 'expired'
 }
 
-export const convertUnitToSec = (value: bigint | number, unit: TimeUnitType) => {
-  if(typeof value === 'number') {
-    return unit === 'day'
-     ? value * 60 * 60 * 24
-     : unit === 'hour'
-      ? value * 60 * 60
-      : value * 60
-  }
+export const convertUnitToSec = (value: bigint | number | string, unit: TimeUnitType) => {
+  const _value = BigInt(value);
   return unit === 'day'
-     ? value * 60n * 60n * 24n
+     ? _value * 60n * 60n * 24n
      : unit === 'hour'
-      ? value * 60n * 60n
-      : value * 60n
+      ? _value * 60n * 60n
+      : _value * 60n
 }
 
 export const convertFromSec = (value: bigint | number | string, unit: TimeUnitType) => {
-  let _value: bigint;
-  if(typeof value !== 'bigint')
-    _value = BigInt(value);
-  else
-    _value = value;
+  const _value = BigInt(value);
   return unit === 'day'
     ? _value / 60n / 60n / 24n
     : unit === 'hour'

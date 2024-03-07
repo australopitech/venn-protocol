@@ -14,7 +14,7 @@ import { useIsAppoved } from '@/hooks/nft-data';
 import { useRefetchAddressData } from '@/hooks/address-data';
 import { LoadingComponent } from '../loading/loading';
 import { TimeUnitSelect } from '../time-unit/time-unit';
-import { convertUnitToSec } from '@/utils/utils';
+import { convertUnitToSec, convertFromSec } from '@/utils/utils';
 
 export interface DialogOwnedNotListedDescriptionProps {
     className?: string;
@@ -148,7 +148,7 @@ export const DialogOwnedNotListedDescription = ({
       return;
     }
     const durationInSec = convertUnitToSec(duration, timeUnit);
-    const priceInWeiPerSec = convertUnitToSec(parseEther(price.toString()), timeUnit);
+    const priceInWeiPerSec = convertFromSec(parseEther(price.toString()), timeUnit);
     if(provider) {
       setApproveData({
         type: 'Internal',
@@ -158,7 +158,7 @@ export const DialogOwnedNotListedDescription = ({
           calldata: listCallData(
             contractAddress as `0x${string}`,
             tokenId!,
-            BigInt(priceInWeiPerSec),
+            priceInWeiPerSec,
             durationInSec   
           )
         }
@@ -169,8 +169,8 @@ export const DialogOwnedNotListedDescription = ({
         signer,
         contractAddress!,
         tokenId!,
-        BigInt(priceInWeiPerSec),
-        BigInt(duration)
+        priceInWeiPerSec,
+        durationInSec
       );
       // const acc = vsa ?? signer.account.address;
       // if(acc) refecthData(acc, true);

@@ -9,6 +9,8 @@ import {
 import { receiptsContract } from '@/utils/contractData';
 import { useAccount, usePublicClient } from 'wagmi';
 import { baseGoerli } from 'viem/chains';
+import { convertFromSec, convertUnitToSec } from '@/utils/utils';
+import { formatEther } from 'viem';
 
 export interface NftCardProps {
   imageURI: string;
@@ -124,7 +126,7 @@ export default function NftCard ({
       isRental !== undefined
     ) setLoading(false);
   },[isListed, isRentedOut, isRental])
-
+  
   return (
     <div className={classNames(styles.nftCardContainer, currentPage === 'market' ? styles.nftCardMarketContainer : '')}>
       <div className={styles.nftCardImageContainer} onClick={onClick}>
@@ -143,7 +145,7 @@ export default function NftCard ({
               : <span className={styles.listed}>
                   Rent price:
                   <span className={styles.price}>
-                    {`${rentPrice?.toString()} MATIC`}
+                    {rentPrice != undefined ? `${parseFloat(formatEther(convertUnitToSec(rentPrice, 'hour'))).toPrecision(2)} MATIC` : 'err'}
                   </span>
                 </span>
             )

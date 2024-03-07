@@ -13,7 +13,7 @@ import { useListingData, useRealNft } from '@/hooks/nft-data';
 import { useSmartAccount } from '@/app/account/venn-provider';
 import { useRefetchAddressData } from '@/hooks/address-data';
 import { LoadingComponent } from '../loading/loading';
-import { convertFromSec, timeLeftString } from '@/utils/utils';
+import { convertFromSec, convertUnitToSec, timeLeftString } from '@/utils/utils';
 import { TimeUnitSelect } from '../time-unit/time-unit';
 
 export interface DialogOwnedListedDescriptionProps {
@@ -162,7 +162,7 @@ export const DialogOwnedListedDescription = ({
       </div>
   )
 
-
+  console.log('max dur', listing.data?.maxDur)
   return (
     <div className={styles.bodyDescriptionContainer}>
       <div className={styles.divider}></div>
@@ -171,7 +171,7 @@ export const DialogOwnedListedDescription = ({
         <br />
         {/* <span>Price: </span><EditableInput /> */}
         <span className={styles.nftLoanInfo}>
-          {`Price: ${listing.data?.price !== undefined? formatEther(convertFromSec(listing.data.price, timeUnit)): ""} ${chain?.nativeCurrency.symbol}/`}
+          {`Price: ${listing.data?.price !== undefined? parseFloat(formatEther(convertUnitToSec(listing.data.price, timeUnit))).toPrecision(4) : ""} ${chain?.nativeCurrency.symbol}/`}
           <TimeUnitSelect selected={timeUnit} setSelected={setTimeUnit} isOpen={openTimeUnitSel} setIsOpen={setOpenTimeUnitSel}/>
         </span>
         <span className={styles.nftLoanInfo}>
