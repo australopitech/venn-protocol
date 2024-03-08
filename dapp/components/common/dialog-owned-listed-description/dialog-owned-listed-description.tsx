@@ -4,11 +4,11 @@ import styles from './dialog-owned-listed-description.module.css';
 import classNames from 'classnames';
 import { useRouter } from 'next/navigation';
 import { ApproveData, NftItem, TimeUnitType } from '@/types';
-import { delist, delistCallData  } from '@/utils/call';
+import { delist, delistCallData, delistFromMktPlace  } from '@/utils/call';
 import { getListData, getNFTByReceipt } from '@/utils/listing-data';
-import { getMktPlaceContractAddress, receiptsContract } from '@/utils/contractData';
+import { getMktPlaceContractAddress, getReceiptsContractAddress, receiptsContract } from '@/utils/contractData';
 import { useNetwork, usePublicClient, useWalletClient } from 'wagmi';
-import { formatEther } from 'viem';
+import { formatEther, getAddress } from 'viem';
 import { useListingData, useRealNft } from '@/hooks/nft-data';
 import { useSmartAccount } from '@/app/account/venn-provider';
 import { useRefetchAddressData } from '@/hooks/address-data';
@@ -73,8 +73,8 @@ const WarningIcon = () => {
     <path 
       fill="#D52941" 
       stroke="#D52941" 
-      stroke-width="2" 
-      stroke-linecap="round"
+      strokeWidth="2" 
+      strokeLinecap="round"
       d="M30.72 3.84a26.88 26.88 0 1 1 0 53.76 26.88 26.88 0 0 1 0 -53.76zm0 49.92a23.04 23.04 0 0 0 0 -46.08 23.04 23.04 0 0 0 0 46.08zm2.88 -10.56a2.88 2.88 0 1 1 -5.76 0 2.88 2.88 0 0 1 5.76 0zm-2.88 -27.84a1.92 1.92 0 0 1 1.92 1.92v17.28a1.92 1.92 0 0 1 -3.84 0V17.28a1.92 1.92 0 0 1 1.92 -1.92z"/>
     </svg>
 
@@ -118,8 +118,8 @@ export const DialogOwnedListedDescription = ({
       alert('Connect your wallet!')
       return
     }
-    if(tokenId === undefined) {
-      setError('no token id found');
+    if(!contractAddress || tokenId === undefined) {
+      setError('missing NFT info');
       return
     }
     if(isLoading || txLoading)
@@ -140,7 +140,10 @@ export const DialogOwnedListedDescription = ({
         });
         setIsLoading(false)
       } else {
-        hash = await delist(tokenId, client, signer);
+        if(getAddress(contractAddress) === getReceiptsContractAddress())
+          hash = await delist(tokenId, client, signer);
+        else
+          hash = await delistFromMktPlace(contractAddress, tokenId, client, signer);
         setTxResolved({ success: true, hash });
       }
     } catch (err) {

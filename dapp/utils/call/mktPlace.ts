@@ -85,6 +85,29 @@ export const delist = async (
     return hash
 }
 
+export const delistFromMktPlace = async (
+    contractAddress: string,
+    tokenId: bigint,
+    client?: PublicClient,
+    signer?: WalletClient,
+) => {
+    if(!client)
+        throw new Error('client undefined');
+    if(!signer)
+        throw new Error('signer undefined');
+    const account = signer.account;
+    const { request } = await client.simulateContract({
+        account,
+        address: mktPlaceAddr,
+        abi: mktPlaceAbi,
+        functionName: 'deList',
+        args: [contractAddress, tokenId]
+    });
+    const hash = await signer.writeContract(request);
+    await client.waitForTransactionReceipt({ hash });
+    return hash;
+}
+
 export const pull = async (
     receiptId: bigint,
     client?: PublicClient,
