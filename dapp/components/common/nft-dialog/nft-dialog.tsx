@@ -8,8 +8,8 @@ import { DialogOwnedNotListedDescription } from '../dialog-owned-not-listed-desc
 import { DialogOwnedRentedDescription } from '../dialog-owned-rented-description/dialog-owned-rented-description';
 import { DialogNotOwnedNotListedDescription } from '../dialog-not-owned-not-listed-description/dialog-not-owned-not-listed-description';
 import { NftItem, ApproveData, VennNftItem } from '@/types';
-import { getReceiptsContractAddress } from '@/utils/contractData';
-import { ownerOf, checkIsRentedOut, checkIsRental, checkIsListed } from '@/utils/listing-data';
+import { getMktPlaceContractAddress, getReceiptsContractAddress } from '@/utils/contractData';
+import { ownerOf, checkIsRentedOut, checkIsRental, checkIsListed, checkIsOwnerOfListed } from '@/utils/listing-data';
 import { useAccount, usePublicClient } from 'wagmi';
 import { getAddress } from 'viem';
 import { useSmartAccount } from '@/app/account/venn-provider';
@@ -169,6 +169,27 @@ export const NFTDialog = ({
       if(holder && isRental_signer !== undefined) {
         if(holder === vsa) setIsOwned(!isRental_signer)
         else if(holder === eoa) setIsOwned(!isRental_signer);
+        else if(
+          eoa &&
+          !isReceipt &&
+          holder === getMktPlaceContractAddress()
+          ) {
+            const resolveIsLister = async () => {
+              try{
+                const res = await checkIsOwnerOfListed(
+                nftItem!.contractAddress,
+                tokenId!,
+                vsa?? eoa,
+                client
+                );
+                console.log('isOwned res', res)
+                setIsOwned(res);
+              } catch(err) {
+                console.error(err);
+              }
+            }
+            resolveIsLister();
+        }
         else setIsOwned(false);
       }
     },[holder, isRental_signer]);
