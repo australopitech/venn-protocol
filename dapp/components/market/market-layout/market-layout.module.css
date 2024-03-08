@@ -403,6 +403,7 @@
   cursor: grab;
   scrollbar-width: none;
   padding-right: 8px;
+  padding-block: 18px;
   -ms-overflow-style: none;
 }
 
