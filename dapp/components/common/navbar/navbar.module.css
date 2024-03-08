@@ -93,6 +93,11 @@
   position: relative;
 }
 
+.fontFamily {
+  font-family: 'SFRounded', sans-serif;
+  font-weight: 700;
+}
+
 /* .secondaryButton,
 .secondaryButtonSelected {
   font-family: 'SFRounded', sans-serif;

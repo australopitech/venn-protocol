@@ -138,32 +138,14 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
   // }, []);
 
   // console.log('scrolled ', scrolled)
-  const eoaAccount = useAccount();
-  const vsaAddr = useSmartAccountAddress();
-  const router = useRouter();
-  const { disconnect } = useDisconnect()
   const items = ['About the project', 'Contact Us'];
-  // const setSigner = useSetSigner();
-  // const signer = useSigner();
-  // const signOut = useSignOut();
   
-  // const signOutHandler = useCallback(async() => {
-  //   if(eoaAccount) {
-  //     disconnect();
-  //   } else if(vsaAddr) {
-  //     await signOut();
-  //   }
-  // }, [eoaAccount, vsaAddr])
-
   const handleItemSelect = (item: string) => {
     console.log(`Selected: ${item}`);
     if(item === 'About the project')
       window.open('https://github.com/pbfranceschin/r-wallet-base-3/blob/main/Readme.md', '_blank');
   };
 
-  // console.log('eoa', eoaAccount);
-
-  // const { openConnectModal } = useConnectModal();
   return (
     // <div className={classNames(styles.navbar, styles.navbarGridTemplate, scrolled ? styles.navbarScrolled : '')}>
     <div className={classNames(styles.navbar, styles.navbarGridTemplate)}>
@@ -174,7 +156,7 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
       </div>
       <div className={styles.functionalitiesContainer}>
         <div className={styles.searchBoxContainer}>
-          <Tooltip text='Search comming soon'><SearchBox /></Tooltip>
+          <Tooltip style={styles.fontFamily} text='Search comming soon'><SearchBox /></Tooltip>
         </div>
         <div className={styles.menuButtonsContainer}>
           {/* <div className={currentPage === 'market'? styles.secondaryButtonSelected : styles.secondaryButton}>Market</div>

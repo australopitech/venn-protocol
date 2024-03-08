@@ -1,10 +1,17 @@
 import React from 'react';
-import style from './tooltip.module.css';
+import styles from './tooltip.module.css';
+import classNames from 'classnames';
 
-export default function Tooltip ({ text, children } : { text: string, children : React.ReactNode }) {
+interface TooltipProps {
+  style?: any;
+  text: string;
+  children : React.ReactNode;
+}
+
+export default function Tooltip ({ text, children, style } : TooltipProps ) {
    return (
-    <div className={style.tooltip}>
-        <span className={style.tooltiptext}>{text}</span>
+    <div className={classNames(styles.tooltip, style)}>
+        <span className={styles.tooltiptext}>{text}</span>
         {children}
     </div>
    ) 
