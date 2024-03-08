@@ -18,6 +18,7 @@ import {
 } from '@/app/account/wallet';
 import ApproveDialog from '@/components/common/approve-dialog/approve-dialog';
 import { LoadingComponent } from '@/components/common/loading/loading';
+import { VideoGuides } from '@/components/video-guides/video-guides';
 // import Swipe from 'react-swipe';
 
 interface TrendingCollectionsSliderProps {
@@ -90,7 +91,7 @@ const HeroSection = () => {
             </a>
             </span>
           <span className={styles.primaryButton}>
-            <Link href="/dashboard/0x099A294Bffb99Cb2350A6b6cA802712D9C96676A"> 
+            <Link href="/dashboard"> 
               Get Started
             </Link>
           </span>
@@ -339,6 +340,7 @@ export default function MarketLayout ({ somePropHere }: MarketLayoutProps) {
         <NavBar navbarGridTemplate={styles.navbarGridTemplate} currentPage='market' />
         {<div className={styles.contentGridTemplate}> 
           <HeroSection />
+          <VideoGuides />
           {loadingNFTData
            ? <LoadingSliderContent />
            : fetchDataErr
