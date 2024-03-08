@@ -178,7 +178,10 @@
 }
 
 .textLink:hover {
-  background-color:rgba(240, 166, 202, 0.8)
+  /* background-color:rgba(240, 166, 202, 0.8) */
+  /* border-bottom-color: rgb(237, 149, 192); */
+  border-bottom-color: black;
+  border-bottom-width: 12px;
 }
 
 .notConnectedButton {

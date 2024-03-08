@@ -195,6 +195,7 @@ export const DialogNotOwnedListedDescription = ({
               <button className={styles.notConnectedButton} onClick={handleButtonClick}>{ defaultButtonText}</button>
               <p>
                 <span className={styles.textLink} onClick={openConnectModal}>Log In</span> with <span className={styles.textHilight}>Venn Smart Wallet</span> to rent this NFT!
+                <a href='/dashboard' target='_blank' className={styles.textLink}> Learn How</a>
               </p>
             </div>
         }
