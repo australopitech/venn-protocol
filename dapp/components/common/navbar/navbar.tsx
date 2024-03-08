@@ -14,6 +14,7 @@ import { useAccount, useDisconnect } from 'wagmi';
 import { useSmartAccountAddress, useVsaUpdate} from '@/app/account/venn-provider';
 import { compactString } from '@/utils/utils';
 import Tooltip from '../tooltip/tooltip';
+import { LoadingDots } from '../loading/loading';
 
 export interface NavBarProps {
   signInPage?: boolean;
@@ -66,6 +67,7 @@ const ConnectButton = ({connectText} : ConnectButtonProps) => {
     {connectText? connectText : 'Connect Wallet'}
     </div>
   )
+  else return <div className={styles.primaryButton}> <LoadingDots /> </div>
 }
 
 const MenuIcon = () => {
