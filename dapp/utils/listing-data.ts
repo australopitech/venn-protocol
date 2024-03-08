@@ -72,6 +72,7 @@ export const ownerOf = async (
     tokenId: bigint
 ) => {
     // console.log(
+    //     'isowned call',
     //     'contractAddr', contractAddr,
     //     'tokenId', tokenId
     // )
@@ -80,7 +81,7 @@ export const ownerOf = async (
         abi: erc721.abi,
         functionName: 'ownerOf',
         args: [tokenId]
-    }) as unknown as `0x${string}`;''
+    }) as unknown as `0x${string}`;
     // console.log('ownerOf return', owner);
     return owner
 }
@@ -150,21 +151,6 @@ export async function getEndTime(
 ) {
     if(!account || !contractAddress || tokenId === undefined) 
         return
-    // const rentals = await client.readContract({
-    //     address: account as `0x${string}`,
-    //     abi: smartAccount.abi,
-    //     functionName: 'getRentals',
-    //     args: []
-    // }) as any[];
-    // const index = await client.readContract({
-    //     address: account as `0x${string}`,
-    //     abi: smartAccount.abi,
-    //     functionName: 'getTokenIndex',
-    //     args: [
-    //         contractAddress,
-    //         tokenId
-    //     ]
-    // }) as any;
     const endTime = await client.readContract({
         address: account as `0x${string}`,
         abi: smartAccount.abi,
@@ -192,8 +178,22 @@ export async function checkIsListedByReceipt(
     }
     // console.log('maxDur in check', maxDur.toString());
     if(maxDur !== undefined) return maxDur > 0n;
-  }
+}
+
+export async function getReceipt (
+    client: PublicClient,
+    contractAddress: string,
+    tokenId: bigint
+) {
+    return client.readContract({
+        address: mktPlaceAddr,
+        abi: mktPlaceAbi,
+        functionName: 'getReceipt',
+        args: [contractAddress, tokenId]
+    }) as unknown as bigint;
+}
   
+
 export async function getNFTByReceipt(
     client: any,
     receiptId: bigint
@@ -244,6 +244,18 @@ export async function checkIsListed (
       return maxDur > 0;
     // console.log('maxDur in resolve', maxDur?.toString(), tokenId?.toString());
 }
+
+export async function checkIsOwnerOfListed(
+    contractAddress: string,
+    tokenId: bigint,
+    account: string,
+    client: PublicClient
+) {
+    const receiptId = await getReceipt(client, contractAddress, tokenId);
+    const receiptHolder = await ownerOf(client, getReceiptsContractAddress(), receiptId);
+    return getAddress(receiptHolder) === getAddress(account);
+}
+
 
 export async function checkIsRentedOut(
     contractAddress: string,
