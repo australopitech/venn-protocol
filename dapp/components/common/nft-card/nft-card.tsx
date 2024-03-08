@@ -37,7 +37,7 @@ export default function NftCard ({
   holderAddress
 }: NftCardProps) {
   
-  const { address: account } = useAccount();
+  const { address: account, isDisconnected } = useAccount();
   const [holder, setHolder] = useState<string>();
   const [isListed, setIsListed] = useState<boolean>();
   const [rentPrice , setRentPrice] = useState<bigint>();
@@ -108,6 +108,8 @@ export default function NftCard ({
           account,
           client          
         ));
+      if(isDisconnected)
+          setIsRental(false);
     }
 
     resolvePrice();
@@ -124,6 +126,9 @@ export default function NftCard ({
       isRental !== undefined
     ) setLoading(false);
   },[isListed, isRentedOut, isRental])
+
+  // console.log('loading', loading);
+  // console.log('isListed', isListed, 'isRentedOut', isRentedOut, 'isRental', isRental)
   
   return (
     <div className={classNames(styles.nftCardContainer, currentPage === 'market' ? styles.nftCardMarketContainer : '')}>
