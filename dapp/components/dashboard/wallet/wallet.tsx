@@ -6,10 +6,11 @@ import { useAccount, useBalance, useNetwork, useWalletClient } from 'wagmi';
 import { parseEther, formatEther, isAddress } from 'viem';
 import { useSmartAccountAddress, usePair, useSmartAccount, useVennWallet } from '@/app/account/venn-provider';
 import { getSdkError } from '@walletconnect/utils';
-import { LinkIcon, SwapIcon, SendIcon } from './icons';
+import { LinkIcon, SwapIcon, SendIcon, MessageIcon } from './icons';
 import styles from './wallet.module.css';
 import classNames from 'classnames';
 import Tooltip from '@/components/common/tooltip/tooltip';
+import { faucetDrip } from '@/utils/demo';
 // const zeroAddress = "0x0000000000000000000000000000000000000000";
 
 // interface QueryParams {
@@ -29,14 +30,48 @@ interface WalletProps {
 interface ShowBalanceProps {
   address?: string,
   isSigner?: boolean,
+  setShowFaucetMessage?: any
 }
 
 
 
-const ShowBalance = ({address, isSigner} : ShowBalanceProps) => {
+const FaucetMessageDialog = ({ setOpenMessage } : { setOpenMessage?: any}) => {
+  return (
+    <div className={styles.messageDialogBackdrop} onClick={() => setOpenMessage(false)}>
+      <dialog className={styles.messageDialog} open>
+        <div className={styles.messageDialogContent}>
+          <MessageIcon />
+          <span>You received a drip from our automatic faucet. Enjoy!</span>
+          <button className={styles.messageCloseButton} onClick={() => setOpenMessage(false)}>
+            OK
+          </button>
+        </div>
+      </dialog>
+    </div>
+  )
+}
+
+const dust = BigInt(1e13)
+const ShowBalance = ({address, isSigner, setShowFaucetMessage} : ShowBalanceProps) => {
     const [isClient, setIsClient] = useState(false);
     const { data: bal } = useBalance({ address: address as `0x${string}`, watch: true });
     const { chain } = useNetwork();
+
+    useEffect(() => {
+      if(address && bal?.value) {
+        if(bal.value < dust)
+          try {
+            const fundAccount = async () => {
+              const hash = await faucetDrip(address);
+              console.log('funding tx', hash);
+              setShowFaucetMessage(true);
+            }
+            fundAccount();
+          } catch (error) {
+            console.error('funding failed', error);
+          }
+      }
+    }, [bal]);
 
     useEffect(() => {
       setIsClient(true);
@@ -314,13 +349,19 @@ export default function Wallet({
   address, setApproveData, openTransfer, setOpenTransfer, openConnect, setOpenConnect
 } : WalletProps) {
 
+  const [showFaucetMessage, setShowFaucetMessage] = useState(false);
   // const [disableActions, setDisalbleAction] = useState<boolean>();
   const eoa = useAccount();
   const vsaAddr = useSmartAccountAddress();
   
   return (
+    <>
+    {showFaucetMessage && <FaucetMessageDialog setOpenMessage={setShowFaucetMessage} />}
     <div>
-        <ShowBalance address={address?? eoa.address?? vsaAddr} isSigner={address? (address==eoa.address) || (address==vsaAddr) : true } />
+        <ShowBalance 
+          address={address?? eoa.address?? vsaAddr} isSigner={address? (address==eoa.address) || (address==vsaAddr) : true } 
+          setShowFaucetMessage={setShowFaucetMessage}
+        />
         {!openConnect && !openTransfer && 
         <Buttons 
         setOpenConnect={setOpenConnect} 
@@ -343,6 +384,6 @@ export default function Wallet({
         </>
         }
     </div>
-
+    </>
   )
 }
