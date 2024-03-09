@@ -6,7 +6,7 @@ import { useAccount, useBalance, useNetwork, useWalletClient } from 'wagmi';
 import { parseEther, formatEther, isAddress } from 'viem';
 import { useSmartAccountAddress, usePair, useSmartAccount, useVennWallet } from '@/app/account/venn-provider';
 import { getSdkError } from '@walletconnect/utils';
-import { LinkIcon, SwapIcon, SendIcon, MessageIcon } from './icons';
+import { LinkIcon, SwapIcon, SendIcon, MessageIcon, FaucetIcon } from './icons';
 import styles from './wallet.module.css';
 import classNames from 'classnames';
 import Tooltip from '@/components/common/tooltip/tooltip';
@@ -100,16 +100,16 @@ const tooltipDisabledText = "Reserved for Smart Accounts";
 
 const Buttons = ({setOpenTransfer, setOpenConnect, enabled}: {setOpenTransfer: any, setOpenConnect: any, enabled: boolean}) => {
   // const [style1, setStyle1] = useState(styles.balanceActionsContainerDisabled);
-  const [style2, setStyle2] = useState(styles.actionContainerDisabled)
-  useEffect(() => {
-    if(enabled){
-      // setStyle1(styles.balanceActionsContainer);
-      setStyle2(styles.actionContainer)
-    } else {
-      // setStyle1(styles.balanceActionsContainerDisabled)
-      setStyle2(styles.actionContainerDisabled)
-    }
-  }, [enabled]);
+  // const [style2, setStyle2] = useState(styles.actionContainerDisabled)
+  // useEffect(() => {
+  //   if(enabled){
+  //     // setStyle1(styles.balanceActionsContainer);
+  //     setStyle2(styles.actionContainer)
+  //   } else {
+  //     // setStyle1(styles.balanceActionsContainerDisabled)
+  //     setStyle2(styles.actionContainerDisabled)
+  //   }
+  // }, [enabled]);
 
   const onClickTransfer = () => {
     if(!enabled)
@@ -125,11 +125,14 @@ const Buttons = ({setOpenTransfer, setOpenConnect, enabled}: {setOpenTransfer: a
 
   return (
     <div className={styles.balanceActionsContainer}>
-            <div className={style2} onClick={onClickTransfer}>
+            <div className={enabled ? styles.actionContainer : styles.actionContainerDisabled} onClick={onClickTransfer}>
               <Tooltip text={enabled ? 'Send' : tooltipDisabledText}><SendIcon enabled={enabled} /></Tooltip>
             </div>
-            <div className={style2} onClick={onClickConnect}>
+            <div className={enabled ? styles.actionContainer : styles.actionContainerDisabled} onClick={onClickConnect}>
               <Tooltip text={enabled ? 'Send' : tooltipDisabledText}><LinkIcon enabled={enabled}/></Tooltip>
+            </div>
+            <div className={styles.actionContainer}>
+              <a href='https://faucet.polygon.technology/' target='_blank'><Tooltip text="Faucet"><FaucetIcon /></Tooltip></a>
             </div>
     </div>
   )
