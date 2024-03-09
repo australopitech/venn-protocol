@@ -17,6 +17,7 @@ export interface DialogOwnedRentedDescriptionProps {
   setIsNFTOpen: any;
   setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>
   setTxResolved: any;
+  setError: any;
   txLoading: boolean;
 }
 
@@ -29,8 +30,8 @@ const WarningIcon = () => {
       <path 
       fill="#D52941" 
       stroke="#D52941" 
-      stroke-width="2" 
-      stroke-linecap="round"
+      strokeWidth="2" 
+      strokeLinecap="round"
       d="M30.72 3.84a26.88 26.88 0 1 1 0 53.76 26.88 26.88 0 0 1 0 -53.76zm0 49.92a23.04 23.04 0 0 0 0 -46.08 23.04 23.04 0 0 0 0 46.08zm2.88 -10.56a2.88 2.88 0 1 1 -5.76 0 2.88 2.88 0 0 1 5.76 0zm-2.88 -27.84a1.92 1.92 0 0 1 1.92 1.92v17.28a1.92 1.92 0 0 1 -3.84 0V17.28a1.92 1.92 0 0 1 1.92 -1.92z"/>
     </svg>
 
@@ -44,13 +45,14 @@ export const DialogOwnedRentedDescription = ({
   setIsNFTOpen,
   setApproveData,
   setTxResolved,
+  setError,
   txLoading
 }: DialogOwnedRentedDescriptionProps) => {
   // const [timeLeft, setTimeLeft] = useState<bigint>();
   const [loadingInfo, setLoadingInfo] = useState(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   // const [tokenId, setTokenId] = useState<bigint>();
-  const [error, setError] = useState<any>(null);
+  // const [error, setError] = useState<any>(null);
   const { data: signer } = useWalletClient();
   const { provider } = useSmartAccount();
   const client = usePublicClient();
@@ -74,29 +76,6 @@ export const DialogOwnedRentedDescription = ({
       }, 2000);
   }, [nft.isLoading, holder.isLoading, timeLeft.isLoading])
   
-  // useEffect(() => {
-  //   const resolveTimeLeft = async() => {
-  //     if(tokenId === undefined || !nftItem)
-  //       return;
-  //     if(!nft.data || !holder.data)
-  //       return
-  //     const endTime = await getEndTime(
-  //       client,
-  //       holder.data,
-  //       nft.data.contract,
-  //       nft.data.tokenId
-  //     );
-  //     // console.log('endTime', endTime?.toString())
-  //     if(endTime && timestamp.data) setTimeLeft(endTime - timestamp.data)
-  //   }
-  //   try {
-  //     resolveTimeLeft();  
-  //   } catch (err) {
-  //     console.error(err);
-  //     setError(err)
-  //   }
-    
-  // }, [tokenId, timestamp, nft, holder]);
 
   const handleButtonClick = async(method: 'delist' | 'pull') => {
     if(!signer) {
@@ -105,8 +84,8 @@ export const DialogOwnedRentedDescription = ({
     }
     if(isLoading || txLoading) return
     if(!nft.data?.contract || nft.data.tokenId === undefined) {
-      console.error('error: nft info not found');
-      setError({ message: 'error: nft info not found' });
+      console.error(nft.error ?? 'error: nft info not found');
+      setError(nft.error ?? { message: 'error: nft info not found' });
       return
     }
     if(tokenId === undefined) {
@@ -170,22 +149,22 @@ export const DialogOwnedRentedDescription = ({
         </div>
       )
 
-  if(error || nft.error || holder.error) return (
-    <div className={styles.bodyDescriptionContainer}>
-      <div className={styles.divider}></div>
-      <div className={styles.bodyDescription}>
-        An error ocurred!
-        <span>
-          {error ? error.message
-            : nft.error ? nft.error.message
-            : holder.error ? holder.error.message
-            : ''
-          }
-        </span>
-      </div>
-    </div>
+  // if(error || nft.error || holder.error) return (
+  //   <div className={styles.bodyDescriptionContainer}>
+  //     <div className={styles.divider}></div>
+  //     <div className={styles.bodyDescription}>
+  //       An error ocurred!
+  //       <span>
+  //         {error ? error.message
+  //           : nft.error ? nft.error.message
+  //           : holder.error ? holder.error.message
+  //           : ''
+  //         }
+  //       </span>
+  //     </div>
+  //   </div>
 
-  )
+  // )
 
   return (
     <div className={styles.bodyDescriptionContainer}>

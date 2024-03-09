@@ -268,7 +268,7 @@ export const NFTDialog = ({
                 {!loading && isOwned && isReceipt && isRented_Out &&
                   <DialogOwnedRentedDescription 
                     isListed={isListed} contractAddress={nftItem?.contractAddress} tokenId={tokenId} txLoading={txLoading}
-                    setIsNFTOpen={setIsNFTOpen} setApproveData={setApproveData} setTxResolved={setTxResolved}
+                    setIsNFTOpen={setIsNFTOpen} setApproveData={setApproveData} setTxResolved={setTxResolved} setError={setError}
                   />} {/* owned / rented out */}
                 {/* {!isOwned && isReceipt && 
                   <DialogOwnedRentedDescription />} receipt held by 3rd party; NFT available */}
