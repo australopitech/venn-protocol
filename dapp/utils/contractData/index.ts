@@ -15,3 +15,5 @@ export const factoryContract = contracts[polygonMumbai.id][0].contracts.SmartAcc
 // 
 export const mktPlaceContract = contracts[polygonMumbai.id][0].contracts.MarketPlace;
 export const receiptsContract = contracts[polygonMumbai.id][0].contracts.ReceiptNFT;
+export const mockNftContract = contracts[polygonMumbai.id][0].contracts.NFT;
+export const testNftContract = contracts[polygonMumbai.id][0].contracts.TestNFT;
