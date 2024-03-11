@@ -7,10 +7,11 @@ import {
   ownerOf, checkIsListed, checkIsRentedOut, getListData, getNFTByReceipt, isRental as checkIsRental, checkPrice
  } from '@/utils/listing-data';
 import { receiptsContract } from '@/utils/contractData';
-import { useAccount, usePublicClient } from 'wagmi';
+import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { baseGoerli } from 'viem/chains';
 import { convertFromSec, convertUnitToSec } from '@/utils/utils';
-import { formatEther } from 'viem';
+import { formatEther, getAddress } from 'viem';
+import { burnMockNFT, getTestNFTcontractAddress } from '@/utils/demo';
 
 export interface NftCardProps {
   imageURI: string;
@@ -37,6 +38,7 @@ export default function NftCard ({
   holderAddress
 }: NftCardProps) {
   
+  // const { data: signer } = useWalletClient();
   const { address: account, isDisconnected } = useAccount();
   const [holder, setHolder] = useState<string>();
   const [isListed, setIsListed] = useState<boolean>();
@@ -55,6 +57,17 @@ export default function NftCard ({
   //   // 'isRentedOut', isRentedOut,
   //   // 'loading', loading
   // )
+
+  // const onBurn = async () => {
+  //   try {
+  //     if(signer && tokenId) await burnMockNFT(signer, tokenId);
+  //     else throw new Error('missing arg/signer');
+  //   } catch (err) {
+  //     console.error(err)
+  //   }
+  // }
+
+  // console.log('imageURI', imageURI);
   
   useEffect(() => {
     const fetchHolder = async () => {
@@ -160,6 +173,9 @@ export default function NftCard ({
                 Not listed
               </span>)
         }
+        {/* {(getAddress(contractAddress) === getTestNFTcontractAddress()) && 
+          <button onClick={() => onBurn()}>burn</button>
+        } */}
       </div> 
     </div>
   );
