@@ -59,11 +59,11 @@ const min = 60n;
 
 export function timeLeftString (timeLeft: bigint) {
   return timeLeft >= dayCutOff
-  ? `${parseFloat(String(timeLeft/day)).toFixed(1)} ${timeLeft/day < 2n ? 'day' : 'days'}`
+  ? `${(parseFloat(String(timeLeft))/parseFloat(String(day))).toFixed(1)} ${timeLeft/day < 2n ? 'day' : 'days'}`
   : timeLeft >= hourCutOff
-    ? `${parseFloat(String(timeLeft/hour)).toFixed(1)} ${timeLeft/hour < 2n ? 'hour' : 'hours'}`
+    ? `${(parseFloat(String(timeLeft))/parseFloat(String(hour))).toFixed(1)} ${timeLeft/hour < 2n ? 'hour' : 'hours'}`
     : timeLeft >= 60n
-      ? `${parseFloat(String(timeLeft/min)).toFixed(0)} ${timeLeft/min < 2n ? 'minute' : 'minutes' }`
+      ? `${parseFloat(String(timeLeft/min))} ${timeLeft/min < 2n ? 'minute' : 'minutes' }`
       : timeLeft > 0 ? 'less than a minute' : 'expired'
 }
 
