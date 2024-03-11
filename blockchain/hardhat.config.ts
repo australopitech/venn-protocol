@@ -76,16 +76,16 @@ const config: HardhatUserConfig = {
     polygon_mumbai: {
       chainId: 80001,
       url: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.MUMBAI_ALCHEMY_API_KEY}`,
-      accounts: [`${process.env.DEPLOYER_PRIVATE_KEY}`]      
+      accounts: [`${process.env.PRIVATE_KEY}`]      
     }
   },
 
-  // namedAccounts: {
-  //   deployer: {
-  //     default: 0,
-  //     // sepolia: `${process.env.PUBLIC_KEY}`,
-  //   }
-  // },
+  namedAccounts: {
+    deployer: {
+      default: 0,
+      // sepolia: `${process.env.PUBLIC_KEY}`,
+    }
+  },
 
   mocha: {
     timeout: 10000

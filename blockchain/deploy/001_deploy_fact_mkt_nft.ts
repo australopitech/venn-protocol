@@ -45,31 +45,31 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   // const RWalletFactory = await deployments.get('SmartAccountFactory');
   // console.log('factory address got', RWalletFactory.address);
 
-  const factoryAddress = "0x20e04261AcD7D8602c27f5C3856e0eE7ED2C85Ff";
+  // const factoryAddress = "0x20e04261AcD7D8602c27f5C3856e0eE7ED2C85Ff";
 
-  await deploy('ReceiptNFT', {
-    from: deployer,
-    args:[],
-    log: true,
-    // gasPrice: gasPrice
-  });
+  // await deploy('ReceiptNFT', {
+  //   from: deployer,
+  //   args:[],
+  //   log: true,
+  //   // gasPrice: gasPrice
+  // });
 
-  const receiptContract = await deployments.get('ReceiptNFT');
-  console.log('receipts address got', receiptContract.address);
+  // const receiptContract = await deployments.get('ReceiptNFT');
+  // console.log('receipts address got', receiptContract.address);
 
 
-  await deploy('MarketPlace', {
-    from: deployer,
-    args: [
-      factoryAddress,
-      receiptContract.address,
-      40,
-      2500,
-      '0x099A294Bffb99Cb2350A6b6cA802712D9C96676A'
-    ],
-    log: true,
-    // gasPrice: gasPrice
-  });
+  // await deploy('MarketPlace', {
+  //   from: deployer,
+  //   args: [
+  //     factoryAddress,
+  //     receiptContract.address,
+  //     40,
+  //     2500,
+  //     '0x099A294Bffb99Cb2350A6b6cA802712D9C96676A'
+  //   ],
+  //   log: true,
+  //   // gasPrice: gasPrice
+  // });
 
   // await deploy('NFT', {
   //   from: deployer,
@@ -77,6 +77,13 @@ const func: DeployFunction = async function (hre: HardhatRuntimeEnvironment) {
   //   log: true,
   //   // gasPrice: gasPrice
   // });
+
+  await deploy('TestNFT', {
+    from: deployer,
+    args: [],
+    log: true,
+    // gasPrice: gasPrice
+  });
 
 };
 module.exports.default = func;
