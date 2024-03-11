@@ -189,12 +189,19 @@
   cursor: wait;   
 }
 .loadingTitle {
+  display: flex;
+  align-items: center;
   font-size: 30px;
   padding-bottom: 20px;
 }
 .loadingDescription {
   font-size: 20px;
   padding: 15px;
+}
+.loadingDots {
+  display: flex;
+  place-content: center;
+  padding-block: 10px;
 }
 
 .errorTitle {

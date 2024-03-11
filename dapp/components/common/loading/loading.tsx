@@ -36,6 +36,11 @@ export function LoadingComponent () {
         </div>
     )
 }
-  
+
+export function LoadingDotsBouncy () {
+  return (
+  <div className={styles.bouncy}></div>
+  )
+}
   
   

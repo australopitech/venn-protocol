@@ -6,6 +6,7 @@ import { ApproveData, TxResolved } from '@/types';
 import { useAccount, useNetwork } from 'wagmi';
 import { useGasEstimation } from '@/hooks/tx-data';
 import { formatUnits } from 'viem';
+import { LoadingDotsBouncy } from '../loading/loading';
 
 interface ApproveDialogProps {
   onApprove: () => Promise<void>;
@@ -72,6 +73,12 @@ const SuccessIcon = () => {
   )
 }
 
+const LoadingIcon = () => {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-hourglass" width="40" height="40" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6.5 7h11" /><path d="M6.5 17h11" /><path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z" /><path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z" /></svg>
+  )
+}
+
 export const ApproveButton = ({onClick}: ButtonProps) => {
   return (
     <div className={styles.primaryButton} onClick={onClick}>
@@ -130,8 +137,9 @@ export default function ApproveDialog ({ onApprove, onReject, onClose, loading, 
                 {loading
                   ? <div className={styles.approveDescriptionContainer}>
                       <div className={styles.loading}> 
-                        <div className={styles.loadingTitle}>Processing...</div>
+                        <div className={styles.loadingTitle}><LoadingIcon /> Processing...</div>
                         <div className={styles.loadingDescription}>Please wait while your request is processed. </div>
+                        <div className={styles.loadingDots}><LoadingDotsBouncy/> </div>
                       </div>
                     </div>
                   : error
