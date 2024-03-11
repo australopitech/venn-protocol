@@ -12,6 +12,7 @@ import { baseGoerli } from 'viem/chains';
 import { convertFromSec, convertUnitToSec } from '@/utils/utils';
 import { formatEther, getAddress } from 'viem';
 import { burnMockNFT, getTestNFTcontractAddress } from '@/utils/demo';
+import { useListingData } from '@/hooks/nft-data';
 
 export interface NftCardProps {
   imageURI: string;
@@ -39,14 +40,22 @@ export default function NftCard ({
 }: NftCardProps) {
   
   // const { data: signer } = useWalletClient();
+  const [error, setError] = useState<any>();
   const { address: account, isDisconnected } = useAccount();
   const [holder, setHolder] = useState<string>();
   const [isListed, setIsListed] = useState<boolean>();
-  const [rentPrice , setRentPrice] = useState<bigint>();
+  // const [rentPrice , setRentPrice] = useState<bigint>();
   const [isRentedOut, setIsRentedOut] = useState<boolean>();
   const [isRental, setIsRental] = useState<boolean>();
   const [loading, setLoading] = useState<boolean>(true);
   const client = usePublicClient();
+
+  const listing = useListingData({
+    contract: contractAddress as `0x${string}`,
+    tokenId
+  });
+  const memoizedListing = useMemo(() => listing, [listing])
+
   // console.log('tokenid/isrental',tokenId?.toString(),isRental)
   // console.log(
   //   name,
@@ -75,7 +84,12 @@ export default function NftCard ({
         setHolder(holderAddress);
       }
       else {
-        if(tokenId !== undefined) setHolder(await ownerOf(client, contractAddress, tokenId));
+        if(tokenId !== undefined) 
+          try{
+            setHolder(await ownerOf(client, contractAddress, tokenId));
+          } catch(err) {
+            console.error(err)
+          }
       }
     }
 
@@ -84,19 +98,22 @@ export default function NftCard ({
 
   useEffect(() => {
     if(tokenId === undefined) {
-      console.error('no token id found');
+      console.error('error: no token id found');
+      setError({message: 'error: no token id found'})
       return
     }
     
     const isReceipt = contractAddress === receiptsContract.address;
     
-    const resolvePrice = async () => {
-      setRentPrice(await checkPrice(contractAddress, tokenId, isReceipt, client));
-    }
+    // const resolvePrice = async () => {
+    //   setRentPrice(await checkPrice(contractAddress, tokenId, isReceipt, client));
+    // }
 
-    const resolveIsListed = async () => {
-      setIsListed( await checkIsListed(isReceipt, contractAddress, tokenId, client));
-    }
+    // const resolveIsListed = async () => {
+    //   setIsListed( await checkIsListed(isReceipt, contractAddress, tokenId, client));
+    // }
+
+    if(listing.data?.maxDur) setIsListed(listing.data?.maxDur > 0n);
     
     const resolveIsRentedOut = async () => {
       const res = await checkIsRentedOut(contractAddress, tokenId, isReceipt, holder, client);
@@ -125,21 +142,27 @@ export default function NftCard ({
           setIsRental(false);
     }
 
-    resolvePrice();
-    resolveIsListed();
-    resolveIsRentedOut();
-    resolveIsRental();
+    try{
+      resolveIsRentedOut();
+      resolveIsRental();
+    } catch(err) {
+      setError(err);
+    }
 
-  }, [client, holder, account]);
+  }, [client, holder, account, memoizedListing]);
 
   useEffect(() => {
-    if(
+    if(error || listing.error) {
+      setLoading(false);
+    } else if(
+      listing.isLoading === false &&
       isListed !== undefined &&
       isRentedOut !== undefined &&
       isRental !== undefined
     ) setLoading(false);
-  },[isListed, isRentedOut, isRental])
+  },[isListed, isRentedOut, isRental, memoizedListing])
 
+  // console.log('listing', listing)
   // console.log('loading', loading);
   // console.log('isListed', isListed, 'isRentedOut', isRentedOut, 'isRental', isRental)
   
@@ -152,27 +175,29 @@ export default function NftCard ({
         <span>{name}</span>
         {loading
          ? <span className={styles.notListed}>Loading...</span>
-         : isListed
-          ? (isRentedOut
-              ? <span className={styles.rented}>
-                  {/* {`Rent expires in ${expireDate || 'NaN'}`} */}
-                  Rented
-                </span>
-              : <span className={styles.listed}>
-                  Rent price:
-                  <span className={styles.price}>
-                    {rentPrice != undefined ? `${parseFloat(formatEther(convertUnitToSec(rentPrice, 'hour'))).toPrecision(2)} MATIC` : 'err'}
+         : (error || listing.error)
+          ? <span className={styles.notListed}>Oops...an error ocurred!</span>
+          : isListed
+            ? (isRentedOut
+                ? <span className={styles.rented}>
+                    {/* {`Rent expires in ${expireDate || 'NaN'}`} */}
+                    Rented
                   </span>
+                : <span className={styles.listed}>
+                    Rent price:
+                    <span className={styles.price}>
+                      {listing.data?.price != undefined ? `${parseFloat(formatEther(convertUnitToSec(listing.data.price, 'hour'))).toPrecision(2)} MATIC` : 'err'}
+                    </span>
+                  </span>
+              )
+            : (isRentedOut
+              ? <span className={styles.rented}>
+                Rented
                 </span>
-            )
-          : (isRentedOut
-            ? <span className={styles.rented}>
-              Rented
-              </span>
-            : <span className={styles.notListed}>
-                Not listed
-              </span>)
-        }
+              : <span className={styles.notListed}>
+                  Not listed
+                </span>)
+          }
         {/* {(getAddress(contractAddress) === getTestNFTcontractAddress()) && 
           <button onClick={() => onBurn()}>burn</button>
         } */}

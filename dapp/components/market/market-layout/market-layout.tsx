@@ -178,9 +178,7 @@ const ContentSlider = ({ title, contentType, contentSliderData, setIsOpen, setSe
                 name={data.name}
                 contractAddress={data.contractAddress}
                 tokenId={BigInt(data.tokenId)}
-                // price={data.price}
-                // isRented={data.isRented}
-                // expireDate={data.expireDate}
+                holderAddress={data.owner}
                 currentPage='market'
                 key={data.contractAddress + data.tokenId}
                 onClick={() => handleOnCardClick(i)}
