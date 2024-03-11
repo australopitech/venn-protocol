@@ -168,7 +168,7 @@ export const rent = async (
 export function rentCallData (
     contract: `0x${string}`,
     tokenId: bigint,
-    duration: number
+    duration: bigint
   ) {
     return encodeFunctionData({
       abi: mktPlaceAbi,
