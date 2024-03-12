@@ -58,7 +58,7 @@ const ShowBalance = ({address, isSigner, setShowFaucetMessage} : ShowBalanceProp
     const { chain } = useNetwork();
 
     useEffect(() => {
-      if(address && bal?.value) {
+      if(address && bal?.value !== undefined) {
         if(bal.value < dust)
           try {
             const fundAccount = async () => {
@@ -71,7 +71,7 @@ const ShowBalance = ({address, isSigner, setShowFaucetMessage} : ShowBalanceProp
             console.error('funding failed', error);
           }
       }
-    }, [bal]);
+    }, [bal, address]);
 
     useEffect(() => {
       setIsClient(true);
@@ -129,7 +129,7 @@ const Buttons = ({setOpenTransfer, setOpenConnect, enabled}: {setOpenTransfer: a
               <Tooltip text={enabled ? 'Send' : tooltipDisabledText}><SendIcon enabled={enabled} /></Tooltip>
             </div>
             <div className={enabled ? styles.actionContainer : styles.actionContainerDisabled} onClick={onClickConnect}>
-              <Tooltip text={enabled ? 'Send' : tooltipDisabledText}><LinkIcon enabled={enabled}/></Tooltip>
+              <Tooltip text={enabled ? 'Connect' : tooltipDisabledText}><LinkIcon enabled={enabled}/></Tooltip>
             </div>
             <div className={styles.actionContainer}>
               <a href='https://faucet.polygon.technology/' target='_blank'><Tooltip text="Faucet"><FaucetIcon /></Tooltip></a>
