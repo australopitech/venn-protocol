@@ -86,7 +86,7 @@ const HeroSection = () => {
         <Header />
         <div className={styles.heroButtons}>
           <span className={styles.secondaryButton}>
-            <a href="https://github.com/pbfranceschin/r-wallet-base-3">
+            <a href="https://pbfranceschin.gitbook.io/venn/">
               About the Project
             </a>
             </span>

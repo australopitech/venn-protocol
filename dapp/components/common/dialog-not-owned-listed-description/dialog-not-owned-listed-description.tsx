@@ -197,7 +197,7 @@ export const DialogNotOwnedListedDescription = ({
           : <div className={styles.notConnectedMessage}> 
               <button className={styles.notConnectedButton} onClick={handleButtonClick}>{ defaultButtonText}</button>
               <p>
-                <span className={styles.textLink} onClick={openConnectModal}>Log In</span> with <span className={styles.textHilight}>Venn Smart Wallet</span> to rent this NFT! <a href='/dashboard' target='_blank' className={styles.textLink}>Learn How</a>
+                <span className={styles.textLink} onClick={openConnectModal}>Log In</span> with <span className={styles.textHilight}>Venn Smart Wallet</span> to rent this NFT! <a href='https://pbfranceschin.gitbook.io/venn/overview/guides/create-an-account' target='_blank' className={styles.textLink}>Learn How</a>
               </p>
             </div>
         }
