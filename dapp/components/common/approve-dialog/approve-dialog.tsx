@@ -109,7 +109,7 @@ export const CloseButton = ({onClick}: ButtonProps) => {
 
 
 export default function ApproveDialog ({ onApprove, onReject, onClose, loading, approveData, error, txResolved } : ApproveDialogProps) {
-  const [blocker, setBlocker] = useState(true);
+  const [blocker, setBlocker] = useState(false);
   const decimals = 18
   const { address: eoa } = useAccount();
   const { address: vsa } = useSmartAccount();

@@ -275,7 +275,7 @@ export default function DashboardLayout ({ address }: DashboardLayoutProps) {
           </div>
         </div>
         }
-        <button onClick={refetchTest}>Refetch</button>
+        {/* <button onClick={refetchTest}>Refetch</button> */}
       </div>
 
     </>
