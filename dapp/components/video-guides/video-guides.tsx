@@ -41,6 +41,12 @@ export const VideoGuides = () => {
                     <VideoIcon/> Rent an NFT
                 </div>
             </div>
+            <div className={styles.boxContentContainer}>
+                <Video1element />
+                <div style={{ display: "flex", alignItems: "center", gap: "4px"}}>
+                    <VideoIcon/> Interact with Dapps
+                </div>
+            </div>
         </div>
     </div>
   )
