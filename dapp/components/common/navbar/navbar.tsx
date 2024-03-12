@@ -145,7 +145,7 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
   const handleItemSelect = (item: string) => {
     console.log(`Selected: ${item}`);
     if(item === 'About the project')
-      window.open('https://github.com/pbfranceschin/r-wallet-base-3/blob/main/Readme.md', '_blank');
+      window.open('https://pbfranceschin.gitbook.io/venn', '_blank');
   };
 
   return (
