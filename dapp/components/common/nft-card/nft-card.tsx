@@ -6,13 +6,14 @@ import { useMemo, useEffect, useState } from 'react';
 import { 
   ownerOf, checkIsListed, checkIsRentedOut, getListData, getNFTByReceipt, isRental as checkIsRental, checkPrice
  } from '@/utils/listing-data';
-import { receiptsContract } from '@/utils/contractData';
 import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { baseGoerli } from 'viem/chains';
 import { convertFromSec, convertUnitToSec } from '@/utils/utils';
 import { formatEther, getAddress } from 'viem';
 import { burnMockNFT, getTestNFTcontractAddress } from '@/utils/demo';
 import { useListingData } from '@/hooks/nft-data';
+import { getReceiptsContractAddress } from '@/utils/contractData';
+import { useSmartAccount } from '@/app/account/venn-provider';
 
 export interface NftCardProps {
   imageURI: string;
@@ -41,13 +42,15 @@ export default function NftCard ({
   
   // const { data: signer } = useWalletClient();
   const [error, setError] = useState<any>();
-  const { address: account, isDisconnected } = useAccount();
   const [holder, setHolder] = useState<string>();
   const [isListed, setIsListed] = useState<boolean>();
   // const [rentPrice , setRentPrice] = useState<bigint>();
   const [isRentedOut, setIsRentedOut] = useState<boolean>();
   const [isRental, setIsRental] = useState<boolean>();
   const [loading, setLoading] = useState<boolean>(true);
+  
+  const { address: vsa } = useSmartAccount();
+  const { address: account, isDisconnected } = useAccount();
   const client = usePublicClient();
 
   const listing = useListingData({
@@ -97,13 +100,14 @@ export default function NftCard ({
   },[]);
 
   useEffect(() => {
+    console.log('render')
     if(tokenId === undefined) {
       console.error('error: no token id found');
       setError({message: 'error: no token id found'})
       return
     }
     
-    const isReceipt = contractAddress === receiptsContract.address;
+    const isReceipt = getAddress(contractAddress) === getReceiptsContractAddress();
     
     // const resolvePrice = async () => {
     //   setRentPrice(await checkPrice(contractAddress, tokenId, isReceipt, client));
@@ -113,7 +117,7 @@ export default function NftCard ({
     //   setIsListed( await checkIsListed(isReceipt, contractAddress, tokenId, client));
     // }
 
-    if(listing.data?.maxDur) setIsListed(listing.data?.maxDur > 0n);
+    if(listing.data?.maxDur !== undefined) setIsListed(listing.data?.maxDur > 0n);
     
     const resolveIsRentedOut = async () => {
       const res = await checkIsRentedOut(contractAddress, tokenId, isReceipt, holder, client);
@@ -135,7 +139,7 @@ export default function NftCard ({
         setIsRental( await checkIsRental(
           contractAddress,
           tokenId,
-          account,
+          vsa ?? account,
           client          
         ));
       if(isDisconnected)
@@ -152,6 +156,7 @@ export default function NftCard ({
   }, [client, holder, account, memoizedListing]);
 
   useEffect(() => {
+    console.log('render')
     if(error || listing.error) {
       setLoading(false);
     } else if(
@@ -162,9 +167,11 @@ export default function NftCard ({
     ) setLoading(false);
   },[isListed, isRentedOut, isRental, memoizedListing])
 
-  // console.log('listing', listing)
-  // console.log('loading', loading);
-  // console.log('isListed', isListed, 'isRentedOut', isRentedOut, 'isRental', isRental)
+  console.log(tokenId, contractAddress)
+  console.log(tokenId, 'listing', listing)
+  console.log(tokenId, 'loading', loading);
+  console.log(tokenId, 'error', error)
+  console.log('tokenId', tokenId, 'isListed', isListed, 'isRentedOut', isRentedOut, 'isRental', isRental, 'isReceipt', getAddress(contractAddress) === getReceiptsContractAddress() )
   
   return (
     <div className={classNames(styles.nftCardContainer, currentPage === 'market' ? styles.nftCardMarketContainer : '')}>

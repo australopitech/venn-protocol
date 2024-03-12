@@ -164,7 +164,7 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
   const { address: eoa, isConnecting } = useAccount();
   const { address: vsa } = useSmartAccount();
 
-  console.log('isLoadingData', isLoadingData)
+  // console.log('isLoadingData', isLoadingData)
   useEffect(() => {
     console.log('render')
     if(!isConnecting && !nftFetchData?.isLoading && !nftFetchData?.isFetching)
@@ -193,7 +193,7 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
     }, 5000)
   }
 
-  console.log('nft', nftFetchData?.data?.nfts? nftFetchData?.data?.nfts[0] : '')
+  console.log("'nft's'", nftFetchData?.data?.nfts? nftFetchData?.data?.nfts : '')
   return (
     <div className={styles.nftArea}>
       <div className={styles.nftGridTitle}>
@@ -227,7 +227,7 @@ export default function NftArea ({ nftAreaGridTemplate, setIsNFTOpen, nftFetchDa
                       }
                       name={nft.name ?? ""}
                       contractAddress={getAddress(nft.contractAddress)}
-                      tokenId={nft.tokenId ? BigInt(nft.tokenId) : undefined}
+                      tokenId={nft.tokenId !== null ? BigInt(nft.tokenId) : undefined}
                       // price={0}
                       // isRented={false}
                       address={address}
