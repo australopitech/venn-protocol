@@ -75,8 +75,12 @@ const SuccessIcon = () => {
 
 const LoadingIcon = () => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-hourglass" width="40" height="40" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6.5 7h11" /><path d="M6.5 17h11" /><path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z" /><path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z" /></svg>
+    <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-hourglass" width="40" height="40" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M6.5 7h11" /><path d="M6.5 17h11" /><path d="M6 20v-2a6 6 0 1 1 12 0v2a1 1 0 0 1 -1 1h-10a1 1 0 0 1 -1 -1z" /><path d="M6 4v2a6 6 0 1 0 12 0v-2a1 1 0 0 0 -1 -1h-10a1 1 0 0 0 -1 1z" /></svg>
   )
+}
+
+const AttentionIcon = () => {
+  return <svg xmlns="http://www.w3.org/2000/svg" className="icon icon-tabler icon-tabler-exclamation-circle" width="40" height="40" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 9v4" /><path d="M12 16v.01" /></svg>
 }
 
 export const ApproveButton = ({onClick}: ButtonProps) => {
@@ -105,7 +109,7 @@ export const CloseButton = ({onClick}: ButtonProps) => {
 
 
 export default function ApproveDialog ({ onApprove, onReject, onClose, loading, approveData, error, txResolved } : ApproveDialogProps) {
-  const [blocker, setBlocker] = useState(false);
+  const [blocker, setBlocker] = useState(true);
   const decimals = 18
   const { address: eoa } = useAccount();
   const { address: vsa } = useSmartAccount();
@@ -171,7 +175,7 @@ export default function ApproveDialog ({ onApprove, onReject, onClose, loading, 
                           <div className={styles.buttonContainer}> <CloseButton onClick={() => onClose()}/> </div>
                         </div>
                       : <div className={styles.approveDescriptionContainer}>
-                          <h1 className={styles.title}>Approve {approveData?.type === 'Internal' ? 'Transaction' : approveData?.type}</h1>
+                          <h1 className={styles.title}><AttentionIcon/>Approve {approveData?.type === 'Internal' ? 'Transaction' : approveData?.type}</h1>
                           {approveData?.type === 'Connection'
                             ?<div className={styles.approveDescription}>
                               Connect to {approveData?.data.sessionProposal?.params.proposer.metadata.url} ?

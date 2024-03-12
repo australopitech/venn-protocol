@@ -116,6 +116,9 @@
 
 
 .title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   max-width: 100%;
   color: rgb(37, 41, 46);
   font-size: 36px;
@@ -191,6 +194,7 @@
 .loadingTitle {
   display: flex;
   align-items: center;
+  gap: 4px;
   font-size: 30px;
   padding-bottom: 20px;
 }
