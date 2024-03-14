@@ -11,7 +11,7 @@ import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAccount, useDisconnect } from 'wagmi';
 // import { signOut } from '@/app/venn-provider';
-import { useSmartAccountAddress, useVsaUpdate} from '@/app/account/venn-provider';
+import { useSmartAccount, useSmartAccountAddress, useVsaUpdate} from '@/app/account/venn-provider';
 import { compactString } from '@/utils/utils';
 import Tooltip from '../tooltip/tooltip';
 import { LoadingDots } from '../loading/loading';
@@ -30,16 +30,16 @@ interface ConnectButtonProps {
 //to-do: pegar a info de qual pagina está, para saber qual botão está ativo
 
 const ConnectButton = ({connectText} : ConnectButtonProps) => {
-  const account = useAccount();
+  const { address: vsa } = useSmartAccount();
+  const eoa = useAccount();
   const { disconnect } = useDisconnect();
   const { openConnectModal } = useConnectModal();
-  const compactAddress = compactString(account.address);
   const path = usePathname();
   const [showDisconnect, setShowDisconnect] = useState(false);
   const [disconnectStlye, setDisconnectStyle] = useState<any>(styles.disconnectButton);
   const vsaUpdate = useVsaUpdate();
   const [isClient, setIsClient] = useState(false);
-
+  const compactAddress = compactString(vsa ?? eoa.address);
   useEffect(() => {
     setIsClient(true);
   },[])
@@ -61,7 +61,7 @@ const ConnectButton = ({connectText} : ConnectButtonProps) => {
       }
   }, [showDisconnect, setShowDisconnect, vsaUpdate]);
 
-  if (isClient && account.isConnected) return <div className={disconnectStlye} onClick={() => onDisconnect()}>{(path.includes("dashboard") || showDisconnect) ? "Disconnect" : compactAddress}</div>
+  if (isClient && eoa.isConnected) return <div className={disconnectStlye} onClick={() => onDisconnect()}>{(path.includes("dashboard") || showDisconnect) ? "Disconnect" : compactAddress}</div>
   else if (isClient && openConnectModal) return (
     <div className={styles.primaryButton} onClick={() => openConnectModal()}>
     {connectText? connectText : 'Connect Wallet'}
