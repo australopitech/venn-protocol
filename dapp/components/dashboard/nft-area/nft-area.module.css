@@ -195,6 +195,7 @@
   cursor: pointer;
   padding: 4px;
   border-radius: 12px;
+  color: #F0A6CA;
 }
 
 .address:hover {
