@@ -1,6 +1,6 @@
 'use client'
 import classNames from 'classnames';
-import { Logo } from '../logo/logo';
+import { Logo, Name } from '../logo/logo';
 import { SearchBox } from '../search-box/search-box';
 import styles from './navbar.module.css';
 import { useState, useRef, useEffect, useCallback } from 'react';
@@ -153,7 +153,7 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
     <div className={classNames(styles.navbar, styles.navbarGridTemplate)}>
       <div className={styles.logoContainer}>
         <Link href="/">
-          <Logo />
+          <span style={{ display: 'flex', alignItems: 'baseline', gap: '16px' }}><Logo /> <Name /></span>
         </Link>
       </div>
       <div className={styles.functionalitiesContainer}>

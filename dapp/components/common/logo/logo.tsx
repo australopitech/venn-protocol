@@ -33,3 +33,12 @@ export const Logo = ({ className }: LogoProps) => {
         </div>
     );
 };
+
+
+export const Name = () => {
+	return (
+		<div className={styles.name}>
+			<span style={{color: "#F0A6CA"}}>V</span><span style={{color: "#F9BFE3"}}>e</span><span style={{color: "#EFC3E6", opacity: "0.7"}}>nn</span>
+		</div>
+	)
+}

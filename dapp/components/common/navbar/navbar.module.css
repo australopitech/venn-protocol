@@ -28,7 +28,8 @@
 .logoContainer {
   /* flex-grow: 1;
   flex-basis: 0; */
-  padding-right: 250px;
+  padding-right: 230px;
+  /* min-width: fit-content; */
   display: flex;
   justify-content: left;
   align-items: flex-start;
