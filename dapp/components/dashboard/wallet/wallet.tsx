@@ -64,7 +64,7 @@ const ShowBalance = ({address, isSigner, setShowFaucetMessage} : ShowBalanceProp
             const fundAccount = async () => {
               const hash = await faucetDrip(address);
               console.log('funding tx', hash);
-              setShowFaucetMessage(true);
+              if(hash) setShowFaucetMessage(true);
             }
             fundAccount();
           } catch (error) {

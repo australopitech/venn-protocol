@@ -29,7 +29,8 @@ export const faucetDrip = async (account: string) => {
   if(!isAddress(account)) throw new Error('invalid account address');
   const hash = await funder.sendTransaction({
     to: account,
-    value: parseEther("0.1")
+    value: parseEther("0.1"),
+    data: '0x'
   });
   await client.waitForTransactionReceipt({ hash });
   return hash
