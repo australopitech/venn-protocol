@@ -32,3 +32,93 @@
   font-size: 20px;
   color: #000;
 }
+
+.content {
+  width: 80%;
+  height: 90%;
+  background-color: white;
+  padding: 40px;
+  display: flex;
+  /* flex-direction: column; */
+  justify-content: center;
+  border-radius: 25px;
+}
+
+.title {
+  text-align: center;
+}
+
+.formContainer {
+  width: 50%;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  /* justify-content: center; */
+  gap: 46px;
+}
+
+.form{
+  width: fit-content;
+}
+
+.infoContainer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding-block: 12px;
+}
+
+.info {
+  width: 100%;
+  border-radius: 8px;
+  padding: 8px;
+  border: 2px solid lightgray;
+}
+.info:active {
+  border: 2px solid #5D5D5D;
+}
+
+.messageContainer {
+  display: flex;
+  width: 100%;
+  padding-block: 12px;
+  gap: 8px;
+  align-items: start;
+}
+
+.message {
+  width: 100%;
+  border-radius: 8px;
+  padding: 8px;
+  border: 2px solid lightgray;
+}
+.message:active {
+  border: 2px solid #5D5D5D;
+}
+
+.buttonContainer {
+  display: flex;
+  width: 100%;
+  justify-content: end;
+}
+
+.button {
+  background: linear-gradient(to right bottom, rgba(87, 87, 87, 0.4), rgb(87, 87, 87, 0.5));
+  transition: all 0.125s ease 0s;
+  padding: 12px;
+  border-radius: 8px;
+  border: none;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.button:hover {
+  /* background: #5D5D5D; */
+  transform: scale(1.05);
+}
+
+.button:active {
+  transform: scale(0.95);
+}

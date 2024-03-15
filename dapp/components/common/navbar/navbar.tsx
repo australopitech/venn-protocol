@@ -40,8 +40,11 @@ const ConnectButton = ({connectText} : ConnectButtonProps) => {
   const vsaUpdate = useVsaUpdate();
   const [isClient, setIsClient] = useState(false);
   const compactAddress = compactString(vsa ?? eoa.address);
+  
   useEffect(() => {
-    setIsClient(true);
+    setTimeout(() => {
+      setIsClient(true)
+    }, 2000);
   },[])
 
   const onDisconnect = useCallback(() => {  
@@ -140,12 +143,15 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
   // }, []);
 
   // console.log('scrolled ', scrolled)
+  const router = useRouter();
   const items = ['About the project', 'Contact Us'];
   
   const handleItemSelect = (item: string) => {
     console.log(`Selected: ${item}`);
     if(item === 'About the project')
       window.open('https://pbfranceschin.gitbook.io/venn', '_blank');
+    if(item === 'Contact Us')
+      router.push('/contact');
   };
 
   return (
