@@ -124,7 +124,8 @@ export const NFTDialog = ({
         return
       console.log('enter useefect')
       const resolveIsRentedOut = async () => {
-        const res = await checkIsRentedOut(
+        try {
+          const res = await checkIsRentedOut(
           nftItem.contractAddress,
           tokenId,
           isReceipt,
@@ -132,30 +133,44 @@ export const NFTDialog = ({
           client
         );
         // console.log('checkIsRentedOut response', res);
-        setIsRented_Out(res)
+          setIsRented_Out(res)
+        } catch(err) {
+          console.error(err);
+          setError(err);
+        }
       }
       
       const resolveIsListed = async () => {
-        const res = await checkIsListed(
-        isReceipt,
-        nftItem.contractAddress,
-        tokenId,
-        client
-        );
+        try {
+          const res = await checkIsListed(
+            isReceipt,
+            nftItem.contractAddress,
+            tokenId,
+            client
+          );
         // console.log('checkIsListed Response', res);
-        setIsListed(res)
+          setIsListed(res)
+        } catch(err) {
+          console.error(err);
+          setError(err);
+        }
       }
 
       const resolveIsRental = async () => {
-        const res = await checkIsRental(
-          isReceipt,
-          nftItem.contractAddress,
-          tokenId,
-          vsa?? eoa,
-          client
-        );
+        try {
+          const res = await checkIsRental(
+            isReceipt,
+            nftItem.contractAddress,
+            tokenId,
+            vsa?? eoa,
+            client
+          );
         // console.log('checkIsRental response', res)
-        setIsRental_signer(res)
+          setIsRental_signer(res)
+        } catch(err) {
+          console.error(err);
+          setError(err);
+        }
       }
 
       resolveIsRentedOut();
@@ -205,14 +220,14 @@ export const NFTDialog = ({
     },[isOwned, isListed, isReceipt, isRental_signer, isRented_Out])
 
 
-    console.log('holder', holder)
-    console.log('isListed', isListed)
-    console.log('isOwned', isOwned)
-    console.log('isRental_signer', isRental_signer)
-    console.log('eoa', eoa)
-    console.log('isReceipt', isReceipt)
-    console.log('isRented_Out', isRented_Out)
-    console.log('loading', loading)
+    // console.log('holder', holder)
+    // console.log('isListed', isListed)
+    // console.log('isOwned', isOwned)
+    // console.log('isRental_signer', isRental_signer)
+    // console.log('eoa', eoa)
+    // console.log('isReceipt', isReceipt)
+    // console.log('isRented_Out', isRented_Out)
+    // console.log('loading', loading)
 
     const name = nftItem ? nftItem.name : "Awesome NFT #1"
     const description = nftItem ? nftItem.description : "This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhul."
