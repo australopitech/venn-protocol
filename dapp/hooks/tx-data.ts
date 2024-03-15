@@ -41,22 +41,23 @@ export function useGasEstimation({approveData, blocker}: GasEstimationArgs) {
                 value = params.value? BigInt(params.value) : 0n
                 data = params.data
             }
-            const uo = await provider.buildUserOperation({
-                target,
-                value,
-                data
-            });
-            const [_gas, _gasFee] = extractGasEstimate(uo, baseFee);
-            setData(_gas)
-            setGasFee(_gasFee)
-            setIsLoading(false);
+            try {
+                const uo = await provider.buildUserOperation({
+                  target,
+                  value,
+                  data
+                });
+                const [_gas, _gasFee] = extractGasEstimate(uo, baseFee);
+                setData(_gas)
+                setGasFee(_gasFee)
+            } catch(err) {
+                console.error(err);
+                setError(err);
+            } finally{
+                setIsLoading(false);
+            }
         }
-        try {
-            resolveGas();
-        } catch (err) {
-            setError(err)
-        }
-            
+        resolveGas();            
     }
   }, [blockNum])
   return { data, gasFee, isLoading, error: error?? blockErr?? feeErr }
