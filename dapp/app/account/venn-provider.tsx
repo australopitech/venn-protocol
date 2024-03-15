@@ -36,6 +36,8 @@ type WalletContextType = {
   setSessionEvent: React.Dispatch<React.SetStateAction<SessionEventType | undefined>>;
   setNewPairingTopic:React.Dispatch<React.SetStateAction<string | undefined>>;
   updater: boolean;
+  isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 // test
 const entryPointAddr = getDefaultEntryPointAddress(baseGoerli);
@@ -263,6 +265,7 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
   const [sessionEvent, setSessionEvent] = useState<SessionEventType>();
   const [newPairingTopic, setNewPairingTopic] = useState<any>();
   const [activeSessions, setActiveSessions] = useState<any>();
+  const [isLoading, setIsLoading] = useState(false);
   const { chain } = useNetwork();
 
   const { connector } = useAccount()
@@ -275,6 +278,7 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
     console.log('session_proposal', proposal);
     // console.log('state', sessionProposal, sessionEvent)
     if(!sessionProposal && !sessionEvent){
+      setIsLoading(true)
       setSessionProposal(proposal);
       setSessionEvent('Connection');
       if(accountAddress) {
@@ -391,7 +395,8 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
             sessionRequest, setSessionRequest,
             namespaces, setNamespaces,
             sessionEvent, setSessionEvent,
-            setNewPairingTopic, updater
+            setNewPairingTopic, updater,
+            isLoading, setIsLoading
         }}>
             {children}
         </Wallet.Provider>
@@ -423,7 +428,9 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
 
 export function usePair () {
   const context = useContext(Wallet);
-  return context?.vennWallet?.pair;
+  const pair = context?.vennWallet?.pair;
+  const isLoading = context?.isLoading
+  return { pair, isLoading }
 }
 
 export function useSmartAccount () {
@@ -502,6 +509,7 @@ export function useWalletStateResetter () {
         context?.setSessionProposal(undefined);
         context?.setNamespaces(undefined);
         context?.setSessionEvent(undefined);
+        context?.setIsLoading(false);
         break
       case 'request':
         context?.setSessionRequest(undefined);

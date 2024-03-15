@@ -11,6 +11,7 @@ import styles from './wallet.module.css';
 import classNames from 'classnames';
 import Tooltip from '@/components/common/tooltip/tooltip';
 import { faucetDrip } from '@/utils/demo';
+import { LoadingDots } from '@/components/common/loading/loading';
 // const zeroAddress = "0x0000000000000000000000000000000000000000";
 
 // interface QueryParams {
@@ -226,10 +227,10 @@ const Transfer = ({ setApproveData } : { setApproveData: any }) => {
 const Connect = () => {
   const [uri, setUri] = useState<string>('');
   const [disabled, setDisabled] = useState<boolean>();
-  const [loading, setLoading] = useState(false);
-  const pair = usePair();
+  // const [loading, setLoading] = useState(false);
+  const { pair, isLoading } = usePair();
   // console.log('pair', pair);
-  console.log('connect loading', loading)
+  console.log('connect loading', isLoading)
 
   useEffect(() => {
     if(uri.length)
@@ -240,17 +241,15 @@ const Connect = () => {
 
 
   const onConnect = async () => {
-    if(disabled || loading)
+    if(disabled || isLoading)
       return
     if(pair){
-      setLoading(true);
+      // setLoading(true);
       try {
         console.log('pair')
         await pair({ uri, activatePairing: true });
       } catch (error: any) {
         alert(error.message);
-      } finally {
-        setLoading(false);
       }
     }
   }
@@ -265,8 +264,8 @@ const Connect = () => {
           onChange={(e) => setUri(e.target.value)}
           />
       </div>
-      <div className={(disabled || loading) ? styles.primaryButtonDisabled : styles.primaryButton} onClick={() => onConnect()}>
-        Connect
+      <div className={(disabled || isLoading) ? styles.primaryButtonDisabled : styles.primaryButton} onClick={() => onConnect()}>
+        {isLoading ? <LoadingDots /> : "Connect"}
       </div>
     </div>
   )
