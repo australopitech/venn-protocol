@@ -159,6 +159,9 @@ export default function ApproveDialog ({ onApprove, onReject, onClose, loading, 
                           > 
                           Click here to see your account.
                         </a>}
+                        <a href='https://github.com/australopitech/venn-protocol/issues' target='_blank' className={styles.txLink}>
+                          Report this issue
+                        </a>
                         <div className={styles.buttonContainer}> <CloseButton onClick={() => onClose()}/> </div>
                       </div>
                     : txResolved?.success

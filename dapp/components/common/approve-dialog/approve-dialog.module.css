@@ -229,6 +229,7 @@
   font-weight: 500;
   /* margin-bottom: 24px; */
   padding-right: 8px;
+  padding-bottom: 8px;
   text-align: left;
   text-overflow: ellipsis;
   overflow-y: auto;
@@ -279,6 +280,7 @@
 }
 
 .txLink {
+  margin-block: 8px;
   font-size: 22px;
   color: rgb(237, 149, 192);
   border-bottom: 2px solid transparent;
@@ -288,3 +290,4 @@
 .txLink:hover {
   border-bottom: 2px solid rgb(237, 149, 192);
 }
+
