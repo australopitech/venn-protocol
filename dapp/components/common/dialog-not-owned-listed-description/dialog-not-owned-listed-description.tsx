@@ -130,12 +130,12 @@ export const DialogNotOwnedListedDescription = ({
       }
       // setButtonText('Loading...');
       const durationInSec = convertUnitToSec(duration, timeUnit);
-      console.log('duration', duration, 'durationInSec', durationInSec)
+      // console.log('duration', duration, 'durationInSec', durationInSec)
       const rentValue = listingData.data.price * durationInSec;
       // console.log('aliq', aliq, typeof aliq);
-      console.log('rentValue', rentValue)
+      // console.log('rentValue', rentValue)
       const fee = (rentValue * BigInt(aliq)) / 10000n;
-      console.log('fee', fee, 'total', rentValue + fee)
+      // console.log('fee', fee, 'total', rentValue + fee)
       setApproveData({
         type: 'Internal',
         data: {
@@ -151,7 +151,7 @@ export const DialogNotOwnedListedDescription = ({
       setIsLoading(false);
     }
 
-    console.log('listingData', listingData.data)
+    // console.log('listingData', listingData.data)
 
 
     if(loadingInfo)
