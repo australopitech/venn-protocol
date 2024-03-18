@@ -87,7 +87,31 @@ export class NftItem {
     isRental: boolean | undefined;
 }
 export class FetchNftDataResponse {
-    nfts: NftItem[] | null;
+    // nfts: NftItem[] | null;
+    // nfts2: VennNftItem[] | null;
+    // validAt: BlockData | null;
+    data: RouteNftResponse | null;
     error: string | null;
     isLoading: boolean;
+    isFetching: boolean;
+}
+export class BlockData {
+    blockNumber: number;
+    blockHash: string;
+    blockTimestamp: string;
+}
+export class VennNftItem {
+    owner: string;
+    tokenId: string | null;
+    tokenUri: string | null;
+    name: string | null;
+    description: string | null;
+    imageCached: string | null;
+    image: string | null;
+    contractAddress: string;
+    isRental: boolean | null;
+}
+export class RouteNftResponse {
+    nfts: VennNftItem[] | null;
+    validAt: BlockData | null;
 }

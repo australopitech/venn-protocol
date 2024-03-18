@@ -9,6 +9,8 @@ import * as fs from 'fs'
 import * as dotenv from 'dotenv';
 dotenv.config({ path: './.env' });
 
+const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY;
+
 
 const mnemonicFileName = process.env.MNEMONIC_FILE ?? `${process.env.HOME}/.secret/testnet-mnemonic.txt`
 let mnemonic = 'test '.repeat(11) + 'junk'
@@ -59,25 +61,31 @@ const config: HardhatUserConfig = {
     proxy: getNetwork1('http://localhost:8545'),
     sepolia: {
       chainId: 11155111,
-      url: `https://eth-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_SEPOLIA_API_KEY}`,
-      accounts: [`${process.env.PRIVATE_KEY}`]
+      url: `https://eth-sepolia.g.alchemy.com/v2/${process.env.SEPOLIA_ALCHEMY_API_KEY}`,
+      accounts: [`${process.env.DEPLOYER_PRIVATE_KEY}`]
     },
     // base: {
     //   chainId: 8453,
     //   // url: process.env.BASE_PROVIDER,
-    //   accounts: [`${process.env.PRIVATE_KEY}`]
+    //   accounts: [`${process.env.DEPLOYER_PRIVATE_KEY}`]
     // },
     base_goerli: {
       chainId: 84531,
-      url: process.env.BASE_GOERLI_ALCHEMY_PROVIDER,
-      accounts: [`${process.env.PRIVATE_KEY}`]
+      url: `https://base-goerli.g.alchemy.com/v2/${process.env.BASE_GOERLI_ALCHEMY_API_KEY}`,
+      accounts: [`${process.env.DEPLOYER_PRIVATE_KEY}`]
+    },
+
+    polygon_mumbai: {
+      chainId: 80001,
+      url: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.MUMBAI_ALCHEMY_API_KEY}`,
+      accounts: [`${process.env.PRIVATE_KEY}`]      
     }
   },
 
   namedAccounts: {
     deployer: {
       default: 0,
-      sepolia: `${process.env.PUBLIC_KEY}`,
+      // sepolia: `${process.env.PUBLIC_KEY}`,
     }
   },
 
@@ -87,19 +95,21 @@ const config: HardhatUserConfig = {
 
   etherscan: {
    apiKey: {
-    "base-goerli": "PLACEHOLDER_STRING"
+    polygon_mumbai: POLYGONSCAN_API_KEY,
+    polygon: POLYGONSCAN_API_KEY
    },
-   customChains: [
-     {
-       network: "base-goerli",
-       chainId: 84531,
-       urls: {
-        apiURL: "https://api-goerli.basescan.org/api",
-        browserURL: "https://goerli.basescan.org"
-       }
-     }
-   ]
- },
+  }
+//    customChains: [
+//      {
+//        network: "base-goerli",
+//        chainId: 84531,
+//        urls: {
+//         apiURL: "https://api-goerli.basescan.org/api",
+//         browserURL: "https://goerli.basescan.org"
+//        }
+//      }
+//    ]
+//  },
 
 }
 

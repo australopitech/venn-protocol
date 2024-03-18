@@ -1,0 +1,105 @@
+.marketLayoutBox {
+  width: 100%;
+  height: fit-content;
+  padding: 4% 0% 4% 4.5%;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: left;
+  justify-content: left;
+  gap: 40px;
+
+  border-radius: 25px;
+  /* background-color: rgb(253, 246, 252); */
+  background-color: rgb(255, 255, 255);
+  color: rgba(93, 93, 93, 1);
+  overflow: hidden;
+}
+
+.title {
+  padding-left: 8px;
+}
+
+.boxContent {
+  display: flex;
+  flex-direction: row;
+  gap: 160px;
+}
+
+.boxContentContainer {
+  /* margin-right: ; */
+  max-width: 260px;
+  padding-bottom: 8px;
+}
+
+
+.videoDialogBackdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+}
+
+.videoDialog {
+    /* width: 800px; */
+    width: 100%;
+    height: auto;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    padding: 15%;
+    
+    border: none;
+    background: transparent;
+  
+    font-family: 'SFRounded', sans-serif;
+    font-weight: 700;
+    color: rgb(255, 255, 255, 0.5);
+}
+
+.videoDialogContent {
+    align-items: flex-start;
+    background: white;
+    border-radius: 25px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 10px 30px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    max-height: 90vh;
+    max-width: 500px;
+    opacity: 1;
+    overflow-x: hidden;
+    pointer-events: auto;
+    transition: all 0.125s ease 0s;
+    padding: 24px 24px 30px;
+    width: 100%;
+    text-overflow: ellipsis;
+}
+
+.closeButton {
+  position: absolute; /* Position it absolutely... */
+  top: 0; /* ...at the top... */
+  right: 0; /* ...and right of the dialog */
+  padding: 30px;
+  cursor: pointer;
+  transition: all 0.125s ease 0s;
+  z-index: 1002;;
+}
+
+.closeButton:hover {
+  transform: scale(1.1);
+}
+
+.closeButton:active {
+  transform: scale(0.9);
+}

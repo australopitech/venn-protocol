@@ -24,3 +24,11 @@
 .logo:active {
   transform: scale(0.95);
 }
+
+.name {
+  font-family: 'SFRounded', sans-serif;
+  font-weight: 900;
+  /* color: rgba(255, 255, 255, 0.9); */
+  font-size: 36px;
+  letter-spacing: 6px;
+}

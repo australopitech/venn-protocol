@@ -1,31 +1,76 @@
+'use client'
 import classNames from 'classnames';
-import { Logo } from '../logo/logo';
+import { Logo, Name } from '../logo/logo';
 import { SearchBox } from '../search-box/search-box';
 import styles from './navbar.module.css';
-import { useState, useRef, useEffect } from 'react';
-import { useEthers, useEtherBalance, useConfig, useSigner } from '@usedapp/core';
+import { useState, useRef, useEffect, useCallback } from 'react';
+// import { useEthers, useEtherBalance, useConfig, useSigner } from '@usedapp/core';
 import Link from 'next/link';
+// import { SignInButton } from '@/components/dashboard/dashboard-layout/dashboard-layout';
+import { useConnectModal } from '@rainbow-me/rainbowkit';
+import { useRouter, usePathname } from 'next/navigation';
+import { useAccount, useDisconnect } from 'wagmi';
+// import { signOut } from '@/app/venn-provider';
+import { useSmartAccount, useSmartAccountAddress, useVsaUpdate} from '@/app/account/venn-provider';
+import { compactString } from '@/utils/utils';
+import Tooltip from '../tooltip/tooltip';
+import { LoadingDots } from '../loading/loading';
 
 export interface NavBarProps {
+  signInPage?: boolean;
   navbarGridTemplate?: string;
   currentPage?: string;
 }
 
 interface ConnectButtonProps {
   connectText?: string;
+  // page?: string
 }
 
 //to-do: pegar a info de qual pagina está, para saber qual botão está ativo
 
-export const ConnectButton = ({connectText} : ConnectButtonProps) => {
-  const { account, deactivate, activateBrowserWallet } = useEthers()
-  // 'account' being undefined means that we are not connected.
-  if (account) return <div className={styles.disconnectButton} onClick={() => deactivate()}>Disconnect</div>
-  else return (
-    <div className={styles.primaryButton} onClick={() => activateBrowserWallet()}>
+const ConnectButton = ({connectText} : ConnectButtonProps) => {
+  const { address: vsa } = useSmartAccount();
+  const eoa = useAccount();
+  const { disconnect } = useDisconnect();
+  const { openConnectModal } = useConnectModal();
+  const path = usePathname();
+  const [showDisconnect, setShowDisconnect] = useState(false);
+  const [disconnectStlye, setDisconnectStyle] = useState<any>(styles.disconnectButton);
+  const vsaUpdate = useVsaUpdate();
+  const [isClient, setIsClient] = useState(false);
+  const compactAddress = compactString(vsa ?? eoa.address);
+  
+  useEffect(() => {
+    setTimeout(() => {
+      setIsClient(true)
+    }, 2000);
+  },[])
+
+  const onDisconnect = useCallback(() => {  
+    if(
+      !path.includes("dashboard") &&
+      !showDisconnect
+      ){  
+        setShowDisconnect(true);
+        setDisconnectStyle(styles.primaryButton)
+        setTimeout(() => {
+          setShowDisconnect(false);
+          setDisconnectStyle(styles.disconnectButton)
+        }, 5000);
+      } else {
+        disconnect();
+        if(vsaUpdate) vsaUpdate();
+      }
+  }, [showDisconnect, setShowDisconnect, vsaUpdate]);
+
+  if (isClient && eoa.isConnected) return <div className={disconnectStlye} onClick={() => onDisconnect()}>{(path.includes("dashboard") || showDisconnect) ? "Disconnect" : compactAddress}</div>
+  else if (isClient && openConnectModal) return (
+    <div className={styles.primaryButton} onClick={() => openConnectModal()}>
     {connectText? connectText : 'Connect Wallet'}
     </div>
   )
+  else return <div className={styles.primaryButton}> <LoadingDots /> </div>
 }
 
 const MenuIcon = () => {
@@ -98,27 +143,28 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
   // }, []);
 
   // console.log('scrolled ', scrolled)
-
+  const router = useRouter();
   const items = ['About the project', 'Contact Us'];
-
+  
   const handleItemSelect = (item: string) => {
     console.log(`Selected: ${item}`);
     if(item === 'About the project')
-      window.open('https://github.com/pbfranceschin/r-wallet-base-3/blob/main/Readme.md', '_blank');
+      window.open('https://pbfranceschin.gitbook.io/venn', '_blank');
+    if(item === 'Contact Us')
+      router.push('/contact');
   };
-
 
   return (
     // <div className={classNames(styles.navbar, styles.navbarGridTemplate, scrolled ? styles.navbarScrolled : '')}>
     <div className={classNames(styles.navbar, styles.navbarGridTemplate)}>
       <div className={styles.logoContainer}>
         <Link href="/">
-          <Logo />
+          <span style={{ display: 'flex', alignItems: 'baseline', gap: '16px' }}><Logo /> <Name /></span>
         </Link>
       </div>
       <div className={styles.functionalitiesContainer}>
         <div className={styles.searchBoxContainer}>
-          <SearchBox />
+          <Tooltip style={styles.fontFamily} text='Search comming soon'><SearchBox /></Tooltip>
         </div>
         <div className={styles.menuButtonsContainer}>
           {/* <div className={currentPage === 'market'? styles.secondaryButtonSelected : styles.secondaryButton}>Market</div>
@@ -141,8 +187,11 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
           {/* <div className={styles.secondaryButton}>Market</div>
           <div className={styles.secondaryButton}>Dashboard</div> */}
           {/* TO-DO: colocar primary <div className={styles.primaryButton}>Connect Wallet</div> */}
-          <ConnectButton />         
-          {/* <div className={styles.iconButton}><MenuIcon /></div> */}
+          {/* {(eoaAccount.isConnected || vsaAddr)
+            ? <SignInButton connectText='Sign Out' style={styles.disconnectButton} handler={signOutHandler} />
+            : <SignInButton connectText={'Sign In'} style={styles.primaryButton} handler={() => router.push('/sign-in')} />}
+          <div className={styles.iconButton}><MenuIcon /></div> */}
+          <ConnectButton />
           <div className={styles.iconButton}><DropdownMenu items={items} onItemSelect={handleItemSelect} /></div>
         </div>
       </div>

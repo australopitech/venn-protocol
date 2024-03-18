@@ -1,13 +1,24 @@
+'use client'
 import styles from './market-layout.module.css';
 import classNames from 'classnames';
 import NavBar from '@/components/common/navbar/navbar'
 import CollectionCard from '@/components/common/collection-card/collection-card';
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import NftCard from '@/components/common/nft-card/nft-card';
 import { NFTDialog } from '@/components/common/nft-dialog/nft-dialog';
 import { CollectionDialog } from '@/components/common/collection-dialog/collection-dialog';
 import Link from 'next/link';
-import { ethers, BigNumber } from 'ethers';
+import 'node_modules/@rainbow-me/rainbowkit/dist/index.css';
+import { useAddressNfts, useRefetchAddressData } from '@/hooks/address-data';
+import { getMktPlaceContractAddress } from '@/utils/contractData';
+import { ApproveData, TxResolved } from '@/types';
+import { useSessionEvent, useSmartAccount, useVennWallet } from '@/app/account/venn-provider';
+import { 
+  resolveApprovalExternal, resolveApprovalInternal, rejectSessionProposal, rejectSessionRequest 
+} from '@/app/account/wallet';
+import ApproveDialog from '@/components/common/approve-dialog/approve-dialog';
+import { LoadingComponent } from '@/components/common/loading/loading';
+import { VideoGuides } from '@/components/video-guides/video-guides';
 // import Swipe from 'react-swipe';
 
 interface TrendingCollectionsSliderProps {
@@ -16,14 +27,39 @@ interface TrendingCollectionsSliderProps {
 
 interface ContentSliderProps {
   title: string;
-  contentType: string;
-  contentSliderData?: Array<any> | [];
+  contentType: 'nft' | 'collection';
+  contentSliderData?: Array<any> | [] | null;
   setIsOpen: any;
+  setSelected?: any;
 }
 
 interface MarketLayoutProps {
   somePropHere?: string;
 }
+
+const collectionsData = [
+  {name: "Super Ultra Awesome Collection", floor: 0.02,  uri: "https://dl.openseauserdata.com/cache/originImage/files/a0e0ab6a2841ae56d4ba63f833ebbca2.png"},
+  {name: "Super Ultra Awesome Collection", floor: 0.125, uri: "https://dl.openseauserdata.com/cache/originImage/files/f43854be2b27048ab8de384240d3f412.png"},
+  {name: "Super Ultra Awesome Collection", floor: 0.1,   uri: "https://dl.openseauserdata.com/cache/originImage/files/3796350cc56413cecf310d291947f8d7.png"},
+  {name: "Super Ultra Awesome Collection", floor: 0.01,  uri: "https://dl.openseauserdata.com/cache/originImage/files/5c1dc7b1b8e4f8703e37980aaf538dec.jpg"},
+  {name: "Super Ultra Awesome Collection", floor: 0.012, uri: "https://dl.openseauserdata.com/cache/originImage/files/3daf810c1c02eca4109ae93346980a5d.gif"},
+  {name: "Super Ultra Awesome Collection", floor: 0.016, uri: "https://dl.openseauserdata.com/cache/originImage/files/2e3d1f319bc99157344c713abe78adc7.jpg"},
+  {name: "Super Ultra Awesome Collection",               uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3370.png"},
+]
+
+const nftsData = [
+  {name: "Awesome NFT #0", price: 0.01, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/2944.png"},
+  {name: "Awesome NFT #1", price: 0.02, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3808.png"},
+  {name: "Awesome NFT #2", price: 0.1, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/6020.png"},
+  {name: "Awesome NFT #3", price: 0.012, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/8488.png"},
+  {name: "Awesome NFT #4", price: 0.016, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3913.png"},
+  {name: "Awesome NFT #5", price: 0.0123, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3370.png"},
+  {name: "Awesome NFT #0", price: 0.01, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/2944.png"},
+  {name: "Awesome NFT #1", price: 0.02, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3808.png"},
+  {name: "Awesome NFT #2", price: 0.1, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/6020.png"},
+  {name: "Awesome NFT #3", price: 0.012, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/8488.png"},
+]
+
 
 const Header = () => {
   return (
@@ -50,12 +86,12 @@ const HeroSection = () => {
         <Header />
         <div className={styles.heroButtons}>
           <span className={styles.secondaryButton}>
-            <a href="https://github.com/pbfranceschin/r-wallet-base-3">
+            <a href="https://pbfranceschin.gitbook.io/venn/">
               About the Project
             </a>
             </span>
           <span className={styles.primaryButton}>
-            <Link href="/dashboard/0x099A294Bffb99Cb2350A6b6cA802712D9C96676A"> 
+            <Link href="/dashboard"> 
               Get Started
             </Link>
           </span>
@@ -66,13 +102,32 @@ const HeroSection = () => {
   )
 }
 
-const ContentSlider = ({ title, contentType, contentSliderData, setIsOpen }: ContentSliderProps) => {
+const LoadingSliderContent = () => {
+  return (
+    <div className={styles.slider}>
+      <LoadingComponent />
+    </div>
+  )
+}
+
+const ErrorFetchingSliderContent = () => {
+  return (
+    <div className={styles.sliderErr}>
+      There was an error fetching this content. Please check back later.
+      <br />
+      <span style={{fontWeight: 'normal'}}>error msg</span>
+    </div>
+  )
+} 
+
+const ContentSlider = ({ title, contentType, contentSliderData, setIsOpen, setSelected }: ContentSliderProps) => {
   const [isDragging, setDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [scrollLeft, setScrollLeft] = useState(0);
 
-  const handleOnCardClick = () => {
-    setIsOpen(true)
+  const handleOnCardClick = (i: number) => {
+    if(contentType === 'nft') setSelected(i);
+    setIsOpen(true);
   }
 
   const sliderRef = useRef<HTMLDivElement | null>(null);
@@ -116,19 +171,17 @@ const ContentSlider = ({ title, contentType, contentSliderData, setIsOpen }: Con
           onPointerUp={stopDrag}
           onPointerCancel={stopDrag}
         >
-          {contentSliderData?.map(data => 
+          {contentSliderData?.map((data, i) => 
             contentType === "nft" 
             ? <NftCard 
-                imageURI={data.uri} 
+                imageURI={data.image} 
                 name={data.name}
-                contractAddress={ethers.constants.AddressZero}
-                tokenId={BigNumber.from(0)}
-                price={data.price}
-                // isRented={data.isRented}
-                expireDate={data.expireDate}
+                contractAddress={data.contractAddress}
+                tokenId={BigInt(data.tokenId)}
+                holderAddress={data.owner}
                 currentPage='market'
-                key={data.uri}
-                onClick={handleOnCardClick}
+                key={data.contractAddress + data.tokenId}
+                onClick={() => handleOnCardClick(i)}
               />
             : <CollectionCard 
                 uri={data.uri} 
@@ -146,43 +199,122 @@ const ContentSlider = ({ title, contentType, contentSliderData, setIsOpen }: Con
 
 export default function MarketLayout ({ somePropHere }: MarketLayoutProps) {
   const [isNFTOpen, setIsNFTOpen] = useState(false);
+  const [selectedNFT, setSelectedNFT] = useState(0);
   const [isCollectionOpen, setIsCollectionOpen] = useState(false);
+  // const [isConnectOpen, setIsConnectOpen] = useState(false);
+  const { 
+    data: fetchData, 
+    isLoading: loadingNFTData, 
+    error: fetchDataErr  
+  } = useAddressNfts(getMktPlaceContractAddress());
 
-  const collectionsData = [
-    {name: "Super Ultra Awesome Collection", floor: 0.02,  uri: "https://dl.openseauserdata.com/cache/originImage/files/a0e0ab6a2841ae56d4ba63f833ebbca2.png"},
-    {name: "Super Ultra Awesome Collection", floor: 0.125, uri: "https://dl.openseauserdata.com/cache/originImage/files/f43854be2b27048ab8de384240d3f412.png"},
-    {name: "Super Ultra Awesome Collection", floor: 0.1,   uri: "https://dl.openseauserdata.com/cache/originImage/files/3796350cc56413cecf310d291947f8d7.png"},
-    {name: "Super Ultra Awesome Collection", floor: 0.01,  uri: "https://dl.openseauserdata.com/cache/originImage/files/5c1dc7b1b8e4f8703e37980aaf538dec.jpg"},
-    {name: "Super Ultra Awesome Collection", floor: 0.012, uri: "https://dl.openseauserdata.com/cache/originImage/files/3daf810c1c02eca4109ae93346980a5d.gif"},
-    {name: "Super Ultra Awesome Collection", floor: 0.016, uri: "https://dl.openseauserdata.com/cache/originImage/files/2e3d1f319bc99157344c713abe78adc7.jpg"},
-    {name: "Super Ultra Awesome Collection",               uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3370.png"},
-  ]
+  const [approveData, setApproveData] = useState<ApproveData>();
+  const [txResolved, setTxResolved] = useState<TxResolved>();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<any>();
+  const { event, data } = useSessionEvent();
+  const refecthData = useRefetchAddressData();
+  const { wallet, stateResetter } = useVennWallet();
+  const { provider } = useSmartAccount();
 
-  const nftsData = [
-    {name: "Awesome NFT #0", price: 0.01, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/2944.png"},
-    {name: "Awesome NFT #1", price: 0.02, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3808.png"},
-    {name: "Awesome NFT #2", price: 0.1, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/6020.png"},
-    {name: "Awesome NFT #3", price: 0.012, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/8488.png"},
-    {name: "Awesome NFT #4", price: 0.016, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3913.png"},
-    {name: "Awesome NFT #5", price: 0.0123, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3370.png"},
-    {name: "Awesome NFT #0", price: 0.01, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/2944.png"},
-    {name: "Awesome NFT #1", price: 0.02, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/3808.png"},
-    {name: "Awesome NFT #2", price: 0.1, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/6020.png"},
-    {name: "Awesome NFT #3", price: 0.012, isRented: false, uri: "https://ipfs.io/ipfs/QmYCXBMG4BMuoXxkHbGR2GpmJPySJH4HDLMU9eDZkYUNjd/8488.png"},
-  ]
+  useEffect(() => {
+    console.log('render');
+    if(txResolved) {
+      refecthData(getMktPlaceContractAddress(), true);
+      setIsNFTOpen(false);
+    }
+  }, [txResolved]);
+
+  const onApprove = async () => {
+    setLoading(true);
+    let _hash: any;
+    let _err: any;
+    if(event) {
+      if(!wallet) {
+        setError({ message: 'no wallet found' });
+        setLoading(false);
+        return
+      }
+      if(!data) {
+        setError({message: 'missing request metadata'})
+        setLoading(false)
+        return
+      }
+      const { hash, error: err } = await resolveApprovalExternal(event, data, stateResetter, wallet, provider);
+      _hash = hash;
+      _err = err;
+    } else {
+      if(!provider) {
+        setError({ message: 'no provider found '});
+        setLoading(false);
+        return
+      }
+      if(!approveData) {
+        setError({message: 'missing tx metadata'});
+        setLoading(false)
+        return
+      }
+      const { hash, error: err} = await resolveApprovalInternal(approveData.data, provider);
+      _hash = hash;
+      _err = err;
+    }
+    setError(_err);
+    if(!event || event === 'Transaction')
+      setTxResolved({ success: !_err , hash: _hash });
+    setLoading(false);
+  }
+
+  const onReject = async () => {
+    setLoading(true);
+    if(event){
+      switch (event) {
+        case 'Connection':
+          try {
+            await rejectSessionProposal(data, stateResetter, wallet);
+          } catch (err: any) { 
+            setError(err);
+          } finally {
+            setLoading(false);
+          }
+          break
+        case 'Transaction':
+        case 'Signature':
+          try {
+            await rejectSessionRequest(data, stateResetter, wallet);
+          } catch (err: any) {
+            setError(err);
+          } finally {
+            setLoading(false);
+          }
+          break;
+      }
+    } else 
+      resetState()
+  }
+
+  const resetState = () => {
+    setError(undefined);
+    setTxResolved(undefined);
+    setApproveData(undefined);
+    setLoading(false);
+    // resetWalletUi();
+  };
+
+
 
   return (
     <>
       {isNFTOpen && 
         <NFTDialog
-          // contract={contract}
-          // id={tokenId}
-          // index={index}
+          setApproveData={setApproveData}
+          setTxResolved={setTxResolved}
+          setError={setError}
+          txLoading={loading || !!event || !!approveData}
+          txResolved={txResolved}
+          nftItem={
+            fetchData?.nfts ? fetchData.nfts[selectedNFT] : undefined
+          }
           setIsNFTOpen={setIsNFTOpen} 
-          // context={context}
-          // activeAccount={activeAccount}
-          // isOwned={isOwned}
-          // isBorrowed={isBorrowed}
         />
       }
       {
@@ -191,13 +323,37 @@ export default function MarketLayout ({ somePropHere }: MarketLayoutProps) {
           setIsCollectionOpen={setIsCollectionOpen} 
         />
       }
+      {(event || approveData || error || txResolved) && 
+      <ApproveDialog 
+      approveData={approveData? approveData : event? {type: event, data} : undefined}
+      onApprove={onApprove}
+      onReject={onReject}
+      onClose={resetState}
+      loading={loading}
+      error={error}
+      txResolved={txResolved}
+      />
+      }
       <div className={styles.market} >
         <NavBar navbarGridTemplate={styles.navbarGridTemplate} currentPage='market' />
-        <div className={styles.contentGridTemplate}> 
+        {<div className={styles.contentGridTemplate}> 
           <HeroSection />
-          <ContentSlider title={"Latest NFTs"} contentType={"nft"} contentSliderData={nftsData} setIsOpen={setIsNFTOpen} />
+          <VideoGuides />
+          {loadingNFTData
+           ? <LoadingSliderContent />
+           : fetchDataErr
+              ? <ErrorFetchingSliderContent />
+              : <ContentSlider 
+                title={"Latest NFTs"} 
+                contentType={"nft"} 
+                contentSliderData={fetchData?.nfts} 
+                setIsOpen={setIsNFTOpen} 
+                setSelected={setSelectedNFT} 
+                />
+          }
+          {/* <ErrorFetchingSliderContent /> */}
           <ContentSlider title={"Trending Collections"} contentType={"collection"} contentSliderData={collectionsData} setIsOpen={setIsCollectionOpen} />
-        </div>
+        </div>}
       </div>
     </>
     

@@ -1,4 +1,5 @@
 .nftArea {
+  /* position: relative; */
   width: 100%;
   /* height: calc(100vh - 128px); */
   height: calc(100vh - 122px);
@@ -43,6 +44,13 @@
   height: 24px;
 }
 
+.titleText {
+  /* white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis; */
+  min-width: fit-content;
+}
+
 .nftGridContent {
   /* padding-top: 12px;
   padding-left: 8px; */
@@ -76,6 +84,7 @@
 }
 
 .cardGrid {
+  position: relative;
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   /* gap: 3% 1.5%; */
@@ -180,4 +189,119 @@
 
 .labelRight:not(.allNfts) {
   color: #454544;
+}
+
+.address {
+  cursor: pointer;
+  padding: 4px;
+  border-radius: 12px;
+  color: #F0A6CA;
+}
+
+.address:hover {
+  background-color: #EEE6EF;
+}
+
+.noNFTs {
+  padding-top: 400px;
+  position: absolute;
+  margin: auto;
+  /* inset: 0; */
+  /* font-size: ; */
+  top: 0;
+  bottom: 0;
+  left: 0;
+  max-width: 25%;
+  min-width: 225px;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  place-content: center;
+  gap: 12px;
+}
+
+.noNFTsTitle {
+  display: flex;
+  place-content: center;
+}
+
+.noNFTsImage {
+  max-width: 100%;
+  opacity: 0.5;
+}
+
+.mintButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  gap: 4px;
+  padding-right: 8px;
+  border: none;
+  border-radius: 12px;
+  padding-block: 10px;
+  background-color: #A09EA9;
+  color: rgb(255, 255, 255);
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.buttonContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.mintButton:hover {
+  background-color: rgba(233, 125, 177, 0.8);
+}
+.mintButton:active {
+  transform: scale(0.95);
+}
+
+
+.error {
+  padding-top: 400px;
+  position: absolute;
+  margin: auto;
+  /* inset: 0; */
+  /* font-size: ; */
+  top: 0;
+  bottom: 0;
+  left: 0;
+  max-width: 60%;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  place-content: center;
+  gap: 12px; 
+}
+
+.errorTitle {
+  display: flex;
+  align-items: center;
+  max-width: 100%;
+  white-space: nowrap;
+  gap: 4px;
+}
+
+.errorMessage {
+  margin-inline-start: 6px;
+  font-size: 20px;
+  font-weight: normal;
+  max-width: 70%;
+  color: tomato;
+}
+
+.textLink {
+  margin-inline-start: 6px;
+  font-size: 20px;
+  font-weight: 700;
+  color: blue;
+  max-width: fit-content;
+  border-bottom: 2px solid transparent;
+  cursor: pointer
+}
+.textLink:hover {
+  border-bottom: 2px solid blue;
 }

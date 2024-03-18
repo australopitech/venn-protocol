@@ -28,7 +28,8 @@
 .logoContainer {
   /* flex-grow: 1;
   flex-basis: 0; */
-  padding-right: 250px;
+  padding-right: 230px;
+  /* min-width: fit-content; */
   display: flex;
   justify-content: left;
   align-items: flex-start;
@@ -91,6 +92,11 @@
   font-size: 20px;
 
   position: relative;
+}
+
+.fontFamily {
+  font-family: 'SFRounded', sans-serif;
+  font-weight: 700;
 }
 
 /* .secondaryButton,
@@ -169,6 +175,9 @@
   /* color: rgb(255, 101, 160); */
   /* color: #EFE6EF; */
   color: rgba(233, 125, 177, 0.8);
+  min-width: 120px;
+  display: flex;
+  justify-content: center;
   /* color: rgba(255, 255, 255, 0.9); */
   /* color: #5E5E5D; */
 }

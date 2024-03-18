@@ -350,6 +350,24 @@
   overflow: hidden;
 }
 
+.sliderErr {
+  width: 100%;
+  height: fit-content;
+  padding: 4% 0% 4% 4.5%;
+  
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+
+  border-radius: 25px;
+  /* background-color: rgb(253, 246, 252); */
+  background-color: rgb(255, 255, 255);
+  color: rgba(93, 93, 93, 1);
+  overflow: hidden;
+}
+
 .sliderTitle {
   padding-left: 8px;
 }
@@ -385,6 +403,7 @@
   cursor: grab;
   scrollbar-width: none;
   padding-right: 8px;
+  padding-block: 18px;
   -ms-overflow-style: none;
 }
 

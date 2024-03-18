@@ -1,3 +1,4 @@
+'use client'
 import { useState, FocusEvent, ChangeEvent } from 'react';
 import styles from './search-box.module.css';
 
@@ -32,6 +33,7 @@ export const SearchBox = ({ className }: SearchBoxProps) => {
           onChange={handleChange}
           onFocus={handleFocus}
           onBlur={handleBlur}
+          disabled={true}
         />
         <div className={styles.searchIcon}>
           <svg fill="none" height="20px" viewBox="0 0 18 18" width="20px" xmlns="http://www.w3.org/2000/svg">

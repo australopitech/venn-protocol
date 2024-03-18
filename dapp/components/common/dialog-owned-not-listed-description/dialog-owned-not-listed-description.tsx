@@ -1,43 +1,36 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { ethers, BigNumber } from 'ethers';
+'use client'
+import React, { useLayoutEffect, useEffect, useState } from 'react';
 import styles from './dialog-owned-not-listed-description.module.css';
-import classNames from 'classnames';
-// import { useProvider } from 'wagmi';
-// import ReleaseAsset from '../../wallet';
-// import { getNFTobj, useNFTname, useNFTtitle } from '../../../hooks/nfts';
-import { NftItem } from '@/types/typesNftApi.d';
-import { list, approve } from '@/utils/call';
-import { useSigner, useEthers } from '@usedapp/core';
+import { list, approve, approveCallData } from '@/utils/call';
 import { mktPlaceContract } from '@/utils/contractData';
-import erc721 from '../../../utils/contractData/ERC721.artifact.json';
-import Router from 'next/router';
+import { useRouter } from 'next/navigation';
+import { isApproved as getIsApproved } from '@/utils/listing-data';
+import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
+import { parseEther } from 'viem';
+import { listCallData } from '@/utils/call';
+import { useSmartAccount } from '@/app/account/venn-provider';
+import { ApproveData, NftItem, TimeUnitType } from '@/types';
+import { useIsAppoved } from '@/hooks/nft-data';
+import { useRefetchAddressData } from '@/hooks/address-data';
+import { LoadingComponent } from '../loading/loading';
+import { TimeUnitSelect } from '../time-unit/time-unit';
+import { convertUnitToSec, convertFromSec } from '@/utils/utils';
 
 export interface DialogOwnedNotListedDescriptionProps {
     className?: string;
     index?: number;
     activeAccount?: string;
     context?: string;
-    nftItem?: NftItem
-    setIsNFTOpen: any
+    contractAddress?: string;
+    tokenId?: bigint;
+    owner?: string;
+    setIsNFTOpen: any;
+    setError: any;
+    setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>;
+    setTxResolved: any;
+    txLoading: boolean;
 }
 
-let nft: any;
-let _title: string | undefined;
-let _name: string | undefined;
-
-const resolveIsApproved = async(
-  provider: any,
-  setIsAppr: any,
-  nftItem?: NftItem, 
-  account?: string
-) => {
-  if(!nftItem || !account)
-    return
-  const contract = new ethers.Contract(nftItem.contractAddress, erc721.abi, provider);
-  const approved = await contract.getApproved(BigNumber.from(nftItem.nftData.token_id));
-  const isOperator = await contract.isApprovedForAll(account, mktPlaceContract.address);
-  setIsAppr( approved === mktPlaceContract.address || isOperator);
-}
 /** TODO:
  * - make component re-render on approval call completion
  * - show generic "listing successful" screen on listing call completion
@@ -49,41 +42,46 @@ const resolveIsApproved = async(
  * To create custom component templates, see https://help.codux.com/kb/en/article/kb16522
  */
 export const DialogOwnedNotListedDescription = ({ 
-  className, 
-  index, 
-  activeAccount, 
-  context,
-  nftItem,
-  setIsNFTOpen
+  contractAddress,
+  tokenId,
+  owner,
+  setIsNFTOpen,
+  setError,
+  setApproveData,
+  setTxResolved,
+  txLoading
 }: DialogOwnedNotListedDescriptionProps) => {
-  // const provider = useProvider();
   const [price, setPrice] = useState<number>(0);
   const [duration, setDuration] = useState<number>();
+  const [timeUnit, setTimeUnit] = useState<TimeUnitType>('day');
+  // const [openTimeUnitSel, setOpenTimeUnitSel] = useState(false);
   const [isPriceInvalid, setIsPriceInvalid] = useState<boolean>(false);
   const [isDurationInvalid, setIsDurationInvalid] = useState<boolean>(false);
-  // const [isLoading, setIsLoading] = useState<boolean>(false);
   const listButtonText = "List it!";
   const approveButtonText = "Approve Listing";
-  const loadingText = "loading...";
+  const [isLoading, setIsLoading] = useState(false);
   const [buttonText, setButtonText] = useState<string>();
-  const [resolver, setResolver] = useState<boolean>(false);
-  const signer = useSigner();
-  const {account, library} = useEthers();
-  const [isApproved, setIsApproved] = useState<boolean>();
+  const [trigger, setTrigger] = useState<boolean>(false);
+  const { data: signer } = useWalletClient();
+  const { provider } = useSmartAccount();
+  const [hash, setHash] = useState<string>();
+  const isApproved = useIsAppoved({
+    contract: contractAddress as `0x${string}`,
+    tokenId,
+    owner: owner as `0x${string}`,
+    trigger
+  });
+  const client = usePublicClient();
 
-  // const isApproved = useIsApproved(nftItem);
-  console.log('isApproved', isApproved)
+  const updateState = () => {
+    setTrigger(!trigger);
+  }
 
-  console.log('signer', signer)
 
-  useEffect(() => {
-    resolveIsApproved(library, setIsApproved, nftItem, account);
-  }, [account, resolver]);
-
-  useEffect(() => {
-    if(isApproved) setButtonText(listButtonText);
-    else setButtonText(approveButtonText)
-  }, [isApproved])
+  useLayoutEffect(() => {
+    if(isApproved.data) setButtonText(listButtonText);
+    else if(isApproved.data !== undefined) setButtonText(approveButtonText);
+  }, [isApproved, trigger, hash]);
   
   const handlePriceChange = (e: any) => {
     // let numValue = parseInt(e.target.value);
@@ -92,7 +90,6 @@ export const DialogOwnedNotListedDescription = ({
       numValue = 0
     }
     console.log('numValue is ', numValue)
-    console.log('price in wei', (ethers.utils.parseEther(price.toString())).toString())
     // If value is negative or not a number, set it to 0
     if ((numValue < 0 || isNaN(numValue)) ) {
       setIsPriceInvalid(true);
@@ -120,87 +117,120 @@ export const DialogOwnedNotListedDescription = ({
     }
   }
 
-  const handleButtonClick = async() => {
-    if(!signer) {
-      alert('Connect your wallet!')
+  const handleApprove = async () => {
+    if(provider) {
+      const res = await provider.sendUserOperation({
+        target: contractAddress as `0x${string}`,
+        value: 0n,
+        data: approveCallData(
+          mktPlaceContract.address,
+          tokenId!
+        )
+      });
+      setHash(await provider.waitForUserOperationTransaction(res.hash));
+    } else if(signer){
+      setHash( await approve(
+        client,
+        signer,
+        contractAddress!,
+        tokenId!,
+        mktPlaceContract.address
+      ));
+    } else throw new Error('no account connected');
+    return hash;
+  }
+
+  const handleList = async () => {
+    if(isPriceInvalid || isDurationInvalid)
       return
-    }
-    if(buttonText === loadingText) return
-    if(!nftItem) {
-      console.log('error: no nft found');
-      return
-    }
-    
-    let txReceipt;
-    /** approval call */
-    if(!isApproved) {
-      setButtonText(loadingText);
-      try {
-        txReceipt = await approve(
-          signer,
-          nftItem.contractAddress,
-          BigNumber.from(nftItem.nftData.token_id),
-          mktPlaceContract.address
-        );  
-      } catch (err) {
-        console.log(err);
-        alert('approval failed');
-        setButtonText(approveButtonText);
-        return
-      }
-      console.log('success');
-      console.log('txhash', txReceipt.transactionHash);
-      alert('success');
-      setResolver(!resolver);
-      // setButtonText(listButtonText);
-      return
-    }
-    /** */
-    console.log('isPriceInvalid', isPriceInvalid)
-    console.log('isDurationInvalid', isDurationInvalid)
-    if(isPriceInvalid || isDurationInvalid) {
-      // alert('Set valid values for price and max duration!');
-      return
-    }
     if(!duration){
       setIsDurationInvalid(true)
       return;
     }
-
-    /** list call */
-    setButtonText(loadingText);
-    const priceInWei = ethers.utils.parseEther(price.toString());
-    // const durationInSec = BigNumber.from(duration*24*60*60);
-    try {
-      txReceipt = await list(
+    const durationInSec = convertUnitToSec(duration, timeUnit);
+    const priceInWeiPerSec = convertFromSec(parseEther(price.toString()), timeUnit);
+    if(provider) {
+      setApproveData({
+        type: 'Internal',
+        data: {
+          targetAddress: mktPlaceContract.address as `0x${string}`,
+          value: 0n,
+          calldata: listCallData(
+            contractAddress as `0x${string}`,
+            tokenId!,
+            priceInWeiPerSec,
+            durationInSec   
+          )
+        }
+      })
+    } else if (signer) {
+      const hash = await list(
+        client,
         signer,
-        nftItem.contractAddress,
-        BigNumber.from(nftItem.nftData.token_id),
-        priceInWei,
-        BigNumber.from(duration)
-      );  
-    } catch (err) {
-      console.log(err);
-      alert('Listing failed')
-      setButtonText(listButtonText);
-      return
-    }
-    console.log('success');
-    console.log('txhash', txReceipt.transactionHash);
-    alert('success');
-    // setIsNFTOpen(false);
-    Router.reload();
+        contractAddress!,
+        tokenId!,
+        priceInWeiPerSec,
+        durationInSec
+      );
+      // const acc = vsa ?? signer.account.address;
+      // if(acc) refecthData(acc, true);
+      setTxResolved({ success: true, hash });
+    } else throw new Error('no account connected');
   }
 
-  console.log('isApproved?' , isApproved)
-  const name = "Awesome NFT #1"
-  const description = "This is an awesome NFT uhul."  
+  const handleButtonClick = async () => {
+    if(!signer) {
+      alert('Connect your wallet!')
+      return
+    }
+    if(!buttonText || isLoading || txLoading)
+      return
+    if(tokenId === undefined || !contractAddress){
+      console.error('nft info not found');
+      return
+    }
+    setIsLoading(true)
+    try{
+      if(!isApproved.data) {
+        await handleApprove();
+      }
+      else
+        await handleList();
+    } catch(err) {
+      console.error(err);
+      setError(err)
+    } finally {
+      updateState();
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1000);
+    }
+  }
+
 
   return (
     <div className={styles['bodyDescriptionContainer']}>
       <div className={styles.divider}></div>
       <div className={styles['bodyDescription']}>
         <span className={styles.bodyText}>Fill out the fields below to <span className={styles.textHilight}>list your NFT</span>:</span>
+        
+        <span className={styles.priceInputLabel}>Maximum loan duration</span>
+        <div className={styles['priceInputContainer']}>
+          <input 
+            className={styles['priceInput']}
+            placeholder="0"
+            type="number"
+            min="0"
+            // value={duration}
+            onChange={(e) => handleDurationChange(e)}
+          />
+          <div className={styles.eth}>
+              {/* <span className={styles.eth}>{duration === 1 ? 'Day' : 'Days'}</span> */}
+              <TimeUnitSelect plural={true} selected={timeUnit} setSelected={setTimeUnit}/>
+          </div>
+        </div>
+        {isDurationInvalid && <span className={styles.invalidValue}>Set a valid duration. Must be greater than zero!</span>}
+
         <span className={styles.priceInputLabel}>Price</span>
         <div className={styles['priceInputContainer']}>
           <input 
@@ -212,29 +242,13 @@ export const DialogOwnedNotListedDescription = ({
             onChange={(e) => handlePriceChange(e)}
           />
           <div>
-              <span className={styles.eth}>ETH/Day</span>
+              <span className={styles.eth}>MATIC/{timeUnit === 'day' ? "Day" : timeUnit === 'hour' ? "Hour" : "Minute"}</span>
           </div>
         </div>
         {isPriceInvalid && <span className={styles.invalidValue}>Set a valid price. Value cannot be negative!</span>}
-
-        <span className={styles.priceInputLabel}>Maximum loan duration</span>
-        <div className={styles['priceInputContainer']}>
-          <input 
-            className={styles['priceInput']}
-            placeholder="0"
-            type="number"
-            min="0"
-            // value={duration}
-            onChange={(e) => handleDurationChange(e)}
-          />
-          <div>
-              <span className={styles.eth}>{duration === 1 ? 'Day' : 'Days'}</span>
-          </div>
-        </div>
-        {isDurationInvalid && <span className={styles.invalidValue}>Set a valid duration. Must be greater than zero!</span>}
       </div>
       <br />
-      <button className={styles.listButton} onClick={handleButtonClick}>{buttonText}</button>
+      <button className={styles.listButton} onClick={handleButtonClick}>{(isLoading || txLoading) ? <LoadingComponent/> : buttonText}</button>
     </div>
   );
 };

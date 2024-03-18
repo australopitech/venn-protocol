@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import styles from './work-in-progress-dialog.module.css';
 
@@ -51,12 +52,14 @@ export const WorkInProgressDialog = ({
           <dialog className={styles.workInProgressDialog} onClick={onCloseDialog} open>
             <div className={styles.workInProgressDialogContent}>
               <div className={styles.workInProgressDescriptionContainer}>
-              <p>This is a prototype of our product and is still a <span className={styles.workInProgress}>work in progress</span>. 
+              <p>This is a prototype of our product and is still a <span className={styles.workInProgress}>work in progress</span>.
+              <br/>
+              <br/>
+              We are currently running only on <span className={styles.workInProgress}>Polygon Mumbai</span> testnet. 
               <br />
               <br />
-              We invite you to explore its current functionalities and get a taste 
-              <br />
-              of our upcoming project!</p>
+              You're welcome to test it and get a taste 
+              of our upcoming solution!</p>
               <br />
               <br />
               <button className={styles.exploreButton} onClick={handleButtonClick}>Click here to explore!</button>

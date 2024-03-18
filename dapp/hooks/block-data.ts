@@ -1,43 +1,65 @@
-import { useMulticallAddress } from "@usedapp/core";
-import { QueryParams } from "@usedapp/core";
-import { useRawCall } from "@usedapp/core";
-// import { useChainId } from "@usedapp/core/src/hooks/useChainId";
-import { useConfig } from "@usedapp/core";
-import { MultiCallABI } from "@usedapp/core";
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
+import { useBlockNumber, usePublicClient } from "wagmi";
+import { LatesBlockReturnType } from "@/types";
 
-const GET_CURRENT_BLOCK_TIMESTAMP_CALL = MultiCallABI.encodeFunctionData('getCurrentBlockTimestamp', []);
-
-export function useTimestamp(queryParams: QueryParams = {}) {
-  const { readOnlyChainId } = useConfig()
-  const chainId = queryParams.chainId ?? readOnlyChainId;
-  const { refresh: configRefresh } = useConfig();
-
-  const address = useMulticallAddress(queryParams);
-  const refresh = queryParams.refresh ?? configRefresh;
-  const isStatic = queryParams.isStatic ?? refresh === 'never';
-  const refreshPerBlocks = typeof refresh === 'number' ? refresh : undefined;
-  const timestampResult = useRawCall(
-    address &&
-      chainId !== undefined && {
-        address,
-        data: GET_CURRENT_BLOCK_TIMESTAMP_CALL,
-        chainId,
-        isStatic,
-        refreshPerBlocks,
-      }
-  );
-
-  const timestamp = useMemo(() => {
-    try {
-      return timestampResult !== undefined
-        ? parseInt(timestampResult.value, 16)
-        : undefined
-    } catch(e: any) {
-      console.warn('Failed to parse timestamp of a block', e)
-    }
-  }, [timestampResult]);
-
-  return timestamp;
+type UseBlockDataArgs = {
+  watch?: boolean
 }
 
+export function useTimestamp (args? : UseBlockDataArgs) {
+  const [data, setData] = useState<bigint>();
+  const [error, setError] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>();
+  const { watch } = args ?? { undefined };
+  const { data: block, error: blockErr, isLoading: blockIsLoading } = useBlockNumber({ watch });
+  const client = usePublicClient();
+  useEffect(() => {
+    if(blockErr){
+      setError(blockErr)
+      return
+    }
+    const resolveTimestamp = async () => {
+      setError(null);
+      setIsLoading(true);
+      try {
+        const _block = await client.getBlock({blockNumber: block})
+        setData(_block.timestamp)
+      } catch(err) {
+        console.error(err);
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    resolveTimestamp();
+  }, [block]);
+  return { data, error, isLoading: isLoading?? blockIsLoading };
+}
+
+export function useLatestBlock (args?: UseBlockDataArgs) : LatesBlockReturnType {
+  const [data, setData] = useState<any>();
+  const [error, setError] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState<boolean>();
+  const { watch } = args ?? { undefined };
+  const { data: blockNumber, error: blockErr, isLoading: blockIsLoading } = useBlockNumber({ watch });
+  const client = usePublicClient();
+  // TODO use isLoading
+  useEffect(() => {
+    const resolveBlock = async () => {
+      try {
+        setData( await client.getBlock({ blockNumber }))
+      } catch(err) {
+        console.error(err);
+        setError(err);
+      }
+    }
+    resolveBlock();
+  }, [blockNumber]);
+  return { data, error: error?? blockErr, isLoading: isLoading?? blockIsLoading }
+}
+
+export function useBaseFee (args?: UseBlockDataArgs) {
+  const { watch } = args ?? { undefined };
+  const { data: block, error, isLoading } = useLatestBlock({ watch });
+  return { data: block?.baseFeePerGas, error, isLoading }
+}

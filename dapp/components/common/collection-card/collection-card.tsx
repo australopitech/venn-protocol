@@ -1,3 +1,4 @@
+'use client'
 import styles from './collection-card.module.css';
 import classNames from 'classnames';
 

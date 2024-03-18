@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 import { UserOperationBuilder, Client } from "userop";
 import mktplace from "../deployments/base_goerli/MarketPlace.json";
 import nft from "../deployments/base_goerli/NFT.json";
-import walletAbi from "../artifacts/contracts/wallet/RWallet.sol/RWallet.json";
+import vsa from "../artifacts/contracts/protocol/SmartAccount.sol/SmartAccount.json";
 import entryPoint from "../artifacts/contracts/core/EntryPoint.sol/EntryPoint.json";
 import dotenv from "dotenv";
 import { BigNumber } from "ethers";
@@ -16,6 +16,7 @@ const NFT_ADDRESS = process.env.NFT_ADDRESS;
 const PRIVATE_KEY = process.env.PRIVATE_KEY;
 const RPC = process.env.BASE_GOERLI_PROVIDER;
 const provider = new ethers.providers.JsonRpcProvider(RPC);
+const accountAbi = vsa.abi;
 
 const deList = async() => {
     if(!provider || !PRIVATE_KEY || !NFT_ADDRESS) throw new Error('missing env');
@@ -75,8 +76,8 @@ const rent = async () => {
       throw new Error("missing env");
 
     const signer = new ethers.Wallet(WALLET_SIGNER_KEY, provider);
-    const account = new ethers.Contract(WALLET_ADDR, walletAbi.abi, signer);
-    const accountAbi = new ethers.utils.Interface(walletAbi.abi);
+    const account = new ethers.Contract(WALLET_ADDR, accountAbi, signer);
+    const accAbi = new ethers.utils.Interface(accountAbi);
     // console.log('flag 0');
     // const epAbi = ["function getUserOpHash(UserOperation calldata userOp)"];
     const ep = new ethers.Contract(ENTRY_POINT_STACKUP, entryPoint.abi, provider);
@@ -129,7 +130,7 @@ const rent = async () => {
      .setSender(WALLET_ADDR)
      .setNonce(nonce)
      .setCallData(
-        accountAbi.encodeFunctionData("execute", [
+        accAbi.encodeFunctionData("execute", [
             mktplace.address,
             // ethers.constants.Zero,
             rent.add(fee),

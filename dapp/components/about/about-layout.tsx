@@ -1,3 +1,4 @@
+'use client'
 import styles from './about-layout.module.css';
 import NavBar from '@/components/common/navbar/navbar'
 

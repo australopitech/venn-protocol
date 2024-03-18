@@ -1,8 +1,5 @@
-import React, { useEffect, useLayoutEffect, useMemo, useState } from 'react';
-import { useEthers, useSigner } from '@usedapp/core';
-// import { DialogBorrowedDescription } from '../dialog-borrowed-description/dialog-borrowed-description';
-// import { DialogExploreDescription } from '../dialog-explore-description/dialog-explore-description';
-// import { DialogOwnedDescription } from '../dialog-owned-description/dialog-owned-description';
+'use client'
+import React, { useEffect, useState } from 'react';
 import styles from './nft-dialog.module.css';
 import { DialogNotOwnedBorrowedDescription } from '../dialog-not-owned-borrowed-description/dialog-not-owned-borrowed-description';
 import { DialogNotOwnedListedDescription } from '../dialog-not-owned-listed-description/dialog-not-owned-listed-description';
@@ -10,32 +7,22 @@ import { DialogOwnedListedDescription } from '../dialog-owned-listed-description
 import { DialogOwnedNotListedDescription } from '../dialog-owned-not-listed-description/dialog-owned-not-listed-description';
 import { DialogOwnedRentedDescription } from '../dialog-owned-rented-description/dialog-owned-rented-description';
 import { DialogNotOwnedNotListedDescription } from '../dialog-not-owned-not-listed-description/dialog-not-owned-not-listed-description';
-// import classNames from 'classnames';
-// import { getNFTobj, useNFTtitle, useNFTname, useTokenImage, useTokenMetaData } from '../../../hooks/nfts';
-// import { Context } from 'wagmi';
-import { NftItem } from '../../../types/typesNftApi';
-import walletAbi from '../../../utils/contractData/RWallet.artifact.json';
-import erc721 from '../../../utils/contractData/ERC721.artifact.json';
-import { mktPlaceContract, receiptsContract } from '@/utils/contractData';
-import { ethers, BigNumber } from 'ethers';
-import { 
-  ownerOf, isWallet, checkIsListedByReceipt, checkIsRental, getListData, getNFTByReceipt,
-  resolveIsRentedOut, resolveIsListed, resolveIsRental
- } from '@/utils/utils';
-// import dotenv from 'dotenv';
-// dotenv.config();
+import { NftItem, ApproveData, VennNftItem } from '@/types';
+import { getMktPlaceContractAddress, getReceiptsContractAddress } from '@/utils/contractData';
+import { ownerOf, checkIsRentedOut, checkIsRental, checkIsListed, checkIsOwnerOfListed } from '@/utils/listing-data';
+import { useAccount, usePublicClient } from 'wagmi';
+import { getAddress } from 'viem';
+import { useSmartAccount } from '@/app/account/venn-provider';
 
-function GetNftImage (nftItem: NftItem) {
-  return nftItem.nftData.external_data.image_1024 ? 
-         nftItem.nftData.external_data.image_1024 :
-         nftItem.nftData.external_data.image;
+function GetNftImage (nftItem: VennNftItem) {
+  return nftItem.imageCached ? nftItem.imageCached : nftItem.image;
 }
 
-async function getOwner(provider: any, nftItem: NftItem) {
-  const nftContract = new ethers.Contract(nftItem.contractAddress, erc721.abi, provider);
-  // console.log('nftContract', nftContract)
-  return await nftContract.ownerOf(nftItem.nftData.token_id);
-}
+// async function getOwner(provider: any, nftItem: NftItem) {
+//   const nftContract = new ethers.Contract(nftItem.contractAddress, erc721.abi, provider);
+//   // console.log('nftContract', nftContract)
+//   return await nftContract.ownerOf(nftItem.nftData.token_id);
+// }
 
 
 const CloseButton = () => {
@@ -60,9 +47,14 @@ const CloseButton = () => {
 }
 
 export interface NFTDialogProps {
-    setIsNFTOpen?: any;
-    nftItem?: NftItem;
-    address?: string;
+    setIsNFTOpen: any;
+    setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>;
+    setTxResolved: any;
+    setError: any;
+    txLoading: boolean;
+    txResolved?: any;
+    nftItem?: VennNftItem;
+    address?: `0x${string}`;
 }
 
 // let image: string | undefined;
@@ -75,6 +67,11 @@ const propImage =  "https://dl.openseauserdata.com/cache/originImage/files/9d6b9
  */
 export const NFTDialog = ({
     setIsNFTOpen,
+    setApproveData,
+    setTxResolved,
+    setError,
+    txLoading,
+    txResolved,
     nftItem,
     address
 }: NFTDialogProps) => {
@@ -96,121 +93,118 @@ export const NFTDialog = ({
     // 
     const [isReceipt, setIsReceipt] = useState<boolean>();
     const [loading, setLoading] = useState<boolean>(true);
+    const [tokenId, setTokenId] = useState<bigint>();
+    const client = usePublicClient();
+    const { address: eoa } = useAccount();
+    const { address: vsa } = useSmartAccount();
 
-    const {account, library} = useEthers();
-    console.log('nft contract', nftItem?.contractAddress)
-    console.log('nft id', nftItem?.nftData.token_id)
-    if(nftItem) 
-     console.log(
-      'nft_contract == receipts',
-      ethers.utils.getAddress(nftItem?.contractAddress) === receiptsContract.address
-    )
-    console.log('receipts_contract', receiptsContract.address )
-
-    // const isReceipt = useMemo(() => {
-    //   if(!nftItem) return
-    //   if(ethers.utils.getAddress(nftItem.contractAddress) === receiptsContract.address) return true;
-    //   else return false;
-    // }, []);
+    // console.log('nft id', nftItem?.nftData.token_id)
 
     useEffect(() => {
-      if(nftItem)
-        setIsReceipt(ethers.utils.getAddress(nftItem.contractAddress) === receiptsContract.address);
-      
+      if(nftItem){
+        setIsReceipt(getAddress(nftItem.contractAddress ?? "") === getReceiptsContractAddress());
+        if(nftItem.tokenId) {
+          setTokenId(BigInt(nftItem.tokenId));
+        } else console.error('no token id found');
+      } 
+    }, [nftItem]);
+
+    useEffect(() => {
       const fetchHolder = async () => {
-        if(nftItem) setHolder(await getOwner(library, nftItem));
+        if(nftItem && tokenId !== undefined)
+          setHolder(await ownerOf(client, nftItem.contractAddress, tokenId,));
       }
       fetchHolder();
 
-    }, []); /* add `library` as dep */
+    }, [nftItem, tokenId]);
 
 
-    useEffect(() => { 
-      if(!nftItem) return
-
-      resolveIsRentedOut(
-        setIsRented_Out,
-        nftItem.contractAddress,
-        BigNumber.from(nftItem.nftData.token_id),
-        isReceipt,
-        holder,
-        library
-      );
+    useEffect(() => {
+      if(!nftItem || tokenId === undefined || isReceipt === undefined) 
+        return
+      console.log('enter useefect')
+      const resolveIsRentedOut = async () => {
+        try {
+          const res = await checkIsRentedOut(
+          nftItem.contractAddress,
+          tokenId,
+          isReceipt,
+          holder,
+          client
+        );
+        // console.log('checkIsRentedOut response', res);
+          setIsRented_Out(res)
+        } catch(err) {
+          console.error(err);
+          setError(err);
+        }
+      }
       
-      resolveIsListed(
-        setIsListed,
-        isReceipt,
-        nftItem.contractAddress,
-        BigNumber.from(nftItem.nftData.token_id),
-        library
-      );
+      const resolveIsListed = async () => {
+        try {
+          const res = await checkIsListed(
+            isReceipt,
+            nftItem.contractAddress,
+            tokenId,
+            client
+          );
+        // console.log('checkIsListed Response', res);
+          setIsListed(res)
+        } catch(err) {
+          console.error(err);
+          setError(err);
+        }
+      }
 
-      resolveIsRental(
-        setIsRental_signer,
-        isReceipt,
-        nftItem.contractAddress,
-        BigNumber.from(nftItem.nftData.token_id),
-        account,
-        library
-      );
+      const resolveIsRental = async () => {
+        try {
+          const res = await checkIsRental(
+            isReceipt,
+            nftItem.contractAddress,
+            tokenId,
+            vsa?? eoa,
+            client
+          );
+        // console.log('checkIsRental response', res)
+          setIsRental_signer(res)
+        } catch(err) {
+          console.error(err);
+          setError(err);
+        }
+      }
 
+      resolveIsRentedOut();
+      resolveIsListed()
+      resolveIsRental();
 
-    }, [holder, isReceipt, account])
+    }, [client, holder, isReceipt, eoa, vsa])
 
-    // useEffect(() => {
-    //   const resolveIsListed = async () => {
-    //     if(isReceipt) {
-    //       setIsListed(
-    //         await checkIsListedByReceipt(library, BigNumber.from(nftItem?.nftData.token_id))
-    //       );
-    //       return
-    //     }
-    //     const { maxDur } : { maxDur: BigNumber | undefined } = await getListData(
-    //       library,
-    //       nftItem?.contractAddress,
-    //       BigNumber.from(nftItem?.nftData.token_id)
-    //     );
-    //     console.log('maxDur', maxDur)
-    //     if(maxDur) setIsListed(true);
-    //     if(maxDur?.eq(0)) setIsListed(false);
-    //   }
-
-    //   resolveIsListed();
-
-    // }, [holder, isReceipt]);
-
-    // useEffect(() => {
-    //   const resolveIsRental = async () => {
-    //     if(account) {
-    //       let contractAddr: string | undefined;
-    //       let tokenId: BigNumber | undefined;
-    //       if(isReceipt) {
-    //         const nftObj = await getNFTByReceipt(
-    //           library, 
-    //           BigNumber.from(nftItem?.nftData.token_id)
-    //         );
-    //         contractAddr = nftObj.contractAddress;
-    //         tokenId = nftObj.tokenId;
-    //       } else {
-    //         contractAddr = nftItem?.contractAddress;
-    //         tokenId = BigNumber.from(nftItem?.nftData.token_id);
-    //       }
-    //       setIsRental_signer(await checkIsRental(
-    //         library,
-    //         account,
-    //         contractAddr, 
-    //         tokenId
-    //       ));
-    //     }
-    //   }
-
-    //   resolveIsRental();
-
-    // }, [account]);
 
     useEffect(() => {
       if(holder && isRental_signer !== undefined) {
-        if(holder === account) setIsOwned(!isRental_signer);
+        if(holder === vsa) setIsOwned(!isRental_signer)
+        else if(holder === eoa) setIsOwned(!isRental_signer);
+        else if(
+          eoa &&
+          !isReceipt &&
+          holder === getMktPlaceContractAddress()
+          ) {
+            const resolveIsLister = async () => {
+              try{
+                const res = await checkIsOwnerOfListed(
+                nftItem!.contractAddress,
+                tokenId!,
+                vsa?? eoa,
+                client
+                );
+                console.log('isOwned res', res)
+                setIsOwned(res);
+              } catch(err) {
+                console.error(err);
+              }
+            }
+            resolveIsLister();
+        }
         else setIsOwned(false);
       }
     },[holder, isRental_signer]);
@@ -226,17 +220,17 @@ export const NFTDialog = ({
     },[isOwned, isListed, isReceipt, isRental_signer, isRented_Out])
 
 
-    console.log('holder', holder)
-    console.log('isListed', isListed)
-    console.log('isOwned', isOwned)
-    console.log('isRental_signer', isRental_signer)
-    console.log('isReceipt', isReceipt)
-    console.log('isRented_Out', isRented_Out)
-    console.log('loading', loading)
+    // console.log('holder', holder)
+    // console.log('isListed', isListed)
+    // console.log('isOwned', isOwned)
+    // console.log('isRental_signer', isRental_signer)
+    // console.log('eoa', eoa)
+    // console.log('isReceipt', isReceipt)
+    // console.log('isRented_Out', isRented_Out)
+    // console.log('loading', loading)
 
-    const name = nftItem ? nftItem.nftData.external_data.name : "Awesome NFT #1"
-    const description = nftItem ? nftItem.nftData.external_data.description : "This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhul."
-    // const description = "Bla blabla blablabla."
+    const name = nftItem ? nftItem.name : "Awesome NFT #1"
+    const description = nftItem ? nftItem.description : "This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhul."
 
     return (
         <div className={styles.nftDialogBackdrop} onClick={onCloseDialog}>
@@ -251,37 +245,45 @@ export const NFTDialog = ({
                 </div>
               </div>
               <div className={styles.nftDescriptionContainer} onClick={stopPropagation}>
-                <h1 className={styles.title} title={name}>{name}</h1>
+                <h1 className={styles.title} title={name ?? ""}>{name}</h1>
                 <p className={styles.nftDescription}>
                   {description}
                 </p>
                 {loading && <h1>Loading...</h1>}
                 {!loading && !isOwned && isRental_signer &&
-                  <DialogNotOwnedBorrowedDescription isRental={isRental_signer} nftItem={nftItem} />}
+                  <DialogNotOwnedBorrowedDescription isRental={isRental_signer} contractAddress={nftItem?.contractAddress} tokenId={tokenId} />}
                    {/* rented by signer */}
                 
                 {!loading && !isOwned && isListed && !isRented_Out && !isRental_signer &&
                   <DialogNotOwnedListedDescription 
-                  nftItem={nftItem} setIsNFTOpen={setIsNFTOpen} isReceipt={isReceipt}
+                  contractAddress={nftItem?.contractAddress} tokenId={tokenId} setIsNFTOpen={setIsNFTOpen} isReceipt={isReceipt} 
+                  setApproveData={setApproveData} txLoading={txLoading} setError={setError}
                    />}   {/* available for rent */}
                 
                 {!loading && !isOwned && isRented_Out && !isRental_signer &&
-                 <DialogNotOwnedBorrowedDescription address={address} nftItem={nftItem} />}
+                 <DialogNotOwnedBorrowedDescription address={address} contractAddress={nftItem?.contractAddress} tokenId={tokenId} />}
                 
                 {!loading && !isOwned && !isListed && !isRented_Out && 
                   <DialogNotOwnedNotListedDescription />} {/* not available for rent*/}
                 
-                {!loading && isOwned && isListed && isReceipt && !isRented_Out && 
-                  <DialogOwnedListedDescription nftItem={nftItem} setIsNFTOpen={setIsNFTOpen}/>} 
+                {!loading && isOwned && isListed && !isRented_Out && 
+                  <DialogOwnedListedDescription 
+                  contractAddress={nftItem?.contractAddress} tokenId={tokenId} setError={setError} txLoading={txLoading}
+                  setIsNFTOpen={setIsNFTOpen} setTxResolved={setTxResolved} setApproveData={setApproveData}/>} 
                   {/* owned/listed by signer/not rented out */}
                 
                 {!loading && isOwned && !isListed && !isReceipt && 
-                  <DialogOwnedNotListedDescription nftItem={nftItem} setIsNFTOpen={setIsNFTOpen} />} 
+                  <DialogOwnedNotListedDescription 
+                  contractAddress={nftItem?.contractAddress} tokenId={tokenId} txLoading={txLoading}
+                  owner={nftItem?.owner} setIsNFTOpen={setIsNFTOpen} setError={setError} 
+                  setApproveData={setApproveData} setTxResolved={setTxResolved}
+                  /> } 
                   {/* owned/not listed by signer/not rented out */}
                 
                 {!loading && isOwned && isReceipt && isRented_Out &&
                   <DialogOwnedRentedDescription 
-                    isListed={isListed} nftItem={nftItem} setIsNFTOpen={setIsNFTOpen}
+                    isListed={isListed} contractAddress={nftItem?.contractAddress} tokenId={tokenId} txLoading={txLoading}
+                    setIsNFTOpen={setIsNFTOpen} setApproveData={setApproveData} setTxResolved={setTxResolved} setError={setError}
                   />} {/* owned / rented out */}
                 {/* {!isOwned && isReceipt && 
                   <DialogOwnedRentedDescription />} receipt held by 3rd party; NFT available */}
