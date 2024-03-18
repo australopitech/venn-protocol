@@ -9,6 +9,8 @@ import * as fs from 'fs'
 import * as dotenv from 'dotenv';
 dotenv.config({ path: './.env' });
 
+const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY;
+
 
 const mnemonicFileName = process.env.MNEMONIC_FILE ?? `${process.env.HOME}/.secret/testnet-mnemonic.txt`
 let mnemonic = 'test '.repeat(11) + 'junk'
@@ -91,10 +93,12 @@ const config: HardhatUserConfig = {
     timeout: 10000
   },
 
-//   etherscan: {
-//    apiKey: {
-//     "base-goerli": "PLACEHOLDER_STRING"
-//    },
+  etherscan: {
+   apiKey: {
+    polygon_mumbai: POLYGONSCAN_API_KEY,
+    polygon: POLYGONSCAN_API_KEY
+   },
+  }
 //    customChains: [
 //      {
 //        network: "base-goerli",
