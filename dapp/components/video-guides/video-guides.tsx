@@ -12,10 +12,21 @@ const VideoIcon = () => {
 
 
 const Video1element = () => {
-    return (
-        <iframe width="inherit" height="inherit" src="https://www.youtube.com/embed/pPStdjuYzSI?si=hkSYhrOLPR5JUriX" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
-    )
+    return <iframe width="inherit" height="inherit" src="https://www.youtube.com/embed/1_JOks-MBw0?si=XCq_vCj5Whm9RD9e" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
 }
+
+const Video2element = () => {
+    return <iframe width="inherit" height="inherit" src="https://www.youtube.com/embed/iNqPD037gns?si=tivOvXQfLV0KJE30" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
+}
+
+const Video3element = () => {
+    return <iframe width="inherit" height="inherit" src="https://www.youtube.com/embed/OR1TlEdT9c4?si=E4PVkIOmgnLipHeD" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
+}
+
+const Video4element = () => {
+    return <iframe width="inherit" height="inherit" src="https://www.youtube.com/embed/GURPNdOPatA?si=xPAgT_fWRD9t0iL7" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
+}
+
 
 export const VideoGuides = () => {
 
@@ -30,19 +41,19 @@ export const VideoGuides = () => {
                 </div>
             </div>
             <div className={styles.boxContentContainer}>
-                <Video1element />
+                <Video2element />
                 <div style={{ display: "flex", alignItems: "center", gap: "4px"}}>
                     <VideoIcon/> List an NFT
                 </div>
             </div>
             <div className={styles.boxContentContainer}>
-                <Video1element />
+                <Video3element />
                 <div style={{ display: "flex", alignItems: "center", gap: "4px"}}>
                     <VideoIcon/> Rent an NFT
                 </div>
             </div>
             <div className={styles.boxContentContainer}>
-                <Video1element />
+                <Video4element />
                 <div style={{ display: "flex", alignItems: "center", gap: "4px"}}>
                     <VideoIcon/> Interact with Dapps
                 </div>
