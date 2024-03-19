@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/utils/Create2.sol";
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 
 import "./SmartAccount.sol";
-import "../interfaces/IEntryPoint.sol";
+import "@account-abstraction/contracts/interfaces/IEntryPoint.sol";
 
 /**
  * A UserOperations "initCode" holds the address of the factory, and a method call (to createAccount, in this sample factory).

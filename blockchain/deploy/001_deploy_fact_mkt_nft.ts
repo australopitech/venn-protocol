@@ -1,7 +1,7 @@
 import {HardhatRuntimeEnvironment} from 'hardhat/types';
 import {DeployFunction} from 'hardhat-deploy/types';
 import { ethers } from 'hardhat';
-import * as NFT from '../artifacts/contracts/samples/NFT.sol/NFT.json';
+import * as NFT from '../artifacts/contracts/mock/NFT.sol/NFT.json';
 import * as dotenv from 'dotenv';
 import { getDefaultProvider } from 'ethers';
 dotenv.config({ path: '../.env' });

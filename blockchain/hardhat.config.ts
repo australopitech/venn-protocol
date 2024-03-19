@@ -6,10 +6,10 @@ import '@nomiclabs/hardhat-etherscan'
 import 'solidity-coverage'
 import * as fs from 'fs'
 
-import * as dotenv from 'dotenv';
-dotenv.config({ path: './.env' });
+import dotenv from 'dotenv';
+dotenv.config();
 
-const POLYGONSCAN_API_KEY = process.env.POLYGONSCAN_API_KEY;
+const POLYGONSCAN_API_KEY = "DM99R4ISY34BS8U8HBQ7NWFMMDCPSUR4W9";
 
 
 const mnemonicFileName = process.env.MNEMONIC_FILE ?? `${process.env.HOME}/.secret/testnet-mnemonic.txt`
@@ -94,10 +94,7 @@ const config: HardhatUserConfig = {
   },
 
   etherscan: {
-   apiKey: {
-    polygon_mumbai: POLYGONSCAN_API_KEY,
-    polygon: POLYGONSCAN_API_KEY
-   },
+   apiKey: POLYGONSCAN_API_KEY,
   }
 //    customChains: [
 //      {

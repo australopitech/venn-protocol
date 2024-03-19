@@ -1,25 +1,34 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { ethers } from "hardhat";
 import { SmartAccountFactory__factory, SmartAccountFactory, SmartAccount,
-    NFT__factory, MarketPlace__factory, MarketPlace, ReceiptNFT, ReceiptNFT__factory, NFT } from "../typechain";
+    NFT__factory, MarketPlace__factory, MarketPlace, ReceiptNFT, ReceiptNFT__factory, NFT, EntryPoint__factory } from "../typechain";
 import { expect } from "chai";
-import * as accountData from "../artifacts/contracts/protocol/SmartAccount.sol/SmartAccount.json";
+import * as accountData from "../artifacts/contracts/SmartAccount.sol/SmartAccount.json";
 import { BigNumber } from "ethers";
 
 const provider = ethers.provider;
 
+export const deployEntryPoint = async (signer: SignerWithAddress) => {
+    console.log('deploying EntryPoint contract...');
+    const fac = new EntryPoint__factory(signer);
+    const ep = await fac.deploy();
+    await ep.deployTransaction.wait();
+    console.log(`\nEntryPoint deployed at ${ep.address}`);
+    return ep
+}
+
 export const deployFactory = async (signer: SignerWithAddress, entryPoint: string) => {
     console.log('\nDeploying factory contract...');
-    const factoryFactory = new SmartAccountFactory__factory(signer);
-    const factory = await factoryFactory.deploy(entryPoint);
+    const fac = new SmartAccountFactory__factory(signer);
+    const factory = await fac.deploy(entryPoint);
     await factory.deployTransaction.wait();
     console.log(`\naccountFactory deployed to address ${factory.address}\n`);
     return factory;    
 }
 
 export const nftDeployAndMint = async (signer: SignerWithAddress, mintTo: string) => {
-    const nftFactory = new NFT__factory(signer);
-    const nftContract = await nftFactory.deploy();
+    const fac = new NFT__factory(signer);
+    const nftContract = await fac.deploy();
     await nftContract.deployTransaction.wait();
     console.log(`\nnftContract deployed at ${nftContract.address}\n`);
     const mintTx = await nftContract.connect(signer).safeMint(mintTo, "uri");
@@ -52,8 +61,8 @@ export const deployMktPlace = async (
     pullAliq: number,
 ) => {
     console.log('\ndeploying MarketPlace...')
-    const mktPlaceFactory = new MarketPlace__factory(signer);
-    const mktPlace = await mktPlaceFactory.deploy(
+    const fac = new MarketPlace__factory(signer);
+    const mktPlace = await fac.deploy(
         factoryAddress,
         receiptsAddress,
         servAliq,
@@ -67,8 +76,8 @@ export const deployMktPlace = async (
 
 export const deployReceiptsContract = async (signer: SignerWithAddress) => {
     console.log("\ndeploying receipts contract...");
-    const factory = new ReceiptNFT__factory(signer);
-    const receiptContract = await factory.deploy();
+    const fac = new ReceiptNFT__factory(signer);
+    const receiptContract = await fac.deploy();
     console.log(`\nreceipts contract deployed at ${receiptContract.address}`);
     return receiptContract;
 }

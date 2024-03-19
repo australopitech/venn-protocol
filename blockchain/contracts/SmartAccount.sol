@@ -10,9 +10,9 @@ import "@openzeppelin/contracts/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/proxy/utils/UUPSUpgradeable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
-import "./IMarketPlace.sol";
-import "../core/BaseAccount.sol";
-import "../core/TokenCallbackHandler.sol";
+import "./interfaces/IMarketPlace.sol";
+import "@account-abstraction/contracts/core/BaseAccount.sol";
+import "@account-abstraction/contracts/samples/callback/TokenCallbackHandler.sol";
 import "./FunctionSignatures.sol";
 
 contract SmartAccount is BaseAccount, TokenCallbackHandler, UUPSUpgradeable, Initializable {

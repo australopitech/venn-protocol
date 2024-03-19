@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: SEE LICENSE IN LICENSE
 pragma solidity ^0.8.12;
 
-import './IMarketPlace.sol';
-import './IReceiptNFT.sol';
+import './interfaces/IMarketPlace.sol';
+import './interfaces/IReceiptNFT.sol';
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 /* implementar a interface */
 import './SmartAccountFactory.sol';

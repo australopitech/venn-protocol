@@ -8,15 +8,15 @@ pragma solidity ^0.8.12;
 /* solhint-disable avoid-low-level-calls */
 /* solhint-disable no-inline-assembly */
 
-import "../interfaces/IAccount.sol";
-import "../interfaces/IPaymaster.sol";
-import "../interfaces/IEntryPoint.sol";
+import "@account-abstraction/contracts/interfaces/IAccount.sol";
+import "@account-abstraction/contracts/interfaces/IPaymaster.sol";
+import "@account-abstraction/contracts/interfaces/IEntryPoint.sol";
 
-import "../utils/Exec.sol";
-import "./StakeManager.sol";
-import "./SenderCreator.sol";
-import "./Helpers.sol";
-import "./NonceManager.sol";
+import "@account-abstraction/contracts/utils/Exec.sol";
+import "@account-abstraction/contracts/core/StakeManager.sol";
+import "@account-abstraction/contracts/core/SenderCreator.sol";
+import "@account-abstraction/contracts/core/Helpers.sol";
+import "@account-abstraction/contracts/core/NonceManager.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
 contract EntryPoint is IEntryPoint, StakeManager, NonceManager, ReentrancyGuard {
