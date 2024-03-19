@@ -4,9 +4,9 @@
 </p>
 
 # Venn Protocol 
-## UNCOLATERALIZED NFT Rentals Using Account Abstraction: NO 3RD PARTY INTEGRATION REQUIRED
+**UNCOLATERALIZED NFT Rentals Using Account Abstraction: NO 3RD PARTY INTEGRATION REQUIRED**
 
-**TL;DR**
+##TL;DR
 
 Venn is a blockchain protocol/web3 platform that enables users to engage in NFT rental transactions, entirely on-chain, safely and in a trustless manner. No colateral is needed.
 
