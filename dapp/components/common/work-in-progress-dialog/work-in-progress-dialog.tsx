@@ -58,7 +58,7 @@ export const WorkInProgressDialog = ({
               We are currently running only on <span className={styles.workInProgress}>Polygon Mumbai</span> testnet. 
               <br />
               <br />
-              You're welcome to test it and get a taste 
+              You&apos;re welcome to test it and get a taste 
               of our upcoming solution!</p>
               <br />
               <br />
