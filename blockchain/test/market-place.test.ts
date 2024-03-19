@@ -1,20 +1,20 @@
 import { ethers } from "hardhat";
 import { expect } from "chai";
 import { mine } from "@nomicfoundation/hardhat-network-helpers";
-import { RWalletFactory, NFT, ReceiptNFT, MarketPlace, RWallet } from "../typechain";
+import { SmartAccountFactory, NFT, ReceiptNFT, MarketPlace, SmartAccount } from "../typechain";
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { BigNumber, Contract } from "ethers";
 import { 
-    deployFactory, nftDeployAndMint, deployMktPlace, createWallet,
+    deployFactory, nftDeployAndMint, deployMktPlace, createAccount,
     deployReceiptsContract, listNFT, rentNFT, mint
-} from "./account-test-utils";
+} from "./test-utils";
 
-describe.skip("Testing MarketPlace", function () {
-    let factory: RWalletFactory;
+describe("Testing MarketPlace", function () {
+    let factory: SmartAccountFactory;
     let nft: NFT;
     let receiptContract: ReceiptNFT;
     let mktPlace: MarketPlace;
-    let wallet: RWallet;
+    let wallet: SmartAccount;
     let owner: SignerWithAddress;
     let signer_1: SignerWithAddress;
     let signer_2: SignerWithAddress;
@@ -44,7 +44,7 @@ describe.skip("Testing MarketPlace", function () {
         expect(await receiptContract.hasRole(role, mktPlace.address)).to.eq(true);
         console.log('flag')
         
-        wallet = await createWallet(factory, owner.address);
+        wallet = await createAccount(factory, owner.address);
         console.log('flag')
         
         const nft1owner = await nft.ownerOf(tokenId);
@@ -102,14 +102,14 @@ describe.skip("Testing MarketPlace", function () {
         expect(await nft.ownerOf(tokenId)).to.eq(signer_1.address);
     });
 
-    it("should allow rwallet accounts to rent listed nfts / block ordinary accounts", async () => {
+    it("should allow SmartAccount accounts to rent listed nfts / block ordinary accounts", async () => {
         const price = 10;
         const maxDuration = 10000;
         // console.log(tokenId.toNumber())
         // return
         await listNFT(signer_1, mktPlace, nft, tokenId, price, maxDuration);
         await expect(mktPlace.connect(signer_2).rentNFT(nft.address, tokenId, maxDuration/100))
-         .to.be.revertedWith("caller is not a renter wallet contract");
+         .to.be.revertedWith("caller is not a Venn Smart Account contract");
 
         const duration = 100;
         await rentNFT(
@@ -121,7 +121,6 @@ describe.skip("Testing MarketPlace", function () {
     });
     it("should allow de-listing nft while it is rented out", async () => {
         expect(await nft.ownerOf(tokenId)).to.eq(wallet.address);
-        
         let blocktime = (await provider.getBlock('latest')).timestamp;
         const loans = await wallet.getRentals();
         const endTime = loans[0].endTime.toNumber();

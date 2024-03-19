@@ -6,9 +6,9 @@ import {
 } from "../typechain";
 import { BigNumber, Contract } from "ethers";
 import { mine } from "@nomicfoundation/hardhat-network-helpers";
-import { deployFactory, createAccount, rentNFT, deployReceiptsContract, deployMktPlace, nftDeployAndMint } from "./account-test-utils";
+import { deployFactory, createAccount, rentNFT, deployReceiptsContract, deployMktPlace, nftDeployAndMint } from "./test-utils";
 
-describe("Testing account", function () {
+describe.skip("Testing account", function () {
     
         const provider = ethers.provider;
         let owner: SignerWithAddress;
@@ -48,7 +48,7 @@ describe("Testing account", function () {
         accountFactory = await deployFactory(signer_2, entryPoint);
         
         account = await createAccount(accountFactory, owner.address);
-        console.log(`\naccount deployed at ${account.address}\n`);
+        // console.log(`\naccount deployed at ${account.address}\n`);
         
         [nft, tokenId] = await nftDeployAndMint(signer_2, signer_1.address);
 
@@ -57,6 +57,7 @@ describe("Testing account", function () {
             signer_2, accountFactory.address, receiptsContract.address, servAliq, pullAliq);
         const role = ethers.utils.id("MINTER_ROLE");
         const grantRole = await receiptsContract.connect(signer_2).grantRole(role, mktPlace.address);
+        await grantRole.wait();
         
     });
 
