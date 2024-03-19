@@ -28,12 +28,6 @@ export default function Market() {
 
   return (
     <>
-      <Head>
-        <title>Venn Market Place</title>
-        <meta name="description" content="Developed by Australopitech" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        {/* <link rel="icon" href="/favicon.ico" /> */}
-      </Head>
       {/* <div className={styles.dashboard} >
         <NavBar navbarGridTemplate={styles.navbarGridTemplate} />
         <SideBar sidebarGridTemplate={styles.sidebar} />
