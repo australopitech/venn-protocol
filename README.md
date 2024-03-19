@@ -4,13 +4,13 @@
 </p>
 
 # Venn Protocol 
-**UNCOLATERALIZED NFT Rentals Using Account Abstraction: NO 3RD PARTY INTEGRATION REQUIRED**
+**A Brand new NFT Rentals Market: NO COLLATERAL NEEDED, NO 3RD PARTY INTEGRATION REQUIRED**
 
 ## TL;DR
 
 Venn is a blockchain protocol/web3 platform that enables users to engage in NFT rental transactions, entirely on-chain, safely and in a trustless manner. No colateral is needed.
 
-It is also made to be **FULLY COMPATIBLE** with ERC-721. No need to implement new patterns! Users that pay to acquire a NFT as a rental take DIRECT CUSTODY over the asset, taking away the need for NFT platforms to integrate to our solution, making Venn COMPATIBLE BY DEFAULT with every major NFT project.
+It is also made to be **FULLY COMPATIBLE** with ERC-721. No need to implement new patterns! Users that pay to acquire a NFT as a rental take **DIRECT CUSTODY** over the asset, taking away the need for NFT platforms to integrate to our solution, making Venn **COMPATIBLE BY DEFAULT** with every major NFT project.
 
 We are leveraging Acount Abstaction to achieve this incredible feat. While still in the development phase, we've launched a Demo in Polygon Mumbai. The Demo includes a web Walelt/Dashboard and a Marketplace, aside from fully operational smart contracts. 
 
