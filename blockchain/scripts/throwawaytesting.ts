@@ -10,8 +10,10 @@ import factory from '../deployments/base_goerli/RWalletFactory.json';
 
 dotenv.config();
 
+const networkID = 11155111;
 const pkey = process.env.PRIVATE_KEY;
-const apikey = process.env.INFURA_API_KEY;
+// const apikey = process.env.INFURA_API_KEY;
+const apikey = process.env.SEPOLIA_ALCHEMY_API_KEY;
 // const nftAddress = '0xc0F0aF132d3088cCF7379c32206A54f850f1Eba6';
 const walletAddress = '0xf36D84389b2c6846189fBe64dEfBd201f512205A';
 const dummy1 = '0x099A294Bffb99Cb2350A6b6cA802712D9C96676A';
@@ -21,12 +23,15 @@ const aurora_testnet_url = 'https://testnet.aurora.dev';
 // const provider = new ethers.providers.JsonRpcProvider(aurora_testnet_url);
 
 const balCheck = async () => {
-    const provider = new ethers.providers.JsonRpcProvider("https://rpc.zora.energy/");
+    if(!apikey) throw new Error('missing env');
+    // const provider = new ethers.providers.JsonRpcProvider("https://rpc.zora.energy/");
+    // const provider = new ethers.providers.AlchemyProvider(networkID, apikey);
+    const provider = new ethers.providers.JsonRpcProvider(`https://eth-sepolia.g.alchemy.com/v2/${apikey}`)
     const bal = await provider.getBalance('0x778070825fE59026A882cAe236109ce30bD33d44');
     console.log(ethers.utils.formatEther(bal));
 }
 
-// balCheck();
+balCheck();
 
 const base_rpc = process.env.BASE_GOERLI_PROVIDER;
 
@@ -64,7 +69,7 @@ const isWallet = async() => {
     
 }
 
-isWallet();
+// isWallet();
 
 // const main = async () => {
 //     if(!pkey || !apikey) throw new Error('missing env');
