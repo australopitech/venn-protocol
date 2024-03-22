@@ -110,12 +110,13 @@ const LoadingSliderContent = () => {
   )
 }
 
-const ErrorFetchingSliderContent = () => {
+const ErrorFetchingSliderContent = ({error} : {error?: any}) => {
+  console.log('error content', error)
   return (
     <div className={styles.sliderErr}>
       There was an error fetching this content. Please check back later.
       <br />
-      <span style={{fontWeight: 'normal'}}>error msg</span>
+      <span style={{fontWeight: 'normal'}}>{error.msg?? error}</span>
     </div>
   )
 } 
@@ -342,7 +343,7 @@ export default function MarketLayout ({ somePropHere }: MarketLayoutProps) {
           {loadingNFTData
            ? <LoadingSliderContent />
            : fetchDataErr
-              ? <ErrorFetchingSliderContent />
+              ? <ErrorFetchingSliderContent error={error ?? fetchDataErr} />
               : <ContentSlider 
                 title={"Latest NFTs"} 
                 contentType={"nft"} 
