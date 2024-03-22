@@ -28,7 +28,7 @@ export function useAddressNfts (address: string | undefined): FetchNftDataRespon
   // First useQuery to fetch and process address data
   const addressDataQuery = useQuery({
     queryKey: ['addressData', address],
-    queryFn: () => fetchAddressData("matic-mumbai", address!),
+    queryFn: () => fetchAddressData("eth-sepolia", address!),
     enabled: !!address,
     staleTime: 600000, // Data is considered fresh for 1 minute
     refetchInterval: 600000, // Data will be refetched every 1 minute
@@ -69,7 +69,7 @@ export const useRefetchAddressData = () => {
     const rentalKey = ['rentalData', address];
     queryClient.invalidateQueries(addressKey);
     if (force) {
-      console.log('flag 1')
+      // console.log('flag 1')
       queryClient.refetchQueries({stale: true});
       // queryClient.refetchQueries(rentalKey);
       // console.log('query client', queryClient)
