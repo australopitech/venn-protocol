@@ -43,9 +43,9 @@ type WalletContextType = {
 const entryPointAddr = getDefaultEntryPointAddress(baseGoerli);
 //
 const projectId = process.env.NEXT_PUBLIC_WALLET_CONNECT_ID;
-const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_BASE_API_KEY;
+// const apiKey = process.env.NEXT_PUBLIC_ALCHEMY_BASE_API_KEY;
 const factoryAddress = factoryContract.address;
-export const activeNetwork = polygonMumbai;
+export const activeNetwork = sepolia;
 
 
 const createAccountProvider = (walletClient: WalletClient) => {
@@ -91,13 +91,13 @@ const getApprovedNamespaces = (account: `0x${string}`, proposal: Web3WalletTypes
     proposal: proposal.params,
     supportedNamespaces: {
       eip155: {
-        chains: [`eip155:${mainnet.id}`, `eip155:${polygonMumbai.id}`, `eip155:${sepolia.id}` ],
+        chains: [`eip155:${mainnet.id}`, `eip155:${sepolia.id}` ],
         methods: [
             'eth_sendTransaction', 'personal_sign', 'eth_sign', 'eth_signTypedData_v4',
             'eth_signTypedData', 'eth_signTransaction', 'eth_sendRawTransaction'
         ],
         events: ['accountsChanged', 'chainChanged'],
-        accounts: [`eip155:${mainnet.id}:${account}`,`eip155:${polygonMumbai.id}:${account}`, `eip155:${sepolia.id}:${account}` ]
+        accounts: [`eip155:${mainnet.id}:${account}`, `eip155:${sepolia.id}:${account}` ]
       }
     }
   });

@@ -170,7 +170,7 @@ export default function ApproveDialog ({ onApprove, onReject, onClose, loading, 
                           <div className={styles.txDescription}>
                             <div className={styles.txLinkContainer}>
                               <SearchIcon />
-                              <a href={`https://mumbai.polygonscan.com/tx/${txResolved.hash}`} target='_blank' className={styles.txLink}>
+                              <a href={`https://sepolia.etherscan.io/tx/${txResolved.hash}`} target='_blank' className={styles.txLink}>
                               View it on block explorer.
                               </a>
                             </div>

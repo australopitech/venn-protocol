@@ -55,7 +55,7 @@ export const WorkInProgressDialog = ({
               <p>This is a prototype of our product and is still a <span className={styles.workInProgress}>work in progress</span>.
               <br/>
               <br/>
-              We are currently running only on <span className={styles.workInProgress}>Polygon Mumbai</span> testnet. 
+              We are currently running only on <span className={styles.workInProgress}>Sepolia</span> testnet. 
               <br />
               <br />
               You&apos;re welcome to test it and get a taste 

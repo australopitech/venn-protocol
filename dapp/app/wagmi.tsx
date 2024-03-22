@@ -18,7 +18,7 @@ const projectId = '7029fcb544dedd8f2a0d1fa0135cc597';
 // const queryClient = new QueryClient();
 
 export const { chains, publicClient} = configureChains(
-  [polygonMumbai],
+  [sepolia],
   [
     // jsonRpcProvider({rpc: (chain) => ({http: baseTestProvider ?? ''})}),
     publicProvider()

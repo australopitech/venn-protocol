@@ -1,6 +1,6 @@
 import { RouteNftResponse, NftItem, VennNftItem} from "@/types";
 
-const apiKey = process.env.MUMBAI_ALCHEMY_API_KEY;
+const apiKey = process.env.SEPOLIA_ALCHEMY_API_KEY;
 
 function bigintReplacer(key: string, value: any) {
   if (typeof value === 'bigint') {
