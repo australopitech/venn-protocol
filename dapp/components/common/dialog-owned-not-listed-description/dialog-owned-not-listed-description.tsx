@@ -11,7 +11,6 @@ import { listCallData } from '@/utils/call';
 import { useSmartAccount } from '@/app/account/venn-provider';
 import { ApproveData, NftItem, TimeUnitType } from '@/types';
 import { useIsAppoved } from '@/hooks/nft-data';
-import { useRefetchAddressData } from '@/hooks/address-data';
 import { LoadingComponent } from '../loading/loading';
 import { TimeUnitSelect } from '../time-unit/time-unit';
 import { convertUnitToSec, convertFromSec } from '@/utils/utils';
@@ -76,6 +75,9 @@ export const DialogOwnedNotListedDescription = ({
   const updateState = () => {
     setTrigger(!trigger);
   }
+
+  // console.log('isApproved', isApproved)
+  console.log('public client', client)
 
 
   useLayoutEffect(() => {
