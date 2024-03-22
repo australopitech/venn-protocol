@@ -161,32 +161,53 @@ contract MarketPlace is IMarketPlace {
         return _balances[account];
     }
 
+    function isRented(uint256 receiptId) external view returns(bool) {
+        NFT memory nft = _NFTbyReceipt[receiptId];
+        return _getNFTowner(nft.contractAddress, nft.tokenId) != address(this);
+    }
+
     function isSmartAccount(address account) public view returns(bool) {
         return factoryContract.isSmartAccount(account);
     }
 
-    function setMaxDuration(address contract_, uint256 tokenId, uint256 maxDuration) external {
+    function setMaxDuration(address contract_, uint256 tokenId, uint256 maxDuration) public {
         uint256 receiptId =_receipts[contract_][tokenId];
         require(
             receiptsContract.ownerOf(receiptId) == msg.sender,
             "error: token not listed or caller not owner of receipt-token"
         );
         require(maxDuration > 0, "cannot set to zero, use deList");
-        _maxDuration[contract_][tokenId] = maxDuration;
-        emit MaxDurationUpdate(receiptId, contract_, tokenId, maxDuration);
+        _setMaxDuration(contract_, tokenId, receiptId, maxDuration);
     }
 
-    function setPrice(address contract_, uint256 tokenId, uint256 price) external {
+    function setPrice(address contract_, uint256 tokenId, uint256 price) public {
         uint256 receiptId = _receipts[contract_][tokenId];
         require(
             receiptsContract.ownerOf( receiptId ) == msg.sender,
             "error: token not listed or caller not owner of receipt-token"
         );
+        _setPrice(contract_, tokenId, receiptId, price);
+    }
+
+    function updateListing(address contract_, uint256 tokenId, uint256 price, uint256 maxDuration) external {
+        uint256 receiptId = _receipts[contract_][tokenId];
+        require(
+            receiptsContract.ownerOf( receiptId ) == msg.sender,
+            "error: token not listed or caller not owner of receipt-token"
+        );
+        _setPrice(contract_, tokenId, receiptId, price);
+        _setMaxDuration(contract_, tokenId, receiptId, maxDuration);
+    }
+
+    function _setPrice(address contract_, uint256 tokenId, uint256 receiptId, uint256 price) private {
         _prices[contract_][tokenId] = price;
         emit PriceUpdate(receiptId, contract_, tokenId, price);
     }
 
-
+    function _setMaxDuration(address contract_, uint256 tokenId, uint256 receiptId, uint256 maxDuration) private {
+        _maxDuration[contract_][tokenId] = maxDuration;
+        emit MaxDurationUpdate(receiptId, contract_, tokenId, maxDuration);
+    }
 
     function listNFT(address contract_, uint256 tokenId, uint256 price, uint256 maxDuration) external {
         require(_isApproved(contract_, tokenId), "Operator not approved");
