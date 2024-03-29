@@ -12,7 +12,7 @@ Venn is a blockchain protocol/web3 platform that enables users to engage in NFT 
 
 It is also made to be **FULLY COMPATIBLE** with ERC-721. No need to implement new patterns! Users that pay to acquire a NFT as a rental take **DIRECT CUSTODY** over the asset, taking away the need for NFT platforms to integrate to our solution, making Venn **COMPATIBLE BY DEFAULT** with every major NFT project.
 
-We are leveraging Acount Abstaction to achieve this incredible feat. While still in the development phase, we've launched a Demo in Sepolia Testnet. The Demo includes a web Walelt/Dashboard and a Marketplace, aside from fully operational smart contracts. 
+We are leveraging Acount Abstaction to achieve this incredible feat. While still in the development phase, we've launched a Demo in *Ethereum Sepolia* testnet. The Demo includes a web Walelt/Dashboard and a web Marketplace, aside from fully operational smart contracts. 
 
 Below you can find a guide on how to test the Demo. You can find all available information in [this link](https://pbfranceschin.gitbook.io/venn/).
 
