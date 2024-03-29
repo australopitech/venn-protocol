@@ -2,14 +2,15 @@ import '@nomiclabs/hardhat-waffle'
 import '@typechain/hardhat'
 import { HardhatUserConfig } from 'hardhat/config'
 import 'hardhat-deploy'
-import '@nomiclabs/hardhat-etherscan'
+import "@nomicfoundation/hardhat-verify";
+// import '@nomiclabs/hardhat-etherscan'
 import 'solidity-coverage'
 import * as fs from 'fs'
 
 import dotenv from 'dotenv';
 dotenv.config();
 
-const POLYGONSCAN_API_KEY = "DM99R4ISY34BS8U8HBQ7NWFMMDCPSUR4W9";
+const ETHERSCAN_API_KEY = "";
 
 
 const mnemonicFileName = process.env.MNEMONIC_FILE ?? `${process.env.HOME}/.secret/testnet-mnemonic.txt`
@@ -94,7 +95,12 @@ const config: HardhatUserConfig = {
   },
 
   etherscan: {
-   apiKey: POLYGONSCAN_API_KEY,
+   apiKey: ETHERSCAN_API_KEY,
+  },
+  sourcify: {
+    // Disabled by default
+    // Doesn't need an API key
+    enabled: true
   }
 //    customChains: [
 //      {
