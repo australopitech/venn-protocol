@@ -11,7 +11,6 @@ import { useNetwork, usePublicClient, useWalletClient } from 'wagmi';
 import { formatEther, getAddress } from 'viem';
 import { useListingData, useRealNft } from '@/hooks/nft-data';
 import { useSmartAccount } from '@/app/account/venn-provider';
-import { useRefetchAddressData } from '@/hooks/address-data';
 import { LoadingComponent } from '../loading/loading';
 import { convertFromSec, convertUnitToSec, timeLeftString } from '@/utils/utils';
 import { TimeUnitSelect } from '../time-unit/time-unit';

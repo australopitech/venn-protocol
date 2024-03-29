@@ -1,21 +1,24 @@
 import { ethers } from "ethers";
-import mktplace from '../deployments/polygon_mumbai/MarketPlace.json';
+import mktplace from '../deployments/sepolia/MarketPlace.json';
+// import mktplace from '../deployments/polygon_mumbai/MarketPlace.json';
 // import receipts from '../deployments/base_goerli/ReceiptNFT.json';
-import receipts from '../deployments/polygon_mumbai/ReceiptNFT.json';
+import receipts from '../deployments/sepolia/ReceiptNFT.json';
 import dotenv from 'dotenv';
 dotenv.config();
 
 const minter = mktplace.address;
-const ADMIN_KEY = process.env.PRIVATE_KEY;
+// const ADMIN_KEY = process.env.PRIVATE_KEY;
+const ADMIN_KEY = process.env.DUMMY_2_PRIVATE_KEY;
 const ADMIN_ADDR = process.env.PUBLIC_KEY;
 const rpc = process.env.BASE_GOERLI_PROVIDER;
 
 const ADMIN_ROLE = ethers.constants.HashZero;
 const MINTER_ROLE = ethers.utils.id("MINTER_ROLE");
 
-const network = 80001 //mumbai
-const API_KEY = process.env.MUMBAI_ALCHEMY_API_KEY;
-const provider = new ethers.providers.AlchemyProvider( network, API_KEY);
+// const network = 80001 //mumbai
+// const API_KEY = process.env.MUMBAI_ALCHEMY_API_KEY;
+const API_KEY = process.env.SEPOLIA_ALCHEMY_API_KEY;
+const provider = new ethers.providers.JsonRpcProvider(`https://eth-sepolia.g.alchemy.com/v2/${API_KEY}`);
 
 
 
@@ -31,6 +34,7 @@ const checkOwner = async() => {
 const checkRole = async () => {
     if(!provider) throw new Error('missing env');
     const receiptContract = new ethers.Contract(receipts.address, receipts.abi, provider);
+    console.log('minter', minter)
     const res = await receiptContract.hasRole(MINTER_ROLE, minter );
     console.log('ROLE?', res);
 }
@@ -44,11 +48,12 @@ const grantMinterRole = async () => {
     const receiptContract = new ethers.Contract(receipts.address, receipts.abi, signer);
 
     console.log('signer balance: ', (await signer.getBalance()).toString());
+    console.log('granting minter to', minter)
     
     const tx =await receiptContract.grantRole(MINTER_ROLE, minter);
     console.log(await tx.wait());
     
-    // await checkRole();
+    await checkRole();
     
 }
 

@@ -9,7 +9,7 @@ import { getSdkError } from '@walletconnect/utils';
 import { LinkIcon, SwapIcon, SendIcon, MessageIcon, FaucetIcon } from './icons';
 import styles from './wallet.module.css';
 import classNames from 'classnames';
-import Tooltip from '@/components/common/tooltip/tooltip';
+import { Tooltip } from '@/components/common/tooltip/tooltip';
 import { faucetDrip } from '@/utils/demo';
 import { LoadingDots } from '@/components/common/loading/loading';
 // const zeroAddress = "0x0000000000000000000000000000000000000000";

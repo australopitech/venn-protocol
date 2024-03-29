@@ -6,7 +6,7 @@ import Wallet from '../wallet/wallet';
 import { ApproveData, nftViewContext } from '@/types';
 import { copyAddress } from '@/utils/utils';
 import { useState } from 'react';
-import Tooltip from '@/components/common/tooltip/tooltip';
+import { Tooltip } from '@/components/common/tooltip/tooltip';
 import { LoadingDots } from '../dashboard-layout/dashboard-layout';
 
 interface QueryParams {

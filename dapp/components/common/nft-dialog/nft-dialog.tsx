@@ -13,6 +13,9 @@ import { ownerOf, checkIsRentedOut, checkIsRental, checkIsListed, checkIsOwnerOf
 import { useAccount, usePublicClient } from 'wagmi';
 import { getAddress } from 'viem';
 import { useSmartAccount } from '@/app/account/venn-provider';
+import { compactString, copyAddress } from '@/utils/utils';
+import { Tooltip, HelpTooltip } from '../tooltip/tooltip';
+import { useRealNft } from '@/hooks/nft-data';
 
 function GetNftImage (nftItem: VennNftItem) {
   return nftItem.imageCached ? nftItem.imageCached : nftItem.image;
@@ -24,6 +27,16 @@ function GetNftImage (nftItem: VennNftItem) {
 //   return await nftContract.ownerOf(nftItem.nftData.token_id);
 // }
 
+const HelpIcon = () => {
+  
+  return (
+    <HelpTooltip text='What is a receipt?'>
+      <a href='https://pbfranceschin.gitbook.io/venn/overview/how-does-venn-work#market-place' target='_blank'>
+        <svg  xmlns="http://www.w3.org/2000/svg"  width="20"  height="20" viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  strokeWidth="2"  strokeLinecap="round"  strokeLinejoin="round"  className="icon icon-tabler icons-tabler-outline icon-tabler-help"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" /><path d="M12 17l0 .01" /><path d="M12 13.5a1.5 1.5 0 0 1 1 -1.5a2.6 2.6 0 1 0 -3 -4" /></svg>
+      </a>
+    </HelpTooltip>
+  )
+}
 
 const CloseButton = () => {
   return (
@@ -60,7 +73,7 @@ export interface NFTDialogProps {
 // let image: string | undefined;
 const propImage =  "https://dl.openseauserdata.com/cache/originImage/files/9d6b9f6ef3d8b0b0f08481be0a0fd2f8.png";
 
-
+const tooltipDefaultMessage = "Copy address";
 /**
  * This component was created using Codux's Default new component template.
  * To create custom component templates, see https://help.codux.com/kb/en/article/kb16522
@@ -90,6 +103,8 @@ export const NFTDialog = ({
     const [isOwned, setIsOwned] = useState<boolean>();
     const [isRental_signer, setIsRental_signer] = useState<boolean>();
     const [isRented_Out, setIsRented_Out] = useState<boolean>()
+    const [receiptsTooltipMessage, setReceiptsTooltipMessage] = useState(tooltipDefaultMessage);
+    const [contractTooltipMessage, setContractTooltipMessage] = useState(tooltipDefaultMessage);
     // 
     const [isReceipt, setIsReceipt] = useState<boolean>();
     const [loading, setLoading] = useState<boolean>(true);
@@ -99,6 +114,11 @@ export const NFTDialog = ({
     const { address: vsa } = useSmartAccount();
 
     // console.log('nft id', nftItem?.nftData.token_id)
+
+    const nft = useRealNft({
+      contract: nftItem?.contractAddress as `0x${string}`,
+      tokenId
+    });
 
     useEffect(() => {
       if(nftItem){
@@ -232,6 +252,22 @@ export const NFTDialog = ({
     const name = nftItem ? nftItem.name : "Awesome NFT #1"
     const description = nftItem ? nftItem.description : "This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhul This is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhulThis is an awesome NFT uhul."
 
+    const onCopy = async(type: 'contract' | 'receipts') => {
+      if(type === 'contract') {
+        await copyAddress(nft.data?.contract);
+        setContractTooltipMessage("Copied!");
+        setTimeout(() => {
+          setContractTooltipMessage(tooltipDefaultMessage)
+        }, 5000);
+      } else if (type === 'receipts') {
+        await copyAddress(getReceiptsContractAddress());
+        setReceiptsTooltipMessage("Copied!");
+        setTimeout(() => {
+          setReceiptsTooltipMessage(tooltipDefaultMessage);
+        }, 5000);
+      }
+    }
+    
     return (
         <div className={styles.nftDialogBackdrop} onClick={onCloseDialog}>
           <dialog className={styles.nftDialog} open>
@@ -249,6 +285,16 @@ export const NFTDialog = ({
                 <p className={styles.nftDescription}>
                   {description}
                 </p>
+                {nft.data &&
+                <div style={{display: "flex", paddingTop: "12px", gap: "16px", alignItems: "center"}}>
+                  <p className={styles.nftInfo}><b>Contract:</b> <span className={styles.contract} onClick={() => onCopy('contract')}><Tooltip text={contractTooltipMessage}>{compactString(nft.data?.contract)}</Tooltip></span></p>
+                  <p className={styles.nftInfo}><b>Id:</b> {nft.data?.tokenId.toString()}</p>
+                  {isReceipt && 
+                    <div style={{display: "flex", alignItems: "center", gap: "4px", color: "#e48e9a"}}>
+                      <HelpIcon/><p className={styles.nftInfo}><b><span className={styles.receipts} onClick={() => onCopy('receipts')}><Tooltip text={receiptsTooltipMessage}>Receipts</Tooltip></span>:</b> {tokenId?.toString()}</p>
+                    </div>
+                  }
+                </div>}
                 {loading && <h1>Loading...</h1>}
                 {!loading && !isOwned && isRental_signer &&
                   <DialogNotOwnedBorrowedDescription isRental={isRental_signer} contractAddress={nftItem?.contractAddress} tokenId={tokenId} />}

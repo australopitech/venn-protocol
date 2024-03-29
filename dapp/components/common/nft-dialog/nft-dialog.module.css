@@ -160,3 +160,30 @@
   text-overflow: ellipsis;
   margin-bottom: 20px;
 }
+
+.nftInfo {
+  color: rgb(67, 74, 79);
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  /* margin-bottom: 24px; */
+  /* padding-right: 8px; */
+  text-align: left;
+}
+
+.contract {
+  border-bottom: 1px solid transparent;
+  cursor: pointer;
+}
+.contract:hover {
+  border-bottom: 1px solid rgb(67, 74, 79);
+}
+
+.receipts {
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  color: #e48e9a;
+}
+.receipts:hover {
+  border-bottom: 2px solid #e48e9a;
+}

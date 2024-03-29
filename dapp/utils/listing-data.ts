@@ -1,15 +1,11 @@
 import erc721 from "./contractData/ERC721.artifact.json";
-import { mktPlaceContract, factoryContract } from "./contractData";
 import smartAccount from "./contractData/SmartAccount.json";
 import { PublicClient } from "viem";
 import { NftObj, NftItem  } from "@/types";
 import { getAddress } from "viem";
-import { getReceiptsContractAddress } from "@/utils/contractData";
+import { getReceiptsContractAddress, getMktPlaceContractAddress, mktPlaceAbi, getFactoryContractAddress, factoryAbi} from "@/utils/contractData";
 
 const erc721abi = erc721.abi as any;
-const mktPlaceAddr = mktPlaceContract.address as `0x${string}`;
-const mktPlaceAbi = mktPlaceContract.abi as any;
-
 
 export const isApproved = async (
     client: PublicClient,
@@ -41,7 +37,7 @@ export const isApproved = async (
     }
     if(!approved && isOperator === undefined ) return undefined;
     // console.log('approved', approved, 'isOperator', isOperator);
-    return (approved == mktPlaceAddr || isOperator);
+    return (approved == getMktPlaceContractAddress() || isOperator);
 }
 
 export const isListed = async (
@@ -49,21 +45,26 @@ export const isListed = async (
     nftContractAddr: string,
     tokenId: number
 ) => {
-    // const contract = new ethers.Contract(mktPlaceAddr, mktPlaceAbi, client);
-    let maxDuration;
-    try {
-        // maxDuration = await contract.getMaxDuration(nftContractAddr, tokenId);
-        maxDuration = await client.readContract({
-            address: mktPlaceAddr,
-            abi: mktPlaceAbi,
-            functionName: 'getMaxDuration',
-            args: [nftContractAddr, tokenId]
-        }) as unknown as bigint;
+    const maxDuration = await client.readContract({
+        address: getMktPlaceContractAddress(),
+        abi: mktPlaceAbi,
+        functionName: 'getMaxDuration',
+        args: [nftContractAddr, tokenId]
+    }) as unknown as bigint;
         // console.log('maxDuration', maxDuration);
-    } catch (error) {
-        console.log(error)
-    }
     if(maxDuration) return (maxDuration > 0);
+}
+
+export const isRented = async (
+    client: PublicClient,
+    receiptId: bigint
+) => {
+    return await client.readContract({
+        address: getMktPlaceContractAddress(),
+        abi: mktPlaceAbi,
+        functionName: 'isRented',
+        args: [receiptId]
+    }) as unknown as boolean;
 }
 
 export const ownerOf = async (
@@ -88,8 +89,8 @@ export const ownerOf = async (
 
 export async function isSmartAccount(client: any, address: string) {
     const ret = await client.readContract({
-        address: factoryContract.address as `0x${string}`,
-        abi: factoryContract.abi,
+        address: getFactoryContractAddress(),
+        abi: factoryAbi,
         functionName: 'isSmartAccount',
         args: [address]
     }) as boolean;
@@ -127,14 +128,14 @@ export async function getListData(
     tokenId: bigint
   ) {
     const price = await client.readContract({
-        address: mktPlaceAddr,
+        address: getMktPlaceContractAddress(),
         abi: mktPlaceAbi,
         functionName: 'getPrice',
         args: [nftContractAddress, tokenId]
     }) as bigint;
     // const maxDur = await contract.getMaxDuration (nftContractAddress, tokenId);
     const maxDur = await client.readContract({
-        address: mktPlaceAddr as `0x${string}`,
+        address: getMktPlaceContractAddress(),
         abi: mktPlaceAbi,
         functionName: 'getMaxDuration',
         args: [nftContractAddress, tokenId]
@@ -186,7 +187,7 @@ export async function getReceipt (
     tokenId: bigint
 ) {
     return client.readContract({
-        address: mktPlaceAddr,
+        address: getMktPlaceContractAddress(),
         abi: mktPlaceAbi,
         functionName: 'getReceipt',
         args: [contractAddress, tokenId]
@@ -199,7 +200,7 @@ export async function getNFTByReceipt(
     receiptId: bigint
 ) : Promise<NftObj> {
     return client.readContract({
-        address: mktPlaceAddr,
+        address: getMktPlaceContractAddress(),
         abi: mktPlaceAbi,
         functionName: 'getNFTbyReceipt',
         args: [receiptId]
@@ -264,19 +265,8 @@ export async function checkIsRentedOut(
     holder?: string,
     client?: any
 ) : Promise<boolean | undefined> {
-    if(holder === mktPlaceAddr) 
-        return false
-    // if(!client)
-    //     return
     if(isReceipt) {
-        const nftObj = await getNFTByReceipt(client, tokenId);
-        // console.log('nftObj', nftObj)
-        const nftHolder = await ownerOf(client, nftObj.contractAddress, nftObj.tokenId);
-        // console.log('nftHolder', nftHolder)
-        if(nftHolder) {
-            if(nftHolder === mktPlaceAddr) return false;
-            else return true;
-        };
+        return await isRented(client, tokenId)
     } else if(holder) {
         const isSmartAccountRet = await isSmartAccount(client, holder);
         console.log('isSmartAccount', isSmartAccountRet)

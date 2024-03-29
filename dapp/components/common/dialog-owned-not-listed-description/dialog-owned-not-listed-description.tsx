@@ -1,17 +1,14 @@
 'use client'
-import React, { useLayoutEffect, useEffect, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import styles from './dialog-owned-not-listed-description.module.css';
 import { list, approve, approveCallData } from '@/utils/call';
 import { mktPlaceContract } from '@/utils/contractData';
-import { useRouter } from 'next/navigation';
-import { isApproved as getIsApproved } from '@/utils/listing-data';
-import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
+import { usePublicClient, useWalletClient } from 'wagmi';
 import { parseEther } from 'viem';
 import { listCallData } from '@/utils/call';
-import { useSmartAccount } from '@/app/account/venn-provider';
-import { ApproveData, NftItem, TimeUnitType } from '@/types';
+import { activeNetwork, useSmartAccount } from '@/app/account/venn-provider';
+import { ApproveData, TimeUnitType } from '@/types';
 import { useIsAppoved } from '@/hooks/nft-data';
-import { useRefetchAddressData } from '@/hooks/address-data';
 import { LoadingComponent } from '../loading/loading';
 import { TimeUnitSelect } from '../time-unit/time-unit';
 import { convertUnitToSec, convertFromSec } from '@/utils/utils';
@@ -77,6 +74,7 @@ export const DialogOwnedNotListedDescription = ({
     setTrigger(!trigger);
   }
 
+  console.log('isApproved', isApproved)
 
   useLayoutEffect(() => {
     if(isApproved.data) setButtonText(listButtonText);
@@ -242,7 +240,7 @@ export const DialogOwnedNotListedDescription = ({
             onChange={(e) => handlePriceChange(e)}
           />
           <div>
-              <span className={styles.eth}>MATIC/{timeUnit === 'day' ? "Day" : timeUnit === 'hour' ? "Hour" : "Minute"}</span>
+              <span className={styles.eth}>{activeNetwork.nativeCurrency.symbol}/{timeUnit === 'day' ? "Day" : timeUnit === 'hour' ? "Hour" : "Minute"}</span>
           </div>
         </div>
         {isPriceInvalid && <span className={styles.invalidValue}>Set a valid price. Value cannot be negative!</span>}

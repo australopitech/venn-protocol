@@ -102,6 +102,8 @@ export function useIsAppoved(args?: NftDataHookArgs) {
     args?.contract, args?.tokenId, args?.owner, args?.trigger
   ]);
 
+  console.log('chain', chain?.name)
+
   useEffect(() => {
     if(!args)
       return

@@ -67,6 +67,12 @@ describe("Testing MarketPlace", function () {
         expect(await receiptContract.tokenURI(receipt)).to.eq(uri);
     });
 
+    it("isRented should return false for nft not being rented", async () => {
+        const receipt = await mktPlace.getReceipt(nft.address, tokenId);
+        const res = await mktPlace.isRented(receipt);
+        expect(res).to.be.eq(false);
+    });
+
     it("should allow receipt-owners to change listing metadata", async () => {
         const receipt = await mktPlace.getReceipt(nft.address, tokenId);
         expect(await receiptContract.ownerOf(receipt)).to.eq(signer_2.address);
@@ -117,8 +123,14 @@ describe("Testing MarketPlace", function () {
         );
         expect(await nft.ownerOf(tokenId)).to.eq(wallet.address);
         expect(await mktPlace.getBalance(signer_1.address)).to.eq(price*duration);
-
     });
+
+    it("isRented should return true for rented nft", async () => {
+        const receiptId = await mktPlace.getReceipt(nft.address, tokenId);
+        const res = await mktPlace.isRented(receiptId);
+        expect(res).to.eq(true);
+    });
+
     it("should allow de-listing nft while it is rented out", async () => {
         expect(await nft.ownerOf(tokenId)).to.eq(wallet.address);
         let blocktime = (await provider.getBlock('latest')).timestamp;

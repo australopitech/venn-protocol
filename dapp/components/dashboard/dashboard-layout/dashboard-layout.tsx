@@ -5,7 +5,7 @@ import SideBar from '@/components/dashboard/sidebar/sidebar'
 import NftArea from '@/components/dashboard/nft-area/nft-area'
 import { useEffect, useState, useCallback } from 'react';
 import { NFTDialog } from '@/components/common/nft-dialog/nft-dialog';
-import { useAddressNfts, useRefetchAddressData } from '../../../hooks/address-data';
+import { useAddressNfts, useRefetchAddressData } from '@/hooks/address-data';
 import { useAccount } from 'wagmi';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import 'node_modules/@rainbow-me/rainbowkit/dist/index.css';

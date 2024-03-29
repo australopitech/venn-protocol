@@ -9,7 +9,7 @@ import { getAddress } from 'viem';
 import { useAccount } from 'wagmi';
 import { useSmartAccount } from '@/app/account/venn-provider';
 import { compactString, copyAddress } from '@/utils/utils';
-import Tooltip from '@/components/common/tooltip/tooltip';
+import { Tooltip } from '@/components/common/tooltip/tooltip';
 import { LoadingDots, LoadingPage } from '../dashboard-layout/dashboard-layout';
 import { mintMockNFT } from '@/utils/demo';
 import { useRefetchAddressData } from '@/hooks/address-data';

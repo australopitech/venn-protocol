@@ -82,6 +82,7 @@
 .primaryButton,
 .primaryButtonSelected,
 .disconnectButton,
+.wrongNetwork,
 .iconButton {
   transition: all 0.125s ease 0s;
   cursor: pointer;
@@ -150,6 +151,22 @@
 
 .disconnectButton:active { 
   transform: scale(0.95); 
+}
+
+.wrongNetwork {
+  background: tomato;
+  transition: all 0.125s ease 0s;
+  padding: 12px;
+  border-radius: 18px;
+  /* color: rgb(251, 50, 141); */
+  /* color: rgb(255, 101, 160); */
+  /* color: #EFE6EF; */
+  /* color: rgba(233, 125, 177, 0.8); */
+  color: rgba(255, 255, 255, 0.9);
+  /* color: #5E5E5D; */
+}
+.wrongNetwork:hover {
+  background: rgb(255, 127, 104);
 }
 
 /* .secondaryButtonSelected {

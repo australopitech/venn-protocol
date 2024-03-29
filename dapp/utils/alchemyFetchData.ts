@@ -1,6 +1,6 @@
 import { RouteNftResponse, NftItem, VennNftItem} from "@/types";
 
-const apiKey = process.env.MUMBAI_ALCHEMY_API_KEY;
+const apiKey = process.env.SEPOLIA_ALCHEMY_API_KEY;
 
 function bigintReplacer(key: string, value: any) {
   if (typeof value === 'bigint') {
@@ -41,7 +41,7 @@ function processApiData (apiData: any, address: string): RouteNftResponse {
 }
 
 export async function fetchAddressDataAlchemy (network: string, address: string) {
-//   console.log('MUMBAI_ALCHEMY_API_KEY', process.env.MUMBAI_ALCHEMY_API_KEY)
+  console.log('alchemy apikey', apiKey)
   const options = {method: 'GET', headers: {accept: 'application/json'}};
 
   try {

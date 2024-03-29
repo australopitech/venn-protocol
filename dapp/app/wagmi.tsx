@@ -13,14 +13,15 @@ import { CHAIN_NAMESPACES } from '@web3auth/base';
 import { rainbowWeb3AuthConnector } from './rainbowkit-w3a-connector.';
 
 
-const baseTestProvider = process.env.NEXT_PUBLIC_BASE_GOERLI_PROVIDER;
+const NEXT_PUBLIC_SEPOLIA_ALCHEMY_API_KEY = process.env.NEXT_PUBLIC_SEPOLIA_ALCHEMY_API_KEY
 const projectId = '7029fcb544dedd8f2a0d1fa0135cc597';
 // const queryClient = new QueryClient();
 
 export const { chains, publicClient} = configureChains(
-  [polygonMumbai],
+  [sepolia],
   [
     // jsonRpcProvider({rpc: (chain) => ({http: baseTestProvider ?? ''})}),
+    alchemyProvider({ apiKey: NEXT_PUBLIC_SEPOLIA_ALCHEMY_API_KEY ?? ""}),
     publicProvider()
   ]
 );

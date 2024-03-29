@@ -109,3 +109,44 @@
     border-style: solid;
     border-color: black transparent transparent transparent;
   }
+
+  /* HELP */
+  .helpTooltip {
+    position: relative;
+    display: inline-block;
+    /* border-bottom: 1px dotted black; If you want dots under the hoverable text */
+  }
+  
+  /* Tooltip text */
+  .helpTooltip .helpTooltiptext {
+    visibility: hidden;
+    width: 100px;
+    /* background-color: #EEE6EF; */
+    /* background-color: black; */
+    background-color: inherit;
+    /* color: rgba(37, 41, 46, 0.95); */
+    color: inherit;
+    text-align: center;
+    padding: 5px;
+    border-radius: 6px;
+    font-size: 14px;
+   
+    /* Position the tooltip text - see examples below! */
+    position: absolute;
+    z-index: 1;
+    
+    /*top*/
+    width: 120px;
+    bottom: 100%;
+    left: 50%;
+    margin-left: -60px;
+
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  
+  /* Show the tooltip text when you mouse over the tooltip container */
+  .helpTooltip:hover .helpTooltiptext {
+    visibility: visible;
+    opacity: 1;
+  }

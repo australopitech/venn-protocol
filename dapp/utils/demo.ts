@@ -1,28 +1,28 @@
 import { createPublicClient, createWalletClient, getAddress, http, isAddress, parseEther, encodeFunctionData } from "viem"
 import { privateKeyToAccount } from "viem/accounts";
-import { polygonMumbai } from "viem/chains";
-import { mockNftContract, testNftContract } from "./contractData";
+import { sepolia } from "viem/chains";
+import { mockNftContract } from "./contractData";
 import { WalletClient } from "wagmi";
 
 // const mockNftContractAddr = getAddress(mockNftContract.address);
 // const mockNftContractAbi = mockNftContract.abi;
 
-const testNftContractAddr = getAddress(testNftContract.address);
-const testNftContractAbi = testNftContract.abi;
+const mockNftContractAddr = getAddress(mockNftContract.address);
+const mockNftContractAbi = mockNftContract.abi;
 
-export function getTestNFTcontractAddress() {
-  return testNftContractAddr;
+export function getTestNftContractAddress() {
+  return mockNftContractAddr;
 }
 
 const funder = createWalletClient({
     account: privateKeyToAccount(`0x${process.env.NEXT_PUBLIC_PRIVATE_KEY}`),
-    chain: polygonMumbai,
-    transport: http(`https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_MUMBAI_ALCHEMY_API_KEY}`)
+    chain: sepolia,
+    transport: http(`https://eth-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_SEPOLIA_ALCHEMY_API_KEY}`)
 });
 
 const client = createPublicClient({
-  chain: polygonMumbai,
-  transport: http(`https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_MUMBAI_ALCHEMY_API_KEY}`)
+  chain: sepolia,
+  transport: http(`https://eth-sepolia.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_SEPOLIA_ALCHEMY_API_KEY}`)
 })
 
 export const faucetDrip = async (account: string) => {
@@ -39,7 +39,7 @@ export const faucetDrip = async (account: string) => {
 export const mintMockNFT = async (to: string) => {
   if(!isAddress(to)) throw new Error('invalid account address');
   const hash = await funder.sendTransaction({
-    to: testNftContractAddr,
+    to: mockNftContractAddr,
     data: mintCallData(to, testNftUri)
   });
   await client.waitForTransactionReceipt({ hash });
@@ -48,7 +48,7 @@ export const mintMockNFT = async (to: string) => {
 
 export const burnMockNFT = async (signer: WalletClient, tokenId: bigint) => {
   const hash = await signer.sendTransaction({
-    to: testNftContractAddr,
+    to: mockNftContractAddr,
     data: burnCallData(tokenId)
   });
   await client.waitForTransactionReceipt({ hash });
@@ -63,7 +63,7 @@ function mintCallData (
   uri: string,
 ) {
   return encodeFunctionData({
-      abi: testNftContractAbi,
+      abi: mockNftContractAbi,
       functionName: 'safeMint',
       args: [to, uri]
   });
@@ -73,7 +73,7 @@ function burnCallData (
   tokenId: bigint
 ) {
   return encodeFunctionData({
-      abi: testNftContractAbi,
+      abi: mockNftContractAbi,
       functionName: 'burn',
       args: [ tokenId ]
   });

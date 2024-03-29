@@ -2,28 +2,31 @@ import { BigNumber, ethers } from "ethers";
 import { UserOperationBuilder, Client } from "userop";
 import uri from "../nft/uri.json";
 import dotenv from "dotenv";
-import nft from "../deployments/polygon_mumbai/NFT.json";
-import vsa from "../artifacts/contracts/protocol/SmartAccount.sol/SmartAccount.json";
-import entrypoint from "../artifacts/contracts/core/EntryPoint.sol/EntryPoint.json";
-import mktplace from '../deployments/base_goerli/MarketPlace.json';
-import receipts from '../deployments/base_goerli/ReceiptNFT.json';
+import nft from "../deployments/sepolia/TestNFT.json"
+import vsa from "../artifacts/contracts/SmartAccount.sol/SmartAccount.json";
+import entrypoint from "../artifacts/contracts/mock/EntryPoint.sol/EntryPoint.json";
+// import mktplace from '../deployments/base_goerli/MarketPlace.json';
+// import receipts from '../deployments/base_goerli/ReceiptNFT.json';
 import { arrayify } from "ethers/lib/utils";
 
 
 dotenv.config({ path: __dirname+'/../.env' });
 
 // const networkID = 84531;
-const networkID = 80001 // mumbai
+// const networkID = 80001 // mumbai
+const networkID = 11155111 // sepolia
 const pkey = process.env.PRIVATE_KEY;
-const apikey = process.env.MUMBAI_ALCHEMY_API_KEY;
+// const apikey = process.env.MUMBAI_ALCHEMY_API_KEY;
+const apikey = process.env.SEPOLIA_ALCHEMY_API_KEY;
 const dummy = process.env.DUMMY_ADDR;
 // const rpc = process.env.BASE_GOERLI_PROVIDER;
 const walletAddress = "0x088F73ADf40B43c74aEd612FC14186A9d44e7Cce";
 const walletSignerKey = process.env.WALLET_SIGNER_KEY;
-const entryPointAddress = "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789";
+const entryPointAddress = "0x5FF137D4b0FDCD49DcA30c7CF57E578a026d2789"; // mumbai, baseGoerli, sepolia
 const bundler = process.env.BUNDLER_API;
 const walletSignerAddr = process.env.WALLET_SIGNER_ADDR;
-const provider = new ethers.providers.AlchemyProvider(networkID, apikey);
+// const provider = new ethers.providers.AlchemyProvider(networkID, apikey);
+const provider = new ethers.providers.JsonRpcProvider(`https://eth-sepolia.g.alchemy.com/v2/${apikey}`);
 
 const checkSupply = async () => {
     const contract  = new ethers.Contract(nft.address, nft.abi, provider);
@@ -40,7 +43,7 @@ const getOwner = async() => {
     console.log('owner', owner);
     console.log('address',nft.address)
 }
-getOwner()
+// getOwner()
 
 const test = async () => {
     // const bytecode = await provider.getCode(entryPointAddress);
@@ -75,7 +78,7 @@ const mint = async () => {
     // 
     const to = await signer.getAddress();
     // 
-    const mint = await contract.safeMint(to, uri.elf);
+    const mint = await contract.safeMint(to, uri.millfalcon);
     const receipt = await mint.wait();
     console.log(receipt);
 
@@ -85,37 +88,37 @@ const mint = async () => {
     const owner = await contract.ownerOf(tokenId);
     console.log('owner == wallet : ',owner == to);
 }
-// mint();
+mint();
 
 
 const PKEY_2 = process.env.PRIVATE_KEY_2;
-const eoaTransfer = async (tokenId: number) =>{
-    if(!pkey ) throw new Error("missing env");
-    const signer = new ethers.Wallet(pkey, provider);
-    // 
-    const contract = new ethers.Contract(receipts.address, receipts.abi, signer); // RECEIPTS
-    // const contract = new ethers.Contract(nft.address, nft.abi, signer); // NFT
-    // 
-    const recipient = '0x8957dBa32B08B904677F6c99994c88d6D39704Ca';
-    // 
-    console.log(`\nsending token ${tokenId.toString()} to ${recipient} ... `);
+// const eoaTransfer = async (tokenId: number) =>{
+//     if(!pkey ) throw new Error("missing env");
+//     const signer = new ethers.Wallet(pkey, provider);
+//     // 
+//     const contract = new ethers.Contract(receipts.address, receipts.abi, signer); // RECEIPTS
+//     // const contract = new ethers.Contract(nft.address, nft.abi, signer); // NFT
+//     // 
+//     const recipient = '0x8957dBa32B08B904677F6c99994c88d6D39704Ca';
+//     // 
+//     console.log(`\nsending token ${tokenId.toString()} to ${recipient} ... `);
 
-    const tx = await contract.transferFrom(signer.address, recipient, tokenId);
-    console.log(await tx.wait());
+//     const tx = await contract.transferFrom(signer.address, recipient, tokenId);
+//     console.log(await tx.wait());
 
-    console.log('\nchecking new owner... ');
-    const newOwner = await contract.ownerOf(tokenId);
-    console.log('new owner == recipient', newOwner == recipient);
+//     console.log('\nchecking new owner... ');
+//     const newOwner = await contract.ownerOf(tokenId);
+//     console.log('new owner == recipient', newOwner == recipient);
     
-}
+// }
 // eoaTransfer(18);
 
-const batchEOAtransfer = async(nZero: number, n: number) => {
-    let i;
-    for(i=nZero; i<=n; i++ ) {
-        await eoaTransfer(i);
-    }
-}
+// const batchEOAtransfer = async(nZero: number, n: number) => {
+//     let i;
+//     for(i=nZero; i<=n; i++ ) {
+//         await eoaTransfer(i);
+//     }
+// }
 
 // batchEOAtransfer(2, 9);
 
@@ -233,7 +236,7 @@ const test2 = async() => {
     const index = await wallet.getTokenIndex(nft.address, 0);
     const rentals = await wallet.getRentals();
     console.log('lender', rentals[index].lender);
-    console.log(mktplace.address)
+    // console.log(mktplace.address)
 }
 // test2();
 
