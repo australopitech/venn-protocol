@@ -9,11 +9,11 @@ import Link from 'next/link';
 // import { SignInButton } from '@/components/dashboard/dashboard-layout/dashboard-layout';
 import { useConnectModal } from '@rainbow-me/rainbowkit';
 import { useRouter, usePathname } from 'next/navigation';
-import { useAccount, useDisconnect } from 'wagmi';
+import { useAccount, useDisconnect, useNetwork, useSwitchNetwork } from 'wagmi';
 // import { signOut } from '@/app/venn-provider';
-import { useSmartAccount, useSmartAccountAddress, useVsaUpdate} from '@/app/account/venn-provider';
+import { activeNetwork, useSmartAccount, useSmartAccountAddress, useVsaUpdate} from '@/app/account/venn-provider';
 import { compactString } from '@/utils/utils';
-import Tooltip from '../tooltip/tooltip';
+import { Tooltip } from '../tooltip/tooltip';
 import { LoadingDots } from '../loading/loading';
 
 export interface NavBarProps {
@@ -37,10 +37,13 @@ const ConnectButton = ({connectText} : ConnectButtonProps) => {
   const path = usePathname();
   const [showDisconnect, setShowDisconnect] = useState(false);
   const [disconnectStlye, setDisconnectStyle] = useState<any>(styles.disconnectButton);
+  const [showSwitchNetwork, setShowSwitchNetwork] = useState(false);
   const vsaUpdate = useVsaUpdate();
   const [isClient, setIsClient] = useState(false);
   const compactAddress = compactString(vsa ?? eoa.address);
-  
+  const { chain } = useNetwork();
+  const { switchNetwork, error } = useSwitchNetwork();
+
   useEffect(() => {
     setTimeout(() => {
       setIsClient(true)
@@ -52,8 +55,8 @@ const ConnectButton = ({connectText} : ConnectButtonProps) => {
       !path.includes("dashboard") &&
       !showDisconnect
       ){  
-        setShowDisconnect(true);
         setDisconnectStyle(styles.primaryButton)
+        setShowDisconnect(true);
         setTimeout(() => {
           setShowDisconnect(false);
           setDisconnectStyle(styles.disconnectButton)
@@ -64,7 +67,28 @@ const ConnectButton = ({connectText} : ConnectButtonProps) => {
       }
   }, [showDisconnect, setShowDisconnect, vsaUpdate]);
 
-  if (isClient && eoa.isConnected) return <div className={disconnectStlye} onClick={() => onDisconnect()}>{(path.includes("dashboard") || showDisconnect) ? "Disconnect" : compactAddress}</div>
+  const onSwitchNetwork = () => {
+    if(!showSwitchNetwork) {
+      setShowSwitchNetwork(true);
+      setTimeout(() => {
+        setShowSwitchNetwork(false);
+      }, 5000);
+    } else {
+      if(switchNetwork) switchNetwork(activeNetwork.id)
+      else {
+        if(error) alert(error.message)
+        else alert('Something went wrong! Please use your wallet to switch to Sepolia testnet.')
+      }
+    }
+  }
+
+  if (isClient && eoa.isConnected) {
+    return (
+      chain?.id === activeNetwork.id 
+        ? <div className={disconnectStlye} onClick={() => onDisconnect()}>{(path.includes("dashboard") || showDisconnect) ? "Disconnect" : compactAddress}</div>
+        : <div className={styles.wrongNetwork} onClick={() => onSwitchNetwork()}> {showSwitchNetwork? "Switch Networks" : "Wrong Network"} </div>
+    );
+  }
   else if (isClient && openConnectModal) return (
     <div className={styles.primaryButton} onClick={() => openConnectModal()}>
     {connectText? connectText : 'Connect Wallet'}
