@@ -10,7 +10,6 @@ import { useAccount, usePublicClient, useWalletClient } from 'wagmi';
 import { baseGoerli } from 'viem/chains';
 import { convertFromSec, convertUnitToSec } from '@/utils/utils';
 import { formatEther, getAddress } from 'viem';
-import { burnMockNFT, getTestNFTcontractAddress } from '@/utils/demo';
 import { useListingData } from '@/hooks/nft-data';
 import { getReceiptsContractAddress } from '@/utils/contractData';
 import { useSmartAccount } from '@/app/account/venn-provider';
@@ -146,12 +145,10 @@ export default function NftCard ({
           setIsRental(false);
     }
 
-    try{
-      resolveIsRentedOut();
-      resolveIsRental();
-    } catch(err) {
-      setError(err);
-    }
+    
+    resolveIsRentedOut();
+    resolveIsRental();
+    
 
   }, [client, holder, account, memoizedListing]);
 
@@ -167,11 +164,11 @@ export default function NftCard ({
     ) setLoading(false);
   },[isListed, isRentedOut, isRental, memoizedListing])
 
-  console.log(tokenId, contractAddress)
-  console.log(tokenId, 'listing', listing)
-  console.log(tokenId, 'loading', loading);
-  console.log(tokenId, 'error', error)
-  console.log('tokenId', tokenId, 'isListed', isListed, 'isRentedOut', isRentedOut, 'isRental', isRental, 'isReceipt', getAddress(contractAddress) === getReceiptsContractAddress() )
+  // console.log(tokenId, contractAddress)
+  // console.log(tokenId, 'listing', listing)
+  // console.log(tokenId, 'loading', loading);
+  // console.log(tokenId, 'error', error)
+  // console.log('tokenId', tokenId, 'isListed', isListed, 'isRentedOut', isRentedOut, 'isRental', isRental, 'isReceipt', getAddress(contractAddress) === getReceiptsContractAddress() )
   
   return (
     <div className={classNames(styles.nftCardContainer, currentPage === 'market' ? styles.nftCardMarketContainer : '')}>
