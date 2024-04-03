@@ -171,7 +171,7 @@ export const DialogNotOwnedListedDescription = ({
         <h3 className={styles['priceDescription']}>
             Price:
             <span className={styles['priceCurrency']}>
-              {listingData.data?.price !==undefined ? parseFloat(formatEther(convertUnitToSec(listingData.data.price, timeUnit))).toPrecision(4) : ""} {chain?.nativeCurrency.symbol ?? "MATIC"}/
+              {listingData.data?.price !==undefined ? parseFloat(formatEther(convertUnitToSec(listingData.data.price, timeUnit))).toPrecision(4) : ""} ETH/
               <TimeUnitSelect selected={timeUnit} setSelected={setTimeUnit} />
             </span>
         </h3>

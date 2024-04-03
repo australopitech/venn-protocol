@@ -89,7 +89,7 @@ const ShowBalance = ({address, isSigner, setShowFaucetMessage} : ShowBalanceProp
             {bal? parseFloat(formatEther(bal.value)).toFixed(4) : ''}
             </span>
             <span className={styles.balanceCurrency}>
-              {bal && chain?.nativeCurrency.symbol}
+              {bal && "ETH"}
             </span>
           </div>
         </div>}

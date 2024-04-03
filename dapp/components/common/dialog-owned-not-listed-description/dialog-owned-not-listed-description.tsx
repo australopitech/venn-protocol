@@ -240,7 +240,7 @@ export const DialogOwnedNotListedDescription = ({
             onChange={(e) => handlePriceChange(e)}
           />
           <div>
-              <span className={styles.eth}>{activeNetwork.nativeCurrency.symbol}/{timeUnit === 'day' ? "Day" : timeUnit === 'hour' ? "Hour" : "Minute"}</span>
+              <span className={styles.eth}>ETH/{timeUnit === 'day' ? "Day" : timeUnit === 'hour' ? "Hour" : "Minute"}</span>
           </div>
         </div>
         {isPriceInvalid && <span className={styles.invalidValue}>Set a valid price. Value cannot be negative!</span>}

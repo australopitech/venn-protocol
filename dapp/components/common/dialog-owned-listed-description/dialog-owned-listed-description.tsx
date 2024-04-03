@@ -173,7 +173,7 @@ export const DialogOwnedListedDescription = ({
         <br />
         {/* <span>Price: </span><EditableInput /> */}
         <span className={styles.nftLoanInfo}>
-          {`Price: ${listing.data?.price !== undefined? parseFloat(formatEther(convertUnitToSec(listing.data.price, timeUnit))).toPrecision(4) : ""} ${chain?.nativeCurrency.symbol}/`}
+          {`Price: ${listing.data?.price !== undefined? parseFloat(formatEther(convertUnitToSec(listing.data.price, timeUnit))).toPrecision(4) : ""} ETH/`}
           <TimeUnitSelect selected={timeUnit} setSelected={setTimeUnit} />
         </span>
         <span className={styles.nftLoanInfo}>

@@ -199,7 +199,7 @@ export default function ApproveDialog ({ onApprove, onReject, onClose, loading, 
                                     <p className={styles.approveDescription}>
                                       <br/>
                                       - Gas Fee<span className={styles.approveDescriptionMeta}>(estimated)</span>: 
-                                      {isLoading? ' loading...' : (gas && gasFee)? ' ' + formatUnits(gas * gasFee, decimals)+' MATIC' : ` error fetching gas: ${gasError?.message}`}
+                                      {isLoading? ' loading...' : (gas && gasFee)? ' ' + formatUnits(gas * gasFee, decimals)+' ETH' : ` error fetching gas: ${gasError?.message}`}
                                     </p>
                                     <p className={styles.approveDescription}>
                                       <br/>
@@ -208,7 +208,7 @@ export default function ApproveDialog ({ onApprove, onReject, onClose, loading, 
                                       : (value !== undefined && gas && gasFee)
                                         ? <span>
                                           {formatUnits(value, decimals)} + <span className={styles.approveDescriptionMeta}>gas fee </span>
-                                          = {formatUnits(value + (gas * gasFee), decimals)} MATIC
+                                          = {formatUnits(value + (gas * gasFee), decimals)} ETH
                                           </span>
                                         : null
                                       }
