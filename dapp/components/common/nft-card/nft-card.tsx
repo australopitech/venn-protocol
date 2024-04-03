@@ -12,7 +12,7 @@ import { convertFromSec, convertUnitToSec } from '@/utils/utils';
 import { formatEther, getAddress } from 'viem';
 import { useListingData } from '@/hooks/nft-data';
 import { getReceiptsContractAddress } from '@/utils/contractData';
-import { useSmartAccount } from '@/app/account/venn-provider';
+import { activeNetwork, useSmartAccount } from '@/app/account/venn-provider';
 
 export interface NftCardProps {
   imageURI: string;
@@ -190,7 +190,7 @@ export default function NftCard ({
                 : <span className={styles.listed}>
                     Rent price:
                     <span className={styles.price}>
-                      {listing.data?.price != undefined ? `${parseFloat(formatEther(convertUnitToSec(listing.data.price, 'day'))).toPrecision(2)} MATIC/Day` : 'err'}
+                      {listing.data?.price != undefined ? `${parseFloat(formatEther(convertUnitToSec(listing.data.price, 'day'))).toPrecision(2)} ${activeNetwork.nativeCurrency.symbol}/Day` : 'err'}
                     </span>
                   </span>
               )
