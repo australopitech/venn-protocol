@@ -5,7 +5,7 @@ import { OpenloginAdapter, OPENLOGIN_NETWORK } from "@web3auth/openlogin-adapter
 import { CHAIN_NAMESPACES } from "@web3auth/base";
 
 const name = "Venn Smart Wallet";
-const iconUrl = "https://raw.githubusercontent.com/australopitech/venn-protocol/app-router/dapp/public/icon.png";
+const iconUrl = "https://raw.githubusercontent.com/australopitech/venn-protocol/main/dapp/public/favicon-32x32.png";
 
 //@ts-ignore
 export const rainbowWeb3AuthConnector = ({ chains }) => {
