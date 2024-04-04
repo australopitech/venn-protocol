@@ -34,6 +34,16 @@ export const Logo = ({ className }: LogoProps) => {
     );
 };
 
+export const NewLogo = () => {
+	return (
+		<div className={styles.logo}>
+			<svg width="38" height="38" viewBox="0 0 418 417" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<circle cx="179" cy="179" r="171.5" fill="#F0A6CA" stroke="white" strokeWidth="15"/>
+				<circle cx="282" cy="281" r="128.5" fill="#EFC3E6" fill-opacity="0.75" stroke="white" strokeWidth="15"/>
+			</svg>
+		</div>
+	)
+}
 
 export const Name = () => {
 	return (
