@@ -12,19 +12,19 @@ const VideoIcon = () => {
 
 
 const Video1element = () => {
-    return <iframe width="inherit" height="inherit" src="https://www.youtube.com/embed/1_JOks-MBw0?si=XCq_vCj5Whm9RD9e" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
+    return <iframe width="inherit" height="inherit" src="https://www.youtube.com/embed/FjcQ5OfarbQ?si=u1fLctbrcDg_3WLi" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
 }
 
 const Video2element = () => {
-    return <iframe width="inherit" height="inherit" src="https://www.youtube.com/embed/iNqPD037gns?si=tivOvXQfLV0KJE30" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
+    return <iframe width="inherit" height="inherit" src="https://www.youtube.com/embed/_T7P2YJ-vWY?si=wV4XkiNXnN68OVxZ" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
 }
 
 const Video3element = () => {
-    return <iframe width="inherit" height="inherit" src="https://www.youtube.com/embed/OR1TlEdT9c4?si=E4PVkIOmgnLipHeD" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
+    return <iframe width="inherit" height="inherit" src="https://www.youtube.com/embed/QW8p02uKGYo?si=7z-wWMkrEhCjlq54" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
 }
 
 const Video4element = () => {
-    return <iframe width="inherit" height="inherit" src="https://www.youtube.com/embed/GURPNdOPatA?si=xPAgT_fWRD9t0iL7" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
+    return <iframe width="inherit" height="inherit" src="https://www.youtube.com/embed/_SLmlgF3g4E?si=QvKDHNuqkbgwYsPa" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerPolicy="strict-origin-when-cross-origin" allowFullScreen></iframe>
 }
 
 
