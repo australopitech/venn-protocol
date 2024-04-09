@@ -37,7 +37,7 @@
 }
 
 .button:hover {
-    background: #F0A6CA;
+    background: linear-gradient(to right bottom, #EFC3E6, #F0A6CA);
 }
 
 .menuIcon {
