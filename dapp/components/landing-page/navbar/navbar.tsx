@@ -1,7 +1,7 @@
 import { NewLogoPlain } from "../../common/logo/logo";
 import styles from "./navbar.module.css";
 import Link from "next/link";
-
+import { tilt_neon } from "@/app/fonts";
 
 const MenuIcon = () => {
     return (
