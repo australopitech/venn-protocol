@@ -4,10 +4,10 @@
     align-items: center;
     justify-content: center;
     gap: 132px;
+    padding-bottom: 60px;
 }
 
 .slogan {
-    font-family: 'Passion One';
     font-size: 82px;
     color: #000000;
     width: 390px;

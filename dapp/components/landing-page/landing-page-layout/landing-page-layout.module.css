@@ -1,7 +1,7 @@
 .main {
     display: flex;
     flex-direction: column;
-    gap: 160px;
+    gap: 220px;
 }
 
 @media (max-width: 768px) {

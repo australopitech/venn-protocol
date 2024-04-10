@@ -1,0 +1,33 @@
+
+.card {
+    padding-block: 46px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #ffffff;
+    border-radius: 12px;
+    margin-inline: 16px;
+    gap: 25%;
+}
+
+.graphic {
+    width: 275px;
+    height: auto;
+}
+
+.textContainer {
+    width: 335px;
+    gap: 8px;
+}
+
+.title {
+    text-align: left;
+    font-size: 40px;
+    font-weight: 700;
+    color: #000000;
+}
+
+.description {
+    font-size: 20px;
+    color: #989595;
+}
