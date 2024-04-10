@@ -2,6 +2,7 @@ import { NewLogoPlain } from "../../common/logo/logo";
 import styles from "./navbar.module.css";
 import Link from "next/link";
 import { tilt_neon } from "@/app/fonts";
+import classNames from "classnames";
 
 const MenuIcon = () => {
     return (
@@ -13,7 +14,7 @@ const MenuIcon = () => {
 export default function NavBar () {
 
   return (
-    <div className={styles.navbar}>
+    <div className={classNames(styles.navbar, tilt_neon.className)}>
         {/* <div style={{ display: "flex", gap: "8px", alignItems:"center"}}> */}
             <NewLogoPlain />
         {/* </div> */}
