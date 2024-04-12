@@ -17,28 +17,55 @@
 .navItem {
     color: #000000;
     border-bottom: 2px solid transparent;
-    /* font-family: 'SFRounded', sans-serif; */
-    font-weight: 700;
+    /* font-weight: 700; */
 }
 
 .navItem:hover {
-    border-bottom: 2px solid #000000;
+    border-bottom: 1px solid #000000;
 }
 
-.button {
-    padding: 12px;
-    background: linear-gradient(to right bottom, rgba(87, 87, 87, 0.4), rgb(87, 87, 87, 0.5));
+.logo {
+    width: 42px;
+    height: 42px;
+}
+
+.button1 {
+    padding: 8px;
+    background: #ffffff;
     color: #000000;
-    font-family: 'SFRounded', sans-serif;
-    font-weight: 700;
+    /* font-weight: 700; */
+    outline: 2px solid #000000;
     border: none;
-    border-radius: 8px;
+    border-radius: 25px;
     cursor: pointer;
 }
 
-.button:hover {
-    background: linear-gradient(to right bottom, #EFC3E6, #F0A6CA);
+.button1:hover {
+    transform: scale(1.05);
 }
+
+.button1:active {
+    transform: scale(.95);
+}
+
+.button2 {
+    padding: 8px;
+    color: #ffffff;
+    background: #000000;
+    /* font-weight: 700; */
+    outline: 0.5px solid #ffffff;
+    border-radius: 25px;
+    cursor: pointer;
+}
+
+.button2:hover {
+    transform: scale(1.05);
+}
+
+.button2:active {
+    transform: scale(.95);
+}
+
 
 .menuIcon {
     display: none;

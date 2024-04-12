@@ -12,8 +12,14 @@ export default function Banner () {
         <div className={styles.logo}>
             <NewLogoName/>
         </div>
-        <div className={classNames(styles.slogan, passion_one.className)}>
-            Unlock the real value of NFTs.
+        <div className={styles.sloganContainer}>
+          <div className={styles.slogan}>
+              Unlock the real value of NFTs.
+          </div>
+          <div className={styles.buttonsContainer}>
+            <div className={styles.button2}>TRY THE DEMO</div>
+            <div className={styles.button1}>LEARN MORE</div>
+          </div>
         </div>
     </div>
   )

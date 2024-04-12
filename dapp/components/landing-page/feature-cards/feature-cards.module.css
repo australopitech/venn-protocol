@@ -1,0 +1,169 @@
+
+
+.cardContainer {
+    display: flex;
+    gap: 10%;
+    margin-inline: 20px;
+    margin-top: 10px;
+}
+
+.card {
+    display: flex;
+    width: 26.67%;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+    background: #000000;
+    color: #ffffff;
+    border-radius: 30px;
+    padding-block: 30px;
+}
+
+.graphic {
+    width: 35%;
+    height: auto;
+}
+
+.graphicWide {
+    width: 55%;
+    height: auto;
+}
+
+.textContainer{
+    display: flex;
+    flex-direction: column;
+    width: 84%;
+    gap: 30px;
+}
+
+.title {
+    font-size: 24px;
+    text-align: left;
+}
+
+.description {
+    font-size: 16px;
+    text-align: left;
+}
+
+@media (max-width: 1440px) {
+    .cardContainer{
+        gap: 8%;
+    }
+    .card {
+        width: 28%;
+    }
+}
+
+
+@media (max-width: 1374px) {
+    .cardContainer{
+        gap: 4%;
+    }
+    .card {
+        width: 30.67%;
+    }
+}
+
+@media (max-width: 1280px) {
+    .textContainer {
+        gap: 15px;
+    }
+    .title {
+        font-size: 20px;
+    }
+    
+    .description {
+        font-size: 14px;
+    }
+
+    
+    .cardContainer {
+        gap: 4%
+    }
+    .card {
+        width: 30.67%;
+    }
+}
+
+
+@media (max-width: 1080px) {
+    .title {
+        font-size: 18px;
+    }
+
+    .description {
+        font-size: 13px;
+    }
+
+}
+
+@media (max-width: 1024px) {
+    .cardContainer{
+        gap: 1%;
+        margin-inline: 0px;
+    }
+    .card {
+        width: 32.67%;
+    }   
+}
+
+@media (max-width: 768px) {
+    .cardContainer {
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 20px;
+    }
+    .card {
+        width: 360px;
+    }
+    .title {
+        font-size: 24px;
+    }
+    .description {
+        font-size: 16px;
+    }
+}
+
+@media (max-width: 601px) {
+    .card {
+        width: 70%;
+    }
+    
+}
+@media (max-width: 575px) {
+    .title {
+        font-size: 20px;
+    }
+    .description {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 414px) {
+    .card {
+        width: 80%;
+    }
+}
+
+@media (max-width: 360px) {
+    .card {
+        width: 85%;
+    }
+    .title {
+        font-size: 18px;
+    }
+    .description {
+        font-size: 13px;
+    }
+}
+
+@media (max-height: 414px) {
+    .card {
+        flex-direction: row;
+        padding-inline: 30px;
+        width: 70%;
+    }
+}

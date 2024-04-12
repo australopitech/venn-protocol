@@ -1,0 +1,79 @@
+
+.body {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+    margin-inline: 30px;
+}
+
+.content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+}
+
+.arrowContainer {
+    display: flex;
+    align-items: center;
+    width: 80px;
+}
+.arrow{
+    width: 34px;
+    height: auto;
+    cursor: pointer;
+}
+.arrow:hover{
+    transform: scale(1.1);
+}
+.arrow:active{
+    transform: scale(.95);
+}
+
+.disabled{
+    opacity: 0.2;
+    cursor: default;
+}
+.disabled:hover{
+    transform: none;
+}
+.disabled:active{
+    transform: none;
+}
+
+.gameCard {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-image: url('../../../public/game-controller.svg');
+    aspect-ratio: 1070 / 689;
+    width: 80%;
+    max-width: 1070px;
+    height: auto;
+    padding-block: 20px;
+    gap: 30px;
+}
+
+.cardTitle {
+    text-align: center;
+    font-size: 54px;
+    font-weight: 800;
+    color: #000000;
+    /* color: #ffffff; */
+    /* -webkit-text-stroke: 4px #000000; */
+}
+
+.cardDescription {
+    width: 65%;
+    font-size: 28px;
+    text-align: justify;
+    color: #000000;
+}
+
+.dotsContainer {
+    display: flex;
+    justify-content: center;
+    align-content: end;
+    padding-top: 120px;
+}

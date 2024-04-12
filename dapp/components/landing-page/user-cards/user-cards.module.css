@@ -1,33 +1,108 @@
 
 .card {
-    padding-block: 46px;
+    padding-block: 5vw;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #ffffff;
-    border-radius: 12px;
-    margin-inline: 16px;
-    gap: 25%;
+    gap: 18%;
 }
 
 .graphic {
-    width: 275px;
+    width: 400px;
     height: auto;
 }
 
 .textContainer {
-    width: 335px;
-    gap: 8px;
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    gap: 30px;
 }
 
 .title {
     text-align: left;
     font-size: 40px;
-    font-weight: 700;
+    font-weight: 400;
     color: #000000;
 }
 
 .description {
     font-size: 20px;
-    color: #989595;
+    color: #1B1719;
+}
+
+.linkContainer {
+    display: flex;
+    justify-content: end;
+}
+
+.link {
+    color: #000000;
+    padding: 8px;
+    border: 2px solid #000000;
+    border-radius: 25px;
+    cursor: pointer;
+}
+.link:hover {
+    transform: scale(1.05);
+}
+
+
+@media (max-width: 960px) {
+    .title {
+        font-size: 36px;
+    }
+}
+
+@media (max-width: 866px) {
+    .title {
+        font-size: 32px;
+    }
+}
+
+@media (max-width: 768px) {
+    .card {
+        flex-direction: column;
+    }
+    
+    .graphic {
+        width: 40vw;
+    }
+    .description {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 466px) {
+    .title {
+        font-size: 28px;
+    }
+    .description {
+        font-size: 16px;
+    }
+    .textContainer {
+        gap: 15px;
+        width: 85vw;
+    }
+}
+
+
+@media (max-height: 601px) {
+    .card {
+        flex-direction: row;
+        gap: 50px;
+    }
+    .graphic {
+        width: 30vw;
+    }
+    .textContainer{
+        gap: 15px;
+        width: 50vw;
+    }
+    .title {
+        font-size: 28px;
+    }
+    .description {
+        font-size: 16px;
+    }
 }

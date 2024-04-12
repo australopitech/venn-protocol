@@ -1,8 +1,8 @@
+import classNames from "classnames";
 import { NewLogoPlain } from "../../common/logo/logo";
 import styles from "./navbar.module.css";
 import Link from "next/link";
-import { tilt_neon } from "@/app/fonts";
-import classNames from "classnames";
+import { source_code_pro } from "@/app/fonts";
 
 const MenuIcon = () => {
     return (
@@ -14,22 +14,26 @@ const MenuIcon = () => {
 export default function NavBar () {
 
   return (
-    <div className={classNames(styles.navbar, tilt_neon.className)}>
-        {/* <div style={{ display: "flex", gap: "8px", alignItems:"center"}}> */}
+    <div className={styles.navbar}>
+        <div className={styles.logo}>
             <NewLogoPlain />
-        {/* </div> */}
+        </div>
         <div className={styles.navItems}>
             <div className={styles.navItem}>
-                <a href="https://australopitech.gitbook.io/venn/" target="_blank">About</a>
+                <a href="https://australopitech.gitbook.io/venn/" target="_blank">ABOUT</a>
             </div>
             <div className={styles.navItem}>
-                <a href="https://australopitech.gitbook.io/venn/overview/guides" target="_blank">Guides</a>
+                <a href="https://australopitech.gitbook.io/venn/overview/guides" target="_blank">GUIDES</a>
             </div>
             <div className={styles.navItem}>
-                <Link href="/contact">Contact Us</Link>
+                <Link href="/contact" target="_blank">CONTACT US</Link>
             </div>
-            <button className={styles.button}>Launch Market Place</button>
-            <button className={styles.button}>Launch Dashboard</button>
+            <Link href="/" target="_blank">
+                <button className={classNames(styles.button2, source_code_pro.className)}>LAUNCH MARKETPLACE</button>
+            </Link>
+            <Link href="/dashboard">
+                <button className={classNames(styles.button1, source_code_pro.className)}>LAUNCH DASHBOARD</button>
+            </Link>
         </div>
         <div className={styles.menuIcon}>
                 <MenuIcon/>

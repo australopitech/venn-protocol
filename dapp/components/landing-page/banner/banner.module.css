@@ -3,19 +3,53 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 132px;
-    padding-bottom: 60px;
+    gap: 300px;
+    border: 3px solid #000000;
+    border-radius: 30px;
+    padding-top: 8%;
+    padding-bottom: 10%;
+    /* padding-inline: 6%; */
+}
+
+.sloganContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+.buttonsContainer {
+    display: flex;
+    gap: 12px;
+}
+
+
+.button1 {
+    padding: 8px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    background: #ffffff;
+    color: #000000;
+    outline: 2px solid #000000;
+}
+.button2 {
+    padding: 8px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    color: #ffffff;
+    background: #000000;
+    outline: 2px solid #ffffff;
 }
 
 .slogan {
-    font-size: 82px;
+    font-size: 64px;
     color: #000000;
     width: 390px;
     height: 281px;
 }
 
 .logo {
-    width: 40%;
+    width: 20%;
     height: auto;
 }
 
@@ -28,12 +62,29 @@
 
 @media (max-width: 1024px) {
     .banner {
-        flex-direction: column-reverse;
-        gap: 86px;
+        gap: 150px;
     }
     
-    .logo {
-        width: 80%;
+    .slogan {
+        font-size: 52px;
+        height: 220px;
+        width: 320px;
+    }
+    
+}
+
+@media (max-width: 768px) {
+    .banner {
+        flex-direction: column;
+        gap: 15vw;
+    }
+
+    .logo{
+        width: 40%;
+    }
+    .sloganContainer{
+        justify-content: center;
+        align-items: center;
     }
 
     .slogan {
@@ -45,17 +96,82 @@
 @media (max-width: 494px) {
     .slogan {
         width: 80%;
-        font-size: 64px;
+        font-size: 52px;
     }
     .banner {
         gap: 10vw;
     }
 }
 
-@media (max-width: 353px) {
+@media (max-width: 471px) {
     .slogan {
-        font-size: 42px;
+        font-size: 46px;
+        height: 200px;
+    }
+}
+
+
+@media (max-width: 414px) {
+    .banner {
+        gap: 41.4px
+    }
+
+    .logo {
+        width: 50%;
+    }
+    
+    .slogan {
+        font-size: 32px;
         height: 140px;
+    }
+
+}
+
+@media (max-width: 314px) {
+    .slogan {
+        font-size: 28px;
+        height: 100px;
+    }
+
+}
+
+@media (max-width: 278px) {
+    .slogan {
+        font-size: 26px;
+    }
+}
+
+@media (max-height: 600px) {
+    .banner {
+        flex-direction: row;
+        gap: 15vw;
+        padding-block: 5%;
+    }
+    .logo {
+        width: 22%;
+    }
+}
+
+@media (max-height: 460px) {
+    .banner {
+        padding-block: 5%;
+    }
+
+    .slogan {
+        font-size: 46px;
+        height: 180px;
+    }
+}
+
+@media (max-height: 414px) {
+    
+    .logo {
+        width: 20%;
+    }
+
+    .slogan {
+        font-size: 34px;
+        height: 100px;
     }
 
 }

@@ -1,0 +1,67 @@
+
+.body {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 100px;
+    padding-bottom: 80px;
+    padding-inline: 150px;
+    border: 3px solid #000000;
+    border-radius: 30px;
+    font-size: 20px;
+}
+
+.logo {
+    width: 155px;
+    height: auto;
+}
+
+.trademark {
+    display: flex;
+    flex-direction: column;
+    width: 170px;
+    gap: 5px;
+}
+
+.description {
+    color: #000000;
+    font-size: 16px;
+    text-align: justify;
+    width: 100%;
+}
+
+.resources{
+    display: flex;
+    align-items: center;
+    height: 140px;
+    gap: 40px;
+}
+
+.linkContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: left;
+    align-content: center;
+    height: 100%;
+    color: #1B1719;
+}
+
+.link {
+    font-size: 20px;
+    cursor: pointer;
+}
+.link:hover {
+    text-decoration: underline;
+}
+
+.socials {
+    
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 40px;
+}
+
