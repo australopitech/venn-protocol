@@ -71,6 +71,12 @@
     display: none;
 }
 
+@media (max-width: 900px) {
+    .navbar{
+        font-size: 14px;
+    }    
+}
+
 @media (max-width: 768px) {
     .navItems {
         display: none;

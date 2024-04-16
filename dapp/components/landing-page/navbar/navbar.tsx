@@ -29,10 +29,10 @@ export default function NavBar () {
                 <Link href="/contact" target="_blank">CONTACT US</Link>
             </div>
             <Link href="/" target="_blank">
-                <button className={classNames(styles.button2, source_code_pro.className)}>LAUNCH MARKETPLACE</button>
+                <div className={classNames(styles.button2, source_code_pro.className)}>LAUNCH MARKETPLACE</div>
             </Link>
             <Link href="/dashboard">
-                <button className={classNames(styles.button1, source_code_pro.className)}>LAUNCH DASHBOARD</button>
+                <div className={classNames(styles.button1, source_code_pro.className)}>LAUNCH DASHBOARD</div>
             </Link>
         </div>
         <div className={styles.menuIcon}>
