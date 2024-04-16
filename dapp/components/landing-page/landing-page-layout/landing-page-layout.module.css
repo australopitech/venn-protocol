@@ -1,15 +1,18 @@
 .body {
-    padding: 24px;
+    padding-block: 24px;
+    padding-inline: 24px;
     display: flex;
     flex-direction: column;
     gap: 20px;
+    margin-inline: 2.5vw;
 }
 
 .title {
-    font-size: 48px;
+    font-size: 40px;
     text-align: left;
     padding-left: 15px;
     color: #000000;
+    padding-bottom: 10px;
 }
 
 .section{
@@ -39,8 +42,23 @@
 
 
 
-/* @media (max-width: 768px) {
-    .main {
-        gap: 80px;
+@media (max-width: 1024px) {
+    .body {
+        margin-inline: 0;
     }
-} */
+}
+
+@media (max-width: 768px) {
+    .body {
+        padding-inline: 10px;
+    }
+}
+
+@media (max-width: 601px) {
+    .body {
+        padding-inline: 5px;       
+    }
+    .title {
+        font-size: 32px;
+    }
+}
