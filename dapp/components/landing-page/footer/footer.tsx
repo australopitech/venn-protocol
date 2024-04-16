@@ -1,6 +1,6 @@
 import styles from './footer.module.css';
 import { YoutubeDark, GithubDark, DiscordDark, TwitterDark } from '@/components/common/social/social-logos';
-import { NewLogoName } from '@/components/common/logo/logo';
+import { Name, NewLogoName } from '@/components/common/logo/logo';
 
 
 export default function Footer () {
@@ -9,7 +9,8 @@ export default function Footer () {
     <div className={styles.body}>
         <div className={styles.trademark}>
             <div className={styles.logo}><NewLogoName/></div>
-            <div className={styles.description}><span style={{ letterSpacing: "3px"}}>Developed by</span> <span style={{ fontSize: "14px"}}>Australopitech, LLC.</span></div>
+            <div className={styles.name}><Name/></div>
+            <div className={styles.description}><span className={styles.developedBy}>Developed by</span> <span className={styles.company}>Australopitech, LLC.</span></div>
         </div>
         <div className={styles.resources}>
             <div className={styles.linkContainer}>
@@ -17,11 +18,11 @@ export default function Footer () {
                 <div className={styles.link}>Guides</div>
                 <div className={styles.link}>Contact Us</div>
             </div>
-            <div className={styles.grid}>
-                <YoutubeDark/>
-                <TwitterDark/>
-                <GithubDark/>
-                <DiscordDark/>
+            <div className={styles.socialsContainer}>
+                <div className={styles.socials}><YoutubeDark/></div>
+                <div className={styles.socials}><TwitterDark/></div>
+                <div className={styles.socials}><GithubDark/></div>
+                <div className={styles.socials}><DiscordDark/></div>
             </div>
         </div>
     </div>
