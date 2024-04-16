@@ -15,9 +15,11 @@ function Card ({ cardNum } : { cardNum : 1 | 2 | 3 }) {
 
   return (
     <div className={styles.gameCard}>
-        <div className={classNames(styles.cardTitle, orbitron.className)}>Gaming</div>
-        <div className={styles.cardDescription}>
-            Perfect to use with in-game items. Rent out CHARACTERS, WEAPONS, LAND, VEHICLES, or ANY item manifested as an NFT. TRY IT OUT before you buy it. Or make your asset PROFIT for you!
+        <div className={styles.text}>
+          <div className={classNames(styles.cardTitle, orbitron.className)}>Gaming</div>
+          <div className={styles.cardDescription}>
+              Perfect to use with in-game items. Rent out CHARACTERS, WEAPONS, LAND, VEHICLES, or ANY item manifested as an NFT. TRY IT OUT before you buy it. Or make your asset PROFIT for you!
+          </div>
         </div>
         <div className={styles.dotsContainer}>
             <Dots placement={cardNum}/>

@@ -19,7 +19,7 @@ export const RightArrow = () => {
 
 export const DotsFirst = () => {
     return (
-        <svg width="120" height="20" viewBox="0 0 120 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg viewBox="0 0 120 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clip-path="url(#clip0_11_38)">
             <circle cx="9.90553" cy="9.90553" r="8.90553" fill="black" stroke="black" stroke-width="2"/>
             <circle cx="59.9567" cy="9.90553" r="8.90553" fill="#FCFCFC" stroke="black" stroke-width="2"/>
