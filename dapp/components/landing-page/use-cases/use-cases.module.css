@@ -1,9 +1,12 @@
 
 .body {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    width: 90%;
     gap: 30px;
-    margin-inline: 30px;
+    /* margin-inline: 30px; */
+    padding-top: 50px;
+    /* height: fit-content; */
 }
 
 .content {
@@ -31,6 +34,15 @@
     transform: scale(.95);
 }
 
+.arrowNarrowContainer {
+    display: none;
+}
+.arrowNarrow {
+    width: 100%;
+    height: auto;
+    cursor: pointer;
+}
+
 .disabled{
     opacity: 0.2;
     cursor: default;
@@ -42,31 +54,43 @@
     transform: none;
 }
 
+/* .gameCard
+.metaverseCard
+.domainCard
+.accessCard {
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: 1698 / 1000;
+    width: 90%;
+    height: auto;
+} */
+
+
 .gameCard {
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    aspect-ratio: 1070 / 689;
-    width: 60%;
-    max-width: 1070px;
+    aspect-ratio: 1698 / 1000;
+    width: 90%;
     height: auto;
-    background-image: url('../../../public/game-controller.svg');
+    background-image: url('../../../public/cards/gaming-wide.svg');
     background-size: contain;
     background-repeat: no-repeat;
-    padding-block: 20px;
-    gap: 10%
+    /* padding-block: 20px; */
+    gap: 10%;
+    align-self: center;
 }
 
 .text {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 30px;
+    align-items: start;
+    gap: 40px;
+    width: 60%;
+    padding-left: 5%;
 }
 
 .cardTitle {
-    text-align: center;
+    text-align: left;
     font-size: 54px;
     font-weight: 800;
     color: #000000;
@@ -78,66 +102,81 @@
     width: 65%;
     font-size: 28px;
     text-align: justify;
+    line-height: 54px;
     color: #000000;
 }
 
 .dotsContainer {
     display: flex;
-    width: 120px;
+    width: 170px;
     height: auto;
-    justify-content: center;
-    align-content: end;
-    padding-top: 10%;
+    justify-self: end;
+    align-self: center;
+    padding-top: 8%;
 }
 
 @media (max-width: 1520px) {
+    .body {
+        width: 100%;
+    }
     .gameCard {
         /* background-size: 756px 560px; */
         gap: 8%;
-        padding-top: 5%;
     }
     .cardTitle {
         font-size: 48px;
     }
     .cardDescription {
-        font-size: 22px;
+        font-size: 24px;
+    }
+    .dotsContainer {
+        width: 150px;
+        padding-top: 6%;
     }
     
 }
 
 @media (max-width: 1440px) {
     .cardTitle {
-        font-size: 42px;
+        font-size: 46px;
     }
     .cardDescription {
-        font-size: 20px;
+        font-size: 22px;
     }
     .dotsContainer {
-        width: 100px;
+        width: 130px;
     }
 }
+
+
 
 @media (max-width: 1280px) {
-    .cardTitle {
+    /* .cardTitle {
         font-size: 38px;
-    }
+    } */
     .cardDescription {
-        font-size: 18px;
+        /* font-size: 18px; */
+        line-height: 50px;
     }
-    .dotsContainer {
+    /* .dotsContainer {
         width: 80px
-    }   
+    }    */
+    .text {
+        width: 70%;
+    }
 }
 
-@media (max-width: 1200px) {
-    .cardTitle {
-        font-size: 32px;
-    }
+@media (max-width: 1080px) {
+    /* .cardTitle {
+        font-size: 44px;
+    } */
     .cardDescription {
-        font-size: 16px;
+        font-size: 20px;
+        line-height: 46px;
     }
     .dotsContainer {
-        width: 70px;
+        width: 110px;
+        padding-top: 2%;
     }
 }
 
@@ -145,14 +184,28 @@
     /* .cardTitle {
         font-size: 28px;
     }
-    .cardDescription {
-        font-size: 14px;
-    }
     .dotsContainer {
         width: 60px;
     } */
-    .gameCard {
-        width: 65%;
+    .cardDescription {
+        font-size: 19px;
+        line-height: 42px;
+    }
+}
+
+@media(max-width: 960px) {
+    .text{
+        gap: 30px;
+        padding-left: 2%;
+    }
+    .cardTitle{
+        font-size: 44px;
+    }
+    .cardDescription {
+        line-height: 38px;
+    }
+    .dotsContainer {
+        width: 100px;
     }
 }
 
@@ -160,81 +213,152 @@
     /* .dotsContainer {
         padding-top: 6%;
     } */
-    .gameCard {
-        width: 68%;
+    .text {
+        width: 80%;
     }
 }
 
 @media (max-width: 800px) {
+    .cardDescription {
+        line-height: 32px;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .content {
+        width: 100%;
+        gap: 0;
+    }
     .gameCard {
-        width: 85%;
-    }       
+        aspect-ratio: 715 / 1200;
+        background-image: url('../../../public/cards/gaming-narrow.svg');
+        align-self: center;
+        align-items: center;
+        background-size: contain;
+        padding-top: 30px ;
+        /* width: 714.24px;
+        height: 1200; */
+    }
+    .arrowContainer{
+        display: none;
+    }
+    .arrowNarrowContainer {
+        display: flex;
+        align-items: end;
+        width: 3%;
+    }
+    .text {
+        width: 100%;
+        padding-left: 0;
+    }
+    .cardTitle {
+        display: flex;
+        text-align: center;
+        justify-content: space-between;
+        align-items: center;
+        place-self: center;
+        width: 90%;
+        font-size: 54px;
+    }
+    .cardDescription {
+        align-self: center;
+        font-size: 28px;
+        line-height: 54px ;
+        width: 90%;
+    }
 }
 
 @media (max-width: 667px) {
-    .gameCard {
+    /* .gameCard {
         width: 100%;
-    }
-    .dotsContainer {
-        padding-top: 6%;
-    }
-    .cardDescription {
-        font-size: 15px;
-    }
-    /* .cardTitle {
-        font-size: 28px;
     } */
+    /* .dotsContainer {
+        padding-top: 6%;
+    } */
+    .cardDescription {
+        font-size: 26px;
+    }
+    .cardTitle {
+        font-size: 50px;
+    }
 }
 
 @media (max-width: 622px) {
     .cardDescription {
-        font-size: 14px;
+        /* font-size: 14px; */
+        line-height: 50px;
     }
 }
 
 @media (max-width: 601px) {
-    .dotsContainer {
+    /* .dotsContainer {
         padding-top: 2%;
+    } */
+    .cardTitle {
+        font-size: 48px;
+    }
+    .cardDescription {
+        font-size: 24px;
     }
 }
 
 @media (max-width: 554px) {
     .text {
-        gap: 15px;
+        gap: 20px;
+        width: 100%;
     }
-    .cardDescription {
+    /* .cardDescription {
         letter-spacing: -.5px;
-    }
-    .gameCard {
+    } */
+    /* .gameCard {
         padding-top: 2%;
-    }
+    } */
 }
 
 @media (max-width: 528px) {
-    .text {
+    /* .text {
         gap: 10px;
-    }
+    } */
     .cardTitle {
-        font-size: 28px;
+        font-size: 46px;
     }
     .cardDescription {
-        font-size: 14px;
+        font-size: 23px;
+        line-height: 46px;
     }
 }
 
 @media (max-width: 490px) {
+    .gameCard {
+        width: 100%;
+    }
     .cardDescription {
-        font-size: 13px;
-        letter-spacing: -1.5px;
-        /* text-align: center; */
-    }    
+        font-size: 22px;
+        line-height: 38px;
+    }
+    .cardTitle {
+        font-size: 44px;
+    }
 }
 
 @media (max-width: 425px) {
     .text {
-        gap: 5px
+        gap: 15px
     }
-    .gameCard {
-        padding-top: 0;
+    .cardDescription {
+        line-height: 34px;
+        /* text-align: left; */
+    }
+
+}
+
+@media (max-width: 375px) {
+    .cardTitle {
+        font-size: 40px;
+    }
+    .cardDescription {
+        font-size: 18px;
+        line-height: 28px;
     }
 }
