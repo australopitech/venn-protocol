@@ -54,30 +54,37 @@
     transform: none;
 }
 
-/* .gameCard
-.metaverseCard
-.domainCard
-.accessCard {
+.card {
     display: flex;
     flex-direction: column;
     aspect-ratio: 1698 / 1000;
     width: 90%;
     height: auto;
-} */
+    gap: 10%;
+    align-self: center;
+}
 
 
 .gameCard {
-    display: flex;
-    flex-direction: column;
-    aspect-ratio: 1698 / 1000;
-    width: 90%;
-    height: auto;
     background-image: url('../../../public/cards/gaming-wide.svg');
     background-size: contain;
     background-repeat: no-repeat;
     /* padding-block: 20px; */
-    gap: 10%;
-    align-self: center;
+}
+.metaverseCard {
+    background-image: url('../../../public/cards/metaverse-wide.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.domainCard {
+    background-image: url('../../../public/cards/domain-names-wide.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+.accessCard {
+    background-image: url('../../../public/cards/access-token-wide.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 .text {
@@ -119,7 +126,7 @@
     .body {
         width: 100%;
     }
-    .gameCard {
+    .card {
         /* background-size: 756px 560px; */
         gap: 8%;
     }
@@ -230,15 +237,27 @@
         width: 100%;
         gap: 0;
     }
-    .gameCard {
-        aspect-ratio: 715 / 1200;
-        background-image: url('../../../public/cards/gaming-narrow.svg');
+    
+    .card{
+        aspect-ratio: 715 / 1383;
         align-self: center;
         align-items: center;
         background-size: contain;
         padding-top: 30px ;
+    }
+    .gameCard {     
+        background-image: url('../../../public/cards/gaming-narrow.svg');
         /* width: 714.24px;
         height: 1200; */
+    }
+    .metaverseCard {
+        background-image: url('../../../public/cards/metaverse-narrow.svg');
+    }
+    .domainCard {
+        background-image: url('../../../public/cards/domain-names-narrow.svg');
+    }
+    .accessCard {
+        background-image: url('../../../public/cards/access-token-narrow.svg');
     }
     .arrowContainer{
         display: none;
@@ -330,7 +349,7 @@
 }
 
 @media (max-width: 490px) {
-    .gameCard {
+    .card {
         width: 100%;
     }
     .cardDescription {
@@ -338,7 +357,7 @@
         line-height: 38px;
     }
     .cardTitle {
-        font-size: 44px;
+        font-size: 42px;
     }
 }
 
@@ -355,7 +374,7 @@
 
 @media (max-width: 375px) {
     .cardTitle {
-        font-size: 40px;
+        font-size: 38px;
     }
     .cardDescription {
         font-size: 18px;
