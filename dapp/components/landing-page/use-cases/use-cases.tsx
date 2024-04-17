@@ -6,7 +6,7 @@ import classNames from "classnames";
 import { useState } from "react";
 
 
-function Dots ({ placement } : { placement : 1 | 2 | 3 | 4}) {
+function Dots ({ placement } : { placement: number }) {
     if(placement === 1)
       return <DotsFirst/>
     else if(placement === 2)
@@ -20,7 +20,7 @@ function Dots ({ placement } : { placement : 1 | 2 | 3 | 4}) {
 
 function AccessCard ({ setPosition } : { setPosition: any }) {
   return (
-    <div className={classNames(styles.card, styles.accessCard)}>
+    <div className={styles.accessCard}>
         <div className={styles.text}>
           <div className={classNames(styles.cardTitle, orbitron.className)}>
             <div className={styles.arrowNarrowContainer}>
@@ -35,16 +35,13 @@ function AccessCard ({ setPosition } : { setPosition: any }) {
           <b>TICKETS, CREDENTIALS, CLUB MEMBERSHIPS</b> can now also change hands without worry. Take a <b>SNEAK PEAK</b> at that exclusive club or <b> GET PAID</b> for not attending your favorite event!
           </div>
         </div>
-        <div className={styles.dotsContainer}>
-            <Dots placement={4}/>
-        </div>
     </div>
   )
 }
 
 function DomainCard ({ setPosition } : { setPosition: any }) {
   return (
-    <div className={classNames(styles.card, styles.domainCard)}>
+    <div className={styles.domainCard}>
         <div className={styles.text}>
           <div className={classNames(styles.cardTitle, orbitron.className)}>
             <div className={styles.arrowNarrowContainer}>
@@ -59,16 +56,13 @@ function DomainCard ({ setPosition } : { setPosition: any }) {
           A <b>NEW LAYER</b> in the market for domain names. These assets will suddenly become <b>ATTRACTIVE</b> to <b>INVESTORS</b>. Pick a valuable name and <b>GET PAID</b>!
           </div>
         </div>
-        <div className={styles.dotsContainer}>
-            <Dots placement={3}/>
-        </div>
     </div>
   )
 }
 
 function MetaverseCard ({ setPosition } : { setPosition: any }) {
   return (
-    <div className={classNames(styles.card, styles.metaverseCard)}>
+    <div className={styles.metaverseCard}>
         <div className={styles.text}>
           <div className={classNames(styles.cardTitle, orbitron.className)}>
             <div className={styles.arrowNarrowContainer}>
@@ -83,9 +77,6 @@ function MetaverseCard ({ setPosition } : { setPosition: any }) {
           <b>ANY</b> asset within the Metaverse will immediately become <b>CAPITAL</b>. From <b>REAL-ESTATE</b>, to <b>CREDENTIALS</b>, to <b>SKINS</b> and even expensive clothing. Prepare for a booming economy!
           </div>
         </div>
-        <div className={styles.dotsContainer}>
-            <Dots placement={2}/>
-        </div>
     </div>
   )
 }
@@ -94,7 +85,7 @@ function MetaverseCard ({ setPosition } : { setPosition: any }) {
 function GamerCard ({ setPosition } : { setPosition: any }) {
 
   return (
-    <div className={classNames(styles.card, styles.gameCard)}>
+    <div className={styles.gameCard}>
         <div className={styles.text}>
           <div className={classNames(styles.cardTitle, orbitron.className)}>
             <div className={styles.arrowNarrowContainer}>
@@ -109,16 +100,13 @@ function GamerCard ({ setPosition } : { setPosition: any }) {
               Perfect to use with in-game items. Rent out <b>CHARACTERS, WEAPONS, LAND, VEHICLES,</b> or <b>ANY</b> item manifested as an NFT. <b>TRY IT OUT</b> before you buy it. Or make your asset <b>PROFIT</b> for you!
           </div>
         </div>
-        <div className={styles.dotsContainer}>
-            <Dots placement={1}/>
-        </div>
     </div>
   )
 }
 
 function Card ({ cardNum, setPosition } : { cardNum: number, setPosition: any}) {
   return(
-    <>
+    <div className={styles.card}>
     {cardNum === 1
      ? <GamerCard setPosition={setPosition}/>
      : cardNum === 2
@@ -129,7 +117,10 @@ function Card ({ cardNum, setPosition } : { cardNum: number, setPosition: any}) 
         ? <AccessCard setPosition={setPosition}/>
         : "Error"
     }
-    </>
+      <div className={styles.dotsContainer}>
+              <Dots placement={cardNum}/>
+      </div>
+    </div>
   )
 }
 

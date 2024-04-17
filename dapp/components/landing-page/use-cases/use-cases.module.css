@@ -62,6 +62,9 @@
     height: auto;
     gap: 10%;
     align-self: center;
+    justify-content: center;
+    align-items: center;
+    position: relative;
 }
 
 
@@ -69,22 +72,30 @@
     background-image: url('../../../public/cards/gaming-wide.svg');
     background-size: contain;
     background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
     /* padding-block: 20px; */
 }
 .metaverseCard {
     background-image: url('../../../public/cards/metaverse-wide.svg');
     background-size: contain;
     background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
 }
 .domainCard {
     background-image: url('../../../public/cards/domain-names-wide.svg');
     background-size: contain;
     background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
 }
 .accessCard {
     background-image: url('../../../public/cards/access-token-wide.svg');
     background-size: contain;
     background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
 }
 
 .text {
@@ -119,7 +130,12 @@
     height: auto;
     justify-self: end;
     align-self: center;
-    padding-top: 8%;
+    /* padding-bottom: 30%; */
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: 0 auto;
+    bottom: 12%;
 }
 
 @media (max-width: 1520px) {
@@ -215,6 +231,11 @@
         width: 100px;
     }
 }
+@media (max-width: 900px) {
+    .dotsContainer {
+        bottom: 8%;
+    }
+}
 
 @media (max-width: 864px) {
     /* .dotsContainer {
@@ -228,6 +249,9 @@
 @media (max-width: 800px) {
     .cardDescription {
         line-height: 32px;
+    }
+    .dotsContainer {
+        bottom: 4%;
     }
 }
 
@@ -244,6 +268,7 @@
         align-items: center;
         background-size: contain;
         padding-top: 30px ;
+        width: 80%;
     }
     .gameCard {     
         background-image: url('../../../public/cards/gaming-narrow.svg');
@@ -278,14 +303,26 @@
         align-items: center;
         place-self: center;
         width: 90%;
-        font-size: 54px;
+        font-size: 50px;
     }
     .cardDescription {
         align-self: center;
-        font-size: 28px;
+        font-size: 24px;
         line-height: 54px ;
         width: 90%;
     }
+    .dotsContainer {
+        bottom: 58%;
+    }
+}
+
+@media (max-width: 740px) {
+    .card {
+        width: 90%;
+    }
+    /* .dotsContainer {
+        bottom: 52%;
+    } */
 }
 
 @media (max-width: 667px) {
@@ -295,11 +332,17 @@
     /* .dotsContainer {
         padding-top: 6%;
     } */
-    .cardDescription {
+    /* .cardDescription {
         font-size: 26px;
     }
     .cardTitle {
         font-size: 50px;
+    } */
+    /* .card {
+        width: 100%;
+    } */
+    .dotsContainer {
+        bottom: 52%;
     }
 }
 
@@ -308,23 +351,27 @@
         /* font-size: 14px; */
         line-height: 50px;
     }
+    .cardTitle {
+        font-size: 48px;
+    }
 }
 
 @media (max-width: 601px) {
     /* .dotsContainer {
         padding-top: 2%;
     } */
-    .cardTitle {
-        font-size: 48px;
-    }
-    .cardDescription {
+    
+    /* .cardDescription {
         font-size: 24px;
+    } */
+    .card {
+        width: 100%;
     }
 }
 
 @media (max-width: 554px) {
     .text {
-        gap: 20px;
+        /* gap: 20px; */
         width: 100%;
     }
     /* .cardDescription {
@@ -349,35 +396,75 @@
 }
 
 @media (max-width: 490px) {
-    .card {
+    /* .card {
         width: 100%;
-    }
+    } */
     .cardDescription {
         font-size: 22px;
         line-height: 38px;
     }
     .cardTitle {
         font-size: 42px;
+        width: 100%;
+    }
+    .dotsContainer {
+        /* bottom: 48% */
+    }
+}
+
+@media (max-width: 464px) {
+    .dotsContainer {
+        bottom: 44%;
     }
 }
 
 @media (max-width: 425px) {
     .text {
-        gap: 15px
+        /* gap: 25px */
     }
     .cardDescription {
         line-height: 34px;
         /* text-align: left; */
     }
+    .dotsContainer {
+        top: 60%
+    }
+    .cardTitle {
+        font-size: 38px;
+    }
 
+}
+
+@media (max-width: 400px) {
+    .dotsContainer {
+        top: 68%;
+    }
+    .cardDescription {
+        text-align: center;
+    }
 }
 
 @media (max-width: 375px) {
     .cardTitle {
-        font-size: 38px;
+        font-size: 30px;
     }
     .cardDescription {
         font-size: 18px;
         line-height: 28px;
+    }
+    .dotsContainer {
+        top: 58%
+    }
+}
+
+@media (max-width: 345px) {
+    .dotsContainer {
+        top: 72%
+    }
+}
+
+@media (max-width: 320) {
+    .cardTitle {
+        font-size: 28px;
     }
 }
