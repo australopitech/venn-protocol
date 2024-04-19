@@ -1,46 +1,43 @@
 
 export const SecuredByCode = () => {
     return (
-        <svg viewBox="0 0 255 296" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g clipPath="url(#clip0_8_30)">
+        <svg width="100%" height="100%" viewBox="0 0 255 296" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clip-path="url(#clip0_8_30)">
             <g filter="url(#filter0_d_8_30)">
-            <rect x="12.5" y="10.5" width="201" height="260" stroke="#D9D9D9" strokeWidth="5" shapeRendering="crispEdges"/>
+            <mask id="path-1-inside-1_8_30" fill="white">
+            <rect x="10" y="8" width="206" height="265" rx="6"/>
+            </mask>
+            <rect x="10" y="8" width="206" height="265" rx="6" stroke="#D9D9D9" stroke-width="16" shape-rendering="crispEdges" mask="url(#path-1-inside-1_8_30)"/>
             </g>
             <g filter="url(#filter1_d_8_30)">
-            <line x1="42" y1="55" x2="155" y2="55" stroke="#D9D9D9" strokeWidth="4"/>
+            <line x1="42" y1="55" x2="155" y2="55" stroke="#D9D9D9" stroke-width="4"/>
             </g>
             <g filter="url(#filter2_d_8_30)">
-            <line x1="42" y1="80" x2="155" y2="80" stroke="#D9D9D9" strokeWidth="4"/>
+            <line x1="42" y1="80" x2="155" y2="80" stroke="#D9D9D9" stroke-width="4"/>
             </g>
             <g filter="url(#filter3_d_8_30)">
-            <line x1="42" y1="105" x2="155" y2="105" stroke="#D9D9D9" strokeWidth="4"/>
+            <line x1="42" y1="105" x2="155" y2="105" stroke="#D9D9D9" stroke-width="4"/>
             </g>
             <g filter="url(#filter4_d_8_30)">
-            <line x1="42" y1="130" x2="155" y2="130" stroke="#D9D9D9" strokeWidth="4"/>
+            <line x1="42" y1="130" x2="155" y2="130" stroke="#D9D9D9" stroke-width="4"/>
             </g>
             <g filter="url(#filter5_d_8_30)">
-            <line x1="42" y1="105" x2="155" y2="105" stroke="#D9D9D9" strokeWidth="4"/>
+            <line x1="42" y1="155" x2="155" y2="155" stroke="#D9D9D9" stroke-width="4"/>
             </g>
             <g filter="url(#filter6_d_8_30)">
-            <line x1="42" y1="130" x2="155" y2="130" stroke="#D9D9D9" strokeWidth="4"/>
-            </g>
-            <g filter="url(#filter7_d_8_30)">
-            <line x1="42" y1="155" x2="155" y2="155" stroke="#D9D9D9" strokeWidth="4"/>
-            </g>
-            <g filter="url(#filter8_d_8_30)">
             <path d="M46.3125 213.04V207.04L70.3125 196.472V203.375L53.8807 209.972L54.1023 209.614V210.466L53.8807 210.108L70.3125 216.705V223.608L46.3125 213.04ZM103.837 187.455L92.5866 229.25H86.331L97.581 187.455H103.837ZM143.859 213.04L119.859 223.608V216.705L136.291 210.108L136.07 210.466V209.614L136.291 209.972L119.859 203.375V196.472L143.859 207.04V213.04Z" fill="#D9D9D9"/>
             </g>
-            <g filter="url(#filter9_d_8_30)">
-            <path d="M234 240C234 259.979 221.106 275 206.5 275C191.894 275 179 259.979 179 240C179 220.021 191.894 205 206.5 205C221.106 205 234 220.021 234 240Z" stroke="#989595" strokeWidth="6" shapeRendering="crispEdges"/>
+            <g filter="url(#filter7_d_8_30)">
+            <path d="M233 240C233 259.643 220.359 274 206.5 274C192.641 274 180 259.643 180 240C180 220.357 192.641 206 206.5 206C220.359 206 233 220.357 233 240Z" stroke="#989595" stroke-width="8" shape-rendering="crispEdges"/>
             </g>
-            <g filter="url(#filter10_d_8_30)">
-            <rect x="167" y="233" width="79" height="56" fill="#D9D9D9"/>
-            <rect x="170" y="236" width="73" height="50" stroke="#989595" strokeWidth="6"/>
+            <g filter="url(#filter8_d_8_30)">
+            <rect x="167" y="233" width="79" height="56" rx="6" fill="#D9D9D9"/>
+            <rect x="170" y="236" width="73" height="50" rx="3" stroke="#D9D9D9" stroke-width="6"/>
             </g>
             </g>
             <defs>
-            <filter id="filter0_d_8_30" x="6" y="8" width="214" height="273" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-            <feFlood floodOpacity="0" result="BackgroundImageFix"/>
+            <filter id="filter0_d_8_30" x="6" y="8" width="214" height="273" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix"/>
             <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
             <feOffset dy="4"/>
             <feGaussianBlur stdDeviation="2"/>
@@ -49,8 +46,8 @@ export const SecuredByCode = () => {
             <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_8_30"/>
             <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_8_30" result="shape"/>
             </filter>
-            <filter id="filter1_d_8_30" x="38" y="53" width="121" height="12" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-            <feFlood floodOpacity="0" result="BackgroundImageFix"/>
+            <filter id="filter1_d_8_30" x="38" y="53" width="121" height="12" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix"/>
             <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
             <feOffset dy="4"/>
             <feGaussianBlur stdDeviation="2"/>
@@ -59,8 +56,8 @@ export const SecuredByCode = () => {
             <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_8_30"/>
             <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_8_30" result="shape"/>
             </filter>
-            <filter id="filter2_d_8_30" x="38" y="78" width="121" height="12" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-            <feFlood floodOpacity="0" result="BackgroundImageFix"/>
+            <filter id="filter2_d_8_30" x="38" y="78" width="121" height="12" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix"/>
             <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
             <feOffset dy="4"/>
             <feGaussianBlur stdDeviation="2"/>
@@ -69,8 +66,8 @@ export const SecuredByCode = () => {
             <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_8_30"/>
             <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_8_30" result="shape"/>
             </filter>
-            <filter id="filter3_d_8_30" x="38" y="103" width="121" height="12" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-            <feFlood floodOpacity="0" result="BackgroundImageFix"/>
+            <filter id="filter3_d_8_30" x="38" y="103" width="121" height="12" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix"/>
             <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
             <feOffset dy="4"/>
             <feGaussianBlur stdDeviation="2"/>
@@ -79,8 +76,8 @@ export const SecuredByCode = () => {
             <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_8_30"/>
             <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_8_30" result="shape"/>
             </filter>
-            <filter id="filter4_d_8_30" x="38" y="128" width="121" height="12" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-            <feFlood floodOpacity="0" result="BackgroundImageFix"/>
+            <filter id="filter4_d_8_30" x="38" y="128" width="121" height="12" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix"/>
             <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
             <feOffset dy="4"/>
             <feGaussianBlur stdDeviation="2"/>
@@ -89,8 +86,8 @@ export const SecuredByCode = () => {
             <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_8_30"/>
             <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_8_30" result="shape"/>
             </filter>
-            <filter id="filter5_d_8_30" x="38" y="103" width="121" height="12" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-            <feFlood floodOpacity="0" result="BackgroundImageFix"/>
+            <filter id="filter5_d_8_30" x="38" y="153" width="121" height="12" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix"/>
             <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
             <feOffset dy="4"/>
             <feGaussianBlur stdDeviation="2"/>
@@ -99,8 +96,8 @@ export const SecuredByCode = () => {
             <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_8_30"/>
             <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_8_30" result="shape"/>
             </filter>
-            <filter id="filter6_d_8_30" x="38" y="128" width="121" height="12" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-            <feFlood floodOpacity="0" result="BackgroundImageFix"/>
+            <filter id="filter6_d_8_30" x="42.3125" y="187.455" width="105.547" height="49.7955" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix"/>
             <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
             <feOffset dy="4"/>
             <feGaussianBlur stdDeviation="2"/>
@@ -109,8 +106,8 @@ export const SecuredByCode = () => {
             <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_8_30"/>
             <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_8_30" result="shape"/>
             </filter>
-            <filter id="filter7_d_8_30" x="38" y="153" width="121" height="12" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-            <feFlood floodOpacity="0" result="BackgroundImageFix"/>
+            <filter id="filter7_d_8_30" x="172" y="202" width="69" height="84" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix"/>
             <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
             <feOffset dy="4"/>
             <feGaussianBlur stdDeviation="2"/>
@@ -119,28 +116,8 @@ export const SecuredByCode = () => {
             <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_8_30"/>
             <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_8_30" result="shape"/>
             </filter>
-            <filter id="filter8_d_8_30" x="42.3125" y="187.455" width="105.547" height="49.7955" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-            <feFlood floodOpacity="0" result="BackgroundImageFix"/>
-            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-            <feOffset dy="4"/>
-            <feGaussianBlur stdDeviation="2"/>
-            <feComposite in2="hardAlpha" operator="out"/>
-            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
-            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_8_30"/>
-            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_8_30" result="shape"/>
-            </filter>
-            <filter id="filter9_d_8_30" x="172" y="202" width="69" height="84" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-            <feFlood floodOpacity="0" result="BackgroundImageFix"/>
-            <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
-            <feOffset dy="4"/>
-            <feGaussianBlur stdDeviation="2"/>
-            <feComposite in2="hardAlpha" operator="out"/>
-            <feColorMatrix type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.25 0"/>
-            <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_8_30"/>
-            <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_8_30" result="shape"/>
-            </filter>
-            <filter id="filter10_d_8_30" x="163" y="233" width="87" height="64" filterUnits="userSpaceOnUse" colorInterpolationFilters="sRGB">
-            <feFlood floodOpacity="0" result="BackgroundImageFix"/>
+            <filter id="filter8_d_8_30" x="163" y="233" width="87" height="64" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+            <feFlood flood-opacity="0" result="BackgroundImageFix"/>
             <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
             <feOffset dy="4"/>
             <feGaussianBlur stdDeviation="2"/>
@@ -154,7 +131,6 @@ export const SecuredByCode = () => {
             </clipPath>
             </defs>
         </svg>
-
     )
 }
 
