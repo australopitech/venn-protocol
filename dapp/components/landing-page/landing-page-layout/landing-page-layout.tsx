@@ -18,7 +18,9 @@ export default function LandingPageLayout () {
         <div style={{ paddingBottom: "40px"}}>
           <Banner />
         </div>
-        <UserCards/>
+        <div style={ { display: "flex" , flexDirection: "column", alignItems: "center", paddingBottom: "60px"}}>
+          <UserCards/>
+        </div>
         <FeatureCards/>
         <div className={styles.section}>
           <div className={styles.title}>Main Use Cases</div>
