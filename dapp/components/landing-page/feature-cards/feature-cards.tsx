@@ -13,7 +13,7 @@ function SecuredByCodeCard () {
         initial={{ opacity: 0, y: 100 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 1, delay: 0.5 }}
-        className={styles.card} onClick={() => setOpen(!open)} onBlur={() => setOpen(false)}>
+        className={styles.card}>
             <div className={styles.content}>
             <div className={styles.front}>
                     <div className={styles.graphic}><SecuredByCode/></div>
