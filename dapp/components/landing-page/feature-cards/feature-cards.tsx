@@ -15,12 +15,12 @@ function SecuredByCodeCard () {
         transition={{ duration: 1, delay: 0.5 }}
         className={styles.card}>
             <div className={styles.content}>
-            <div className={styles.front}>
+                <div className={styles.front}>
                     <div className={styles.graphic}><SecuredByCode/></div>
                     <div className={styles.title}>Secured by code</div>
                 </div>
                 <div className={styles.back}>
-                    <div className={classNames(styles.graphicWide, styles.background)}><SecuredByCode/></div>
+                    <div className={classNames(styles.graphic, styles.background)}><SecuredByCode/></div>
                     <div className={styles.textContainer}>
                     <div className={styles.description}>
                         Receive your payment and your NFT back without worrying. Everything is completely secured by our Smart Contracts.
