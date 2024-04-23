@@ -71,6 +71,48 @@
     display: none;
 }
 
+.icon {
+    width: 36px;
+    height: 36px;
+}
+
+.dropdownMenu {
+    position: relative;
+    display: inline-block;
+    z-index: 1000;
+}
+
+.dropdown {
+    display: block;
+    position: absolute;
+    width: fit-content;
+    top: 36px;
+    right: 1px;
+    border-radius: 15px;
+    background-color: #ffffff;
+    width: 250px;
+    z-index: 1000; /* High z-index to ensure the dropdown appears on top of other elements */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.15); /* Adjusted the shadow direction */
+    font-size: 1rem;
+    font-weight: 600;
+    border: 1px solid #cecece
+}
+
+.dropdown li {
+    padding: 16px 16px;
+    cursor: pointer;
+    list-style: none;
+    z-index: 1000;
+    color: #000000;
+    border-bottom: 1px solid #cecece;
+  }
+  
+  .dropdown li:hover {
+    background-color: rgb(240, 211, 227, 0.5);
+    z-index: 1000;
+  }
+
+
 @media (max-width: 900px) {
     .navbar{
         font-size: 14px;
@@ -85,5 +127,6 @@
     .menuIcon {
         display: block;
         color: #000000;
+        cursor: pointer;
     }
 }
