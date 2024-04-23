@@ -18,6 +18,14 @@ export const RightArrow = () => {
     )
 }
 
+export const Dot = () => {
+    return (
+        <svg width="100%" height="100%" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="9.90553" cy="9.90553" r="8.90553" fill="black" stroke="black" stroke-width="2"/>
+        </svg>
+    )
+}
+
 /* 3 dots */
 
 // export const DotsFirst = () => {
