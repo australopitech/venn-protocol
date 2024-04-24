@@ -16,55 +16,97 @@
 
 .navItem {
     color: #000000;
-    border-bottom: 2px solid transparent;
-    /* font-weight: 700; */
+    position: relative;
+    text-decoration: none;
 }
 
-.navItem:hover {
-    border-bottom: 1px solid #000000;
+.navItem::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 1px;
+    width: 0;
+    background: currentColor;
+    transition: width 0.3s ease-in-out;
+  }
+  
+.navItem:hover::after {
+    width: 100%;
 }
+
+/* .navItem:hover {
+    border-bottom: 1px solid #000000;
+} */
 
 .logo {
     width: 42px;
     height: 42px;
 }
 
-.button1 {
+
+.button {
     padding: 8px;
+    border: 2px solid #000000;;
+    border-radius: 25px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+}
+
+.button1 {
     background: #ffffff;
     color: #000000;
     /* font-weight: 700; */
-    outline: 2px solid #000000;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
 }
 
-.button1:hover {
+/* .button1:hover {
     transform: scale(1.05);
 }
 
 .button1:active {
     transform: scale(.95);
-}
+} */
 
 .button2 {
-    padding: 8px;
     color: #ffffff;
     background: #000000;
-    /* font-weight: 700; */
-    outline: 0.5px solid #ffffff;
-    border-radius: 25px;
-    cursor: pointer;
 }
 
-.button2:hover {
+.button::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: lightgray;
+    transition: width 0.3s;
+    z-index: 1;
+  }
+
+  .button2:hover {
+    /* border: 2px solid lightgray; */
+    color: #000000;
+    animation-duration: 0.3s;
+  }
+  
+  .button:hover::after {
+    width: 100%;
+  }
+  
+  .buttonText {
+    position: relative;
+    z-index: 2;
+  }
+
+/* .button2:hover {
     transform: scale(1.05);
 }
 
 .button2:active {
     transform: scale(.95);
-}
+} */
 
 
 .menuIcon {
