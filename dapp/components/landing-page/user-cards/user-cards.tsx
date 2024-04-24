@@ -15,8 +15,8 @@ function ShareOwnershipCard () {
     className={classNames(styles.card, styles.card1)}
     >
         <motion.div 
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
+        initial={{ opacity: 0, x: 100 }}
+        whileInView={{ opacity: 1, x: 0 }}
         viewport={{ margin: "-100px 0px 0px 0px", once: true }}
         transition={{ duration: 1, delay: 1 }}
         className={styles.graphic}
@@ -24,8 +24,8 @@ function ShareOwnershipCard () {
             <ShareOwnership/>
         </motion.div>
         <motion.div 
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
+        initial={{ opacity: 0, x: 100 }}
+        whileInView={{ opacity: 1, x: 0 }}
         viewport={{ margin: "-100px 0px 0px 0px" , once: true }}
         transition={{ duration: 1, delay: 1 }}
         className={styles.textContainer}>
@@ -56,8 +56,8 @@ function TryItCard () {
     }}
     className={classNames(styles.card, styles.card2)}>
         <motion.div 
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
+        initial={{ opacity: 0, x: -100 }}
+        whileInView={{ opacity: 1, x: 0 }}
         viewport={{ margin: "-100px 0px 0px 0px", once: true  }}
         transition={{ duration: 1, delay: 1 }}
         className={styles.textContainer}>
@@ -74,8 +74,8 @@ function TryItCard () {
             </div>
         </motion.div>
         <motion.div 
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
+        initial={{ opacity: 0, x: -100 }}
+        whileInView={{ opacity: 1, x:0 }}
         viewport={{ margin: "-100px 0px 0px 0px" , once: true }}
         transition={{ duration: 1, delay: 1 }}
         className={styles.graphic}

@@ -12,6 +12,7 @@ function SecuredByCodeCard () {
         <motion.div 
         initial={{ opacity: 0, y: 100 }}
         whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
         transition={{ duration: 1, delay: 0.5 }}
         className={styles.card}>
             <div className={styles.content}>
@@ -40,6 +41,7 @@ function CompletelyTrustlessCard () {
         <motion.div 
         initial={{ opacity: 0, y: 100 }}
         whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
         transition={{ duration: 1, delay: 0.8 }}
         className={styles.card}>
             <div className={styles.content}>
@@ -74,6 +76,7 @@ function CompatibleByDefaultCard () {
         <motion.div 
         initial={{ opacity: 0, y: 100 }}
         whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
         transition={{ duration: 0.5, delay: 1.1 }}
         className={styles.card}>
             <div className={styles.content}>
