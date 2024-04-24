@@ -3,23 +3,23 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 25%;
+    gap: clamp(9rem, -7rem + 33.3333vi, 25rem);
     border: 3px solid #000000;
     border-radius: 30px;
-    padding-top: 8%;
-    padding-bottom: 10%;
+    padding-top: clamp(4.5rem, 4.3684rem + 0.6579vi, 5rem);
+    padding-bottom: clamp(6.75rem, 6.5526rem + 0.9868vi, 7.5rem);
 }
 
 .sloganContainer {
     display: flex;
     flex-direction: column;
-    width: clamp(230px, 33%, 390px);
+    width: clamp(230px, 40%, 390px);
 }
 
 .buttonsContainer {
     display: flex;
     gap: 12px;
-    font-size: clamp(.75rem, 1.042vw, 1rem);
+    font-size: clamp(0.9375rem, 0.9374rem + 0.0003vi, 0.9377rem);
 }
 
 
@@ -43,7 +43,7 @@
 }
 
 .slogan {
-    font-size: clamp(38px, 4.5vw ,64px);
+    font-size: clamp(2.7994rem, 2.4462rem + 1.7658vi, 3.8147rem);
     font-weight: 600;
     color: #000000;
     width: 100%;
@@ -54,14 +54,14 @@
 }
 
 .logo {
-    width: clamp(147px, 20%, 243px);
+    width: clamp(217px, 20%, 250px);
     height: auto;
 }
 
 
 @media (max-width: 1280px) {
     .banner {
-        gap: 20%;
+        /* gap: 20%; */
     }
 }
 
@@ -94,15 +94,24 @@
 
 @media (max-width: 768px) {
     
-    /* .sloganContainer{
+
+    .banner {
+        flex-direction: column;
+        gap: clamp(4.5rem, 2.3571rem + 10.7143vi, 7.5rem);
+    }
+
+    .logo{
+        width: clamp(217px, 40%, 250px);
+    }
+    .sloganContainer{
         justify-content: center;
         align-items: center;
-    } */
+        width: 317px;
+    }
 
-    /* .slogan {
-        font-size: 42px;
-        width: 256px;
-    } */
+    .slogan {
+        text-align: center;
+    }
 
 }
 
@@ -111,9 +120,9 @@
 } */
 
 @media (max-width: 640px) {
-    .banner {
+    /* .banner {
         gap: 16%;
-    }
+    } */
     /* .slogan {
         font-size: 38px;
         width: 238px;
@@ -124,27 +133,26 @@
 }
 
 @media (max-width: 601px) {
-    .banner {
+    /* .banner {
         flex-direction: column;
         gap: 15vw;
-    }
-    .logo{
+    } */
+    /* .logo{
         width: 40%;
         min-width: 217px;
-    }
-    .sloganContainer {
+    } */
+    /* .sloganContainer {
         justify-content: center;
         align-items: center;
         width: 256px;
-    }
-    .slogan {
-        font-size: 42px;
+    } */
+    /* .slogan {
         width: 256px;
         text-align: center;
-    }
-    .buttonsContainer {
+    } */
+    /* .buttonsContainer {
         font-size: clamp(12px, 2.3vw, 14px);
-    }
+    } */
 }
 
 
@@ -155,9 +163,9 @@
 }
 
 @media (max-width: 471px) {
-    .banner {
+    /* .banner {
         padding-bottom: 15vw;
-    }
+    } */
     /* .slogan {
         font-size: 40px;
         width: 244px;
@@ -169,9 +177,9 @@
 
 
 @media (max-width: 414px) {
-    .banner {
+    /* .banner {
         gap: 10vw;
-    }
+    } */
 
     /* .logo {
         width: 50%;
@@ -183,12 +191,12 @@
 
 @media (max-width: 390px) {
     .slogan {
-        font-size: 9.5vw;
+        /* font-size: 9.5vw; */
     }
     .logo {
-        width: 52%;
+        /* width: 52%;
         min-width: 0;
-        padding-block: 5vw;
+        padding-block: 5vw; */
     }
 }
 
@@ -202,44 +210,38 @@
 
 @media (max-width: 278px) {
     .slogan {
-        font-size: 32px;
+        /* font-size: 32px; */
     }
 }
 
-@media (max-height: 568px) {
-    
-}
+
 
 @media (max-height: 464px) {
     .banner {
         flex-direction: row;
-        gap: 15vw;
-        padding-block: 5%;
+        /* gap: 15vw; */
+        /* padding-block: 5%; */
     }
     .logo {
-        width: 22%;
-        min-width: 140px;
+        margin-left: 20px;
+        width: clamp(217px, 20%, 250px);
     }
-    .banner {
+    /* .banner {
         padding-block: 5%;
+    } */
+    .slogan{
+        font-size: 40px;
     }
-
-    .slogan {
-        font-size: 36px;
-        /* height: 180px; */
-        width: 230px;
+    .sloganContainer {
+        margin-right: 20px;
+    }
+    .buttonsContainer {
+        font-size: 14px;
     }
 }
 
 @media (max-height: 414px) {
     
-    .logo {
-        width: 20%;
-    }
 
-    .slogan {
-        font-size: 34px;
-        /* height: 100px; */
-    }
 
 }
