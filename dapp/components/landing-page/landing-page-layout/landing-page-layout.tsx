@@ -8,6 +8,7 @@ import FeatureCards from "../feature-cards/feature-cards";
 import UseCases from "../use-cases/use-cases";
 import AvailableChains from "../chains/chains";
 import Footer from "../footer/footer";
+import Team from "../team/team";
 // import Image from "next/image";
 
 export default function LandingPageLayout () {
@@ -33,7 +34,10 @@ export default function LandingPageLayout () {
           </div>
           <div style={{ paddingLeft: "5vw"}}><AvailableChains/></div>
         </div>
-        <div style={{ paddingTop: "100px"}}><Footer/></div>
+        <div className={styles.section}>
+          <Team/>
+        </div>
+        <div style={{ paddingTop: "300px"}}><Footer/></div>
     </main>
   )
 }

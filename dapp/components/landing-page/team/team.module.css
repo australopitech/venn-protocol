@@ -1,0 +1,52 @@
+.body {
+    width: 80%;
+    max-width: 1280px;
+    align-self: center;
+}
+
+.content {
+    display: flex;
+    width: 100%;
+    aspect-ratio: 1110 / 711;
+    align-items: center;
+    justify-content: space-between;
+    color: #000000;
+    background-image: url('../../../public/cards/monkey-background.svg');
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    width: 55%;
+    gap: 8%;
+}
+
+.description {
+    width: 100%;
+    text-align: left;
+    line-height: 2.8rem;
+    font-size: 1.5rem;
+    padding-bottom: 6%;
+}
+
+.buttonContainer {
+    display: flex;
+    width: fit-content;
+    align-self: flex-end;
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+    border: 2px solid #000000;
+    border-radius: 25px;
+    width: fit-content;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.title {
+    text-align: right;
+    font-size: 4rem;
+}
