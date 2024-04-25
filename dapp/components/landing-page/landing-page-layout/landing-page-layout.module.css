@@ -1,6 +1,7 @@
 .body {
-    padding-block: 24px;
-    padding-inline: 24px;
+    /* padding-block: 24px;
+    padding-inline: 24px; */
+    padding: clamp(0.5625rem, -0.375rem + 1.9531vi, 1.5rem);
     display: flex;
     flex-direction: column;
     gap: 20px;
@@ -50,13 +51,13 @@
 
 
 
-@media (max-width: 1024px) {
+/* @media (max-width: 1024px) {
     .body {
         margin-inline: 0;
     }
-}
+} */
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
     .body {
         padding-inline: 10px;
     }
@@ -69,4 +70,4 @@
     .title {
         font-size: 32px;
     }
-}
+} */

@@ -1,7 +1,7 @@
 'use client'
 import { useState } from "react";
 import styles from "./feature-cards.module.css";
-import { SecuredByCode, CompletelyTrustless, CompatibleByDefault } from "./graphics";
+import { SecuredByCode, CompletelyTrustless, CompatibleByDefault, ExtremelySimple } from "./graphics";
 import classNames from "classnames";
 import { motion } from "framer-motion";
 
@@ -93,10 +93,39 @@ function CompatibleByDefaultCard () {
                     <div className={classNames(styles.graphicWide, styles.background)}><CompatibleByDefault/></div>
                     <div className={styles.textContainer}>
                     <div className={styles.description}>
-                        Works with most major NFT platforms through Account Abstraction standards ERC-1271 and ERC-4337.
+                        Works with most major NFT platforms through Account Abstraction standards ERC-1271 and ERC-4337. No need to wait for integrations.
                     </div>
                     </div>
                     <div className={styles.title}>Compatible by default</div>
+                </div>
+            </div>
+        </motion.div>
+    )
+}
+
+function ExtremelySimpleCard () {
+    // const [open, setOpen] = useState(false);
+
+    return (
+        <motion.div 
+        initial={{ opacity: 0, y: 100 }}
+        whileInView={{ opacity: 1, y: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.5, delay: 1.3 }}
+        className={styles.card}>
+            <div className={styles.content}>
+            <div className={styles.front}>
+                    <div className={styles.graphic}><ExtremelySimple/></div>
+                    <div className={styles.title}>Extremely Simple</div>
+                </div>
+                <div className={styles.back}>
+                    <div className={classNames(styles.graphic, styles.background)}><ExtremelySimple/></div>
+                    <div className={styles.textContainer}>
+                    <div className={styles.description}>
+                        Super easy to use and understand. Even for crypto newbies. Choose your favorite social login. Stop worrying about complex schemes!
+                    </div>
+                    </div>
+                    <div className={styles.title}>Extremely Simple</div>
                 </div>
             </div>
         </motion.div>
@@ -107,10 +136,13 @@ function CompatibleByDefaultCard () {
 
 export default function FeatureCards () {
     return (
-        <div className={styles.cardContainer}>
+        <div className={styles.body}>
+            <div className={styles.cardContainer}>
             <SecuredByCodeCard/>
             <CompletelyTrustlessCard/>
             <CompatibleByDefaultCard />
+            <ExtremelySimpleCard />
+        </div>
         </div>
     )
 }
