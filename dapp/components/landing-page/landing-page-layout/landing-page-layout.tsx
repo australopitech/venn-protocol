@@ -26,6 +26,7 @@ export default function LandingPageLayout () {
         <div className={styles.section}>
           <div className={styles.title}>Main Use Cases</div>
           <UseCases/>
+          <div className={styles.title} style={{ paddingTop: "10px"}}>...among many more!</div>
         </div>
         <div className={styles.section}>
           <div className={styles.title}>Try our Demo</div>

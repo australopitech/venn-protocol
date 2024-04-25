@@ -9,6 +9,7 @@
     margin-right: auto;
     max-width: 1536px;
     position: relative;
+    background-color: #ffffff;
 }
 
 .title {
@@ -21,7 +22,7 @@
 }
 
 .section{
-    padding-top: 5vw;
+    padding-top: 10vw;
     display: flex;
     flex-direction: column;
 }
