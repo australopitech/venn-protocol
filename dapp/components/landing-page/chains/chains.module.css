@@ -8,7 +8,8 @@
 }
 
 .text {
-    font-size: 28px;
+    /* font-size: clamp(1.25rem, 1.1405rem + 0.5477vi, 1.6663rem); */
+    font-size: clamp(1rem, 0.9342rem + 0.3289vi, 1.25rem);
     text-align: left;
 }
 .chains {
@@ -16,7 +17,7 @@
     gap: 10px;
 }
 .logo {
-    width: 48px;
+    width: clamp(1.5rem, 1.2368rem + 1.3158vi, 2.5rem);
     height: auto;
 }
 
@@ -26,16 +27,16 @@
 
 @media (max-width: 601px) {
     .text {
-        font-size: 22px;
+        /* font-size: 22px; */
     }
     .logo {
-        width: 36px;
+        /* width: 36px; */
     }
 }
 
-@media (max-width: 450px) {
+@media (max-width: 601px) {
     .body {
         flex-direction: column;
-        align-items: start;
+        align-items: center;
     }
 }
