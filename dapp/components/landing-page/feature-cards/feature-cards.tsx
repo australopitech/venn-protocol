@@ -24,7 +24,7 @@ function SecuredByCodeCard () {
                     <div className={classNames(styles.graphic, styles.background)}><SecuredByCode/></div>
                     <div className={styles.textContainer}>
                     <div className={styles.description}>
-                        Receive your payment and your NFT back without worrying. Everything is completely secured by our Smart Contracts.
+                        Receive your payment and your NFT back guaranteed. Everything is completely secured by our Smart Contracts.
                     </div>
                     </div>
                     <div className={styles.title}>Secured by code</div>
@@ -49,7 +49,7 @@ function CompletelyTrustlessCard () {
                     <div className={styles.graphicWide}><CompletelyTrustless/></div>
                     <div className={styles.textContainer}>
                     <div className={classNames(styles.description, styles.hidden)}>
-                            Transact with complete strangers with certainty that the agreement will be fulfilled. Take part on this truly global market.
+                            Transact with complete strangers without worrying. Take part on this truly global market.
                     </div>
                     </div>
                     <div className={styles.title}>Completely trustless</div>
@@ -58,7 +58,7 @@ function CompletelyTrustlessCard () {
                     <div className={classNames(styles.graphicWide, styles.background)}><CompletelyTrustless/></div>
                     <div className={styles.textContainer}>
                     <div className={styles.description}>
-                            Transact with complete strangers with certainty that the agreement will be fulfilled. Take part on this truly global market.
+                            Transact with complete strangers without worrying about a breach. Take part on this truly global market.
                     </div>
                     </div>
                     <div className={styles.title}>Completely trustless</div>
@@ -93,7 +93,7 @@ function CompatibleByDefaultCard () {
                     <div className={classNames(styles.graphicWide, styles.background)}><CompatibleByDefault/></div>
                     <div className={styles.textContainer}>
                     <div className={styles.description}>
-                        Works with most major NFT platforms through Account Abstraction standards ERC-1271 and ERC-4337. No need to wait for integrations.
+                        Works with most major NFT platforms through Account Abstraction standards <b>ERC-1271</b> and <b>ERC-4337</b>. No need to wait for integrations.
                     </div>
                     </div>
                     <div className={styles.title}>Compatible by default</div>
