@@ -3,9 +3,9 @@
     display: flex;
     justify-content: center;
     width: 90%;
-    gap: 30px;
+    /* gap: 30px; */
     /* margin-inline: 30px; */
-    padding-top: 50px;
+    padding-block: clamp(4rem, 3.7368rem + 1.3158vi, 5rem);
     align-self: center;
 }
 
@@ -72,7 +72,7 @@
 
 .cardContainer {
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
     width: 90%;
     position: relative;
 }
@@ -83,10 +83,9 @@
     aspect-ratio: 1698 / 1000;
     width: 100%;
     height: auto;
-    gap: 10%;
-    align-self: center;
-    justify-content: center;
-    align-items: center;
+    /* align-self: center;
+    justify-content: center; */
+    /* align-items: center; */
 }
 
 
@@ -124,14 +123,14 @@
     display: flex;
     flex-direction: column;
     align-items: start;
-    gap: 40px;
-    width: 60%;
+    gap: clamp(2rem, 1.2105rem + 3.9474vi, 5rem);
+    width: 56%;
     padding-left: 5%;
 }
 
 .cardTitle {
     text-align: left;
-    font-size: 54px;
+    font-size: clamp(1.9531rem, 1.688rem + 1.3258vi, 2.9607rem);
     font-weight: 800;
     color: #000000;
     /* color: #ffffff; */
@@ -139,16 +138,17 @@
 }
 
 .cardDescription {
-    width: 65%;
-    font-size: 28px;
+    width: 100%;
+    font-size: clamp(1rem, 0.8684rem + 0.6579vi, 1.5rem);
     text-align: justify;
-    line-height: 1.6em;
+    /* line-height: clamp(1.5rem, 0.9079rem + 2.9605vi, 3.75rem); */
+    line-height: clamp(1.5rem, -0.75rem + 4.6875vi, 3.75rem);
     color: #000000;
 }
 
 .dotsContainer {
     display: flex;
-    width: 100px;
+    width: clamp(4rem, 3.4079rem + 2.9605vi, 6.25rem);
     height: auto;
     justify-self: end;
     align-self: center;
@@ -157,7 +157,7 @@
     left: 0;
     right: 0;
     margin: 0 auto;
-    bottom: 6%;
+    bottom: clamp(1rem, -1.3854rem + 4.4379vi, 2.875rem);
 }
 
 .dots {
@@ -168,332 +168,87 @@
     gap: 12%;
 }
 
-@media (max-width: 1520px) {
-    .body {
-        width: 100%;
+@media (max-width: 860px) {
+    .arrowContainerLeft {
+        top: 1%;
+    }
+    .arrowContainerRight{
+        top: 1%;
     }
     .card {
-        /* background-size: 756px 560px; */
-        gap: 8%;
+        aspect-ratio: 714.24 / 1200;
+        width: clamp(300px, 100%, 700px);
     }
-    .cardTitle {
-        font-size: 48px;
-    }
-    .cardDescription {
-        font-size: 24px;
-    }
-    .dotsContainer {
-        width: 150px;
-        padding-top: 6%;
-    }
-    
-}
-
-@media (max-width: 1440px) {
-    .cardTitle {
-        font-size: 46px;
-    }
-    .cardDescription {
-        font-size: 22px;
-    }
-    .dotsContainer {
-        width: 130px;
-    }
-}
-
-
-
-@media (max-width: 1280px) {
-    /* .cardTitle {
-        font-size: 38px;
-    } */
-    .cardDescription {
-        /* font-size: 18px; */
-        line-height: 50px;
-    }
-    /* .dotsContainer {
-        width: 80px
-    }    */
-    .text {
-        width: 70%;
-    }
-}
-
-@media (max-width: 1080px) {
-    /* .cardTitle {
-        font-size: 44px;
-    } */
-    .cardDescription {
-        font-size: 20px;
-        line-height: 46px;
-    }
-    .dotsContainer {
-        width: 110px;
-        padding-top: 2%;
-    }
-}
-
-@media (max-width: 1024px) {
-    /* .cardTitle {
-        font-size: 28px;
-    }
-    .dotsContainer {
-        width: 60px;
-    } */
-    .cardDescription {
-        font-size: 19px;
-        line-height: 42px;
-    }
-}
-
-@media(max-width: 960px) {
-    .text{
-        gap: 30px;
-        padding-left: 2%;
-    }
-    .cardTitle{
-        font-size: 44px;
-    }
-    .cardDescription {
-        line-height: 38px;
-    }
-    .dotsContainer {
-        width: 100px;
-    }
-}
-@media (max-width: 900px) {
-    .dotsContainer {
-        bottom: 8%;
-    }
-}
-
-@media (max-width: 864px) {
-    /* .dotsContainer {
-        padding-top: 6%;
-    } */
-    .text {
-        width: 80%;
-    }
-}
-
-@media (max-width: 800px) {
-    .cardDescription {
-        line-height: 32px;
-    }
-    .dotsContainer {
-        bottom: 4%;
-    }
-}
-
-
-@media (max-width: 768px) {
-    .content {
-        width: 100%;
-        gap: 0;
-    }
-    
-    .card{
-        aspect-ratio: 715 / 1383;
-        align-self: center;
-        align-items: center;
-        background-size: contain;
-        padding-top: 30px ;
-        width: 80%;
-    }
-    .gameCard {     
+    .gameCard {
         background-image: url('../../../public/cards/gaming-narrow.svg');
-        /* width: 714.24px;
-        height: 1200; */
+        display: flex;
+        justify-content: center;
     }
     .metaverseCard {
         background-image: url('../../../public/cards/metaverse-narrow.svg');
-    }
-    .domainCard {
-        background-image: url('../../../public/cards/domain-names-narrow.svg');
+        display: flex;
+        justify-content: center
     }
     .accessCard {
         background-image: url('../../../public/cards/access-token-narrow.svg');
-    }
-    .arrowContainer{
-        display: none;
-    }
-    .arrowNarrowContainer {
         display: flex;
-        align-items: end;
-        width: 3%;
+        justify-content: center
+    }
+    .domainCard {
+        background-image: url('../../../public/cards/domain-names-narrow.svg');
+        display: flex;
+        justify-content: center
     }
     .text {
-        width: 100%;
+        align-items: center;
+        width: 90%;
         padding-left: 0;
     }
     .cardTitle {
-        display: flex;
         text-align: center;
-        justify-content: center;
-        align-items: center;
-        width: 90%;
-        font-size: 50px;
     }
     .cardDescription {
-        align-self: center;
-        font-size: 24px;
-        line-height: 54px ;
-        width: 90%;
+        line-height: clamp(1.5rem, 0.6852rem + 4.0741vi, 2.875rem);
+        /* line-height: clamp(1rem, 0.0741rem + 4.6296vi, 2.5625rem); */
     }
     .dotsContainer {
-        bottom: 58%;
+        bottom: 50%;
     }
-}
-
-@media (max-width: 740px) {
-    .card {
-        width: 90%;
-    }
-    /* .dotsContainer {
-        bottom: 52%;
-    } */
-}
-
-@media (max-width: 667px) {
-    /* .gameCard {
-        width: 100%;
-    } */
-    /* .dotsContainer {
-        padding-top: 6%;
-    } */
-    /* .cardDescription {
-        font-size: 26px;
-    }
-    .cardTitle {
-        font-size: 50px;
-    } */
-    /* .card {
-        width: 100%;
-    } */
-    .dotsContainer {
-        bottom: 52%;
-    }
-}
-
-@media (max-width: 622px) {
-    .cardDescription {
-        /* font-size: 14px; */
-        line-height: 50px;
-    }
-    .cardTitle {
-        font-size: 48px;
-    }
-}
-
-@media (max-width: 601px) {
-    /* .dotsContainer {
-        padding-top: 2%;
-    } */
     
-    /* .cardDescription {
-        font-size: 24px;
-    } */
-    .card {
-        width: 100%;
-    }
 }
 
-@media (max-width: 554px) {
-    .text {
-        /* gap: 20px; */
-        width: 100%;
-    }
-    /* .cardDescription {
-        letter-spacing: -.5px;
-    } */
-    /* .gameCard {
-        padding-top: 2%;
-    } */
-}
-
-@media (max-width: 528px) {
-    /* .text {
-        gap: 10px;
-    } */
-    .cardTitle {
-        font-size: 46px;
-    }
-    .cardDescription {
-        font-size: 23px;
-        line-height: 46px;
-    }
-}
-
-@media (max-width: 490px) {
-    /* .card {
-        width: 100%;
-    } */
-    .cardDescription {
-        font-size: 22px;
-        line-height: 38px;
-    }
-    .cardTitle {
-        font-size: 42px;
-        width: 100%;
-    }
+@media (max-width: 560px) {
     .dotsContainer {
-        /* bottom: 48% */
+        bottom: 45%;
     }
 }
 
-@media (max-width: 464px) {
+@media (max-width: 475px) {
     .dotsContainer {
-        bottom: 44%;
+        bottom: 40%;
     }
 }
 
 @media (max-width: 425px) {
-    .text {
-        /* gap: 25px */
+    .card {
+        aspect-ratio: 715 / 1383;
     }
-    .cardDescription {
-        line-height: 34px;
-        /* text-align: left; */
+    .metaverseCard {
+        background-image: url('../../../public/cards/metaverse-narrow-long.svg');
     }
-    .dotsContainer {
-        top: 60%
+    .gameCard {
+        background-image: url('../../../public/cards/gaming-narrow-long.svg');
     }
-    .cardTitle {
-        font-size: 38px;
+    .accessCard {
+        background-image: url('../../../public/cards/access-tokens-narrow-long.svg');
     }
-
-}
-
-@media (max-width: 400px) {
-    .dotsContainer {
-        top: 68%;
-    }
-    .cardDescription {
-        text-align: center;
+    .domainCard {
+        background-image: url('../../../public/cards/domain-names-narrow-long.svg');
     }
 }
 
 @media (max-width: 375px) {
-    .cardTitle {
-        font-size: 30px;
-    }
-    .cardDescription {
-        font-size: 18px;
-        line-height: 28px;
-    }
     .dotsContainer {
-        top: 58%
-    }
-}
-
-@media (max-width: 345px) {
-    .dotsContainer {
-        top: 72%
-    }
-}
-
-@media (max-width: 320) {
-    .cardTitle {
-        font-size: 28px;
+        bottom: 28%;
     }
 }

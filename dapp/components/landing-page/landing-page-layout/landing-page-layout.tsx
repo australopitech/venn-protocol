@@ -25,7 +25,7 @@ export default function LandingPageLayout () {
         </div>
         <FeatureCards/>
         <div className={styles.section}>
-          <div className={styles.title}>Main Use Cases</div>
+          <div className={styles.title}>Use Cases</div>
           <UseCases/>
           <div className={styles.title} style={{ paddingTop: "10px"}}>...among many more!</div>
         </div>
