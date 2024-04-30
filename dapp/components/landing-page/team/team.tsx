@@ -19,7 +19,7 @@ export default function Team() {
                 viewport={{ once: true }}
                 transition={{ duration: 1.2 }}
                 >
-                    <b>Australopitech</b> is a web development agency born in Brazil. Our team is deeply passionate about designing solutions that enable the progressive decentralization of our institutions. The end goal is user sovereignty and a strictly voluntary and amply inclusive social-economic layer. To achieve this goal, the core principles should be decentralization, censorship-resistance, trustlessness, privacy and transparency.
+                    <b>Australopitech</b> is all about designing inovative and disruptive solutions that support progressive decentralization. The end goal is user sovereignty and a strictly voluntary and amply inclusive social-economic layer. The core principles are decentralization, censorship-resistance, trustlessness, privacy and transparency.
                 </motion.div>
                 <motion.div className={styles.buttonContainer}
                 initial={{ y: 100 }}

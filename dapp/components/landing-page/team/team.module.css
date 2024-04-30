@@ -1,6 +1,6 @@
 .body {
-    width: 80%;
-    max-width: 1280px;
+    width: 95%;
+    max-width: 1110px;
     align-self: center;
 }
 
@@ -12,21 +12,23 @@
     justify-content: space-between;
     color: #000000;
     background-image: url('../../../public/cards/monkey-background.svg');
+    background-repeat: no-repeat;
 }
 
 .info {
     display: flex;
     flex-direction: column;
     width: 55%;
-    gap: 8%;
+    /* gap: 8%; */
 }
 
 .description {
     width: 100%;
     text-align: left;
-    line-height: 2.8rem;
-    font-size: 1.5rem;
-    padding-bottom: 6%;
+    line-height: clamp(1rem, 0.5395rem + 2.3026vi, 2.75rem);
+    font-size: clamp(1.2rem, 1.1046rem + 0.477vi, 1.5625rem);
+    /* padding-bottom: 6%; */
+    padding-bottom: 40px;
 }
 
 .buttonContainer {
@@ -48,5 +50,51 @@
 
 .title {
     text-align: right;
-    font-size: 4rem;
+    font-size: clamp(2.4883rem, 2.1393rem + 1.7452vi, 3.8147rem);
+}
+
+@media (max-width: 860px) {
+    .body {
+        width: 100%;
+    }
+    .content {
+        flex-direction: column-reverse;
+        justify-content: start;
+        gap: clamp(4rem, 2.6667rem + 6.6667vi, 6.25rem);
+        background-size: 900px 805.92px;
+        height: 805.92px;
+    }
+    .info {
+        margin-inline: clamp(0.25rem, -3.3056rem + 17.7778vi, 6.25rem);
+        width: auto;
+    }
+    .description {
+        font-size: clamp(0.9375rem, 0.5671rem + 1.8519vi, 1.5625rem);
+        line-height: 2em;
+        text-align: justify;
+    }
+}
+
+@media (max-width: 568px) {
+    .content {
+        background-image: url('../../../public/cards/monkey-background-narrow.svg');
+        background-size: 750px 671.6px;
+        height: 671.6px;
+    }
+    .description {
+        line-height: 1.6em;
+    }
+}
+
+@media (max-width: 475px) {
+    .content {
+        background-image: url('../../../public/cards/monkey-background-narrow.svg');
+    }
+}
+
+@media (max-width: 375px) {
+    .content {
+        background-size: 601px 538.17px;
+        height: 538.17px;
+    }
 }
