@@ -15,33 +15,35 @@ import DemoScreen from "../demo-screen/demo-screen";
 export default function LandingPageLayout () {
 
   return (
-    <main className={classNames(styles.body, source_code_pro.className)}>
-        <NavBar />
-        <div style={{ paddingBottom: "40px"}}>
-          <Banner />
-        </div>
-        <div style={ { display: "flex" , flexDirection: "column", alignItems: "center", paddingBottom: "60px"}}>
-          <UserCards/>
-        </div>
-        <FeatureCards/>
-        <div className={styles.section}>
-          <div className={styles.title}>Use Cases</div>
-          <UseCases/>
-          <div className={styles.title} style={{ paddingTop: "10px"}}>...among many more!</div>
-        </div>
-        <div className={styles.section}>
-          <div style={{ display: "flex" }}>
-            <div className={styles.title}>Try our Demo</div>
-            <div style={{ width: "40px", height:"auto"}}><UpRightArrow/></div>
+    <body className={classNames(styles.body, source_code_pro.className)}>
+        <div className={styles.navbar}><NavBar /></div>
+        <div className={styles.main}>
+          <div style={{ paddingBottom: "40px"}}>
+            <Banner />
           </div>
-          <DemoScreen/>
-          <div style={{ paddingLeft: "5vw"}}><AvailableChains/></div>
+          <div style={ { display: "flex" , flexDirection: "column", alignItems: "center", paddingBottom: "60px"}}>
+            <UserCards/>
+          </div>
+          <FeatureCards/>
+          <div className={styles.section}>
+            <div className={styles.title}>Use Cases</div>
+            <UseCases/>
+            <div className={styles.subtitle} style={{ paddingTop: "10px"}}>...among many more!</div>
+          </div>
+          <div className={styles.section}>
+            <div style={{ display: "flex" }}>
+              <div className={styles.title}>Try our Demo</div>
+              <div style={{ width: "40px", height:"auto"}}><UpRightArrow/></div>
+            </div>
+            <DemoScreen/>
+            <div style={{ paddingLeft: "5vw"}}><AvailableChains/></div>
+          </div>
+          <div className={styles.section}>
+            <Team/>
+          </div>
         </div>
-        <div className={styles.section}>
-          <Team/>
-        </div>
-        <div style={{ paddingTop: "200px"}}><Footer/></div>
-    </main>
+        <div className={styles.footer}><Footer/></div>
+    </body>
   )
 }
 
