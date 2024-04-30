@@ -40,7 +40,7 @@ export default function LandingPageLayout () {
         <div className={styles.section}>
           <Team/>
         </div>
-        <div style={{ paddingTop: "300px"}}><Footer/></div>
+        <div style={{ paddingTop: "200px"}}><Footer/></div>
     </main>
   )
 }
