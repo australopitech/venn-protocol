@@ -2,7 +2,7 @@
 .body {
     display: flex;
     justify-content: center;
-    width: 90%;
+    width: 100%;
     /* gap: 30px; */
     /* margin-inline: 30px; */
     padding-block: clamp(4rem, 3.7368rem + 1.3158vi, 5rem);
@@ -140,6 +140,7 @@
 .cardDescription {
     width: 100%;
     font-size: clamp(1rem, 0.8684rem + 0.6579vi, 1.5rem);
+    font-weight: 500;
     text-align: justify;
     /* line-height: clamp(1.5rem, 0.9079rem + 2.9605vi, 3.75rem); */
     line-height: clamp(1.5rem, -0.75rem + 4.6875vi, 3.75rem);
