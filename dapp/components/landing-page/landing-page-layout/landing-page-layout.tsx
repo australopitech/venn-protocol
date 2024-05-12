@@ -17,10 +17,8 @@ export default function LandingPageLayout () {
   return (
     <body className={classNames(styles.body, source_code_pro.className)}>
         <div className={styles.navbar}><NavBar /></div>
+        <Banner />
         <div className={styles.main}>
-          <div style={{ paddingBottom: "40px"}}>
-            <Banner />
-          </div>
           <div style={ { display: "flex" , flexDirection: "column", alignItems: "center", paddingBottom: "60px"}}>
             <UserCards/>
           </div>
@@ -31,16 +29,15 @@ export default function LandingPageLayout () {
             <div className={styles.subtitle} style={{ paddingTop: "10px"}}>...among many more!</div>
           </div>
           <div className={styles.section}>
-            <div style={{ display: "flex" }}>
-              <div className={styles.title}>Try our Demo</div>
-              <div style={{ width: "40px", height:"auto"}}><UpRightArrow/></div>
+            <div className={styles.title}>
+                Try our Demo<UpRightArrow/>
             </div>
             <DemoScreen/>
             <div style={{ paddingLeft: "5vw"}}><AvailableChains/></div>
           </div>
-          <div className={styles.section}>
+        </div>
+        <div className={styles.section}>
             <Team/>
-          </div>
         </div>
         <div className={styles.footer}><Footer/></div>
     </body>
@@ -49,7 +46,7 @@ export default function LandingPageLayout () {
 
 const UpRightArrow = () => {
   return (
-    <svg width="100%" height="100%" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M7 17L17 7M17 7H8M17 7V16" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
   )
