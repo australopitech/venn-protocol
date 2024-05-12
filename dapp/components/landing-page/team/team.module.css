@@ -2,6 +2,7 @@
     width: 95%;
     max-width: 1110px;
     align-self: center;
+    padding-top: clamp(4rem, 3.4079rem + 2.9605vi, 6.25rem);
 }
 
 .content {
@@ -19,6 +20,7 @@
     display: flex;
     flex-direction: column;
     width: 55%;
+    margin-inline: 20px;
     /* gap: 8%; */
 }
 
@@ -27,7 +29,7 @@
     text-align: left;
     line-height: clamp(1rem, 0.5395rem + 2.3026vi, 2.75rem);
     font-size: clamp(1.2rem, 1.1046rem + 0.477vi, 1.5625rem);
-    /* padding-bottom: 6%; */
+    font-weight: 500 ;
     padding-bottom: 40px;
 }
 
@@ -45,13 +47,16 @@
     border-radius: 25px;
     width: fit-content;
     cursor: pointer;
+    font-size: clamp(1.2rem, 1.1046rem + 0.477vi, 1.5625rem);
     font-weight: 600;
 }
 
 .title {
     text-align: right;
     font-size: clamp(2.4883rem, 2.1393rem + 1.7452vi, 3.8147rem);
+    font-weight: 700;
 }
+
 
 @media (max-width: 860px) {
     .body {
@@ -65,13 +70,16 @@
         height: 805.92px;
     }
     .info {
-        margin-inline: clamp(0.25rem, -3.3056rem + 17.7778vi, 6.25rem);
+        /* margin-inline: clamp(0.25rem, -3.3056rem + 17.7778vi, 6.25rem); */
         width: auto;
     }
     .description {
         font-size: clamp(0.9375rem, 0.5671rem + 1.8519vi, 1.5625rem);
         line-height: 2em;
         text-align: justify;
+    }
+    .button {
+        font-size: clamp(0.9375rem, 0.5671rem + 1.8519vi, 1.5625rem);
     }
 }
 
@@ -89,12 +97,19 @@
 @media (max-width: 475px) {
     .content {
         background-image: url('../../../public/cards/monkey-background-narrow.svg');
+        background-size: 601px 538.17px;
+        height: fit-content;
     }
 }
 
-@media (max-width: 375px) {
+/* @media (max-width: 375px) {
     .content {
         background-size: 601px 538.17px;
         height: 538.17px;
+    }
+} */
+@media (max-width: 375px) {
+    .content {
+        background-size: 500px 447.73px;
     }
 }
