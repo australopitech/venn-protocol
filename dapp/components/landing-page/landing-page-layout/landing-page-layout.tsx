@@ -11,14 +11,25 @@ import Footer from "../footer/footer";
 import Team from "../team/team";
 import DemoScreen from "../demo-screen/demo-screen";
 // import Image from "next/image";
+import { VennBackground } from "./graphics";
 
 export default function LandingPageLayout () {
 
   return (
-    <body className={classNames(styles.body, source_code_pro.className)}>
+    <main className={classNames(styles.main, source_code_pro.className)}>
         <div className={styles.navbar}><NavBar /></div>
-        <Banner />
-        <div className={styles.main}>
+        <div className={styles.backgroundImage}>
+          <VennBackground/>
+        </div>
+        <div className={styles.backgroundFilter}></div>
+        
+
+
+
+
+
+        {/* <Banner />
+        <div className={styles.body}>
           <div style={ { display: "flex" , flexDirection: "column", alignItems: "center", paddingBottom: "60px"}}>
             <UserCards/>
           </div>
@@ -39,8 +50,8 @@ export default function LandingPageLayout () {
         <div className={styles.section}>
             <Team/>
         </div>
-        <div className={styles.footer}><Footer/></div>
-    </body>
+        <div className={styles.footer}><Footer/></div> */}
+    </main>
   )
 }
 
