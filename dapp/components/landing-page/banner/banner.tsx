@@ -16,9 +16,8 @@ export default function Banner () {
           <div className={styles.slogan}>
               Unlock the real value of NFTs.
           </div>
-          <div className={styles.buttonsContainer}>
-            <div className={styles.button2}>TRY THE DEMO</div>
-            <div className={styles.button1}>LEARN MORE</div>
+          <div className={styles.button}>
+            LAUNCH DEMO
           </div>
         </div>
     </div>

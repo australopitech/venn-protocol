@@ -14,7 +14,7 @@
 }
 
 .navItem {
-    color: #000000;
+    color: #1e1e1e;
     position: relative;
     text-decoration: none;
 }
@@ -174,9 +174,9 @@
   }
 
 
-@media (min-width: 769px) {
+@media (min-width: 1200px) {
     .navItems {
-        display: none;
+        display: flex;
         align-items: center;
         gap: 32px;
     }

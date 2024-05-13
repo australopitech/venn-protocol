@@ -16,12 +16,16 @@ import { VennBackground } from "./graphics";
 export default function LandingPageLayout () {
 
   return (
-    <main className={classNames(styles.main, source_code_pro.className)}>
-        <div className={styles.navbar}><NavBar /></div>
+    <main className={classNames(styles.main, source_code_pro.className)}>      
         <div className={styles.backgroundImage}>
           <VennBackground/>
         </div>
         <div className={styles.backgroundFilter}></div>
+        <div className={styles.navbar}><NavBar /></div>
+        <div className={styles.banner}>
+          <Banner />  
+        </div>        
+
         
 
 

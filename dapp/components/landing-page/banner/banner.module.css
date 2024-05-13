@@ -1,20 +1,23 @@
 
 .banner {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: clamp(9rem, -7rem + 33.3333vi, 25rem);
-    border: 3px solid #000000;
-    border-radius: 30px;
-    /* padding-top: clamp(4.5rem, 4.3684rem + 0.6579vi, 5rem);
-    padding-bottom: clamp(6.75rem, 6.5526rem + 0.9868vi, 7.5rem); */
-    height: calc(100vh - 130px);
+    margin-inline: 20px;
+    /* gap: clamp(9rem, -7rem + 33.3333vi, 25rem); */
+    gap: 12px;
+    /* height: calc(100vh - 130px); */
 }
 
 .sloganContainer {
     display: flex;
     flex-direction: column;
-    width: clamp(230px, 40%, 390px);
+    /* width: clamp(230px, 40%, 390px); */
+    width: 100%;
+    max-width: 370px;
+    gap: 20px;
+    align-items: center;
 }
 
 .buttonsContainer {
@@ -24,95 +27,45 @@
 }
 
 
-.button1 {
-    padding: 8px;
-    border: 2px solid #000000;
+.button {
+    padding-inline: 14px;
+    padding-block: 10px;
     border-radius: 25px;
     cursor: pointer;
-    background: #ffffff;
-    color: #000000;
+    background: #1e1e1e;
+    color: #d9d9d9;
+    font-size: var(--step-2);
+    font-weight: 600;
     /* outline: 2px solid #000000; */
 }
-.button2 {
+/* .button2 {
     padding: 8px;
     border: 2px solid #000000;
     border-radius: 25px;
     cursor: pointer;
     color: #ffffff;
     background: #000000;
-    /* outline: 2px solid #000000; */
-}
+} */
 
 .slogan {
-    font-size: clamp(2.7994rem, 2.4462rem + 1.7658vi, 3.8147rem);
-    font-weight: 600;
-    color: #000000;
+    font-size: var(--step-8);
+    font-weight: 700;
+    /* color: #000000; */
     width: 100%;
     height: auto;
     /* aspect-ratio: 390 / 265; */
-    text-align: left;
-    padding-bottom: 4%;
+    text-align: center;
+    /* padding-bottom: 4%; */
 }
 
 .logo {
-    width: clamp(217px, 20%, 250px);
+    width: clamp(7.875rem, 6.4063rem + 7.3438vi, 13.75rem);
     height: auto;
 }
 
-
-@media (max-width: 768px) {
-    
-
-    .banner {
-        flex-direction: column;
-        gap: 42px;
-    }
-
-    .logo{
-        width: clamp(217px, 40%, 250px);
-    }
-    .sloganContainer{
-        justify-content: center;
-        align-items: center;
-        width: 317px;
-    }
-
-    .slogan {
-        text-align: center;
-        font-size: clamp(1.8311rem, 1.1077rem + 3.6169vi, 3.0518rem);
-    }
-
-}
-
-@media (max-height: 744px) {
-    .logo {
-        aspect-ratio: 385 / 463;
-        height: 35vh;
-        width: auto;
-    }
-}
-
-@media (max-height: 464px) {
+@media (min-width: 1200px) {
     .banner {
         flex-direction: row;
-        /* gap: 15vw; */
-        /* padding-block: 5%; */
-    }
-    .logo {
-        /* margin-left: 20px;
-        width: clamp(217px, 20%, 250px); */
-    }
-    /* .banner {
-        padding-block: 5%;
-    } */
-    .slogan{
-        font-size: clamp(1.8311rem, 0.9098rem + 4.6064vh, 3.0518rem);
-    }
-    .sloganContainer {
-        /* margin-right: 20px; */
-    }
-    .buttonsContainer {
-        font-size: 14px;
+        gap: 160px
     }
 }
-
