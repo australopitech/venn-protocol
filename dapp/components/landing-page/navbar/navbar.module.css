@@ -14,6 +14,7 @@
 }
 
 .navItem {
+    color: #000000;
     position: relative;
     text-decoration: none;
 }
@@ -116,6 +117,7 @@
 .icon {
     width: 36px;
     height: 36px;
+    z-index: 1001;
 }
 
 .dropdownMenu {
@@ -126,32 +128,49 @@
 
 .dropdown {
     display: block;
-    position: absolute;
-    width: fit-content;
-    top: 36px;
-    right: 1px;
-    border-radius: 15px;
+    position: fixed;
+    /* width: fit-content; */
+    top: 0;
+    right: 0;
+    /* border-radius: 15px; */
     background-color: #ffffff;
-    width: 250px;
+    width: 100vw;
+    max-width: 601px;
+    height: 100vh;
+    max-height: 640px;
     z-index: 1000; /* High z-index to ensure the dropdown appears on top of other elements */
     box-shadow: 0 4px 8px rgba(0,0,0,0.15); /* Adjusted the shadow direction */
     font-size: 1rem;
     font-weight: 600;
-    border: 1px solid #cecece
+    border: 1px solid #cecece;
+    padding-top: 28px;
 }
 
 .dropdown li {
-    padding: 16px 16px;
+    padding: 24px 24px;
+    height: auto;
     cursor: pointer;
     list-style: none;
     z-index: 1000;
     color: #000000;
-    border-bottom: 1px solid #cecece;
+    /* border-bottom: 1px solid #cecece; */
+    text-align: center;
   }
   
-  .dropdown li:hover {
+  /* .dropdown li:hover {
     background-color: rgb(240, 211, 227, 0.5);
     z-index: 1000;
+  } */
+
+  .dropdownButton {
+    width: 205px;
+    margin-inline: auto;
+    margin-bottom: 16px;
+    border-radius: 15px;
+    text-align: center;
+    padding: 16px;
+    background: #000000;
+    color: #ffffff;
   }
 
 
