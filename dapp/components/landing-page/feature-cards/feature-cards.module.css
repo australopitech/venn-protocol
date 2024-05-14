@@ -92,16 +92,16 @@
 
 .textContainer{
     position: absolute;
-    bottom: 0;
-    top: 0;
+    bottom: 35%;
+    /* top: 0; */
     margin: auto;
     display: flex;
     flex-direction: column;
-    /* justify-content: center; */
+    justify-content: center;
     align-items: center;
     width: 100%;
-    height: clamp(11.25rem, 9.9774rem + 3.0851vi, 13.0625rem);
-    padding-bottom: clamp(0.3125rem, 1.5982rem + -1.3393vi, 0.875rem);
+    height: 65%;
+    /* padding-bottom: clamp(0.3125rem, 1.5982rem + -1.3393vi, 0.875rem); */
 }
 
 .title {
@@ -120,8 +120,9 @@
     font-size: var(--step--2);
     line-height: 110%;
     text-align: center;
-    width: 88%;
+    width: 85%;
     z-index: 1;
+    margin-top: 6px;
 }
 .hidden {
     color: transparent;

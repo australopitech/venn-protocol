@@ -83,7 +83,7 @@ function CompatibleByDefaultCard () {
                     <div className={classNames(styles.graphicWide, styles.background)} style={{ width: "46%", top: "15%" }}><CompatibleByDefault/></div>
                     <div className={styles.textContainer}>
                     <div className={styles.description}>
-                        Works with most major NFT platforms through Account Abstraction standards <b>ERC-1271</b> and <b>ERC-4337</b>. No need to wait for integrations.
+                        Works with most major NFT platforms through AA standards <b>ERC-1271</b> and <b>ERC-4337</b>. No need to wait for integrations.
                     </div>
                     </div>
                     <div className={styles.title}>Compatible by default</div>
