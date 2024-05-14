@@ -26,7 +26,12 @@ export default function LandingPageLayout () {
         <div className={styles.banner}>
           <Banner />  
         </div>
-        <div className={styles.main}><WhatIs/></div>
+        <div className={styles.main}>
+          <WhatIs/>
+          <div className={styles.userCards}>
+            <UserCards />            
+          </div>          
+        </div>
 
         
 

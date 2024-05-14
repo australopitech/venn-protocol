@@ -60,6 +60,11 @@
     background-image: linear-gradient(rgba(255,255,255, .6), rgba(255, 255, 255, .8));
 }
 
+.userCards {
+    margin-inline: 20px;
+    padding-top: clamp(2.8125rem, 0.3906rem + 12.1094vi, 12.5rem);
+}
+
 
 .title {
     font-size: clamp(2.4883rem, 2.1393rem + 1.7452vi, 3.8147rem);

@@ -3,18 +3,17 @@
     flex-direction: column;
     /* margin-block: 50px; */
     width: auto;
-    max-width: 1440px;
+    max-width: 1024px;
     align-items: center;
-    margin-inline: 20px;
 }
 
 .card {
-    padding-block: clamp(3rem, 2.8026rem + 0.9868vi, 3.75rem);;
+    padding-block: clamp(3rem, 2.8026rem + 0.9868vi, 3.75rem);
     display: flex;
     width: 100%;
     justify-content: center;
     align-items: center;
-    gap: clamp(0.75rem, -1.6842rem + 12.1711vi, 10rem);
+    gap: 10px;
     border-radius: 30px;
 }
 .card1:hover {
@@ -27,38 +26,59 @@
 }
 
 .graphic {
-    width: clamp(230px, 30vw, 350px);
+    width: 90%;
+    min-width: 246px;
     height: auto;
-    padding-block: 15px;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.3125rem, 1.2031rem + 0.5469vi, 1.75rem);
+}
+
+.content1 {
+    align-items: start;
+    padding-left: 10px;
+}
+
+.content2 {
+    align-items: end;
+    padding-right: 10px;
 }
 
 .textContainer {
     display: flex;
     flex-direction: column;
     width: clamp(300px, 50vw, 500px);
-    gap: clamp(1.125rem, 0.6429rem + 1.2834vi, 1.875rem);
-    padding-block: 15px;
+    gap: clamp(1.25rem, 1.0625rem + 0.9375vi, 2rem);
+}
+
+.text1st {
+    text-align: left;
+}
+
+.text2nd {
+    text-align: right;
 }
 
 .title {
-    text-align: left;
-    font-size: clamp(1.944rem, 1.2905rem + 1.7399vi, 2.9607rem);
-    font-weight: 600;
-    color: #000000;
+    font-size: var(--step-6);
+    font-weight: 700;
+    color: #1e1e1e;
 }
 
 .description {
-    font-size: clamp(1.125rem, 1.0447rem + 0.2139vi, 1.25rem);
+    font-size: var(--step--1);
     font-weight: 500;
-    text-align: justify;
-    line-height: clamp(1.25rem, 1.0855rem + 0.8224vi, 1.875rem);
-    color: #1B1719;
+    line-height: 101%;
+    color: #585858;
 }
 
-.linkContainer {
+/* .linkContainer {
     display: flex;
     justify-content: end;
-}
+} */
 
 .link {
     font-size:clamp(1.125rem, 1.0447rem + 0.2139vi, 1.25rem);
