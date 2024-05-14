@@ -37,6 +37,7 @@
     flex-direction: column;
     align-items: center;
     z-index: 2;
+    gap: clamp(2.5rem, 0.875rem + 8.125vi, 9rem);
     /* margin-inline: 20px; */
 }
 
@@ -65,7 +66,7 @@
     flex-direction: column;
     align-items: center;
     margin-inline: 20px;
-    padding-top: clamp(2.8125rem, 0.3906rem + 12.1094vi, 12.5rem);
+    padding-top: clamp(1.75rem, 1.3125rem + 2.1875vi, 3.5rem);
     width: 90vw;
 }
 

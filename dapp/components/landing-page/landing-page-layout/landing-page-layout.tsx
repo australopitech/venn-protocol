@@ -29,7 +29,7 @@ export default function LandingPageLayout () {
         <div className={styles.main}>
           <WhatIs/>
           <div className={styles.userCards}>
-            <UserCards />            
+            <UserCards />          
           </div>
           <FeatureCards/> 
         </div>
