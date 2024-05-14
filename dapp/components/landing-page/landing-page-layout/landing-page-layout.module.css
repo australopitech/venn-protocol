@@ -1,4 +1,4 @@
-.main {
+.body {
     /* padding-block: 24px;
     padding-inline: 24px; */
     display: flex;
@@ -6,30 +6,37 @@
     /* margin-inline: 2.5vw; */
     margin-left: auto;
     margin-right: auto;
-    max-width: 1600px;
+    /* max-width: 1600px; */
     position: relative;
+    align-items: center;
     background-color: #ffffff;
     color: #1E1E1E;
 }
 
 .navbar {
     z-index: 2;
+    width: 100%;
+    max-width: 1600px;
 }
 
 .banner {
     display: flex;
     align-items: end;
     justify-content: center;
-    height: calc(100vh - 56px - 20px);
+    width: 100%;
+    max-width: 1600px;
+    height: calc(100vh - 56px - 60px);
     max-height: 100vw;
     min-height: 492px;
     z-index: 2;    
 }
 
-.body {
-    gap: clamp(4rem, 3.4079rem + 2.9605vi, 6.25rem);
+.main {
+    padding-top: clamp(4.5rem, 1.3125rem + 15.9375vi, 17.25rem);
     display: flex;
     flex-direction: column;
+    align-items: center;
+    z-index: 2;
     /* margin-inline: 20px; */
 }
 
@@ -40,7 +47,7 @@
     right: 0;
     left: 0;
     margin: auto;
-    width: clamp(320px, 70vw, 1080px);
+    width: clamp(320px, 70vw, 1024px);
     z-index: 0;
 }
 
@@ -48,9 +55,9 @@
     position: absolute;
     top: 0;
     width: 100vw;
-    height: calc(0.00135135 * 771 * clamp(340px, 90vw, 1080px) + 20px);
+    height: calc(0.00135135 * 771 * clamp(340px, 70vw, 1024px) + 20px);
     z-index: 1;
-    background-image: linear-gradient(rgba(217, 217, 217, .6), rgba(255, 255, 255, .8));
+    background-image: linear-gradient(rgba(255,255,255, .6), rgba(255, 255, 255, .8));
 }
 
 
@@ -80,25 +87,8 @@
 
 
 
-
-
-@media (max-width: 1024px) {
-    .body {
-        margin-inline: 0;
-    }
-}
-
-@media (max-width: 768px) {
-    .body {
-        padding-inline: 10px;
-    }
-}
-
-@media (max-width: 601px) {
-    .body {
-        padding-inline: 5px;       
-    }
-    .title {
-        text-align: center;
+@media (min-width: 1200px) {
+    .backgroundFilter {
+        background-image: linear-gradient(rgba(255, 255, 255, .7), rgba(255, 255, 255, .8));
     }
 }

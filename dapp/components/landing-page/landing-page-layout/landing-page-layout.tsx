@@ -12,11 +12,12 @@ import Team from "../team/team";
 import DemoScreen from "../demo-screen/demo-screen";
 // import Image from "next/image";
 import { VennBackground } from "./graphics";
+import WhatIs from "../what-is/what-is";
 
 export default function LandingPageLayout () {
 
   return (
-    <main className={classNames(styles.main, source_code_pro.className)}>      
+    <main className={classNames(styles.body, source_code_pro.className)}>      
         <div className={styles.backgroundImage}>
           <VennBackground/>
         </div>
@@ -24,7 +25,8 @@ export default function LandingPageLayout () {
         <div className={styles.navbar}><NavBar /></div>
         <div className={styles.banner}>
           <Banner />  
-        </div>        
+        </div>
+        <div className={styles.main}><WhatIs/></div>
 
         
 
