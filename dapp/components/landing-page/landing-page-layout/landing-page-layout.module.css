@@ -61,8 +61,12 @@
 }
 
 .userCards {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-inline: 20px;
     padding-top: clamp(2.8125rem, 0.3906rem + 12.1094vi, 12.5rem);
+    width: 90vw;
 }
 
 

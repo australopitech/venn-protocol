@@ -2,7 +2,7 @@
     display: flex;
     flex-direction: column;
     /* margin-block: 50px; */
-    width: auto;
+    width: 100%;
     max-width: 1024px;
     align-items: center;
 }
@@ -16,6 +16,12 @@
     gap: 10px;
     border-radius: 30px;
 }
+.card1 {
+    flex-direction: column;
+}
+.card2 {
+    flex-direction: column;
+}
 .card1:hover {
     box-shadow: -10px -10px 2px 1px rgb(0 0 0 / 0.1), 2px 2px 2px -2px rgb(0 0 0 / 0.1);
     transition: 0.5s ease-out;
@@ -25,9 +31,14 @@
     transition: 0.5s ease-out;
 }
 
-.graphic {
-    width: 90%;
-    min-width: 246px;
+.shareGraphic {
+    width: calc(clamp(17.1875rem, 15.75rem + 7.1875vi, 22.9375rem)*.9);
+    /* min-width: 246px; */
+    height: auto;
+}
+
+.tryGraphic {
+    width: calc(clamp(17.1875rem, 15.75rem + 7.1875vi, 22.9375rem)*.82);
     height: auto;
 }
 
@@ -35,6 +46,7 @@
     display: flex;
     flex-direction: column;
     gap: clamp(1.3125rem, 1.2031rem + 0.5469vi, 1.75rem);
+    width: clamp(17.1875rem, 15.75rem + 7.1875vi, 22.9375rem);
 }
 
 .content1 {
@@ -50,7 +62,7 @@
 .textContainer {
     display: flex;
     flex-direction: column;
-    width: clamp(300px, 50vw, 500px);
+    width: 100%;
     gap: clamp(1.25rem, 1.0625rem + 0.9375vi, 2rem);
 }
 
@@ -95,20 +107,21 @@
 } */
 
 
-@media (max-width: 601px) {
-    .card {
-        flex-direction: column;
+@media(min-width: 860px) {
+    .card1 {
+        flex-direction: row;
     }
-    .textContainer {
+    .card2 {
+        flex-direction: row-reverse;
+    }
+    .card {
+        justify-content: space-between;
         width: 100%;
     }
-}
-
-
-@media (max-height: 464px) {
-    .card {
-        flex-direction: row;
-        /* gap: 50px; */
+    .tryGraphic {
+        width: 33.7%;
+    }
+    .shareGraphic {
+        width: 39%;
     }
 }
-
