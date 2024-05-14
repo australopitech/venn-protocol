@@ -3,7 +3,7 @@
     flex-direction: column;
     /* margin-block: 50px; */
     width: 100%;
-    max-width: 1024px;
+    max-width: 1080px;
     align-items: center;
 }
 
@@ -117,6 +117,7 @@
     .card {
         justify-content: space-between;
         width: 100%;
+        padding-inline: clamp(1.25rem, -1.3649rem + 4.8649vi, 3.5rem);
     }
     .tryGraphic {
         width: 33.7%;
