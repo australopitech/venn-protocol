@@ -34,7 +34,7 @@
     cursor: pointer;
     background: #1e1e1e;
     color: #d9d9d9;
-    font-size: var(--step-2);
+    font-size: var(--step-0);
     font-weight: 600;
     /* outline: 2px solid #000000; */
 }
@@ -67,5 +67,11 @@
     .banner {
         flex-direction: row;
         gap: 160px
+    }
+    .sloganContainer {
+        align-items: start;
+    }
+    .slogan {
+        text-align: left;
     }
 }
