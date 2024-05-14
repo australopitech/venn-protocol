@@ -10,7 +10,8 @@
 
 .navItems {
     display: none;
-    font-size: var(--step-0);
+    font-size:  clamp(1rem, 0.6923rem + 0.641vi, 1.3333rem);
+    font-weight: 500;
 }
 
 .navItem {
@@ -24,7 +25,7 @@
     position: absolute;
     left: 0;
     bottom: 0;
-    height: 1px;
+    height: 2px;
     width: 0;
     background: currentColor;
     transition: width 0.3s ease-in-out;
@@ -46,7 +47,7 @@
 
 .button {
     padding: 8px;
-    border: 2px solid #000000;;
+    border: 2px solid #1e1e1e;;
     border-radius: 25px;
     cursor: pointer;
     position: relative;
@@ -55,7 +56,7 @@
 
 .button1 {
     background: #ffffff;
-    color: #000000;
+    color: #1e1e1e;
     /* font-weight: 700; */
 }
 
@@ -79,7 +80,7 @@
     left: 0;
     width: 0;
     height: 100%;
-    background-color: lightgray;
+    background-color: #a5a5a5;
     transition: width 0.3s;
     z-index: 1;
   }
@@ -174,7 +175,7 @@
   }
 
 
-@media (min-width: 1200px) {
+@media (min-width: 844px) {
     .navItems {
         display: flex;
         align-items: center;
