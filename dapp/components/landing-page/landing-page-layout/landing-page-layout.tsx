@@ -34,6 +34,7 @@ export default function LandingPageLayout () {
           <FeatureCards/>
           <UseCases /> 
         </div>
+        <Footer />
 
         
 
