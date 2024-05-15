@@ -42,6 +42,7 @@ export default function LandingPageLayout () {
             <DemoScreen/>
             <div style={{ display: 'flex', width: "100%", justifyContent: "center"}}><AvailableChains/></div>
           </div>
+          <Team/>
         </div>
         <div className={styles.footer}><Footer /></div>
 

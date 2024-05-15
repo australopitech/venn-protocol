@@ -1,115 +1,110 @@
 .body {
-    width: 95%;
-    max-width: 1110px;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 1280px;
     align-self: center;
-    padding-top: clamp(4rem, 3.4079rem + 2.9605vi, 6.25rem);
+    /* padding-top: clamp(4rem, 3.4079rem + 2.9605vi, 6.25rem); */
+    position: relative;
+}
+
+.background {
+    position: absolute;
+    left: clamp(0rem, -13.7931rem + 68.9655vi, 25rem);
+    top: 0;
+    bottom: 0;
+    margin-block: auto;
+    width: clamp(28.125rem, 25.7813rem + 11.7188vi, 37.5rem);
+    height: auto;
+    z-index: -10;
+    opacity: .13;
 }
 
 .content {
     display: flex;
+    flex-direction: column;
     width: 100%;
-    aspect-ratio: 1110 / 711;
+    max-width: 366px;
+    padding-inline: 20px 20px;
+    gap: 50px;
+    /* aspect-ratio: 1110 / 711; */
     align-items: center;
-    justify-content: space-between;
-    color: #000000;
-    background-image: url('../../../public/cards/monkey-background.svg');
+    /* background-image: url('../../../public/cards/monkey-background.svg');
     background-repeat: no-repeat;
+    background-size: 750px;
+    background-position-x: 50%; */
 }
 
 .info {
     display: flex;
     flex-direction: column;
-    width: 55%;
-    margin-inline: 20px;
-    /* gap: 8%; */
+    align-items: center;
+    width: 100%;
+    gap: 28px;
 }
 
 .description {
     width: 100%;
-    text-align: left;
-    line-height: clamp(1rem, 0.5395rem + 2.3026vi, 2.75rem);
-    font-size: clamp(1.2rem, 1.1046rem + 0.477vi, 1.5625rem);
+    text-align: center;
+    line-height: 105%;
+    font-size: var(--step-1);
     font-weight: 500 ;
-    padding-bottom: 40px;
+    /* padding-bottom: 40px; */
 }
 
 .buttonContainer {
     display: flex;
     width: fit-content;
-    align-self: flex-end;
+    align-self: center;
 }
 
 .button {
-    display: flex;
-    justify-content: center;
-    padding: 10px;
-    border: 2px solid #000000;
-    border-radius: 25px;
     width: fit-content;
-    cursor: pointer;
-    font-size: clamp(1.2rem, 1.1046rem + 0.477vi, 1.5625rem);
-    font-weight: 600;
 }
 
 .title {
-    text-align: right;
-    font-size: clamp(2.4883rem, 2.1393rem + 1.7452vi, 3.8147rem);
+    text-align: center;
+    font-size: var(--step-7);
     font-weight: 700;
 }
 
+.highlight {
+    position: relative;
+    font-weight: 700;
+}
 
-@media (max-width: 860px) {
+.highlight::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 90%;
+    height: calc(var(--step-1) * 0.5);
+    background: #EFC3E6;
+    z-index: -1;
+}
+
+@media (min-width: 901px) {
     .body {
-        width: 100%;
+        padding-top: clamp(4rem, 3.4079rem + 2.9605vi, 6.25rem);
+    }
+    .background {
+        bottom: auto;
+        left: 50%;
     }
     .content {
-        flex-direction: column-reverse;
-        justify-content: start;
-        gap: clamp(4rem, 2.6667rem + 6.6667vi, 6.25rem);
-        background-size: 900px 805.92px;
-        height: 805.92px;
+        flex-direction: row-reverse;
+        justify-content: space-between;
+        max-width: 1024px;
     }
     .info {
-        /* margin-inline: clamp(0.25rem, -3.3056rem + 17.7778vi, 6.25rem); */
-        width: auto;
+        align-items: start;
+        width: 50%;
     }
     .description {
-        font-size: clamp(0.9375rem, 0.5671rem + 1.8519vi, 1.5625rem);
-        line-height: 2em;
-        text-align: justify;
+        text-align: left;
     }
-    .button {
-        font-size: clamp(0.9375rem, 0.5671rem + 1.8519vi, 1.5625rem);
-    }
-}
-
-@media (max-width: 568px) {
-    .content {
-        background-image: url('../../../public/cards/monkey-background-narrow.svg');
-        background-size: 750px 671.6px;
-        height: 671.6px;
-    }
-    .description {
-        line-height: 1.6em;
-    }
-}
-
-@media (max-width: 475px) {
-    .content {
-        background-image: url('../../../public/cards/monkey-background-narrow.svg');
-        background-size: 601px 538.17px;
-        height: fit-content;
-    }
-}
-
-/* @media (max-width: 375px) {
-    .content {
-        background-size: 601px 538.17px;
-        height: 538.17px;
-    }
-} */
-@media (max-width: 375px) {
-    .content {
-        background-size: 500px 447.73px;
+    .buttonContainer {
+        align-self: end;
     }
 }

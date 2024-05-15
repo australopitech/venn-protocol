@@ -22,5 +22,5 @@
 
 .icon {
     width: clamp(0.7901rem, 0.7243rem + 0.3292vi, 1.0535rem);
-    color: #d9d9d9;
+    /* color: #d9d9d9; */
 }
