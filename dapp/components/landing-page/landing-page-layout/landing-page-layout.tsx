@@ -11,7 +11,7 @@ import Footer from "../footer/footer";
 import Team from "../team/team";
 import DemoScreen from "../demo-screen/demo-screen";
 // import Image from "next/image";
-import { VennBackground } from "./graphics";
+import { VennBackground, AnimatedBackground } from "./graphics";
 import WhatIs from "../what-is/what-is";
 
 export default function LandingPageLayout () {
@@ -19,7 +19,7 @@ export default function LandingPageLayout () {
   return (
     <main className={classNames(styles.body, source_code_pro.className)}>      
         <div className={styles.backgroundImage}>
-          <VennBackground/>
+          <AnimatedBackground/>
         </div>
         <div className={styles.backgroundFilter}></div>
         <div className={styles.navbar}><NavBar /></div>
