@@ -1,8 +1,10 @@
 
 .body {
+    display: flex;
+    justify-content: center;
     margin-top: 100px;
-    padding-bottom: 60px;
-    padding-top: 32px ;
+    padding-bottom: clamp(3.75rem, 2.7813rem + 4.8438vi, 7.625rem);
+    padding-top: clamp(2rem, 1.5625rem + 2.1875vi, 3.75rem);
     border-top: 3px solid #d9d9d9;
     width: 100%;
 }
@@ -12,10 +14,11 @@
     flex-direction: column;
     gap:22px;
     align-items: center;
+    max-width: 1440px;
 }
 
 .logo {
-    width: 92px;
+    width: clamp(5.75rem, 4.375rem + 6.875vi, 11.25rem);
     height: auto;
 }
 
@@ -26,19 +29,19 @@
 .trademark {
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    align-items: center;
 }
 
 .description {
     display: none;
     text-align: justify;
-    width: 297px;
-    font-size: var(--step-0);
+    font-size: var(--step--1);
 }
 
 .developedBy {
-    letter-spacing: 44%;
+    letter-spacing: calc(.44 * var(--step--1));
     line-height: 110%;
+    white-space: nowrap;
 }
 
 .company {
@@ -56,7 +59,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    text-align: center;
     gap: 20px;
 }
 
@@ -64,6 +66,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    text-align: center;
     gap: 10px;
 }
 .sectionTitle {
@@ -90,14 +93,41 @@
 }
 
 .socials {
-    width: 32px;
+    width: clamp(2rem, 1.5rem + 2.5vi, 4rem);
     height: auto;
+    cursor: pointer;
 }
 
 .socialsContainer {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 204px;
+    width: clamp(12.75rem, 9.5776rem + 15.8621vi, 18.5rem);
+}
+
+@media (min-width: 901px) {
+    .content {
+        flex-direction: row;
+        justify-content: space-between;
+        width: 100%;
+        margin-inline: clamp(2rem, -3.1559rem + 9.1559vi, 6rem);
+    }
+    .linkContainer {
+        flex-direction: row;
+        align-items: start;
+        gap: 40px;
+    }
+    .section {
+        text-align: left;
+        align-items: start;
+    }
+    .socialsContainer {
+        width: 100%;
+        /* justify-content: space-between; */
+    }
+    .description {
+        display: block;
+    }
+
 }
 

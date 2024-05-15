@@ -10,7 +10,7 @@ export default function Footer () {
         <div className={styles.content}>
             <div className={styles.trademark}>
                 <div className={styles.logo}><NewLogoName/></div>
-                <div className={styles.description}><span className={styles.developedBy}>Developed by</span> <span className={styles.company}>Australopitech, LLC.</span></div>
+                <div className={styles.description}><span className={styles.developedBy}>Developed by</span><br/><span className={styles.company}>Australopitech, LLC.</span></div>
             </div>
             <div className={styles.resources}>
                 <div className={styles.socialsContainer}>

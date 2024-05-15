@@ -34,7 +34,7 @@ export default function LandingPageLayout () {
           <FeatureCards/>
           <UseCases /> 
         </div>
-        <Footer />
+        <div className={styles.footer}><Footer /></div>
 
         
 

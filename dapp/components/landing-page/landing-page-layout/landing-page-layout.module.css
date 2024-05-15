@@ -94,6 +94,7 @@
 }
 
 .footer {
+    width: 100%;
     margin-top: clamp(5rem, 3.0263rem + 9.8684vi, 12.5rem);
 }
 
