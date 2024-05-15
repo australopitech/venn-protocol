@@ -72,13 +72,16 @@
     width: 90vw;
 }
 
+.titleContainer {
+    display: flex;
+    justify-content: center;
+}
 
 .title {
-    font-size: var(--step-2);
+    font-size: var(--step-7);
     font-weight: 700;
-    text-align: left;
-    margin-inline: 20px;
-    padding-bottom: 10px;
+    text-align: center;
+
 }
 
 .subtitle{
@@ -91,6 +94,8 @@
     /* padding-top: 10vw; */
     display: flex;
     flex-direction: column;
+    width: 100%;
+    max-width: 1440px;
 }
 
 .footer {
@@ -103,5 +108,15 @@
 @media (min-width: 1200px) {
     .backgroundFilter {
         background-image: linear-gradient(rgba(255, 255, 255, .7), rgba(255, 255, 255, .8));
+    }
+}
+
+@media (min-width: 900px) {
+    .titleContainer {
+        justify-content: start;
+    }
+    .title {
+        text-align: left;
+        margin-inline: 20px;
     }
 }
