@@ -36,6 +36,8 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
+    max-width: 1600px;
     z-index: 2;
     gap: clamp(2.5rem, 0.875rem + 8.125vi, 9rem);
     /* margin-inline: 20px; */
@@ -72,7 +74,7 @@
 
 
 .title {
-    font-size: clamp(2.4883rem, 2.1393rem + 1.7452vi, 3.8147rem);
+    font-size: var(--step-2);
     font-weight: 700;
     text-align: left;
     margin-inline: 20px;

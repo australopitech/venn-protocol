@@ -1,7 +1,7 @@
 'use client'
 import styles from "./use-cases.module.css";
 import { RightArrow, LeftArrow, DotsFirst, DotsSecond, DotsThird, DotsFourth, Dot } from "./graphics";
-import { orbitron } from "@/app/fonts";
+import { audiowide } from "@/app/fonts";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence, useAnimate } from "framer-motion";
@@ -61,8 +61,8 @@ function AccessCard () {
   return (
     <div className={styles.accessCard}>
         <div className={styles.text}>
-          <div className={classNames(styles.cardTitle, orbitron.className)}>
-            Access Tokens
+          <div className={classNames(styles.cardTitle, audiowide.className)}>
+            Access
           </div>
           <div className={styles.cardDescription}>
           <b>TICKETS, CREDENTIALS, CLUB MEMBERSHIPS</b> can now also change hands without worry. Take a <b>SNEAK PEAK</b> at that exclusive club or <b> GET PAID</b> for not attending your favorite event!
@@ -76,7 +76,7 @@ function DomainCard () {
   return (
     <div className={styles.domainCard}>
         <div className={styles.text}>
-          <div className={classNames(styles.cardTitle, orbitron.className)}>
+          <div className={classNames(styles.cardTitle, audiowide.className)}>
             Domains
           </div>
           <div className={styles.cardDescription}>
@@ -91,7 +91,7 @@ function MetaverseCard () {
   return (
     <div className={styles.metaverseCard}>
         <div className={styles.text}>
-          <div className={classNames(styles.cardTitle, orbitron.className)}>
+          <div className={classNames(styles.cardTitle, audiowide.className)}>
             Metaverse
           </div>
           <div className={styles.cardDescription}>
@@ -108,7 +108,7 @@ function GamerCard () {
   return (
     <div className={styles.gameCard}>
         <div className={styles.text}>
-          <div className={classNames(styles.cardTitle, orbitron.className)}>
+          <div className={classNames(styles.cardTitle, audiowide.className)}>
             Gaming
           </div>
           <div className={styles.cardDescription}>
@@ -224,26 +224,30 @@ export default function UseCases () {
 
   return (
     <div className={styles.body}>
-        <div className={styles.content}>
-            <div className={styles.arrowContainerLeft}>
-                <div 
-                className={styles.arrow}
-                onClick={() => paginate(-1)}
-                ><LeftArrow/></div>
-            </div>
-            <div className={styles.cardContainer}>
-              <Card cardNum={position} direction={direction} paginate={paginate}/>
-              <div className={styles.dotsContainer}>
-                    <Dots placement={position}/>
-              </div>
-            </div>
-            <div className={styles.arrowContainerRight}>
-                <div
-                className={styles.arrow}
-                onClick={() => paginate(1)}
-                ><RightArrow/></div>
-            </div>
+      <div className={styles.title}>Use Cases</div>
+      <div className={styles.content}>
+        <div className={styles.arrowsContainer}>
+          <div 
+          className={styles.arrow}
+          onClick={() => paginate(-1)}
+          >
+            <LeftArrow/>
+          </div>
+          <div
+          className={styles.arrow}
+          onClick={() => paginate(1)}
+          >
+            <RightArrow/>
+          </div>
         </div>
+        <Card cardNum={position} direction={direction} paginate={paginate}/>
+      </div>
+      <div className={styles.dotsContainer}>
+        <Dots placement={position}/>
+      </div>
+      <div className={styles.subtitle}>
+        ...among many others!
+      </div>
     </div>
   )
 }

@@ -31,7 +31,8 @@ export default function LandingPageLayout () {
           <div className={styles.userCards}>
             <UserCards />          
           </div>
-          <FeatureCards/> 
+          <FeatureCards/>
+          <UseCases /> 
         </div>
 
         
