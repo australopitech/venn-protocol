@@ -3,7 +3,7 @@
     flex-direction: column;
     /* margin-block: 50px; */
     width: 100%;
-    max-width: 1080px;
+    max-width: 1280px;
     align-items: center;
 }
 
@@ -121,8 +121,10 @@
     }
     .tryGraphic {
         width: 33.7%;
+        max-width: 346px;
     }
     .shareGraphic {
         width: 39%;
+        max-width: 407.8px;
     }
 }
