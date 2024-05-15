@@ -1,3 +1,34 @@
+'use client'
+import { motion, Variants } from 'framer-motion';
+
+const pathVariants1: Variants = {
+    initial: { pathLength: 0 },
+    animate: { 
+        pathLength: 1,
+        transition: {
+            delay: 2,
+            duration: 2,
+            ease: "easeInOut" ,
+            repeat: Infinity,
+            repeatType: "reverse",
+            repeatDelay: 5
+        }
+    },
+}
+
+const pathVariants2: Variants = {
+    initial: { pathLength: 0 },
+    animate: { 
+        pathLength: 1,
+        transition: {
+            duration: 2,
+            ease: "easeInOut" ,
+            repeat: Infinity,
+            repeatType: "mirror",
+            repeatDelay: 5
+        }
+    },
+}
 
 export function VennBackground () {
     return (
@@ -39,53 +70,167 @@ export function VennBackground () {
 
 function SmallPolyCircle () {
     return (
-        <svg width="100%" height="auto" viewBox="0 0 496 496" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <motion.svg 
+        initial={{ rotate:0 }}
+        animate={{ rotate: 1080 }}
+        transition={{
+            delay: 4,
+            duration: 60,
+            repeat: Infinity,
+            repeatType: "loop",
+        }}
+        width="100%" height="auto" viewBox="0 0 496 496" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clip-path="url(#clip0_150_1098)">
-            <path d="M33.8511 371.639L248 495.278L462.149 371.639V124.361L248 0.721924L33.8511 124.361V371.639Z" stroke="black" stroke-width="2"/>
-            <path d="M15.6347 332.575L205.061 491.522L437.426 406.948L480.365 163.426L290.939 4.4792L58.5741 89.0533L15.6347 332.575Z" stroke="black" stroke-width="2"/>
-            <path d="M4.47865 290.939L163.426 480.365L406.947 437.426L491.521 205.061L332.574 15.6347L89.0527 58.5741L4.47865 290.939Z" stroke="black" stroke-width="2"/>
-            <path d="M0.72216 248L124.361 462.149L371.639 462.149L495.278 248L371.639 33.8509L124.361 33.8509L0.72216 248Z" stroke="black" stroke-width="2"/>
-            <path d="M4.47867 205.061L89.0527 437.426L332.574 480.365L491.521 290.939L406.947 58.5741L163.426 15.6348L4.47867 205.061Z" stroke="black" stroke-width="2"/>
-            <path d="M15.6347 163.426L58.574 406.947L290.939 491.521L480.365 332.574L437.426 89.0527L205.061 4.47867L15.6347 163.426Z" stroke="black" stroke-width="2"/>
-            <path d="M33.8511 124.361L33.8511 371.639L248 495.278L462.149 371.639L462.149 124.361L248 0.722092L33.8511 124.361Z" stroke="black" stroke-width="2"/>
-            <path d="M58.574 89.0527L15.6346 332.574L205.061 491.521L437.426 406.947L480.365 163.426L290.939 4.47868L58.574 89.0527Z" stroke="black" stroke-width="2"/>
-            <path d="M89.0528 58.5741L4.47871 290.939L163.426 480.365L406.947 437.426L491.521 205.061L332.574 15.6347L89.0528 58.5741Z" stroke="black" stroke-width="2"/>
-            <path d="M124.361 33.8511L0.722083 248L124.361 462.149H371.639L495.278 248L371.639 33.8511L124.361 33.8511Z" stroke="black" stroke-width="2"/>
-            <path d="M163.425 15.6347L4.47822 205.061L89.0523 437.426L332.574 480.365L491.521 290.939L406.947 58.5741L163.425 15.6347Z" stroke="black" stroke-width="2"/>
-            <path d="M205.631 4.47864L16.2049 163.426L59.1443 406.947L291.51 491.521L480.936 332.574L437.996 89.0527L205.631 4.47864Z" stroke="black" stroke-width="2"/>
+            <motion.path 
+            variants={pathVariants1}
+            initial="initial"
+            animate="animate"
+            d="M33.8511 371.639L248 495.278L462.149 371.639V124.361L248 0.721924L33.8511 124.361V371.639Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants1}
+            initial="initial"
+            animate="animate"
+            d="M15.6347 332.575L205.061 491.522L437.426 406.948L480.365 163.426L290.939 4.4792L58.5741 89.0533L15.6347 332.575Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants1}
+            initial="initial"
+            animate="animate"
+            d="M4.47865 290.939L163.426 480.365L406.947 437.426L491.521 205.061L332.574 15.6347L89.0527 58.5741L4.47865 290.939Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants1}
+            initial="initial"
+            animate="animate"
+            d="M0.72216 248L124.361 462.149L371.639 462.149L495.278 248L371.639 33.8509L124.361 33.8509L0.72216 248Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants1}
+            initial="initial"
+            animate="animate"
+            d="M4.47867 205.061L89.0527 437.426L332.574 480.365L491.521 290.939L406.947 58.5741L163.426 15.6348L4.47867 205.061Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants1}
+            initial="initial"
+            animate="animate"
+            d="M15.6347 163.426L58.574 406.947L290.939 491.521L480.365 332.574L437.426 89.0527L205.061 4.47867L15.6347 163.426Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants1}
+            initial="initial"
+            animate="animate"
+            d="M33.8511 124.361L33.8511 371.639L248 495.278L462.149 371.639L462.149 124.361L248 0.722092L33.8511 124.361Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants1}
+            initial="initial"
+            animate="animate"
+            d="M58.574 89.0527L15.6346 332.574L205.061 491.521L437.426 406.947L480.365 163.426L290.939 4.47868L58.574 89.0527Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants1}
+            initial="initial"
+            animate="animate"
+            d="M89.0528 58.5741L4.47871 290.939L163.426 480.365L406.947 437.426L491.521 205.061L332.574 15.6347L89.0528 58.5741Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants1}
+            initial="initial"
+            animate="animate"
+            d="M124.361 33.8511L0.722083 248L124.361 462.149H371.639L495.278 248L371.639 33.8511L124.361 33.8511Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants1}
+            initial="initial"
+            animate="animate"
+            d="M163.425 15.6347L4.47822 205.061L89.0523 437.426L332.574 480.365L491.521 290.939L406.947 58.5741L163.425 15.6347Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants1}
+            initial="initial"
+            animate="animate"
+            d="M205.631 4.47864L16.2049 163.426L59.1443 406.947L291.51 491.521L480.936 332.574L437.996 89.0527L205.631 4.47864Z" stroke="black" strokeWidth="1.5"/>
             </g>
             <defs>
             <clipPath id="clip0_150_1098">
             <rect width="496" height="496" fill="white"/>
             </clipPath>
             </defs>
-        </svg>
+        </motion.svg>
     )
 }
 
 function BigPolyCircle () {
     return (
-        <svg width="100%" height="auto" viewBox="0 0 571 571" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <motion.svg 
+        initial={{ rotate:0 }}
+        animate={{ rotate: -720 }}
+        transition={{
+            delay: 4,
+            duration: 60,
+            repeat: Infinity,
+            repeatType: "loop",
+        }}
+        width="100%" height="auto" viewBox="0 0 571 571" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g clip-path="url(#clip0_150_1099)">
-            <path d="M84.3699 486.814L285.592 570.163L486.814 486.814L570.163 285.592L486.814 84.3701L285.592 1.02118L84.3699 84.3701L1.02104 285.592L84.3699 486.814Z" stroke="black" stroke-width="2.20241"/>
-            <path d="M52.4852 448.815L236.177 565.84L448.815 518.699L565.84 335.008L518.699 122.369L335.007 5.34467L122.369 52.4854L5.34437 236.177L52.4852 448.815Z" stroke="black" stroke-width="2.20241"/>
-            <path d="M27.6828 405.857L188.263 553.001L405.856 543.501L553.001 382.921L543.5 165.327L382.921 18.183L165.327 27.6833L18.1824 188.263L27.6828 405.857Z" stroke="black" stroke-width="2.20241"/>
-            <path d="M10.7174 359.245L143.306 532.038L359.244 560.467L532.037 427.878L560.466 211.94L427.877 39.1469L211.939 10.7181L39.1461 143.307L10.7174 359.245Z" stroke="black" stroke-width="2.20241"/>
-            <path d="M2.10384 310.394L102.673 503.586L310.394 569.08L503.586 468.511L569.08 260.79L468.511 67.5982L260.79 2.10416L67.5979 102.674L2.10384 310.394Z" stroke="black" stroke-width="2.20241"/>
-            <path d="M2.10384 260.79L67.5979 468.511L260.79 569.08L468.511 503.586L569.08 310.394L503.586 102.673L310.394 2.1038L102.673 67.5979L2.10384 260.79Z" stroke="black" stroke-width="2.20241"/>
-            <path d="M10.7174 211.94L39.1461 427.878L211.939 560.466L427.877 532.038L560.466 359.244L532.037 143.307L359.244 10.7177L143.306 39.1464L10.7174 211.94Z" stroke="black" stroke-width="2.20241"/>
-            <path d="M27.6828 165.327L18.1824 382.921L165.327 543.501L382.921 553.001L543.5 405.857L553.001 188.263L405.856 27.6831L188.263 18.1827L27.6828 165.327Z" stroke="black" stroke-width="2.20241"/>
-            <path d="M52.4852 122.369L5.34437 335.007L122.369 518.699L335.007 565.84L518.699 448.815L565.84 236.177L448.815 52.4854L236.177 5.3446L52.4852 122.369Z" stroke="black" stroke-width="2.20241"/>
-            <path d="M84.3699 84.3699L1.02104 285.592L84.3699 486.814L285.592 570.163L486.814 486.814L570.163 285.592L486.814 84.3699L285.592 1.02104L84.3699 84.3699Z" stroke="black" stroke-width="2.20241"/>
-            <path d="M122.369 52.4852L5.34411 236.177L52.4849 448.815L236.177 565.84L448.815 518.699L565.839 335.007L518.699 122.369L335.007 5.34437L122.369 52.4852Z" stroke="black" stroke-width="2.20241"/>
-            <path d="M165.983 27.6832L18.839 188.263L28.3393 405.857L188.919 553.001L406.513 543.501L553.657 382.921L544.157 165.327L383.577 18.1829L165.983 27.6832Z" stroke="black" stroke-width="2.20241"/>
+            <motion.path 
+            variants={pathVariants2}
+            initial="initial"
+            animate="animate"
+            d="M84.3699 486.814L285.592 570.163L486.814 486.814L570.163 285.592L486.814 84.3701L285.592 1.02118L84.3699 84.3701L1.02104 285.592L84.3699 486.814Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants2}
+            initial="initial"
+            animate="animate"
+            d="M52.4852 448.815L236.177 565.84L448.815 518.699L565.84 335.008L518.699 122.369L335.007 5.34467L122.369 52.4854L5.34437 236.177L52.4852 448.815Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants2}
+            initial="initial"
+            animate="animate"
+            d="M27.6828 405.857L188.263 553.001L405.856 543.501L553.001 382.921L543.5 165.327L382.921 18.183L165.327 27.6833L18.1824 188.263L27.6828 405.857Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants2}
+            initial="initial"
+            animate="animate"
+            d="M10.7174 359.245L143.306 532.038L359.244 560.467L532.037 427.878L560.466 211.94L427.877 39.1469L211.939 10.7181L39.1461 143.307L10.7174 359.245Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants2}
+            initial="initial"
+            animate="animate"
+            d="M2.10384 310.394L102.673 503.586L310.394 569.08L503.586 468.511L569.08 260.79L468.511 67.5982L260.79 2.10416L67.5979 102.674L2.10384 310.394Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants2}
+            initial="initial"
+            animate="animate"
+            d="M2.10384 260.79L67.5979 468.511L260.79 569.08L468.511 503.586L569.08 310.394L503.586 102.673L310.394 2.1038L102.673 67.5979L2.10384 260.79Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants2}
+            initial="initial"
+            animate="animate"
+            d="M10.7174 211.94L39.1461 427.878L211.939 560.466L427.877 532.038L560.466 359.244L532.037 143.307L359.244 10.7177L143.306 39.1464L10.7174 211.94Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants2}
+            initial="initial"
+            animate="animate"
+            d="M27.6828 165.327L18.1824 382.921L165.327 543.501L382.921 553.001L543.5 405.857L553.001 188.263L405.856 27.6831L188.263 18.1827L27.6828 165.327Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants2}
+            initial="initial"
+            animate="animate"
+            d="M52.4852 122.369L5.34437 335.007L122.369 518.699L335.007 565.84L518.699 448.815L565.84 236.177L448.815 52.4854L236.177 5.3446L52.4852 122.369Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants2}
+            initial="initial"
+            animate="animate"
+            d="M84.3699 84.3699L1.02104 285.592L84.3699 486.814L285.592 570.163L486.814 486.814L570.163 285.592L486.814 84.3699L285.592 1.02104L84.3699 84.3699Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants2}
+            initial="initial"
+            animate="animate"
+            d="M122.369 52.4852L5.34411 236.177L52.4849 448.815L236.177 565.84L448.815 518.699L565.839 335.007L518.699 122.369L335.007 5.34437L122.369 52.4852Z" stroke="black" strokeWidth="1.5"/>
+            <motion.path 
+            variants={pathVariants2}
+            initial="initial"
+            animate="animate"
+            d="M165.983 27.6832L18.839 188.263L28.3393 405.857L188.919 553.001L406.513 543.501L553.657 382.921L544.157 165.327L383.577 18.1829L165.983 27.6832Z" stroke="black" strokeWidth="1.5"/>
             </g>
             <defs>
             <clipPath id="clip0_150_1099">
             <rect width="571" height="571" fill="white"/>
             </clipPath>
             </defs>
-    </svg>
+    </motion.svg>
     )
 }
 
