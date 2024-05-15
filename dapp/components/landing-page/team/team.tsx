@@ -38,12 +38,7 @@ export default function Team() {
                 viewport={{ once: true }}
                 transition={{ duration: 1.2 }}
                 >
-                    <motion.div className={styles.button}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    >
-                        <Button text="VISIT OUR PAGE" icon={true} type="secondary" />
-                    </motion.div>
+                    <Button text="VISIT OUR PAGE" icon={true} type="secondary" />
                 </motion.div>
             </div>
         </motion.div>

@@ -89,6 +89,7 @@
     /* border: 2px solid lightgray; */
     color: #000000;
     animation-duration: 0.3s;
+    transition: color .5s;
   }
   
   .button:hover::after {

@@ -5,19 +5,34 @@
     padding-block: 10px;
     font-size: var(--step--1);
     font-weight: 600;
+    cursor: pointer;
 }
 
 .buttonPrimary {
     background: #1e1e1e;
     color: #d9d9d9;
     border-radius: 30px;
+    transition: all .3s;
 }
-
+.buttonPrimary:hover {
+    background: #F0A6CA;
+    color: #1e1e1e;
+}
+.buttonPrimary:active {
+    transform: scale(.95);
+}
 .buttonSecondary {
     background: transparent;
     color: #1e1e1e;
     border-radius: 30px;
     border: 3px solid #1e1e1e;
+    transition: all .3s;
+}
+.buttonSecondary:hover {
+    transform: scale(1.05);
+}
+.buttonSecondary:active {
+    transform: scale(.95);
 }
 
 .icon {

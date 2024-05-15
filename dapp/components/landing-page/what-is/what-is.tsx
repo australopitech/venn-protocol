@@ -1,3 +1,4 @@
+import Button from "../button/button";
 import styles from "./what-is.module.css";
 
 function UpRightArrow () {
@@ -23,7 +24,8 @@ export default function WhatIs () {
                 <div className={styles.description}>
                     Venn leverages Account Abstraction to to bring users a vibrant and safe NFT Rentals Market.
                 </div>
-                <div className={styles.button}>LEARN MORE <div className={styles.arrow}><UpRightArrow/></div></div>
+                {/* <div className={styles.button}>LEARN MORE <div className={styles.arrow}><UpRightArrow/></div></div> */}
+                <Button text="LEARN MORE" icon={true} type="secondary"/>
             </div>
         </div>
     )

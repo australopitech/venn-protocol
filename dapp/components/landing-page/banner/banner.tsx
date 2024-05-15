@@ -2,6 +2,7 @@ import { NewLogoName } from "@/components/common/logo/logo";
 import styles from "./banner.module.css";
 import classNames from "classnames";
 import { passion_one } from "@/app/fonts";
+import Button from "../button/button";
 
 
 
@@ -16,9 +17,10 @@ export default function Banner () {
           <div className={styles.slogan}>
               Unlock the real value of NFTs.
           </div>
-          <div className={styles.button}>
+          <Button text="LAUNCH DEMO" icon={false} />
+          {/* <div className={styles.button}>
             LAUNCH DEMO
-          </div>
+          </div> */}          
         </div>
     </div>
   )
