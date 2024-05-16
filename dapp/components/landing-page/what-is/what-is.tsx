@@ -42,7 +42,7 @@ export default function WhatIs () {
                     Venn leverages Account Abstraction to to bring users a vibrant and safe NFT Rentals Market.
                 </div>
                 {/* <div className={styles.button}>LEARN MORE <div className={styles.arrow}><UpRightArrow/></div></div> */}
-                <Button text="LEARN MORE" icon={true} type="secondary"/>
+                <a href="https://australopitech.gitbook.io/venn" target="_blank"><Button text="LEARN MORE" icon={true} type="secondary"/></a>
             </motion.div>
             </AnimatePresence>
         </div>

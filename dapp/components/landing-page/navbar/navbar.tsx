@@ -53,7 +53,7 @@ export default function NavBar () {
             <div className={styles.navItem}>
                 <Link href="/contact" target="_blank">CONTACT US</Link>
             </div>
-            <Link href="/" target="_blank">
+            <Link href="/market" target="_blank">
                 <div className={classNames(styles.button, styles.button2, source_code_pro.className)}
                 >
                   <span className={styles.buttonText}>LAUNCH MARKETPLACE</span>

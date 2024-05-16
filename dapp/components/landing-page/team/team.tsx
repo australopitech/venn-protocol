@@ -38,7 +38,9 @@ export default function Team() {
                 viewport={{ once: true }}
                 transition={{ duration: 1.2 }}
                 >
-                    <Button text="VISIT OUR PAGE" icon={true} type="secondary" />
+                    <a href="https://australopitech.xyz/" target="_blank">
+                        <Button text="VISIT OUR PAGE" icon={true} type="secondary" />
+                    </a>
                 </motion.div>
             </div>
         </motion.div>

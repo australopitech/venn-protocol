@@ -4,6 +4,7 @@ import { ShareOwnership } from "./graphics";
 import classNames from "classnames";
 import { motion } from "framer-motion"
 import Button from "../button/button";
+import Link from "next/link";
 
 function ShareOwnershipCard () {
   
@@ -37,7 +38,7 @@ function ShareOwnershipCard () {
                   Name your price, your time frame, and earn.
               </p>
             </div>
-            <Button text="TRY IT" icon={true}/ >
+            <Link href={'/market'} target="_blank"><Button text="TRY IT" icon={true}/ ></Link>
         </motion.div>
     </motion.div>
   )
@@ -74,7 +75,7 @@ function TryItCard () {
                 Rent that NFT you&apos;ve been flirting with for a fraction of its value. Own it just for a while. No collateral. No commitment.
               </p>
             </div>
-            <Button text="TRY IT" icon={true} />
+            <Link href={'/market'} target="_blank"><Button text="TRY IT" icon={true} /></Link>
         </motion.div>
     </motion.div>
   )
