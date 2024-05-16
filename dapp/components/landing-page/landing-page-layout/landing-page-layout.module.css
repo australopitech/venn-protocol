@@ -65,7 +65,7 @@
     max-height: 110vw;
     min-height: 492px;
     /* z-index: 2; */
-    background-image: radial-gradient(#EFC3E6, transparent);
+    /* background-image: radial-gradient(#EFC3E6, transparent); */
 }
 
 .main {
