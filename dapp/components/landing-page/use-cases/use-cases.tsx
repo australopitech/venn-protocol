@@ -1,6 +1,6 @@
 'use client'
 import styles from "./use-cases.module.css";
-import { RightArrow, LeftArrow, DotsFirst, DotsSecond, DotsThird, DotsFourth, Dot } from "./graphics";
+import { RightArrow, LeftArrow, Dot } from "./graphics";
 import { audiowide } from "@/app/fonts";
 import classNames from "classnames";
 import { useEffect, useState } from "react";
@@ -168,7 +168,7 @@ function Card ({ cardNum, direction, paginate } : { cardNum: number, direction: 
   
   return(
     
-    <AnimatePresence initial={false} custom={direction} mode="wait">
+    <AnimatePresence initial={true} custom={direction} mode="wait">
         <motion.div className={styles.card}
         key={cardNum}
         custom={direction}
