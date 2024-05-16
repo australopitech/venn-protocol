@@ -6,6 +6,7 @@
     padding: 10px;
     background-color: transparent;
     /* border-radius: 12px; */
+    /* position:relative; */
 }
 
 .navItems {
@@ -125,7 +126,7 @@
 .dropdownMenu {
     position: relative;
     display: inline-block;
-    z-index: 1000;
+    z-index: auto;
 }
 
 .dropdown {
@@ -136,6 +137,7 @@
     right: 0;
     /* border-radius: 15px; */
     background-color: #ffffff;
+    /* background: solid #ffffff; */
     width: 100vw;
     max-width: 601px;
     height: 100vh;
@@ -154,7 +156,7 @@
     cursor: pointer;
     list-style: none;
     z-index: 1000;
-    color: #000000;
+    color: #1e1e1e;
     /* border-bottom: 1px solid #cecece; */
     text-align: center;
   }
@@ -171,7 +173,7 @@
     border-radius: 15px;
     text-align: center;
     padding: 16px;
-    background: #000000;
+    background: #1e1e1e;
     color: #ffffff;
   }
 

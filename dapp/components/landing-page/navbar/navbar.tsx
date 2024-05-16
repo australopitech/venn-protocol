@@ -67,7 +67,7 @@ export default function NavBar () {
             </Link>
         </div>
         <div className={styles.menuIcon}>
-                <DropdownMenu  items={dropdownItems} onItemSelect={handleItemSelect}/>
+          <DropdownMenu  items={dropdownItems} onItemSelect={handleItemSelect}/>
         </div>
     </div>
   )
@@ -125,67 +125,67 @@ const DropdownMenu = ({ items, onItemSelect } : DropdownProps ) => {
                 </motion.div>
               )}
             </AnimatePresence>
-        </div>
-        <AnimatePresence>
-        {isOpen && (
-          <>
-          <motion.ul
-            className={styles.dropdown}
-            initial="closed"
-            animate="open"
-            exit="closed"
-            variants={{
-              open: {
-                scale: 1,
-                transition: { staggerChildren: 0.05, delayChildren: 0.2 }
-              },
-              closed: { scale: 0 }
-            }}
-            style={{ originX: 1, originY: 0 }} // Top right corner
-          >
-            <div style={{ display: 'flex', justifyContent: 'space-between',  alignItems: 'center', padding: '8px' }}>
-              <motion.div style={{ width: '82px'}}
-              key='name'
+          </div>
+          <AnimatePresence>
+          {isOpen && (
+            <>
+            <motion.ul
+              className={styles.dropdown}
+              initial="closed"
+              animate="open"
+              exit="closed"
+              variants={{
+                open: {
+                  scale: 1,
+                  transition: { staggerChildren: 0.05, delayChildren: 0.2 }
+                },
+                closed: { scale: 0 }
+              }}
+              style={{ originX: 1, originY: 0 }} // Top right corner
+            >
+              <div style={{ display: 'flex', justifyContent: 'space-between',  alignItems: 'center', padding: '8px' }}>
+                <motion.div style={{ width: '82px'}}
+                key='name'
+                variants={itemVariants}
+                >
+                  <Name/>
+                </motion.div>
+                <motion.div className={styles.icon}
+                      key="close"
+                      initial={{ opacity: 0, scale: 0 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0 }}
+                      transition={{ duration: 0.2 }}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      <CloseIcon />
+                </motion.div>
+              </div>
+              {items.map((item, index) => (
+                <motion.li
+                  key={index}
+                  variants={itemVariants}
+                  onClick={() => onItemSelect(item)}
+                >
+                  {item}
+                </motion.li>
+              ))}
+              <motion.div className={styles.dropdownButton}
+              key='mktplace'
               variants={itemVariants}
               >
-                <Name/>
+                <Link href={'/'} target="_blank">LAUNCH MARKETPLACE</Link>
               </motion.div>
-              <motion.div className={styles.icon}
-                    key="close"
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0 }}
-                    transition={{ duration: 0.2 }}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    <CloseIcon />
-              </motion.div>
-            </div>
-            {items.map((item, index) => (
-              <motion.li
-                key={index}
-                variants={itemVariants}
-                onClick={() => onItemSelect(item)}
+              <motion.div className={styles.dropdownButton}
+              key='mktplace'
+              variants={itemVariants}
               >
-                {item}
-              </motion.li>
-            ))}
-            <motion.div className={styles.dropdownButton}
-            key='mktplace'
-            variants={itemVariants}
-            >
-              <Link href={'/'} target="_blank">LAUNCH MARKETPLACE</Link>
-            </motion.div>
-            <motion.div className={styles.dropdownButton}
-            key='mktplace'
-            variants={itemVariants}
-            >
-              <Link href={'/dashboard'} target="_blank">LAUNCH DASHBOARD</Link>
-            </motion.div>
-          </motion.ul>
-          </>
-        )}
-        </AnimatePresence>
-    </div>
+                <Link href={'/dashboard'} target="_blank">LAUNCH DASHBOARD</Link>
+              </motion.div>
+            </motion.ul>
+            </>
+          )}
+          </AnimatePresence>
+        </div>
     );
   }

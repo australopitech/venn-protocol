@@ -17,16 +17,15 @@ import WhatIs from "../what-is/what-is";
 export default function LandingPageLayout () {
 
   return (
-    <main className={classNames(styles.body, source_code_pro.className)}>      
-        <div className={styles.top}>
-          <div className={styles.backgroundImage}>
-            <AnimatedBackground/>
-          </div>
-          <div className={styles.backgroundFilter}></div>
-          <div className={styles.navbar}><NavBar /></div>
-          <div className={styles.banner}>
-            <Banner />  
-          </div>
+    <div className={styles.background}>
+      <div className={styles.backgroundImage}>
+          <AnimatedBackground/>
+      </div>
+      <div className={styles.backgroundFilter}></div>
+      <main className={classNames(styles.body, source_code_pro.className)}>      
+        <div className={styles.navbar}><NavBar /></div>
+        <div className={styles.banner}>
+          <Banner />  
         </div>
         <div className={styles.main}>
           <WhatIs/>
@@ -37,47 +36,20 @@ export default function LandingPageLayout () {
           <UseCases /> 
           <div className={styles.section}>
             <div className={styles.titleContainer}>
-              <div className={styles.title} style={{ display: 'flex', alignItems:'flex-end'}}>
+                <div className={styles.title} style={{ display: 'flex', alignItems:'flex-end'}}>
                   Try our Demo<span style={{ width: "var(--step-7)", height: "var(--step-7)"}}><UpRightArrow/></span>
-              </div>
+                </div>
             </div>
             <DemoScreen/>
             <div style={{ display: 'flex', width: "100%", justifyContent: "center"}}><AvailableChains/></div>
           </div>
-          <Team/>
+           <Team/>
         </div>
-        <div className={styles.footer}><Footer /></div>
-
-        
-
-
-
-
-
-        {/* <Banner />
-        <div className={styles.body}>
-          <div style={ { display: "flex" , flexDirection: "column", alignItems: "center", paddingBottom: "60px"}}>
-            <UserCards/>
-          </div>
-          <FeatureCards/>
-          <div className={styles.section}>
-            <div className={styles.title}>Use Cases</div>
-            <UseCases/>
-            <div className={styles.subtitle} style={{ paddingTop: "10px"}}>...among many more!</div>
-          </div>
-          <div className={styles.section}>
-            <div className={styles.title}>
-                Try our Demo<UpRightArrow/>
-            </div>
-            <DemoScreen/>
-            <div style={{ paddingLeft: "5vw"}}><AvailableChains/></div>
-          </div>
+        <div className={styles.footer}>
+          <Footer />
         </div>
-        <div className={styles.section}>
-            <Team/>
-        </div>
-        <div className={styles.footer}><Footer/></div> */}
-    </main>
+      </main>
+    </div>
   )
 }
 
