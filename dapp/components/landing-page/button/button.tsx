@@ -21,9 +21,9 @@ export default function Button ({text, type, icon, handler} : ButtonProps) {
 
 function UpRightArrow () {
     return (
-        <svg width="100%" height="auto" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g clip-path="url(#clip0_17_1111)">
-            <path d="M4.16667 45.8334L45.8333 4.16675M45.8333 4.16675H8.33334M45.8333 4.16675V41.6667" stroke="currentColor" stroke-width="8.33333" stroke-linecap="round" stroke-linejoin="round"/>
+        <svg width="100%" height="100%" viewBox="0 0 50 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g clipPath="url(#clip0_17_1111)">
+            <path d="M4.16667 45.8334L45.8333 4.16675M45.8333 4.16675H8.33334M45.8333 4.16675V41.6667" stroke="currentColor" strokeWidth="8.33333" strokeLinecap="round" strokeLinejoin="round"/>
             </g>
             <defs>
             <clipPath id="clip0_17_1111">

@@ -23,6 +23,7 @@ export default function WhatIs () {
         <div className={styles.body}>
             <AnimatePresence>
             <motion.div className={styles.title}
+            key={1}
             initial={{ opacity:0, x:-100 }}
             whileInView={{ opacity:1, x:0 }}
             viewport={{ once: true }}
@@ -31,6 +32,7 @@ export default function WhatIs () {
                 What is Venn?
             </motion.div>
             <motion.div className={styles.descriptionContainer}
+            key={2}
             initial={{ x:100 }}
             whileInView={{ x:0 }}
             viewport={{ once: true }}
