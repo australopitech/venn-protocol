@@ -38,8 +38,11 @@
 }
 
 .tryGraphic {
+    aspect-ratio: 325 / 361.5;
     width: calc(clamp(17.1875rem, 15.75rem + 7.1875vi, 22.9375rem)*.82);
     height: auto;
+    background-image: url('../../../public/cards/hands-solid-svgrepo-com_00001.svg');
+    background-size: contain;
 }
 
 .content {

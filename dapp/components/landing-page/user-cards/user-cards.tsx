@@ -60,7 +60,7 @@ function TryItCard () {
         transition={{ duration: 1, delay: 1 }}
         className={styles.tryGraphic}
         >
-            <TryIt/>
+            {/* <TryIt/> */}
         </motion.div>
         <motion.div 
         initial={{ opacity: 0, x: -100 }}
