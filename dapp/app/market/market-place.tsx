@@ -1,6 +1,5 @@
 'use client'
 
-import Head from 'next/head'
 import MarketLayout from '@/components/market/market-layout/market-layout'
 import { WorkInProgressDialog } from '@/components/common/work-in-progress-dialog/work-in-progress-dialog';
 import { useEffect, useState } from 'react';
