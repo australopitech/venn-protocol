@@ -18,13 +18,15 @@ export default function LandingPageLayout () {
 
   return (
     <main className={classNames(styles.body, source_code_pro.className)}>      
-        <div className={styles.backgroundImage}>
-          <AnimatedBackground/>
-        </div>
-        <div className={styles.backgroundFilter}></div>
-        <div className={styles.navbar}><NavBar /></div>
-        <div className={styles.banner}>
-          <Banner />  
+        <div className={styles.top}>
+          <div className={styles.backgroundImage}>
+            <AnimatedBackground/>
+          </div>
+          <div className={styles.backgroundFilter}></div>
+          <div className={styles.navbar}><NavBar /></div>
+          <div className={styles.banner}>
+            <Banner />  
+          </div>
         </div>
         <div className={styles.main}>
           <WhatIs/>

@@ -19,6 +19,14 @@
     max-width: 1600px;
 }
 
+.top {
+    /* background-image: radial-gradient(  rgb(214, 146, 179), #ffffff); */
+    display: inherit;
+    flex-direction: inherit;
+    align-items: inherit;
+    width: 100%;
+}
+
 .banner {
     display: flex;
     align-items: end;
@@ -41,6 +49,7 @@
     z-index: 2;
     gap: clamp(2.5rem, 0.875rem + 8.125vi, 9rem);
     /* margin-inline: 20px; */
+    /* background-image: linear-gradient(#ffffff, #d9d9d9, #ffffff, #d9d9d9, #ffffff); */
 }
 
 .backgroundImage {

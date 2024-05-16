@@ -155,7 +155,7 @@ function BigPolyCircle () {
     return (
         <motion.svg 
         initial={{ rotate:0 }}
-        animate={{ rotate: -720 }}
+        animate={{ rotate: -540 }}
         transition={{
             delay: 4,
             duration: 60,
