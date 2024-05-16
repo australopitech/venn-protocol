@@ -1,0 +1,152 @@
+.body {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.cardContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: 1280px;
+    /* margin-inline: 20px; */
+    /* gap: clamp(0.875rem, -36.3843rem + 47.0149vi, 8.75rem); */
+    gap: 25px;
+    /* margin-inline: clamp(0.5625rem, -0.125rem + 1.4323vi, 1.25rem); */
+    /* margin-top: 10px; */
+}
+
+.card {
+    background-color: transparent;
+    aspect-ratio: 250 / 250;
+    width: 280px;
+    height: auto;
+    cursor: pointer;
+    perspective: 1000px; /* Remove this if you don't want the 3D effect */
+  }
+  
+  /* This container is needed to position the front and back side */
+  .content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border-radius: 30px;
+    transition: transform 0.8s;
+    transform-style: preserve-3d;
+  }
+  
+  /* Do an horizontal flip when you move the mouse over the flip box container */
+  .card:hover .content {
+    transform: rotateY(180deg);
+  }
+  
+  /* Position the front and back side */
+  .front, .back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-radius: 30px;
+    -webkit-backface-visibility: hidden; /* Safari */
+    backface-visibility: hidden;
+  }
+  
+  /* Style the front side (fallback if image is missing) */
+  .front {
+    background-color: #000000;
+    color: #ffffff;
+  }
+  
+  /* Style the back side */
+  .back {
+    background-color: #000000;
+    color: #ffffff;
+    transform: rotateY(180deg);
+  }
+
+.graphic {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+    top: 8%;
+    height: auto;
+}
+
+.graphicWide {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+    height: auto;
+}
+
+.background {
+    opacity: 0.25;
+    z-index: 0;
+}
+
+.textContainer{
+    position: absolute;
+    bottom: 35%;
+    /* top: 0; */
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 65%;
+    /* padding-bottom: clamp(0.3125rem, 1.5982rem + -1.3393vi, 0.875rem); */
+}
+
+.title {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin: auto;
+    top: 65%;
+    width: 80%;
+    font-size: var(--step-2);
+    text-align: center;
+    font-weight: 700;
+}
+
+.description {
+    font-size: var(--step--2);
+    line-height: 110%;
+    text-align: center;
+    width: 85%;
+    z-index: 1;
+    margin-top: 6px;
+}
+.hidden {
+    color: transparent;
+}
+
+
+@media (max-width: 1280px) {
+    .cardContainer {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        justify-items: center;
+        width: fit-content;
+        column-gap: clamp(1.25rem, -12.5rem + 33.3333vi, 6.25rem);
+        row-gap: clamp(1.5625rem, -11.3281rem + 31.25vi, 6.25rem);
+    }
+}
+
+@media (max-width: 659px) {
+    .cardContainer {
+        display: flex;
+        flex-direction: column;
+        gap: 25px;
+    }
+    .card {
+        width: clamp(15.625rem, 13.8603rem + 8.8235vi, 17.5rem);
+    }
+}

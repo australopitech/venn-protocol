@@ -1,0 +1,77 @@
+
+.banner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-inline: 20px;
+    /* gap: clamp(9rem, -7rem + 33.3333vi, 25rem); */
+    gap: 12px;
+    /* height: calc(100vh - 130px); */
+}
+
+.sloganContainer {
+    display: flex;
+    flex-direction: column;
+    /* width: clamp(230px, 40%, 390px); */
+    width: 100%;
+    max-width: 370px;
+    gap: 20px;
+    align-items: center;
+}
+
+.buttonsContainer {
+    display: flex;
+    gap: 12px;
+    font-size: clamp(0.9375rem, 0.9374rem + 0.0003vi, 0.9377rem);
+}
+
+
+.button {
+    padding-inline: 14px;
+    padding-block: 10px;
+    border-radius: 25px;
+    cursor: pointer;
+    background: #1e1e1e;
+    color: #d9d9d9;
+    font-size: var(--step-0);
+    font-weight: 600;
+    /* outline: 2px solid #000000; */
+}
+/* .button2 {
+    padding: 8px;
+    border: 2px solid #000000;
+    border-radius: 25px;
+    cursor: pointer;
+    color: #ffffff;
+    background: #000000;
+} */
+
+.slogan {
+    font-size: var(--step-8);
+    font-weight: 700;
+    /* color: #000000; */
+    width: 100%;
+    height: auto;
+    /* aspect-ratio: 390 / 265; */
+    text-align: center;
+    /* padding-bottom: 4%; */
+}
+
+.logo {
+    width: clamp(7.875rem, 6.4063rem + 7.3438vi, 13.75rem);
+    height: auto;
+}
+
+@media (min-width: 1200px) {
+    .banner {
+        flex-direction: row;
+        gap: 160px
+    }
+    .sloganContainer {
+        align-items: start;
+    }
+    .slogan {
+        text-align: left;
+    }
+}

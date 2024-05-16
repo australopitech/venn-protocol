@@ -1,0 +1,32 @@
+.screenshotContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding-block: clamp(2rem, 1.5395rem + 2.3026vi, 3.75rem);
+}
+.link {
+    width: 80%;
+    max-width: 756px;
+}
+
+.screenshot {
+    aspect-ratio: 960 / 463.71;
+    border-radius: 20px;
+    height: auto;
+    cursor: pointer;
+    transition: all 0.5s ease-out;
+}
+
+.screenshot > img {
+    width: 100%;
+    height: 100%;
+}
+
+.screenshot:hover {
+    transform: translate(10px, -10px);
+    box-shadow: -10px 10px;
+}
+
+.screenshot:active {
+    transform: scale(.95);
+}

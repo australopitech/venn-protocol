@@ -1,7 +1,21 @@
 :root {
-  --foreground-rgb: 0, 0, 0;
+  /* --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  --background-end-rgb: 255, 255, 255; */
+}
+
+:root {
+  --step--2: clamp(0.8889rem, 0.7858rem + 0.5153vi, 1.1852rem);
+  --step--1: clamp(1rem, 0.8841rem + 0.5797vi, 1.3333rem);
+  --step-0: clamp(1.125rem, 0.9946rem + 0.6522vi, 1.5rem);
+  --step-1: clamp(1.2656rem, 1.1189rem + 0.7337vi, 1.6875rem);
+  --step-2: clamp(1.4238rem, 1.2587rem + 0.8254vi, 1.8984rem);
+  --step-3: clamp(1.6018rem, 1.4161rem + 0.9286vi, 2.1357rem);
+  --step-4: clamp(1.802rem, 1.5931rem + 1.0447vi, 2.4027rem);
+  --step-5: clamp(2.0273rem, 1.7922rem + 1.1752vi, 2.703rem);
+  --step-6: clamp(2.2807rem, 2.0163rem + 1.3221vi, 3.0409rem);
+  --step-7: clamp(2.5658rem, 2.2683rem + 1.4874vi, 3.421rem);
+  --step-8: clamp(2.8865rem, 2.5518rem + 1.6733vi, 3.8487rem);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -27,7 +41,8 @@ body {
 
 body {
   color: rgb(var(--foreground-rgb));
-  background-color: #EEE6EF;
+  /* background-color: #EEE6EF; */
+  background-color: #ffffff;
 
   scrollbar-width: thin;
   scrollbar-color: rgb(240, 230, 239, 0.6) transparent;

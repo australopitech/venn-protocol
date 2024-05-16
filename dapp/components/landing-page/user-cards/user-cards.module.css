@@ -1,0 +1,133 @@
+.userCards {
+    display: flex;
+    flex-direction: column;
+    /* margin-block: 50px; */
+    width: 100%;
+    max-width: 1280px;
+    align-items: center;
+}
+
+.card {
+    padding-block: clamp(3rem, 2.8026rem + 0.9868vi, 3.75rem);
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 30px;
+}
+.card1 {
+    flex-direction: column;
+}
+.card2 {
+    flex-direction: column;
+}
+.card1:hover {
+    box-shadow: -10px -10px 2px 1px rgb(0 0 0 / 0.1), 2px 2px 2px -2px rgb(0 0 0 / 0.1);
+    transition: 0.5s ease-out;
+}
+.card2:hover {
+    box-shadow: -2px -2px 2px -2px rgb(0 0 0 / 0.1), 10px 10px 2px 1px rgb(0 0 0 / 0.1);
+    transition: 0.5s ease-out;
+}
+
+.shareGraphic {
+    width: calc(clamp(17.1875rem, 15.75rem + 7.1875vi, 22.9375rem)*.9);
+    /* min-width: 246px; */
+    height: auto;
+}
+
+.tryGraphic {
+    aspect-ratio: 325 / 361.5;
+    width: calc(clamp(17.1875rem, 15.75rem + 7.1875vi, 22.9375rem)*.82);
+    height: auto;
+    background-image: url('../../../public/cards/hands-solid-svgrepo-com_00001.svg');
+    background-size: contain;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1.3125rem, 1.2031rem + 0.5469vi, 1.75rem);
+    width: clamp(17.1875rem, 15.75rem + 7.1875vi, 22.9375rem);
+}
+
+.content1 {
+    align-items: start;
+    padding-left: 10px;
+}
+
+.content2 {
+    align-items: end;
+    padding-right: 10px;
+}
+
+.textContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: clamp(1.25rem, 1.0625rem + 0.9375vi, 2rem);
+}
+
+.text1st {
+    text-align: left;
+}
+
+.text2nd {
+    text-align: right;
+}
+
+.title {
+    font-size: var(--step-6);
+    font-weight: 700;
+    color: #1e1e1e;
+}
+
+.description {
+    font-size: var(--step--1);
+    font-weight: 500;
+    line-height: 101%;
+    color: #585858;
+}
+
+/* .linkContainer {
+    display: flex;
+    justify-content: end;
+} */
+
+.link {
+    font-size:clamp(1.125rem, 1.0447rem + 0.2139vi, 1.25rem);
+    font-weight: 500;
+    color: #ffffff;
+    background-color: #000000;
+    padding: 8px;
+    border: 2px solid #000000;
+    border-radius: 25px;
+    cursor: pointer;
+}
+/* .link:hover {
+    transform: scale(1.05);
+} */
+
+
+@media(min-width: 860px) {
+    .card1 {
+        flex-direction: row;
+    }
+    .card2 {
+        flex-direction: row-reverse;
+    }
+    .card {
+        justify-content: space-between;
+        width: 100%;
+        padding-inline: clamp(1.25rem, -1.3649rem + 4.8649vi, 3.5rem);
+    }
+    .tryGraphic {
+        width: 33.7%;
+        max-width: 346px;
+    }
+    .shareGraphic {
+        width: 39%;
+        max-width: 407.8px;
+    }
+}

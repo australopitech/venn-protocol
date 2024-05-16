@@ -1,0 +1,110 @@
+.body {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 1280px;
+    align-self: center;
+    /* padding-top: clamp(4rem, 3.4079rem + 2.9605vi, 6.25rem); */
+    position: relative;
+}
+
+.background {
+    position: absolute;
+    left: clamp(0rem, -13.7931rem + 68.9655vi, 25rem);
+    top: 0;
+    bottom: 0;
+    margin-block: auto;
+    width: clamp(28.125rem, 25.7813rem + 11.7188vi, 37.5rem);
+    height: auto;
+    z-index: -10;
+    opacity: .13;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 366px;
+    padding-inline: 20px 20px;
+    gap: 50px;
+    /* aspect-ratio: 1110 / 711; */
+    align-items: center;
+    /* background-image: url('../../../public/cards/monkey-background.svg');
+    background-repeat: no-repeat;
+    background-size: 750px;
+    background-position-x: 50%; */
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 28px;
+}
+
+.description {
+    width: 100%;
+    text-align: center;
+    line-height: 105%;
+    font-size: var(--step-1);
+    font-weight: 500 ;
+    /* padding-bottom: 40px; */
+}
+
+.buttonContainer {
+    display: flex;
+    width: fit-content;
+    align-self: center;
+}
+
+.button {
+    width: fit-content;
+}
+
+.title {
+    text-align: center;
+    font-size: var(--step-7);
+    font-weight: 700;
+}
+
+.highlight {
+    position: relative;
+    font-weight: 700;
+}
+
+.highlight::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 90%;
+    height: calc(var(--step-1) * 0.5);
+    background: #EFC3E6;
+    z-index: -1;
+}
+
+@media (min-width: 901px) {
+    .body {
+        padding-top: clamp(4rem, 3.4079rem + 2.9605vi, 6.25rem);
+    }
+    .background {
+        bottom: auto;
+        left: 50%;
+    }
+    .content {
+        flex-direction: row-reverse;
+        justify-content: space-between;
+        max-width: 1024px;
+    }
+    .info {
+        align-items: start;
+        width: 50%;
+    }
+    .description {
+        text-align: left;
+    }
+    .buttonContainer {
+        align-self: end;
+    }
+}

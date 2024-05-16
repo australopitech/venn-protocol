@@ -1,12 +1,13 @@
-import Market from "./market-place";
-import WagmiProvider from "./wagmi";
 import { Metadata } from "next";
+import LandingPageLayout from "@/components/landing-page/landing-page-layout/landing-page-layout";
 
 export const metadata: Metadata = {
-  title: "Venn Market Place",
-  description: "Rent NFTs with a few simple clicks"
+    title: "Venn Protocol",
+    description: "A Brand new NFT Rental Market: No collateral needed, No Integeration required."
 }
 
-export default function Page() {
-  return <Market />
+export default function Page () {
+    return (
+      <LandingPageLayout />
+    )
 }

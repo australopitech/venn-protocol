@@ -1,0 +1,28 @@
+
+
+.body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #A5A5A5;
+    gap: 10px;
+}
+
+.text {
+    /* font-size: clamp(1.25rem, 1.1405rem + 0.5477vi, 1.6663rem); */
+    font-size: var(--step-1);
+    text-align: left;
+}
+.chains {
+    display: flex;
+    gap: 10px;
+}
+.logo {
+    width: clamp(1.5rem, 1.2368rem + 1.3158vi, 2.5rem);
+    height: auto;
+}
+
+.disabled {
+    opacity: 0.3;
+}
+

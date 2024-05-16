@@ -1,0 +1,306 @@
+
+.body {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    /* gap: 30px; */
+    /* margin-inline: 30px; */
+    /* padding-block: clamp(4rem, 3.7368rem + 1.3158vi, 5rem); */
+    margin-inline: 20px;
+    /* align-self: center; */
+}
+
+.title {
+    font-size: var(--step-7);
+    font-weight: 700;
+    text-align: center;
+    padding-bottom: clamp(1.6875rem, 0.9634rem + 3.6207vi, 3rem);
+    width: 100%;
+}
+
+.subtitle {
+    font-size: var(--step-4);
+    font-weight: 500;
+    text-align: center;
+    text-wrap: balance;
+    padding-top: clamp(1.6875rem, 0.9634rem + 3.6207vi, 3rem);
+}
+
+.content {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* gap: 2.5%; */
+    width: calc(clamp(16.25rem, 13.25rem + 15vi, 21.6875rem) + clamp(2rem, 1.4483rem + 2.7586vi, 3rem) * 1.4);
+    padding-bottom: clamp(1.5625rem, 1.2031rem + 1.7969vi, 3rem);
+    position: relative;
+}
+
+.arrowsContainer {
+    display: flex;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    margin: auto;
+    width: 100%;
+    justify-content: space-between;
+    z-index: 10;
+}
+
+/* .arrowContainerLeft {
+    display: flex;
+    align-items: end;
+    width: 3%;
+    position: absolute;
+    left: 1%;
+    z-index: 10;
+}
+.arrowContainerRight {
+    display: flex;
+    align-items: end;
+    width: 3%;
+    position: absolute;
+    right: 1%;
+    z-index: 10;
+} */
+.arrow{
+    cursor: pointer;
+    width: clamp(2rem, 1.4483rem + 2.7586vi, 3rem);
+    height: auto;
+    transition: all .2s ease-out
+}
+.arrow:hover{
+    transform: scale(1.1);
+}
+.arrow:active{
+    transform: scale(.95);
+}
+
+/* .arrowNarrowContainer {
+    display: none;
+} */
+.arrowNarrow {
+    width: 100%;
+    height: auto;
+    cursor: pointer;
+}
+
+.disabled{
+    opacity: 0.2;
+    cursor: default;
+}
+.disabled:hover{
+    transform: none;
+}
+.disabled:active{
+    transform: none;
+}
+
+.cardContainer {
+    display: flex;
+    /* justify-content: center; */
+    width: 90%;
+    position: relative;
+}
+
+.card {
+    display: flex;
+    justify-content: center;
+    /* flex-direction: column; */
+    aspect-ratio: 260 / 353;
+    width: clamp(16.25rem, 13.25rem + 15vi, 21.6875rem);
+    height: auto;
+    cursor: grab;
+    /* align-self: center;
+    justify-content: center; */
+    /* align-items: center; */
+}
+.card:active {
+    cursor: grabbing;
+}
+
+
+.gameCard {
+    display: flex;
+    justify-content: center;
+    padding-top: clamp(1.25rem, -0.1269rem + 6.8847vi, 3.75rem);
+    background-image: url('../../../public/cards/new-ui-gaming-graphics-mobile.svg');
+    background-size: 331.94px 366px;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+    border: solid 1px #1e1e1e;
+    border-radius: 30px;
+    transform: translate(-5px, -5px);
+    box-shadow: 10px 10px;
+}
+.metaverseCard {
+    display: flex;
+    justify-content: center;
+    padding-top: clamp(1.25rem, -0.1269rem + 6.8847vi, 3.75rem);
+    background-image: url('../../../public/cards/new-ui-metaverse-graphics-mobile.svg');
+    background-size: 295px 417.79px;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 100%;
+    border: solid 1px #1e1e1e;
+    border-radius: 30px;
+    transform: translate(5px, 5px);
+    box-shadow: -10px -10px;
+}
+.domainCard {
+    display: flex;
+    justify-content: center;
+    padding-top: clamp(1.25rem, -0.1269rem + 6.8847vi, 3.75rem);
+    background-image: url('../../../public/cards/new-ui-domain-names-graphic-mobile.svg');
+    background-size: 332px 422.46px;
+    width: 100%;
+    height: 100%;
+    border: solid 1px #1e1e1e;
+    border-radius: 30px;
+    transform: translate(5px, -5px);
+    box-shadow: -10px 10px;
+}
+.accessCard {
+    display: flex;
+    justify-content: center;
+    padding-top: clamp(1.25rem, -0.1269rem + 6.8847vi, 3.75rem);
+    background-image: url('../../../public/cards/new-ui-access-graphic-mobile.svg');
+    background-size: 300px 429.17px;
+    width: 100%;
+    height: 100%;
+    border: solid 1px #1e1e1e;
+    border-radius: 30px;
+    transform: translate(-5px, 5px);
+    box-shadow: 10px -10px;
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(1.125rem, 0.7813rem + 1.7188vi, 2.5rem);
+    width: 73%;
+    /* padding-left: 5%; */
+}
+
+.cardTitle {
+    text-align: center;
+    font-size: var(--step-5);
+    /* font-weight: 800; */
+    /* color: #000000; */
+    /* color: #ffffff; */
+    /* -webkit-text-stroke: 4px #000000; */
+}
+
+.cardDescription {
+    width: 100%;
+    font-size: var(--step-0);
+    font-weight: 500;
+    text-align: center;
+    /* line-height: clamp(1.5rem, 0.9079rem + 2.9605vi, 3.75rem); */
+    line-height: 105%;
+    /* color: #000000; */
+}
+
+.dotsContainer {
+    display: flex;
+    width: clamp(4rem, 3.4079rem + 2.9605vi, 6.25rem);
+    height: auto;
+    align-self: center;
+    z-index: 10;
+    /* left: 0;
+    right: 0;
+    margin: 0 auto; */
+    /* top: calc(0.0038 * 353 * clamp(16.25rem, 13.25rem + 15vi, 21.6875rem) + 50px + var(--step-7) + 15px + clamp(0rem, -1.6552rem + 8.2759vi, 3rem)); */
+}
+
+.dots {
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: space-between;
+    gap: 12%;
+}
+
+@media (min-width: 660px) {
+    .gameCard {
+        background-size: calc(331.94px * 1.25) calc(366px * 1.25);
+    }
+    .metaverseCard {
+        background-size: calc(295px * 1.25) calc(417.79px * 1.25);
+    }
+    .accessCard {
+        background-size: calc(300px * 1.25) calc(429.17px * 1.25);
+    }
+    .domainCard {
+        background-size: calc(332px * 1.25) calc(422.46px * 1.25);
+    }
+}
+
+@media (min-width: 901px) {
+    .title {
+        text-align: left;
+        margin-left: 20px;
+        max-width: 1440px;
+    }
+    /* .subtitle {
+        text-align: left;
+        margin-left: 30px;
+        width: 100%;
+    } */
+    .content {
+        flex-direction: column;
+        width: 100%;
+        gap: 30px;
+    }
+    .arrowsContainer {
+        position: relative;
+        justify-content: center;
+        gap: 40px;
+    }
+    .card {
+        aspect-ratio: 654 / 404;
+        width: clamp(40.875rem, 32.6786rem + 14.5714vi, 47.25rem);
+        height: auto;
+    }
+    .text {
+        width: 55%;
+        align-items: start;
+    }
+    .cardTitle {
+        text-align: left;
+    }
+    .cardDescription {
+        text-align: left;
+    }
+    .gameCard {
+        justify-content: start;
+        padding-left: 60px;
+        background-repeat: no-repeat;
+        background-position-x: right
+    }
+    .metaverseCard {
+        justify-content: start;
+        padding-left: 60px;
+        background-repeat: no-repeat;
+        background-position-x: right
+    }
+    .accessCard {
+        justify-content: start;
+        padding-left: 60px;
+        background-repeat: no-repeat;
+        background-position-x: right;
+    }
+    .domainCard {
+        justify-content: start;
+        padding-left: 60px;
+        background-repeat: no-repeat;
+        background-position-x: right
+    }
+
+}
