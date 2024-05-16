@@ -114,9 +114,13 @@
     aspect-ratio: 260 / 353;
     width: clamp(16.25rem, 13.25rem + 15vi, 21.6875rem);
     height: auto;
+    cursor: grab;
     /* align-self: center;
     justify-content: center; */
     /* align-items: center; */
+}
+.card:active {
+    cursor: grabbing;
 }
 
 

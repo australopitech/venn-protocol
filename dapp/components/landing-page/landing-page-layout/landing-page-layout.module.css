@@ -12,6 +12,7 @@
     margin: auto;
     width: clamp(320px, 70vw, 1024px);
     z-index: 0;
+    /* background-image: radial-gradient(rgb(236, 113, 134), white); */
 }
 
 .backgroundFilter {
@@ -64,6 +65,7 @@
     max-height: 110vw;
     min-height: 492px;
     /* z-index: 2; */
+    background-image: radial-gradient(#EFC3E6, transparent);
 }
 
 .main {
