@@ -1,6 +1,6 @@
 'use client'
 import styles from "./user-cards.module.css";
-import { ShareOwnership, TryIt } from "./graphics";
+import { ShareOwnership } from "./graphics";
 import classNames from "classnames";
 import { motion } from "framer-motion"
 import Button from "../button/button";
