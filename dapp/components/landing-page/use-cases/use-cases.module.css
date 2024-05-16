@@ -51,7 +51,7 @@
     z-index: 10;
 }
 
-.arrowContainerLeft {
+/* .arrowContainerLeft {
     display: flex;
     align-items: end;
     width: 3%;
@@ -66,15 +66,12 @@
     position: absolute;
     right: 1%;
     z-index: 10;
-}
+} */
 .arrow{
     cursor: pointer;
     width: clamp(2rem, 1.4483rem + 2.7586vi, 3rem);
     height: auto;
-    /* position: absolute; */
-    /* top: 0; */
-    /* bottom: 0;
-    margin: auto; */
+    transition: all .2s ease-out
 }
 .arrow:hover{
     transform: scale(1.1);
