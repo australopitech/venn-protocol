@@ -226,21 +226,37 @@ export default function UseCases () {
     <div className={styles.body}>
       <div className={styles.title}>Use Cases</div>
       <div className={styles.content}>
-        <div className={styles.arrowsContainer}>
+        <div className={styles.arrowsContainerCenter}>
+          <div 
+            className={styles.arrow}
+            onClick={() => paginate(-1)}
+            >
+              <LeftArrow/>
+            </div>
+            <div
+            className={styles.arrow}
+            onClick={() => paginate(1)}
+            >
+              <RightArrow/>
+            </div>
+        </div>
+        <div className={styles.arrowContainerLeft}>
           <div 
           className={styles.arrow}
           onClick={() => paginate(-1)}
           >
             <LeftArrow/>
           </div>
-          <div
-          className={styles.arrow}
-          onClick={() => paginate(1)}
-          >
-            <RightArrow/>
-          </div>
         </div>
         <Card cardNum={position} direction={direction} paginate={paginate}/>
+        <div className={styles.arrowContainerRight}>
+          <div
+            className={styles.arrow}
+            onClick={() => paginate(1)}
+            >
+              <RightArrow/>
+            </div>
+        </div>
       </div>
       <div className={styles.dotsContainer}>
         <Dots placement={position}/>

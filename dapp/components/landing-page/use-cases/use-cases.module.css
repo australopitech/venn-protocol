@@ -40,33 +40,24 @@
     position: relative;
 }
 
-.arrowsContainer {
-    display: flex;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    width: 100%;
-    justify-content: space-between;
-    z-index: 10;
+.arrowsContainerCenter {
+    display: none
 }
 
-/* .arrowContainerLeft {
+.arrowContainerLeft {
     display: flex;
-    align-items: end;
-    width: 3%;
+    width: fit-content;
     position: absolute;
-    left: 1%;
+    left: 0;
     z-index: 10;
 }
 .arrowContainerRight {
     display: flex;
-    align-items: end;
-    width: 3%;
+    width: fit-content;
     position: absolute;
-    right: 1%;
+    right: 0;
     z-index: 10;
-} */
+}
 .arrow{
     cursor: pointer;
     width: clamp(2rem, 1.4483rem + 2.7586vi, 3rem);
@@ -110,14 +101,10 @@
 .card {
     display: flex;
     justify-content: center;
-    /* flex-direction: column; */
     aspect-ratio: 260 / 353;
     width: clamp(16.25rem, 13.25rem + 15vi, 21.6875rem);
     height: auto;
     cursor: grab;
-    /* align-self: center;
-    justify-content: center; */
-    /* align-items: center; */
 }
 .card:active {
     cursor: grabbing;
@@ -258,10 +245,15 @@
         width: 100%;
         gap: 30px;
     }
-    .arrowsContainer {
-        position: relative;
-        justify-content: center;
+    .arrowsContainerCenter {
+        display: flex;
         gap: 40px;
+    }
+    .arrowContainerLeft {
+        display: none;
+    }
+    .arrowContainerRight {
+        display: none;
     }
     .card {
         aspect-ratio: 654 / 404;
