@@ -20,7 +20,7 @@ function ShareOwnershipCard () {
         initial={{ opacity: 0, x: 100 }}
         whileInView={{ opacity: 1, x: 0 }}
         viewport={{ margin: "-100px 0px 0px 0px", once: true }}
-        transition={{ duration: 1, delay: 1 }}
+        transition={{ duration: 1 }}
         className={styles.shareGraphic}
         >
             <ShareOwnership/>
@@ -58,7 +58,7 @@ function TryItCard () {
         initial={{ opacity: 0, x: -100 }}
         whileInView={{ opacity: 1, x:0 }}
         viewport={{ margin: "-100px 0px 0px 0px" , once: true }}
-        transition={{ duration: 1, delay: 1 }}
+        transition={{ duration: 1 }}
         className={styles.tryGraphic}
         >
             {/* <TryIt/> */}
