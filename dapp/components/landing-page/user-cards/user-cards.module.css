@@ -23,7 +23,7 @@
     flex-direction: column;
 }
 .card1:hover {
-    box-shadow: -10px -10px 2px 1px rgb(0 0 0 / 0.1), 2px 2px 2px -2px rgb(0 0 0 / 0.1);
+    box-shadow: -10px -10px 2px 1px rgba(240, 166, 202, .4), 2px 2px 2px -2px rgba(240, 166, 202, .4);
     transition: 0.5s ease-out;
 }
 .card2:hover {
