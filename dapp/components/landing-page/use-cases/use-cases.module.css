@@ -269,6 +269,7 @@
     }
     .cardDescription {
         text-align: left;
+        font-size: var(--step-1);
     }
     .gameCard {
         justify-content: start;
