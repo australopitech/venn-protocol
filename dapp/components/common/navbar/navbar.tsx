@@ -1,20 +1,17 @@
 'use client'
 import classNames from 'classnames';
-import { Logo, Name, NewLogo, NewName } from '../logo/logo';
+import { Name, NewLogoPlain } from '../logo/logo';
 import { SearchBox } from '../search-box/search-box';
 import styles from './navbar.module.css';
-import { useState, useRef, useEffect, useCallback } from 'react';
-// import { useEthers, useEtherBalance, useConfig, useSigner } from '@usedapp/core';
+import { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
-// import { SignInButton } from '@/components/dashboard/dashboard-layout/dashboard-layout';
-import { useConnectModal } from '@rainbow-me/rainbowkit';
-import { useRouter, usePathname } from 'next/navigation';
-import { useAccount, useDisconnect, useNetwork, useSwitchNetwork } from 'wagmi';
-// import { signOut } from '@/app/venn-provider';
-import { activeNetwork, useSmartAccount, useSmartAccountAddress, useVsaUpdate} from '@/app/account/venn-provider';
-import { compactString } from '@/utils/utils';
+
+import { useRouter } from 'next/navigation';
 import { Tooltip } from '../tooltip/tooltip';
-import { LoadingDots } from '../loading/loading';
+import { source_code_pro } from '@/app/fonts';
+import ConnectButton from './connect-button';
+import { MenuIcon, MarketIcon, SearchIcon, DashboardIcon } from './icons';
+
 
 export interface NavBarProps {
   signInPage?: boolean;
@@ -22,86 +19,6 @@ export interface NavBarProps {
   currentPage?: string;
 }
 
-interface ConnectButtonProps {
-  connectText?: string;
-  // page?: string
-}
-
-//to-do: pegar a info de qual pagina está, para saber qual botão está ativo
-
-const ConnectButton = ({connectText} : ConnectButtonProps) => {
-  const { address: vsa } = useSmartAccount();
-  const eoa = useAccount();
-  const { disconnect } = useDisconnect();
-  const { openConnectModal } = useConnectModal();
-  const path = usePathname();
-  const [showDisconnect, setShowDisconnect] = useState(false);
-  const [disconnectStlye, setDisconnectStyle] = useState<any>(styles.disconnectButton);
-  const [showSwitchNetwork, setShowSwitchNetwork] = useState(false);
-  const vsaUpdate = useVsaUpdate();
-  const [isClient, setIsClient] = useState(false);
-  const compactAddress = compactString(vsa ?? eoa.address);
-  const { chain } = useNetwork();
-  const { switchNetwork, error } = useSwitchNetwork();
-
-  useEffect(() => {
-    setTimeout(() => {
-      setIsClient(true)
-    }, 2000);
-  },[])
-
-  const onDisconnect = useCallback(() => {  
-    if(
-      !path.includes("dashboard") &&
-      !showDisconnect
-      ){  
-        setDisconnectStyle(styles.primaryButton)
-        setShowDisconnect(true);
-        setTimeout(() => {
-          setShowDisconnect(false);
-          setDisconnectStyle(styles.disconnectButton)
-        }, 5000);
-      } else {
-        disconnect();
-        if(vsaUpdate) vsaUpdate();
-      }
-  }, [showDisconnect, setShowDisconnect, vsaUpdate]);
-
-  const onSwitchNetwork = () => {
-    if(!showSwitchNetwork) {
-      setShowSwitchNetwork(true);
-      setTimeout(() => {
-        setShowSwitchNetwork(false);
-      }, 5000);
-    } else {
-      if(switchNetwork) switchNetwork(activeNetwork.id)
-      else {
-        if(error) alert(error.message)
-        else alert('Something went wrong! Please use your wallet to switch to Sepolia testnet.')
-      }
-    }
-  }
-
-  if (isClient && eoa.isConnected) {
-    return (
-      chain?.id === activeNetwork.id 
-        ? <div className={disconnectStlye} onClick={() => onDisconnect()}>{(path.includes("dashboard") || showDisconnect) ? "Disconnect" : compactAddress}</div>
-        : <div className={styles.wrongNetwork} onClick={() => onSwitchNetwork()}> {showSwitchNetwork? "Switch Networks" : "Wrong Network"} </div>
-    );
-  }
-  else if (isClient && openConnectModal) return (
-    <div className={styles.primaryButton} onClick={() => openConnectModal()}>
-    {connectText? connectText : 'Connect Wallet'}
-    </div>
-  )
-  else return <div className={styles.primaryButton}> <LoadingDots /> </div>
-}
-
-const MenuIcon = () => {
-  return (
-    <svg width="36px" height="36px" viewBox="0 0 1.08 1.08" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0.18 0.315a0.045 0.045 0 0 1 0.045 -0.045h0.63a0.045 0.045 0 1 1 0 0.09H0.225a0.045 0.045 0 0 1 -0.045 -0.045zm0 0.225a0.045 0.045 0 0 1 0.045 -0.045h0.63a0.045 0.045 0 1 1 0 0.09H0.225a0.045 0.045 0 0 1 -0.045 -0.045zm0 0.225a0.045 0.045 0 0 1 0.045 -0.045h0.63a0.045 0.045 0 1 1 0 0.09H0.225a0.045 0.045 0 0 1 -0.045 -0.045z" fill="#5E5E5E"/></svg>
-  )
-}
 
 interface DropdownProps {
   items: string[];
@@ -180,43 +97,52 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
 
   return (
     // <div className={classNames(styles.navbar, styles.navbarGridTemplate, scrolled ? styles.navbarScrolled : '')}>
-    <div className={classNames(styles.navbar, styles.navbarGridTemplate)}>
-      <div className={styles.logoContainer}>
-        <Link href="/">
-          <span style={{ display: 'flex', alignItems: 'baseline', gap: '16px' }}><NewLogo /> <NewName /></span>
+    <div className={classNames(styles.navbar, styles.navbarGridTemplate, source_code_pro.className)}>
+      <div className={styles.itemsGroupLeft}>
+        <Link href="/" className={styles.logoLarge}>
+            <div style={{ width: "42px"}}>
+              <NewLogoPlain/>
+            </div>
+            <div style={{ width: "104px"}}>
+              <Name/>
+            </div>
         </Link>
-      </div>
-      <div className={styles.functionalitiesContainer}>
+        <Link href="/" className={styles.logoSmall}>
+              <NewLogoPlain/>            
+        </Link>
         <div className={styles.searchBoxContainer}>
           <Tooltip style={styles.fontFamily} text='Search comming soon'><SearchBox /></Tooltip>
         </div>
-        <div className={styles.menuButtonsContainer}>
-          {/* <div className={currentPage === 'market'? styles.secondaryButtonSelected : styles.secondaryButton}>Market</div>
-          <div className={currentPage === 'dashboard'? styles.secondaryButtonSelected : styles.secondaryButton}>Dashboard</div> */}
+        <div className={styles.searchIcon} style={{ opacity: "0.3"}}>
+          <Tooltip style={styles.fontFamily} text='Search comming soon'><SearchIcon /></Tooltip>
+        </div>
+      </div>
+      <div className={styles.itemsGroupRight}>
+        <div className={styles.pageIcon}>
+          {currentPage === 'dashboard'
+            ? <MarketIcon/>      
+            : <DashboardIcon/>
+          }
+        </div>
+        <div className={styles.navItems}>
           <div 
-            className={classNames(styles.secondaryButton, currentPage === 'market'? styles.active : '')}
-          >
-            <Link href="/">
-              Market
-            </Link>
+              className={classNames(styles.secondaryButton, currentPage === 'market'? styles.active : '')}
+            >
+              <Link href="/">
+                MARKET
+              </Link>
           </div>
           <div 
             className={classNames(styles.secondaryButton, currentPage === 'dashboard'? styles.active : '')}
           >
-            {/* The following is a temporary address for prototype */}
             <Link href="/dashboard"> 
-              Dashboard
+              DASHBOARD
             </Link>
           </div>
-          {/* <div className={styles.secondaryButton}>Market</div>
-          <div className={styles.secondaryButton}>Dashboard</div> */}
-          {/* TO-DO: colocar primary <div className={styles.primaryButton}>Connect Wallet</div> */}
-          {/* {(eoaAccount.isConnected || vsaAddr)
-            ? <SignInButton connectText='Sign Out' style={styles.disconnectButton} handler={signOutHandler} />
-            : <SignInButton connectText={'Sign In'} style={styles.primaryButton} handler={() => router.push('/sign-in')} />}
-          <div className={styles.iconButton}><MenuIcon /></div> */}
-          <ConnectButton />
-          <div className={styles.iconButton}><DropdownMenu items={items} onItemSelect={handleItemSelect} /></div>
+        </div>
+        <ConnectButton />
+        <div className={styles.iconButton}>
+           <DropdownMenu items={items} onItemSelect={handleItemSelect} />
         </div>
       </div>
     </div>
