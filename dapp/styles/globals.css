@@ -5,17 +5,17 @@
 }
 
 :root {
-  --step--2: clamp(0.8889rem, 0.8607rem + 0.1411vi, 0.9877rem);
-  --step--1: clamp(1rem, 0.9683rem + 0.1587vi, 1.1111rem);
-  --step-0: clamp(1.125rem, 1.0893rem + 0.1786vi, 1.25rem);
-  --step-1: clamp(1.2656rem, 1.2254rem + 0.2009vi, 1.4063rem);
-  --step-2: clamp(1.4238rem, 1.3786rem + 0.226vi, 1.582rem);
-  --step-3: clamp(1.6018rem, 1.551rem + 0.2543vi, 1.7798rem);
-  --step-4: clamp(1.802rem, 1.7448rem + 0.286vi, 2.0023rem);
-  --step-5: clamp(2.0273rem, 1.9629rem + 0.3218vi, 2.2525rem);
-  --step-6: clamp(2.2807rem, 2.2083rem + 0.362vi, 2.5341rem);
-  --step-7: clamp(2.5658rem, 2.4843rem + 0.4073vi, 2.8509rem);
-  --step-8: clamp(2.8865rem, 2.7949rem + 0.4582vi, 3.2072rem);
+  --step--2: clamp(0.8889rem, 0.8642rem + 0.1235vi, 0.9877rem);
+  --step--1: clamp(1rem, 0.9722rem + 0.1389vi, 1.1111rem);
+  --step-0: clamp(1.125rem, 1.0938rem + 0.1563vi, 1.25rem);
+  --step-1: clamp(1.2656rem, 1.2305rem + 0.1758vi, 1.4063rem);
+  --step-2: clamp(1.4238rem, 1.3843rem + 0.1978vi, 1.582rem);
+  --step-3: clamp(1.6018rem, 1.5573rem + 0.2225vi, 1.7798rem);
+  --step-4: clamp(1.802rem, 1.752rem + 0.2503vi, 2.0023rem);
+  --step-5: clamp(2.0273rem, 1.971rem + 0.2816vi, 2.2525rem);
+  --step-6: clamp(2.2807rem, 2.2173rem + 0.3168vi, 2.5341rem);
+  --step-7: clamp(2.5658rem, 2.4945rem + 0.3564vi, 2.8509rem);
+  --step-8: clamp(2.8865rem, 2.8063rem + 0.4009vi, 3.2072rem);
 }
 
 @media (prefers-color-scheme: dark) {
