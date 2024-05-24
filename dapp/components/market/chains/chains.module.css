@@ -1,0 +1,13 @@
+.chains {
+    display: flex;
+    gap: 10px;
+}
+.logo {
+    /* width: clamp(1.5rem, 1.2368rem + 1.3158vi, 2.5rem); */
+    width: 32px;
+    height: auto;
+}
+
+.disabled {
+    opacity: 0.3;
+}

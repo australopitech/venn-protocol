@@ -1,0 +1,42 @@
+
+.msg {
+    font-size: var(--step-8);
+    font-Weight: 900;
+    text-align: center;
+    color: #d9d9d9;
+    -webkit-text-stroke: 2px #000000;
+    animation: opacity 1s ease-in-out 0s infinite alternate backwards;
+
+
+}
+
+@keyframes colorStroke {
+    0% {
+        color: #a5a5a5;
+        -webkit-text-stroke: 2px #d9d9d9;
+    }
+    25% {
+        color: #d9d9d9;
+    }
+    50% {
+        -webkit-text-stroke: 2px #a5a5a5;
+    }
+    75% {
+        -webkit-text-stroke: #000000;
+    }
+    100% {
+        -webkit-text-stroke: 2px transparent;
+        color: #d9d9d9;
+    }
+}
+
+@keyframes opacity {
+    from {
+        opacity: 0.3;
+        -webkit-text-stroke: 2px #a5a5a5
+    }
+    to {
+        opacity: 1;
+        -webkit-text-stroke: 2px #1e1e1e;
+    }
+}
