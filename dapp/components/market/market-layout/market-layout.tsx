@@ -19,7 +19,16 @@ import {
 import ApproveDialog from '@/components/common/approve-dialog/approve-dialog';
 import { LoadingComponent } from '@/components/common/loading/loading';
 import { VideoGuides } from '@/components/video-guides/video-guides';
+import { CirleArrowBiColorLeft, CirleArrowBiColorRight } from './graphics';
+import { Dots } from '../slider-dots/slider-dots';
+import { source_code_pro } from '@/app/fonts';
+import Latest from '../latest/latest';
+import { Banner, Banner2 } from '../banner/banner';
+import ComingSoon from '../coming-soon/coming-soon';
+import AvailableChains from '@/components/landing-page/chains/chains';
+import { Chains } from '../chains/chains';
 // import Swipe from 'react-swipe';
+import Footer from '../footer/footer';
 
 interface TrendingCollectionsSliderProps {
   collectionsData?: Array<any> | [];
@@ -336,25 +345,66 @@ export default function MarketLayout ({ somePropHere }: MarketLayoutProps) {
       />
       }
       <div className={styles.market} >
-        <NavBar navbarGridTemplate={styles.navbarGridTemplate} currentPage='market' />
-        {<div className={styles.contentGridTemplate}> 
-          <HeroSection />
-          <VideoGuides />
-          {loadingNFTData
-           ? <LoadingSliderContent />
-           : fetchDataErr
-              ? <ErrorFetchingSliderContent error={error ?? fetchDataErr} />
-              : <ContentSlider 
-                title={"Latest NFTs"} 
-                contentType={"nft"} 
-                contentSliderData={fetchData?.nfts} 
-                setIsOpen={setIsNFTOpen} 
-                setSelected={setSelectedNFT} 
-                />
-          }
-          {/* <ErrorFetchingSliderContent /> */}
-          <ContentSlider title={"Trending Collections"} contentType={"collection"} contentSliderData={collectionsData} setIsOpen={setIsCollectionOpen} />
-        </div>}
+        <div className={styles.body}>
+          <NavBar currentPage='market' />
+          {<div className={styles.main}> 
+            <div className={styles.hero}>
+              <div className={styles.content}>
+                <div className={styles.arrowContainerLeft}>
+                  <CirleArrowBiColorLeft/>
+                </div>
+                <div style={{ width:"100%", height: "100%", borderRadius: "25px", background: "#F0A6CA"}}></div>
+                <div className={styles.arrowContainerRight}>
+                  <CirleArrowBiColorRight/>  
+                </div>            
+              </div> 
+              <div style={{
+                height: "14px",
+                width: "calc(3*14px*1.6)"
+                }}
+              >
+                <Dots placement={1}/>
+              </div>
+            </div>
+            <h2>Latest Listings</h2>
+            <Latest/>
+            <div style={{ marginBlock: 'clamp(1.125rem, 0.7813rem + 1.7188vi, 2.5rem);'}}>
+              <div style={{ background: '#d9d9d9', width: '100vw', display: 'flex', justifyContent: 'center'}}>
+                <Banner/>
+              </div>
+              <div style={{borderBlock: 'solid 2px #d9d9d9', width: '100vw', display: 'flex', justifyContent: 'center'}}>
+                  <Banner2/>
+              </div>
+            </div>
+            <h2>Browse by Collection</h2>
+            <ComingSoon/>
+            
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%'}}>
+              <h2 style={{fontSize: 'var(--step-5)', fontWeight: '600',  textAlign: 'left', marginLeft: '10px' }}>Browse by Chain</h2>
+              <div style={{ width: '100vw', marginLeft: '18px'}}><Chains/></div>
+            </div>
+            <ComingSoon/>
+
+            <h2>Browse by Genre</h2>
+            <ComingSoon/>
+            <Footer/>
+            
+            {/* <VideoGuides />
+            {loadingNFTData
+            ? <LoadingSliderContent />
+            : fetchDataErr
+                ? <ErrorFetchingSliderContent error={error ?? fetchDataErr} />
+                : <ContentSlider 
+                  title={"Latest NFTs"} 
+                  contentType={"nft"} 
+                  contentSliderData={fetchData?.nfts} 
+                  setIsOpen={setIsNFTOpen} 
+                  setSelected={setSelectedNFT} 
+                  />
+            }
+            <ContentSlider title={"Trending Collections"} contentType={"collection"} contentSliderData={collectionsData} setIsOpen={setIsCollectionOpen} /> */}
+          </div>}
+        </div>
       </div>
     </>
     
