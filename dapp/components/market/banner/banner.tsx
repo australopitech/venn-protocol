@@ -21,11 +21,11 @@ export function Banner2 () {
 
 function BannerLearn () {
     return (
-        <div className={styles.bannerLearn}>
+        <div className={styles.content}>
             <div className={styles.infoLogo}>
                 <InfoLogo/>
             </div>
-            <div className={styles.content}>
+            <div className={styles.learn}>
                 <div className={styles.text}>
                     <div className={classNames(styles.title, zilla.className)}>Learn About Venn</div>
                     <div className={styles.description}>{"It's simple and easy to use!"}</div>
@@ -54,7 +54,7 @@ function BannerLearn () {
 
 function BannerCreateVsa () {
     return (
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(1.6875rem, 1.1719rem + 2.5781vi, 3.75rem)'}}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 'clamp(1.6875rem, 1.1719rem + 2.5781vi, 3.75rem)', width: '100%'}}>
             <div className={audiowide.className} style={{ fontSize: 'var(--step-5)', textAlign: 'center'}}>
                 Create your VSA now!
             </div>
@@ -63,7 +63,7 @@ function BannerCreateVsa () {
                     <CreateVSAGraphic/>
                 </div>
                 <div className={styles.text2}>
-                    <div className={styles.description2} style={{ width: '70%', maxWidth: '300px'}}>
+                    <div className={styles.description2} style={{ width: '70%', maxWidth: '500px'}}>
                         Create a Venn Smart Account and start renting immediately. It&apos;s as easy as logging in your favorite social media!!
                     </div>
                     <div className={styles.button}>

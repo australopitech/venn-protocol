@@ -2,32 +2,27 @@
     display: flex;
     flex-direction: column;
     padding: 18px;
+    width: 100%;
+    align-items: center;
 }
 
 .banner > div {
     padding-block: clamp(2.25rem, 1.5625rem + 3.4375vi, 5rem);
 }
 
-.bannerLearn {
+.content {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap:  clamp(1.6875rem, -1.3281rem + 15.0781vi, 13.75rem);
 }
 
-@media (min-width: 769px) {
-    .bannerLearn {
-        flex-direction: row;
-    }
-}
-
-
 
 .infoLogo {
     width: clamp(9rem, 7.5rem + 7.5vi, 15rem);
 }
 
-.content {
+.learn {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -52,6 +47,7 @@
     line-height: 105%;
     font-weight: 500;
     text-align: center;
+    text-wrap: balance;
 }
 
 .button {
@@ -62,6 +58,15 @@
     gap: 6px;
     padding: 10px 12px;
     border-radius: 25px;
+    transition: all .125s ease-in-out;
+    cursor: pointer;
+    font-weight: 600;
+}
+.button:hover {
+    transform: scale(1.05);
+}
+.button:active {
+    transform: scale(.95);
 }
 
 .linksContainer {
@@ -94,6 +99,16 @@
 }
 
 @media (min-width: 769px) {
+    .content,
+    .content2 {
+        justify-content: space-between;
+        width: 80%;
+        max-width: 800px;
+        gap: 0;
+    }
+    .content {
+        flex-direction: row;
+    }
     .content2 {
         flex-direction: row-reverse;
     }
