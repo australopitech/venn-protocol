@@ -1,0 +1,25 @@
+.body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(1.125rem, 0.7813rem + 1.7188vi, 2.5rem);
+}
+
+.linkContainer {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.link {
+    display: block;
+    cursor: pointer;
+}
+.link:hover {
+    text-decoration: 2px underline;
+}
+
+.arrow {
+    width: clamp(1.5625rem, 1.5156rem + 0.2344vi, 1.75rem);
+    height: auto;
+}
