@@ -188,7 +188,7 @@ export default function NftCard ({
                     Rented
                   </span>
                 : <span className={styles.listed}>
-                    Rent price:
+                    {/* Rent price: */}
                     <span className={styles.price}>
                       {listing.data?.price != undefined ? `${parseFloat(formatEther(convertUnitToSec(listing.data.price, 'day'))).toPrecision(2)} ETH/Day` : 'err'}
                     </span>

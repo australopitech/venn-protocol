@@ -13,7 +13,7 @@
 
   /* margin-right: 1.5%; */
 
-  font-size: 16px;
+  font-size: var(--step--1);
   font-weight: 600;
 }
 
@@ -22,8 +22,8 @@
 }
 
 .nftCardImageContainer {
-  width: 240px;
-  height: 240px;
+  width: clamp(10rem, 8.75rem + 6.25vi, 15rem);/*135 240px*/
+  height: clamp(10rem, 8.75rem + 6.25vi, 15rem);/*135 240px*/
   border-radius: 25px;
   overflow: hidden;
   /* background-color: rgb(184, 190, 221); */
@@ -36,7 +36,7 @@
   /* margin-right: 1.5%; */
 }
 
- @media (max-width: 1500px){ 
+ /* @media (max-width: 1500px){ 
   .nftCardImageContainer { 
     height: calc(((100vw - 400px) - 90px) / 4); 
     width: calc(((100vw - 400px) - 90px) / 4);
@@ -55,7 +55,7 @@
     height: calc((100vw - 429px) / 2); 
     width: calc((100vw - 429px) / 2);
   } 
-}  
+}   */
 
 .nftCardImageContainer:hover {
   box-shadow: 0 4px 8px rgba(0,0,0,0.1);
