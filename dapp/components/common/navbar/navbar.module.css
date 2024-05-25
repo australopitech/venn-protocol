@@ -5,7 +5,7 @@
     width: 100vw;
     display: flex;
     justify-content: center;
-    z-index: 10;
+    z-index: 101;
  }
  
  .navbar {
