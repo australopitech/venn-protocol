@@ -5,6 +5,7 @@
     align-items: center;
     padding: clamp(0.5625rem, 0.4018rem + 0.8036vi, 1.125rem);
     background-color: transparent;
+    width: 100%;
     /* border-radius: 12px; */
     /* position:relative; */
 }
