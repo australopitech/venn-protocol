@@ -1,6 +1,8 @@
 'use client'
 import React, { useEffect, useLayoutEffect, useState } from 'react';
 import styles from './work-in-progress-dialog.module.css';
+import classNames from 'classnames';
+import { audiowide } from '@/app/fonts';
 
 const CloseButton = () => {
   return (
@@ -62,7 +64,7 @@ export const WorkInProgressDialog = ({
               of our upcoming solution!</p>
               <br />
               <br />
-              <button className={styles.exploreButton} onClick={handleButtonClick}>Click here to explore!</button>
+              <button className={classNames(styles.exploreButton, audiowide.className)} onClick={handleButtonClick}>Click here to explore!</button>
               </div>
             </div>
           </dialog>
