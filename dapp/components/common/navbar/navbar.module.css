@@ -1,6 +1,15 @@
+ .navbarOutter {
+    background-color: #ffffff;
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    display: flex;
+    justify-content: center;
+    z-index: 10;
+ }
+ 
  .navbar {
   /* flex-shrink: 0; */
-  background-color: transparent;
   color: #000000;
   padding: clamp(0.5625rem, 0.4018rem + 0.8036vi, 1.125rem);
   /* padding-block: clamp(0.875rem, 0.6964rem + 0.8929vi, 1.5rem); */
@@ -13,6 +22,7 @@
   font-weight: 500;
   /* max-width: 1440px; */
   width: 100%;
+  max-width: 1600px;
 }
 
 
