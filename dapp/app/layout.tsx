@@ -4,6 +4,8 @@ import WagmiProvider from "@/app/wagmi";
 import { VennAccountProvider } from "./account/venn-provider";
 import { QueryClient, QueryClientProvider } from 'react-query';
 
+import { source_code_pro } from './fonts';
+
 export default function RootLayout({
     // Layouts must accept a children prop.
     // This will be populated with nested layouts or pages
@@ -15,7 +17,7 @@ export default function RootLayout({
 
     return (
       <html lang="en">
-        <body>
+        <body className={source_code_pro.className}>
         <WagmiProvider>
           <VennAccountProvider>
             <QueryClientProvider client={queryClient}>
