@@ -1,3 +1,86 @@
+
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap:  clamp(2.25rem, 1.875rem + 1.875vi, 3.75rem);/*36 60px*/
+  padding-block: clamp(3.375rem, 3.2813rem + 0.4688vi, 3.75rem); /*54 60px*/
+  width: 100%;
+  max-width: 600px;
+  color: #000;
+  margin-top: clamp(2.5rem, 1.8281rem + 3.3594vi, 5.1875rem);
+  margin-inline: 20px;
+}
+
+.body > h1 {
+  font-size: var(--step-8);
+  color: #d9d9d9;
+  -webkit-text-stroke: 2px #1a1a1a;
+  text-wrap: balance;
+  text-align: center;
+  font-weight: 900;
+}
+
+.messenger {
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  gap: clamp(1.125rem, 0.9375rem + 0.9375vi, 1.875rem);/*18 30px*/
+  width: 100%;
+  font-size: var(--step-0);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap:  clamp(1.125rem, 1.0938rem + 0.1563vi, 1.25rem);/*18 20px*/
+  font-weight: 600;
+}
+
+.inputContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 6px;
+  width: 100%;
+}
+
+.input {
+  border: solid 2px #a5a5a5;
+  border-radius: 20px;
+  padding: 6px;
+  width: 100%;
+}
+.input:focus {
+  border-color: #585858;
+}
+
+.button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border: solid 2px #1e1e1e;
+  border-radius: 25px;
+  width: fit-content;
+  font-size: var(--step-0);
+  font-weight: 700;
+  background-color: #d9d9d9;
+  cursor: pointer;
+  transition: all .125s ease-in-out;
+}
+.button:hover {
+  background-color: #a5a5a5;
+}
+.button:active {
+  transform: scale(.95);
+}
+
+
+/*old*/
+
+
 .contact {
   box-sizing: border-box;
   width: 100%;
@@ -57,9 +140,9 @@
   gap: 46px;
 }
 
-.form{
+/* .form{
   width: fit-content;
-}
+} */
 
 .infoContainer {
   display: flex;
@@ -103,22 +186,3 @@
   justify-content: end;
 }
 
-.button {
-  background: linear-gradient(to right bottom, rgba(87, 87, 87, 0.4), rgb(87, 87, 87, 0.5));
-  transition: all 0.125s ease 0s;
-  padding: 12px;
-  border-radius: 8px;
-  border: none;
-  color: white;
-  font-weight: 600;
-  cursor: pointer;
-}
-
-.button:hover {
-  /* background: #5D5D5D; */
-  transform: scale(1.05);
-}
-
-.button:active {
-  transform: scale(0.95);
-}
