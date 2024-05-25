@@ -18,7 +18,7 @@
 }
 
 .logo {
-    width: clamp(5.75rem, 4.375rem + 6.875vi, 11.25rem);
+    width: clamp(5.75rem, 5.1563rem + 2.9688vi, 8.125rem);
     height: auto;
 }
 
@@ -71,6 +71,7 @@
 }
 .sectionTitle {
     font-size: var(--step-0);
+    font-weight: 600;
     position: relative;
     width: fit-content;
 }
@@ -93,7 +94,7 @@
 }
 
 .socials {
-    width: clamp(2rem, 1.5rem + 2.5vi, 4rem);
+    width: clamp(2rem, 1.8125rem + 0.9375vi, 2.75rem);/*32 44px*/
     height: auto;
     cursor: pointer;
 }
