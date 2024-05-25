@@ -61,7 +61,7 @@
 
 .main > h2 {
   font-size: var(--step-5);
-  font-weight: 600;
+  font-weight: 700;
   text-align: left;
   width: 100%;
   margin-left: 18px;
@@ -417,7 +417,7 @@
 .slider {
   width: 100%;
   height: fit-content;
-  padding: 4% 0% 4% 4.5%;
+  /* padding: 4% 0% 4% 4.5%; */
   
   display: flex;
   flex-direction: column;
@@ -425,10 +425,10 @@
   justify-content: left;
   gap: 40px;
 
-  border-radius: 25px;
+  /* border-radius: 25px; */
   /* background-color: rgb(253, 246, 252); */
   background-color: rgb(255, 255, 255);
-  color: rgba(93, 93, 93, 1);
+  /* color: rgba(93, 93, 93, 1); */
   overflow: hidden;
 }
 
@@ -451,7 +451,10 @@
 }
 
 .sliderTitle {
-  padding-left: 8px;
+  /* padding-left: 8px; */
+  margin-left: 10px;
+  font-size: var(--step-5);
+
 }
 
 .sliderContent {
@@ -481,7 +484,7 @@
   align-items: left;
   justify-content: left;
   overflow-x: scroll;
-  gap: 28px;  /* Space between the cards */
+  gap: clamp(0.875rem, 0.7813rem + 0.4688vi, 1.25rem);;  /* Space between the cards */
   cursor: grab;
   scrollbar-width: none;
   padding-right: 8px;

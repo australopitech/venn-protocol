@@ -168,9 +168,9 @@ const ContentSlider = ({ title, contentType, contentSliderData, setIsOpen, setSe
     <div 
       className={styles.slider}
     >
-      <h1 className={styles.sliderTitle}>
+      <h2 className={styles.sliderTitle}>
         {title}
-      </h1>
+      </h2>
       <div>
         <div
           // className={contentType === "nft" ? styles.nftSliderContent : styles.sliderContent}
@@ -366,8 +366,21 @@ export default function MarketLayout ({ somePropHere }: MarketLayoutProps) {
                 <Dots placement={1}/>
               </div>
             </div>
-            <h2>Latest Listings</h2>
-            <Latest/>
+            {/* <h2>Latest Listings</h2> */}
+            {/* <Latest/> */}
+            {loadingNFTData
+            ? <LoadingSliderContent />
+            : fetchDataErr
+                ? <ErrorFetchingSliderContent error={error ?? fetchDataErr} />
+                : <ContentSlider 
+                  title={"Latest Listings"} 
+                  contentType={"nft"} 
+                  contentSliderData={fetchData?.nfts} 
+                  setIsOpen={setIsNFTOpen} 
+                  setSelected={setSelectedNFT} 
+                  />
+            }
+
             <div style={{ marginBlock: 'clamp(1.125rem, 0.7813rem + 1.7188vi, 2.5rem);'}}>
               <div style={{ background: '#d9d9d9', width: '100vw', display: 'flex', justifyContent: 'center'}}>
                 <Banner/>
@@ -376,16 +389,16 @@ export default function MarketLayout ({ somePropHere }: MarketLayoutProps) {
                   <Banner2/>
               </div>
             </div>
-            <h2>Browse by Collection</h2>
+            <h2>Trending Collections</h2>
             <ComingSoon/>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%'}}>
-              <h2 style={{fontSize: 'var(--step-5)', fontWeight: '600',  textAlign: 'left', marginLeft: '10px' }}>Browse by Chain</h2>
+              <h2 style={{fontSize: 'var(--step-5)', fontWeight: '700',  textAlign: 'left', marginLeft: '10px' }}>Browse by Chain</h2>
               <div style={{ width: '100vw', marginLeft: '18px'}}><Chains/></div>
             </div>
             <ComingSoon/>
 
-            <h2>Browse by Genre</h2>
+            <h2>Browse by Type</h2>
             <ComingSoon/>
             <Footer/>
             
