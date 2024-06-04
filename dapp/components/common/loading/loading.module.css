@@ -59,3 +59,21 @@
       60%{background-position:0%  50%, 50% 100%,100%   0%}
       80%{background-position:0%  50%, 50%  50%,100% 100%}
   }
+
+  .nftCard {
+    aspect-ratio: 1 / 1;
+    min-width: clamp(8.375rem, 6.8125rem + 7.8125vi, 14.625rem);
+    height: auto;
+    border-radius: 25px;
+    background-color: #d9d9d9;
+    background-image: linear-gradient(to right, #e9e9e9 8%, #d9d9d9 33%);
+    background-size: 400% 400%;
+    animation: gradient 2.8s infinite linear;
+  }
+
+  @keyframes gradient {
+    0%{background-position:400% 0%}
+    50%{background-position:0% -400%}
+    /* 100%{background-position:0% 50%} */
+  }
+

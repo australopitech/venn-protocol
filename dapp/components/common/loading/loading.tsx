@@ -42,5 +42,24 @@ export function LoadingDotsBouncy () {
   <div className={styles.bouncy}></div>
   )
 }
-  
-  
+
+
+export function LoadingNftCard () {
+  return (
+    <div className={styles.nftCard}>
+    </div>
+  )
+}
+
+export function LoadingNftRow () {
+  return (
+    <div style={{ 
+      display: 'flex',
+      height: 'auto',
+      gap: 'clamp(1.125rem, 0.9375rem + 0.9375vi, 1.875rem)', 
+      overflow: 'hidden'
+    }}>
+      <LoadingNftCard/><LoadingNftCard/><LoadingNftCard/><LoadingNftCard/><LoadingNftCard/><LoadingNftCard/>
+    </div>
+  )
+}
