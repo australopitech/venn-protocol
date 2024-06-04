@@ -12,6 +12,7 @@
     color: #d9d9d9;
     -webkit-text-stroke: 2px #1a1a1a;
     font-size: var(--step-8);
+    text-wrap: balance;
 }
 
 .contact {
@@ -19,7 +20,7 @@
     flex-direction: column;
     gap: clamp(1.125rem, 0.7813rem + 1.7188vi, 2.5rem); /*18 40px*/
     align-items: center;
-    max-width: min(70%, calc(6.92*var(--step-8)));
+    max-width: calc(6.92*var(--step-8));
 }
 
 .contactInner {
@@ -67,6 +68,12 @@
     .contactInner {
         align-items: start;
         text-align: left;
+    }
+}
+
+@media (min-width: 1200px) {
+    .body {
+        padding: 80px 124px;
     }
 }
 
