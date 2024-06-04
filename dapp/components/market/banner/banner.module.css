@@ -50,6 +50,15 @@
     text-wrap: balance;
 }
 
+.graphic {
+    color: #a5a5a5;
+    width: 100%;
+    transition: all 0.125s ease-in-out;
+}
+.graphic:hover {
+    color: #F0A6CA;
+}
+
 .button {
     border: 2px solid;
     display: flex;
@@ -64,6 +73,7 @@
 }
 .button:hover {
     transform: scale(1.05);
+    background-color: #d9d9d9;
 }
 .button:active {
     transform: scale(.95);

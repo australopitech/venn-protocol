@@ -32,14 +32,14 @@ function BannerLearn () {
                 </div>
                 <div className={styles.linksContainer}>
                         <div style={{ width: 'clamp(6.25rem, 5.7031rem + 2.7344vi, 8.4375rem)', cursor: 'pointer' }}>
-                            <GuidesGraphic/>
+                            <div className={styles.graphic}><GuidesGraphic/></div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px'}}>
                                 Guides
                                 <div className={styles.arrow}><UpRightArrow/></div>
                             </div>
                         </div>
                         <div style={{ width: ' clamp(5.625rem, 5.1563rem + 2.3438vi, 7.5rem)', cursor: 'pointer' }}>
-                            <DocsGraphic/>
+                            <div className={styles.graphic}><DocsGraphic/></div>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '6px'}}>
                                 Docs
                                 <div className={styles.arrow}><UpRightArrow/></div>
