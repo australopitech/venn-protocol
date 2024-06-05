@@ -64,7 +64,7 @@ export const WorkInProgressDialog = ({
               of our upcoming solution!</p>
               <br />
               <br />
-              <button className={classNames(styles.exploreButton, audiowide.className)} onClick={handleButtonClick}>Click here to explore!</button>
+              <button className={styles.exploreButton} onClick={handleButtonClick}>Click here to explore!</button>
               </div>
             </div>
           </dialog>
