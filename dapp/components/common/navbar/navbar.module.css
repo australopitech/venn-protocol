@@ -100,7 +100,6 @@
 }
 
 .secondaryButton,
-.secondaryButtonSelected,
 .primaryButton,
 .primaryButtonSelected,
 .disconnectButton,
@@ -126,7 +125,7 @@
 }
 
 .secondaryButton.active {
-  opacity: 0.5;
+  /* opacity: 0.5; */
 }
 
 .secondaryButton.active:hover {
