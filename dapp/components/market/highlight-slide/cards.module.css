@@ -46,7 +46,7 @@
 }
 
 .learnMoreCard {
-    background-image: linear-gradient(#0C91F1, #07538B);
+    background-image: linear-gradient(#07538B, #0C91F1);
     /* gap: clamp(4.0625rem, 2.0156rem + 10.2344vi, 12.25rem); */
     justify-content: start;
     align-items: center;
