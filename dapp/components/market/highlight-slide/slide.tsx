@@ -32,7 +32,7 @@ export default function HighlightSlide () {
                 >
                   <CirleArrowBiColorLeft/>
                 </div>
-                <Card cardNum={2} direction={direction} paginate={paginate}/>
+                <Card cardNum={position} direction={direction} paginate={paginate}/>
                 <div className={styles.arrowContainerRight}
                 onClick={() => paginate(1)}
                 >

@@ -118,13 +118,14 @@
     .realEstateCard {
         justify-content: start;
         align-items: end;
+        gap: clamp(1.5rem, -5.1923rem + 13.9423vi, 8.75rem);
     }
     .learnMoreCard {
         /* flex-direction: row; */
         align-items: center;
         background-image: linear-gradient(to right, #0C91F1, #07538B);
         justify-content: end;
-        gap: clamp(7.875rem, 1.3125rem + 10.9375vi, 12.25rem);
+        gap: clamp(4.375rem, -5.4327rem + 20.4327vi, 15rem);
     }
     .learnMoreCardDescription,
     .realEstateCardDescription {
