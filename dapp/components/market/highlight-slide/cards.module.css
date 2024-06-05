@@ -17,16 +17,17 @@
     
 }
 
+.starWarsCard,
 .realEstateCard,
 .learnMoreCard {
     display: flex;
     flex-direction: column;
+    width: 100%;
+    height: 100%;
     padding:  clamp(1.5rem, 1rem + 2.5vi, 2.5rem);
 }
 
 .realEstateCard {
-    width: 100%;
-    height: 100%;
     background-color: #F0A6CA;
     gap: clamp(1.5rem, 0.75rem + 3.75vi, 4.5rem);
     align-items: center;
@@ -45,8 +46,6 @@
 }
 
 .learnMoreCard {
-    width: 100%;
-    height: 100%;
     background-image: linear-gradient(#0C91F1, #07538B);
     /* gap: clamp(4.0625rem, 2.0156rem + 10.2344vi, 12.25rem); */
     justify-content: start;
@@ -66,6 +65,49 @@
     text-transform: uppercase;
 }
 
+.starWarsCard {
+    gap: 16px;
+    position: relative;
+    align-items: center;
+}
+.collectionImg {
+    height: 35%;
+    width: auto;
+    border-radius: 15px;
+    overflow: hidden;
+    z-index: 2;
+}
+.starWarsDescription {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    z-index: 2;
+}
+.starWarsName {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: clamp(0.875rem, 0.7813rem + 0.4688vi, 1.25rem);
+}
+.starWarsLogo {
+    width: auto;
+    height: 9vh;
+    min-height: 54px;
+}
+.backgroundImg {
+    background-image: url('https://ipfs.filebase.io/ipfs/QmUGudTwYXZzSFTHgycQbdGa6fRbAoxRTbR9ptExVKNweH');
+    filter: blur(6px);
+    -webkit-filter: blur(8px);
+    height: 100%;
+    width: 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: absolute;
+    top: 0;
+    z-index:1
+}
 
 @media (min-width: 768px) {
     .realEstateCard,
@@ -90,6 +132,19 @@
     }
     .icyMountain {
         height: 90%;
+    }
+    .starWarsCard {
+        flex-direction: row;
+        padding: 55px clamp(5rem, 1.25rem + 6.25vi, 7.5rem);
+        justify-content: center;
+        gap: clamp(3rem, 1.6154rem + 2.8846vi, 4.5rem); /*48 72px*/
+    }
+    .backgroundImg {
+        left: 0;
+        bottom: 0;
+    }
+    .collectionImg {
+        height: 60%;
     }
 }
 
