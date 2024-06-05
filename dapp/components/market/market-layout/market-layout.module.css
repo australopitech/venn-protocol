@@ -69,7 +69,8 @@
 
 .hero {
   width: 100%;
-  height: 68vh;
+  height: 70vh;
+  min-height: 480px;
   border-radius: 25px;
   /* padding: 5% 5%; */
   padding-block: clamp(1.125rem, 0.9107rem + 1.0714vi, 1.875rem);
@@ -83,53 +84,9 @@
   align-items: center;
   justify-content: space-between;
   gap: clamp(1.125rem, 0.9107rem + 1.0714vi, 1.875rem);
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
-.content {
-  position:relative;
-  padding-inline: clamp(1.125rem, 0.9375rem + 0.9375vi, 1.875rem);
-  width: 100%;
-  height: 100%;
-}
-
-.arrowContainerRight,
-.arrowContainerLeft {
-  display: none;
-  transition: all .1s ease-out;
-  cursor: pointer;
-}
-
-.arrowContainerLeft:hover,
-.arrowContainerRight:hover {
-  transform: scale(1.1);
-}
-
-.arrowContainerLeft:active,
-.arrowContainerRight:active {
-  transform: scale(.95);
-}
-
-
-
-@media (min-width: 1024px) {
-  .arrowContainerRight,
-  .arrowContainerLeft {
-    display: block;
-    width: 62px;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    margin: auto;
-    z-index: 10;
-  }
-  .arrowContainerLeft {
-    left: 0;
-  }
-  .arrowContainerRight {
-    right: 0;
-  }
-}
 
 
 
@@ -159,14 +116,14 @@
   transition: all 0.125s ease 0s;
 }
 
-@media (max-width: 1014px){ 
+/* @media (max-width: 1014px){ 
   .hero {
     height: 80vh;
   }
   .heroText { 
     gap: 16px;
   } 
-}  
+}   */
 
 .textHilight {
   position: relative;

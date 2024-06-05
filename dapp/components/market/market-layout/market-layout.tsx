@@ -17,18 +17,13 @@ import {
   resolveApprovalExternal, resolveApprovalInternal, rejectSessionProposal, rejectSessionRequest 
 } from '@/app/account/wallet';
 import ApproveDialog from '@/components/common/approve-dialog/approve-dialog';
-import { LoadingComponent } from '@/components/common/loading/loading';
-import { VideoGuides } from '@/components/video-guides/video-guides';
-import { CirleArrowBiColorLeft, CirleArrowBiColorRight } from './graphics';
-import { Dots } from '../slider-dots/slider-dots';
-import { source_code_pro } from '@/app/fonts';
-import Latest from '../latest/latest';
+import { LoadingComponent, LoadingNftRow } from '@/components/common/loading/loading';
 import { Banner, Banner2 } from '../banner/banner';
 import ComingSoon from '../coming-soon/coming-soon';
-import AvailableChains from '@/components/landing-page/chains/chains';
 import { Chains } from '../chains/chains';
 // import Swipe from 'react-swipe';
 import Footer from '../footer/footer';
+import HighlightSlide from '../highlight-slide/slide';
 
 interface TrendingCollectionsSliderProps {
   collectionsData?: Array<any> | [];
@@ -113,8 +108,9 @@ const HeroSection = () => {
 
 const LoadingSliderContent = () => {
   return (
-    <div className={styles.slider}>
-      <LoadingComponent />
+    <div className={styles.slider} style={{ marginLeft: '16px'}}>
+      {/* <LoadingComponent /> */}
+      <LoadingNftRow/>
     </div>
   )
 }
@@ -349,22 +345,7 @@ export default function MarketLayout ({ somePropHere }: MarketLayoutProps) {
           <NavBar currentPage='market' />
           {<div className={styles.main}> 
             <div className={styles.hero}>
-              <div className={styles.content}>
-                <div className={styles.arrowContainerLeft}>
-                  <CirleArrowBiColorLeft/>
-                </div>
-                <div style={{ width:"100%", height: "100%", borderRadius: "25px", background: "#F0A6CA"}}></div>
-                <div className={styles.arrowContainerRight}>
-                  <CirleArrowBiColorRight/>  
-                </div>            
-              </div> 
-              <div style={{
-                height: "14px",
-                width: "calc(3*14px*1.6)"
-                }}
-              >
-                <Dots placement={1}/>
-              </div>
+              <HighlightSlide/>              
             </div>
             {/* <h2>Latest Listings</h2> */}
             {/* <Latest/> */}

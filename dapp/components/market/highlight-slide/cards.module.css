@@ -1,0 +1,100 @@
+.card {
+    width: 100%;
+    height: 100%;
+    border-radius: 25px;
+    overflow: hidden;
+}
+
+/* .card > div {
+    display: flex;
+    flex-direction: column;
+    padding: 24px;
+} */
+.listingCardDescription {
+    display: flex;
+    flex-direction: column;
+    gap: 'clamp(1rem, 0.75rem + 1.25vi, 2rem)';
+    
+}
+
+.realEstateCard,
+.learnMoreCard {
+    display: flex;
+    flex-direction: column;
+    padding:  clamp(1.5rem, 1rem + 2.5vi, 2.5rem);
+}
+
+.realEstateCard {
+    width: 100%;
+    height: 100%;
+    background-color: #F0A6CA;
+    gap: clamp(1.5rem, 0.75rem + 3.75vi, 4.5rem);
+    align-items: center;
+    justify-content: center;
+}
+.icyMountain {
+    width: auto;
+    height: 65%;
+}
+.realEstateCardDescription {
+    font-size: clamp(1.375rem, 1.0313rem + 1.7188vi, 2.75rem);
+    font-weight: 700;
+    text-align: center;
+    text-wrap: balance;
+    max-width: 354px;
+}
+
+.learnMoreCard {
+    width: 100%;
+    height: 100%;
+    background-image: linear-gradient(#0C91F1, #07538B);
+    /* gap: clamp(4.0625rem, 2.0156rem + 10.2344vi, 12.25rem); */
+    justify-content: start;
+    align-items: center;
+    gap: 15%;
+}
+.book {
+    width: clamp(8.625rem, 6.8438rem + 8.9063vi, 15.75rem);
+    height: auto;
+}
+.learnMoreCardDescription {
+    font-size: clamp(1.375rem, 1.0938rem + 1.4063vi, 2.5rem);
+    color: #d9d9d9;
+    text-align: center;
+    text-wrap: balance;
+    max-width: 300px;
+    text-transform: uppercase;
+}
+
+
+@media (min-width: 768px) {
+    .realEstateCard,
+    .learnMoreCard {
+        flex-direction: row-reverse;
+        padding: 55px clamp(5rem, 1.25rem + 6.25vi, 7.5rem);
+    }
+    .realEstateCard {
+        justify-content: start;
+        align-items: end;
+    }
+    .learnMoreCard {
+        /* flex-direction: row; */
+        align-items: center;
+        background-image: linear-gradient(to right, #0C91F1, #07538B);
+        justify-content: end;
+        gap: clamp(7.875rem, 1.3125rem + 10.9375vi, 12.25rem);
+    }
+    .learnMoreCardDescription,
+    .realEstateCardDescription {
+        text-align: left;
+    }
+    .icyMountain {
+        height: 90%;
+    }
+}
+
+@media (max-width: 375px) {
+    .realEstateCard {
+        padding: 16px;
+    }
+}
