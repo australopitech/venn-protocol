@@ -15,26 +15,26 @@ export const Dot = () => {
 export function Dots ({ placement } : { placement: number }) {
   const [scope0, animate0] = useAnimate()
   const [scope1, animate1] = useAnimate()
-  // const [scope2, animate2] = useAnimate()
+  const [scope2, animate2] = useAnimate()
   // const [scope3, animate3] = useAnimate()
 
   useEffect(() => {
     if(placement === 0) {
       animate0(scope0.current, { opacity: 1, scale: 1.5 });
       animate1(scope1.current, { opacity: 0.2, scale: 1 });
-      // animate3(scope3.current, { opacity: 0.2, scale: 1 });
+      animate2(scope2.current, { opacity: 0.2, scale: 1 });
     }
     if(placement === 1){
       animate1(scope1.current, { opacity: 1, scale: 1.5 });
       animate0(scope0.current, { opacity: 0.2, scale: 1 });
-      // animate2(scope2.current, { opacity: 0.2, scale: 1 });
+      animate2(scope2.current, { opacity: 0.2, scale: 1 });
     }
-    // if(placement === 2){
-    //   animate2(scope2.current, { opacity: 1, scale: 1.5 });
-    //   animate3(scope3.current, { opacity: 0.2, scale: 1 });
-    //   animate1(scope1.current, { opacity: 0.2, scale: 1 });
+    if(placement === 2){
+      animate2(scope2.current, { opacity: 1, scale: 1.5 });
+      animate0(scope0.current, { opacity: 0.2, scale: 1 });
+      animate1(scope1.current, { opacity: 0.2, scale: 1 });
       
-    // }
+    }
     // if(placement === 3){
     //   animate3(scope3.current, { opacity: 1, scale: 1.5 });
     //   animate0(scope0.current, { opacity: 0.2, scale: 1 });
@@ -47,7 +47,7 @@ export function Dots ({ placement } : { placement: number }) {
     <div className={styles.dots}>
       <div ref={scope0} style={{ opacity: 0.2 }}><Dot/></div>
       <div ref={scope1} style={{ opacity: 0.2 }}><Dot/></div>
-      {/* <div ref={scope2} style={{ opacity: 0.2 }}><Dot/></div> */}
+      <div ref={scope2} style={{ opacity: 0.2 }}><Dot/></div>
       {/* <div ref={scope3} style={{ opacity: 0.2 }}><Dot/></div> */}
     </div>
     )

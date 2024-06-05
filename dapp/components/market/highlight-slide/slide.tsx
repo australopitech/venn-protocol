@@ -1,12 +1,12 @@
 'use client'
 import styles from './slide.module.css';
-import { CardLearnMore, CardRealEstate } from "./cards"
+import { CardLearnMore, CardRealEstate, CardStarWars } from "./cards"
 import { useState } from "react";
 import { motion, AnimatePresence, useAnimate } from "framer-motion";
 import { CirleArrowBiColorLeft, CirleArrowBiColorRight } from './graphics';
 import { Dots } from '../slider-dots/slider-dots';
 
-const lastPage = 1;
+const lastPage = 2;
 
 export default function HighlightSlide () {
     const [[position, direction], setPaginate] = useState([0,0]);
@@ -32,7 +32,7 @@ export default function HighlightSlide () {
                 >
                   <CirleArrowBiColorLeft/>
                 </div>
-                <Card cardNum={position} direction={direction} paginate={paginate}/>
+                <Card cardNum={2} direction={direction} paginate={paginate}/>
                 <div className={styles.arrowContainerRight}
                 onClick={() => paginate(1)}
                 >
@@ -127,7 +127,9 @@ function ContentSelector ({ cardNum } : { cardNum: number }) {
         ? <CardRealEstate />
         : cardNum === 1
           ? <CardLearnMore />
-          : "Error"
+          : cardNum === 2
+            ? <CardStarWars/>
+            : "Error"
       }
       </>
     )
