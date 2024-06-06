@@ -29,7 +29,7 @@ interface ToggleSwitchProps {
   onToggle: (state: boolean) => void;
 }
 
-const ToggleSwitch = ({ onToggle }: ToggleSwitchProps) => {
+export const ToggleSwitch = ({ onToggle }: ToggleSwitchProps) => {
   // const [isChecked, setIsChecked] = useState(false);
   const [isAllNfts, setIsAllNfts] = useState<boolean>(true);
 

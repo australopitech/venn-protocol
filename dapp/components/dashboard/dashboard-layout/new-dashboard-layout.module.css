@@ -1,0 +1,53 @@
+.body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 32px;
+    color: #000000;
+    padding: 32px 16px;
+}
+.main {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 32px;
+    max-width: 1440px;    
+}
+
+
+.divider {
+    height: 1px;
+    width: 100vw;
+    background-color: #d9d9d9;
+    align-self: center;
+}
+
+@media (min-width: 640px) {
+    .body {
+        padding: 32px 32px;
+    }
+}
+
+@media (min-width: 1024px) {
+    .body {
+        padding: 32px 64px;
+    }
+}
+
+@media (min-width: 1280px) {
+    .main {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    .divider {
+        display: none;
+    }
+}
+
+@media (min-width: 1600px) {
+    .body {
+        padding: 32px 0;
+    }
+}

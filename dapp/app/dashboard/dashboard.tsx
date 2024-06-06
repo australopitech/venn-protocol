@@ -2,6 +2,7 @@
 import { NextPage } from 'next'
 import Head from 'next/head'
 import DashboardLayout from '@/components/dashboard/dashboard-layout/dashboard-layout';
+import NewDashboardLayout from '@/components/dashboard/dashboard-layout/new-dashboard-layout';
 
 
 interface QueryParams {
@@ -22,7 +23,8 @@ const AddressPage: NextPage = () => {
 
   return (
     <>
-      <DashboardLayout />
+      {/* <DashboardLayout /> */}
+      <NewDashboardLayout/>
     </>
   )
 }
