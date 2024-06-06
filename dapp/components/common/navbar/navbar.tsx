@@ -149,3 +149,57 @@ export default function NavBar ({ navbarGridTemplate, currentPage }: NavBarProps
     </div>
   );
 }
+
+export const NavbarEvader = () => {
+  return (
+    <div className={styles.navbarEvader} style={{ visibility: 'hidden', zIndex: '-100' }}>
+      <div className={styles.navbar}>
+        <div className={styles.itemsGroupLeft}>
+          <div className={styles.logoLarge}>
+              <div style={{ width: "42px"}}>
+                <NewLogoPlain/>
+              </div>
+              <div style={{ width: "104px"}}>
+                <Name/>
+              </div>
+          </div>
+          <div className={styles.logoSmall}>
+                <NewLogoPlain/>            
+          </div>
+          <div className={styles.searchBoxContainer}>
+            <SearchBox />
+          </div>
+          <div className={styles.searchIcon} style={{ opacity: "0.3"}}>
+            <SearchIcon />
+          </div>
+        </div>
+        <div className={styles.itemsGroupRight}>
+          <div className={styles.pageIcon}>
+            
+          </div>
+          <div className={styles.navItems}>
+            <div 
+                className={styles.secondaryButton}
+              >
+                <div>
+                  MARKET
+                </div>
+            </div>
+            <div 
+              className={styles.secondaryButton}
+            >
+              <div > 
+                DASHBOARD
+              </div>
+            </div>
+          </div>
+          {/* <ConnectButton /> */}
+          <div className={styles.iconButton}>
+            {/* <DropdownMenu items={['']} onItemSelect={()=>{}} /> */}
+          </div>
+        </div>
+      </div>
+    </div>   
+  )
+
+}

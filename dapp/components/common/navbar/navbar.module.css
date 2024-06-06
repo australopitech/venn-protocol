@@ -1,4 +1,4 @@
- .navbarOutter {
+.navbarOutter {
     background-color: #ffffff;
     position: fixed;
     top: 0;
@@ -6,9 +6,15 @@
     display: flex;
     justify-content: center;
     z-index: 101;
- }
- 
- .navbar {
+}
+
+.navbarEvader {
+  display: flex;
+  z-index: -100;
+  visibility: hidden;
+}
+
+.navbar {
   /* flex-shrink: 0; */
   color: #000000;
   padding: clamp(0.5625rem, 0.4018rem + 0.8036vi, 1.125rem);
