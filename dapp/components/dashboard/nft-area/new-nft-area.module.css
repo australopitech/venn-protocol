@@ -129,11 +129,18 @@
         scrollbar-width: thin;
         scrollbar-color: rgb(217, 217, 217) rgba(217, 217, 217, 0.6);
         padding-right: 24px;
-        grid-template-columns: repeat(3, minmax(240px, 260px));
-        grid-template-rows: repeat(3, minmax(calc(240px + 6px + var(--step-1)), calc(260px + 6px + var(--step-1)) ));
+        grid-template-columns: repeat(3,  260px);
+        grid-template-rows: repeat(3, calc(260px + 6px + var(--step-1)) );
         grid-auto-flow: row;
-        grid-auto-rows: minmax(calc(240px + 6px + var(--step-1)));
-        grid-auto-columns: minmax(240px, 260px);
+        grid-auto-rows: calc(260px + 6px + var(--step-1));
+        grid-auto-columns: 260px;
 
     }
+}
+
+.loadingNftCard {
+  width: 240px;
+  height: 240px;
+  border-radius: 20px;
+  overflow: hidden;
 }

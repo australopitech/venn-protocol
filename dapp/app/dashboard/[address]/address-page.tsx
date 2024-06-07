@@ -4,6 +4,7 @@ import { NextPage } from 'next'
 import Head from 'next/head'
 import DashboardLayout from '@/components/dashboard/dashboard-layout/dashboard-layout';
 import { isAddress } from 'viem';
+import NewDashboardLayout from '@/components/dashboard/dashboard-layout/new-dashboard-layout';
 
 interface QueryParams {
   address: string;
@@ -26,7 +27,7 @@ const AddressPage: NextPage = () => {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         {/* <link rel="icon" href="/favicon.ico" /> */}
       </Head>
-      <DashboardLayout address={params.address as `0x${string}`}/>
+      <NewDashboardLayout address={params.address as `0x${string}`}/>
     </>
   )
 }

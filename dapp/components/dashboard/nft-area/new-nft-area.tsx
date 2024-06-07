@@ -1,17 +1,86 @@
 'use client'
 import styles from './new-nft-area.module.css';
-import { useState } from 'react';
+import NftCard from '@/components/common/nft-card/nft-card';
 import classNames from 'classnames';
+import { useEffect, useState } from 'react';
+import { FetchNftDataResponse } from '@/types';
+import { nftViewMode } from '@/types/nftContext';
+import { getAddress } from 'viem';
+import { useAccount } from 'wagmi';
+import { useSmartAccount } from '@/app/account/venn-provider';
+import { compactString, copyAddress } from '@/utils/utils';
+import { Tooltip } from '@/components/common/tooltip/tooltip';
+import { LoadingDots, LoadingPage } from '../dashboard-layout/dashboard-layout';
+import { mintMockNFT } from '@/utils/demo';
+import { useRefetchAddressData } from '@/hooks/address-data';
+import Link from 'next/link';
+import { LoadingContent, LoadingNftCard } from '@/components/common/loading/loading';
 
-export default function NftArea () {
+export interface NftAreaProps {
+  setIsNFTOpen: any;
+  setSelectedNFT: any;
+  // trigger: boolean;
+  nftFetchData?: FetchNftDataResponse;
+  address?: string;
+  viewMode?: nftViewMode;
+}
+
+export default function NftArea ({ 
+  setIsNFTOpen, nftFetchData, setSelectedNFT, address, viewMode
+} : NftAreaProps
+) {
+  const [isLoadingData, setIsLoadingData] = useState(true);
+  const [toggleState, setToggleState] = useState<boolean>(false);
+  // const [tooltipText, setTooltipText] = useState(tooltipDefaultText);
+  const { address: eoa, isConnecting } = useAccount();
+  const { address: vsa } = useSmartAccount();
+
+  useEffect(() => {
+    console.log('render')
+    if(!isConnecting && !nftFetchData?.isLoading && !nftFetchData?.isFetching)
+      setTimeout(() => {
+        setIsLoadingData(false);
+      }, 2000);
+    else
+      setIsLoadingData(true)
+  }, [isConnecting, nftFetchData]);
+
+  const handleOnCardClick = (i: any) => {
+    setSelectedNFT(i);
+    setIsNFTOpen(true);
+  }
+
+
 
     return (
         <div className={styles.nftArea}>
             <div className={styles.nftAreaHeader}>
-                <div className={styles.nftQuantity}>12 NFTs</div>
+                {/* <div className={styles.nftQuantity}>12 NFTs</div> */}
+                <div style={{ width: '100px', height: 'var(--step-2)'}}><LoadingContent/></div>
                 <ToggleSwitch onToggle={() => {}}/>
             </div>
-            <div className={styles.nftGrid}>
+            {isLoadingData
+             ? <LoadingGrid/>
+             : nftFetchData?.error
+              ? "Error" + nftFetchData.error
+              : nftFetchData?.data?.nfts?.length === 0
+               ? "No NFTs"
+               : <div className={styles.nftGrid}>
+                  {nftFetchData?.data?.nfts?.map((nft, i) =>
+                    <NftCard
+                    imageURI={nft.imageCached ?? nft.image ?? ""} // TODO substitute for no image symbol
+                    name={nft.name ?? ""}
+                    contractAddress={getAddress(nft.contractAddress)}
+                    tokenId={nft.tokenId !== null ? BigInt(nft.tokenId) : undefined}
+                    address={address}
+                    key={nft.contractAddress + nft.tokenId}
+                    onClick={() => handleOnCardClick(i)}
+                    holderAddress={nft.owner}
+                    />
+                  )}
+               </div>
+            }
+            {/* <div className={styles.nftGrid}>
                 <div className={styles.mockNftCard}>
                     <div className={styles.mockNftImage}></div>
                     <span className={styles.status}>Listed</span>
@@ -52,7 +121,7 @@ export default function NftArea () {
                     <div className={styles.mockNftImage}></div>
                     <span className={classNames(styles.status, styles.notListed)}>Not Listed</span>
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }
@@ -73,25 +142,6 @@ const ToggleSwitch = ({ onToggle }: ToggleSwitchProps) => {
     };
   
     return (
-      // <div className={styles.toggleGridType}>
-      //   toggle here
-      // </div>
-  
-      // <div 
-      //   onClick={handleToggle}
-      //   style={{
-      //     cursor: 'pointer',
-      //     padding: '5px 15px',
-      //     borderRadius: '15px',
-      //     backgroundColor: isAllNfts ? 'green' : 'grey',
-      //     color: 'white',
-      //     display: 'inline-flex',
-      //     alignItems: 'center',
-      //     justifyContent: 'center'
-      //   }}>
-      //   {isAllNfts ? 'ON' : 'OFF'}
-      // </div>
-  
       <div 
         onClick={handleToggle}
         className={styles.toggleSwitchContainer}>
@@ -110,4 +160,18 @@ const ToggleSwitch = ({ onToggle }: ToggleSwitchProps) => {
         </div>
       </div>
     )
-  }
+}
+
+const LoadingGrid = () => {
+  return (
+    <div className={styles.nftGrid}>
+      <div className={styles.loadingNftCard}><LoadingContent/></div>
+      <div className={styles.loadingNftCard}><LoadingContent/></div>
+      <div className={styles.loadingNftCard}><LoadingContent/></div>
+      <div className={styles.loadingNftCard}><LoadingContent/></div>
+      <div className={styles.loadingNftCard}><LoadingContent/></div>
+      <div className={styles.loadingNftCard}><LoadingContent/></div>
+    </div>
+  )
+}
+

@@ -71,6 +71,15 @@
     animation: gradient 2.8s infinite linear;
   }
 
+  .content {
+    width: 100%;
+    height: 100%;
+    background-color: #d9d9d9;
+    background-image: linear-gradient(to right, #e9e9e9 8%, #d9d9d9 33%);
+    background-size: 400% 400%;
+    animation: gradient 2.8s infinite linear;
+  }
+
   @keyframes gradient {
     0%{background-position:400% 0%}
     50%{background-position:0% -400%}

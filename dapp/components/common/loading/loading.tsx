@@ -1,3 +1,4 @@
+import { TranslatingCircles } from './framer-motion';
 import styles from './loading.module.css';
 
 export function LoadingDots () {
@@ -11,16 +12,16 @@ export function LoadingDots () {
 }
 
 export function LoadingPage () {
-    return (
-      <div style={{ 
-        position: 'fixed', 
-        top: '50%', 
-        left: '50%', 
-        transform: 'translate(-50%, -50%)' 
-      }}>
-        <LoadingDots />
-      </div>
-    )
+  return (
+    <div style={{ 
+      position: 'fixed', 
+      top: '50%', 
+      left: '50%', 
+      transform: 'translate(-50%, -50%)' 
+    }}>
+      <TranslatingCircles/>
+    </div>
+  )
 }
 
 export function LoadingComponent () {
@@ -30,9 +31,10 @@ export function LoadingComponent () {
             justifyContent: 'center',
             justifySelf: 'center',
             alignItems: 'center', 
-            height: '100%' 
+            height: '100%',
+            width: '100%',
         }}>
-            <LoadingDots />
+            <TranslatingCircles />
         </div>
     )
 }
@@ -61,5 +63,11 @@ export function LoadingNftRow () {
     }}>
       <LoadingNftCard/><LoadingNftCard/><LoadingNftCard/><LoadingNftCard/><LoadingNftCard/><LoadingNftCard/>
     </div>
+  )
+}
+
+export function LoadingContent () {
+  return (
+    <div className={styles.content}></div>
   )
 }
