@@ -1,0 +1,112 @@
+
+.logInContainer {
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    /* gap: 48px; */
+    padding-top: clamp(1rem, 0.5455rem + 2.2727vi, 2rem); /*16 32px*/
+    width: fit-content;
+    height: calc(100vh - clamp(1rem, 0.75rem + 1.25vi, 2rem));
+    max-height: 680px;
+    position: relative;
+    
+}
+
+.logInContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    gap: clamp(3rem, 2.75rem + 1.25vi, 4rem); /*48 64px*/
+    max-width: 680px;
+
+    color: #585858;
+    font-size: var(--step-5);
+    font-weight: 600;
+    text-wrap: balance;
+    text-align: center;
+}
+
+.backgroundImg {
+    position: absolute;
+    right: 0;
+    left: 0;
+    margin: auto;
+    top: 40%;
+    width: 100%;
+    max-width: 500px;
+    height: auto;
+    z-index: -10;
+}
+
+@media(min-width: 1024px) {
+    .logInContainer{
+        width: 100%;
+        max-width: 1120px;
+        height: fit-content;
+        max-height: 500px;
+        justify-content: space-between;
+        align-items: center;
+        margin: auto 0;
+        padding: 0 0 64px 0;
+    }
+    .logInContent {
+        align-items: start;
+        width: 60%;
+        text-align: left;
+    }
+    .backgroundImg {
+        /* position: absolute; */
+        width: 50%;
+        top: auto;
+        bottom: -25%;
+        left: auto;
+        right: 0;
+        /* transform: translateY(50%); */
+    }
+}
+
+.logInContent > h1 {
+    font-size: var(--step-6);
+    font-weight: 700;
+    color: #1e1e1e;
+}
+
+.highlight {
+    position: relative;
+    display: inline-block;
+    /* background-color: #ffffff; */
+}
+.highlight::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 90%;
+    height: 40%;
+    background-color: #d9d9d9;
+    z-index: -1;
+}
+
+.button {
+    display: flex;
+    justify-content: center;
+    width: 180px;
+    height: auto;
+    padding: 12px 0;
+    font-size: var(--step-3);
+    text-transform: uppercase;
+    font-weight: 600;
+    background-color: #000000;
+    color: #d9d9d9;
+    transition: all .125s ease-in-out;
+    border-radius: 30px;
+    cursor: pointer;
+}
+.button:hover {
+    background-color: #d9d9d9;
+    color: #000000;
+}
+.button:active {
+    transform: scale(.95);
+}
