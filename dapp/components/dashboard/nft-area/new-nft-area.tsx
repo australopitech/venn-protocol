@@ -56,7 +56,10 @@ export default function NftArea ({
         <div className={styles.nftArea}>
             <div className={styles.nftAreaHeader}>
                 {/* <div className={styles.nftQuantity}>12 NFTs</div> */}
-                <div style={{ width: '100px', height: 'var(--step-2)'}}><LoadingContent/></div>
+                {isLoadingData
+                 ? <div style={{ width: '100px', height: 'var(--step-2)'}}><LoadingContent/></div>
+                 : <div className={styles.nftQuantity}>{nftFetchData?.data?.nfts?.length} NFTs</div>
+                }
                 <ToggleSwitch onToggle={() => {}}/>
             </div>
             {isLoadingData
