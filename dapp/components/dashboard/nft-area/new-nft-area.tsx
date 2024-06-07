@@ -66,8 +66,8 @@ export default function NftArea ({
              ? <LoadingGrid/>
              : nftFetchData?.error
               ? "Error" + nftFetchData.error
-              : nftFetchData?.data?.nfts?.length === 0
-               ? "No NFTs"
+              // : nftFetchData?.data?.nfts?.length === 0
+              //  ? "No NFTs"
                : <div className={styles.nftGrid}>
                   {nftFetchData?.data?.nfts?.map((nft, i) =>
                     <NftCard

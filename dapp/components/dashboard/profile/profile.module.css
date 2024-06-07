@@ -11,6 +11,11 @@
     height: clamp(6.5rem, 5.9375rem + 2.8125vi, 8.75rem);
     border-radius: 50%;
 }
+.address {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+}
 .info {
     font-size: var(--step-5);
     font-weight: 500;
@@ -100,5 +105,6 @@
     }
     .buttonContainer {
         width: 100%;
+        max-width: none;
     }
 }

@@ -20,6 +20,7 @@ import { ApproveData, TxResolved, nftViewMode } from '@/types';
 import { LoadingComponent, LoadingPage } from '@/components/common/loading/loading';
 import { motion, AnimatePresence } from 'framer-motion';
 import LogIn from '../log-in/log-in';
+import { getAddress } from 'viem';
 
 export interface DashboardLayoutProps {
     address?: `0x${string}`;
@@ -76,7 +77,17 @@ export default function NewDashboardLayout ({ address } : DashboardLayoutProps) 
   }, [txResolved])
   
   const resolveDashBoardAccountAddress = () : `0x${string}` | undefined => {
-    return connector?.id === "web3auth" ? vsa : eoa
+    return address ? address : connector?.id === "web3auth" ? vsa : eoa
+  }
+
+  const resolveIsSigner = () : boolean => {
+    if(!address)
+      return true
+    if(vsa) 
+      return getAddress(vsa) === getAddress(address)
+    if(eoa)
+      return getAddress(eoa) === getAddress(address)
+    return false
   }
 
   const onApprove = async () => {
@@ -204,7 +215,11 @@ export default function NewDashboardLayout ({ address } : DashboardLayoutProps) 
                 <NavbarEvader/>
                 {(eoa || address)
                     ? <div className={styles.main}>
-                        <Profile/>
+                        <Profile
+                        isConnecting={isConnecting}
+                        address={resolveDashBoardAccountAddress()}
+                        isSigner={resolveIsSigner()}
+                        />
                         <div className={styles.divider}></div>
                         <NftArea
                         address={address}

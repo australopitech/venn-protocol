@@ -50,3 +50,32 @@ export const FaucetIcon = () => {
         </svg>
     )
 }
+
+export const CopyIcon = () => {
+    return (
+        <svg width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+            <title>copy</title>
+            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <g id="copy" fill="#000000" transform="translate(85.333333, 42.666667)">
+                    <path d="M341.333333,85.3333333 L341.333333,405.333333 L85.3333333,405.333333 L85.3333333,85.3333333 L341.333333,85.3333333 Z M298.666667,128 L128,128 L128,362.666667 L298.666667,362.666667 L298.666667,128 Z M234.666667,7.10542736e-15 L234.666667,42.6666667 L42.6666667,42.6666667 L42.6666667,298.666667 L1.42108547e-14,298.666667 L1.42108547e-14,7.10542736e-15 L234.666667,7.10542736e-15 Z">
+                    </path>
+                </g>
+            </g>
+        </svg>
+    )
+}
+
+
+export const CheckIcon = () => {
+    return (
+        <svg width="100%" height="100%" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink">
+            {/* <title>single-check</title> */}
+            <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                <g id="add" fill="#000000" transform="translate(91.581722, 94.833062)">
+                    <polygon id="check-small" points="304.534538 0 340.035351 23.6672084 154.934008 301.319223 1.42108547e-14 146.385216 30.1698893 116.215326 148.290278 234.318938">
+                    </polygon>
+                </g>
+            </g>
+        </svg>
+    )
+}
