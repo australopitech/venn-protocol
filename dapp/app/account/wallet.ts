@@ -26,17 +26,25 @@ export async function approveSessionProposal (
   ) {
     if(!wallet)
       throw new Error('no wallet found');
-    try {
-      await wallet.rejectSession({
-        id: data.sessionProposal?.id,
-        reason: getSdkError("USER_REJECTED")
-      });
-    } catch (error) {
-      console.error(error)
-    } finally {
-      stateResetter('proposal');
-    }
-}
+    await wallet.rejectSession({
+      id: data.sessionProposal?.id,
+      reason: getSdkError("USER_REJECTED")
+    });    
+    stateResetter('proposal');
+  }
+
+  export async function disconnectSession(
+    topic: any,
+    wallet?: Web3WalletType,
+  ) {
+    if(!wallet)
+      throw new Error('No wallet found.')
+    await wallet.disconnectSession({
+      topic,
+      reason: getSdkError('USER_DISCONNECTED')
+    });
+  }
+
   
   export async function resolveSessionRequest (
     request: any,
@@ -58,21 +66,16 @@ export async function approveSessionProposal (
   ) {
     if(!wallet)
       throw new Error('no wallet found');
-    try {
-      const response = formatJsonRpcError(
-        request.id,
-        getSdkError('USER_REJECTED').message
-      );
-      console.log('responding...');
-      await wallet.respondSessionRequest({
-        topic: request.topic,
-        response
-      });
-    } catch (error) {
-      console.log(error);
-    } finally {
-      stateResetter('request');
-    }
+    const response = formatJsonRpcError(
+      request.id,
+      getSdkError('USER_REJECTED').message
+    );
+    console.log('responding...');
+    await wallet.respondSessionRequest({
+      topic: request.topic,
+      response
+    });
+    stateResetter('request');
   }
 
   export async function resolveApprovalExternal (

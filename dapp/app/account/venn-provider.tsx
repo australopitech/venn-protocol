@@ -15,11 +15,15 @@ import { useAccount, useNetwork, useWalletClient } from "wagmi";
 import { getDefaultEntryPointAddress } from "@alchemy/aa-core";
 import { resolveProviderKey } from "../chain-provider";
 import { SessionEventType } from "@/types";
+import ApproveDialog from "@/components/common/approve-dialog/approve-dialog";
+import { ConnectDialog } from "@/components/common/wallet-action-dialogs/connect";
+import { disconnectSession, rejectSessionProposal, rejectSessionRequest, resolveApprovalExternal } from "./wallet";
+
 
 type SmartAccountContextType = {
-    vsaProvider?: AlchemyProvider;
-    accountAddress?: `0x${string}`;
-    triggerVsaUpdate: () => void;
+  vsaProvider?: AlchemyProvider;
+  accountAddress?: `0x${string}`;
+  stateUpdater: () => void;
 };
 
 
@@ -35,9 +39,11 @@ type WalletContextType = {
   sessionEvent: SessionEventType | undefined;
   setSessionEvent: React.Dispatch<React.SetStateAction<SessionEventType | undefined>>;
   setNewPairingTopic:React.Dispatch<React.SetStateAction<string | undefined>>;
-  updater: boolean;
+  stateUpdate: boolean;
   isLoading: boolean;
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  setOpenConnect: React.Dispatch<React.SetStateAction<boolean>>;
+  activeSessions?: any;
 }
 // test
 const entryPointAddr = getDefaultEntryPointAddress(baseGoerli);
@@ -125,132 +131,6 @@ const emitChainChanged = (
   }
 }
 
-// export function useApproveSessionProposal () {
-//   const context = useContext(Wallet);
-//   // const { chain } = useNetwork();
-//   // console.log('state', context?.sessionProposal, context?.namespaces)
-//   return async () => {
-//     if(context && context.sessionProposal && context.namespaces ){
-//       try {
-//         await context.vennWallet?.approveSession({
-//           id: context.sessionProposal.id,
-//           namespaces: context.namespaces
-//         });
-//         context.setNewPairingTopic(context.sessionProposal.params.pairingTopic);
-//       } catch (error: any) {
-//         console.error(error)
-//         // alert(error.message);
-//       } 
-//     } else 
-//         throw new Error ('missing context: check state for session proposal and namespaces');
-//     context?.setSessionProposal(undefined);
-//     context?.setNamespaces(undefined);
-//     context?.setSessionEvent(undefined);
-//   }
-// }
-
-// export function useRejectSessionProposal () {
-//   const context = useContext(Wallet);
-//   return async () => {
-//     if(context && context.sessionProposal) {
-//       try {
-//         await context.vennWallet?.rejectSession({
-//           id: context.sessionProposal?.id,
-//           reason: getSdkError("USER_REJECTED")
-//         });
-//       } catch (error: any) {
-//         console.error(error);
-//       }
-//     } else
-//       throw new Error('missing context: check state for session proposal and namespaces');
-//     context?.setSessionProposal(undefined);
-//     context?.setNamespaces(undefined);
-//     context?.setSessionEvent(undefined);
-//   }
-// }
-
-
-
-// export function useApproveSessionRequest () {
-//   const walletContext = useContext(Wallet);
-//   const vsaContext = useContext(SmartAccount);  
-//   return async () => {
-//     if(walletContext?.sessionRequest) {
-//       let ret: any;
-//       let response: any;
-//       const { id, topic } = walletContext.sessionRequest
-//       if(vsaContext?.vsaProvider) {
-//         try {
-//           let { method, params } = walletContext.sessionRequest.params.request;
-//           params = formatParams(method, params);
-//           ret = await vsaContext.vsaProvider.request({ method, params });
-//           response = formatJsonRpcResult(id, ret);
-//           await walletContext.vennWallet?.respondSessionRequest({
-//               topic,
-//               response
-//           });
-//         } catch (error: any) {
-//           console.error(error);
-//           // alert(error.message);
-//           response = formatJsonRpcError(id, error.message);
-//           await walletContext.vennWallet?.respondSessionRequest({
-//               topic,
-//               response
-//           });
-//         } finally {
-//           walletContext.setSessionRequest(undefined);
-//           walletContext.setSessionEvent(undefined);
-//           return ret;
-//         }
-//       } else {
-//           response = formatJsonRpcError(id, getSdkError("USER_DISCONNECTED").message);
-//           try {
-//             await walletContext.vennWallet?.respondSessionRequest({
-//               topic,
-//               response
-//             });
-//           } catch(error: any) {
-//             console.error(error);
-//             alert(error.message);
-//           } finally {
-//             walletContext.setSessionRequest(undefined);
-//             walletContext.setSessionEvent(undefined);
-//           }
-//       }
-//     } else {
-//       throw new Error ('missing context: check wallet provider');
-//     }
-//   }
-// }
-
-
-// export function useRejectSessionRequest() {
-//   const context = useContext(Wallet);
-//   return async () => {
-//     if(context?.sessionRequest) {
-//       // console.log('using reject');
-//       try {
-//         const response = formatJsonRpcError(
-//           context.sessionRequest.id,
-//           getSdkError('USER_REJECTED').message
-//         );
-//         console.log('responding...');
-//         await context.vennWallet?.respondSessionRequest({
-//           topic: context.sessionRequest.topic,
-//           response
-//         });
-//       } catch (error: any) {
-//         console.error(error);
-//         // alert(error.message);
-//       } finally {
-//         // console.log('reset provider state');
-//         context.setSessionRequest(undefined);
-//         context.setSessionEvent(undefined);
-//       }
-//     }
-//   }
-// }
-
 export function VennAccountProvider ({children} : {children : React.ReactNode}) {
   // const [signer, setSigner] = useState<Web3AuthSigner | null>(null);
   const { data: walletClient } = useWalletClient();
@@ -261,27 +141,34 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
   const [sessionProposal, setSessionProposal] = useState<Web3WalletTypes.SessionProposal>();
   const [sessionRequest, setSessionRequest] = useState<Web3WalletTypes.SessionRequest>();
   const [namespaces, setNamespaces] = useState<SessionTypes.Namespaces>();
-  const [updater, setUpdater] = useState(false);
+  const [stateUpdate, setStateUpdate] = useState(false);
   const [sessionEvent, setSessionEvent] = useState<SessionEventType>();
   const [newPairingTopic, setNewPairingTopic] = useState<any>();
   const [activeSessions, setActiveSessions] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
   const { chain } = useNetwork();
+  const [openConnect, setOpenConnect] = useState(false);
+  const [error, setError] = useState<any>();
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [hash, setHash] = useState<string>();
 
   const { connector } = useAccount()
 
-  const triggerVsaUpdate = useCallback(() => {
-    setUpdater(!updater);
-  }, [updater, setUpdater]);
+  const stateUpdater = useCallback(() => {
+    setStateUpdate(!stateUpdate);
+  }, [stateUpdate, stateUpdate]);
 
   const onSessionProposal = (proposal: Web3WalletTypes.SessionProposal) => {
     console.log('session_proposal', proposal);
-    // console.log('state', sessionProposal, sessionEvent)
+    console.log('state onSessionProposal', sessionProposal, sessionEvent)
     if(!sessionProposal && !sessionEvent){
+      console.log('setting state onSessionProposal')
       setIsLoading(true)
       setSessionProposal(proposal);
       setSessionEvent('Connection');
+      console.log('accountAddress state', accountAddress);
       if(accountAddress) {
+        console.log('setting namesmapces state')
         setNamespaces(getApprovedNamespaces(accountAddress, proposal));
       }
       else
@@ -313,7 +200,102 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
 
   const onSessionDelete = async (event: any) => {
     console.log('session_delete', event);
-    triggerVsaUpdate()
+    stateUpdater();
+  }
+
+  const onConnect = async (uri: string) => {
+    if(isLoading)
+      return
+    try {
+      vennWallet?.pair({ uri, activatePairing: true });
+    } catch (err: any) {
+      alert(err.message);
+    }
+  }
+
+  const onApprove = async (eventType: 'proposal' | 'request') => {
+    setIsProcessing(true);
+    if(!vennWallet) {
+      setError({ message: 'no wallet found'});
+      setIsProcessing(false);
+      walletStateResetter('proposal');
+      return
+    }
+    if(eventType === 'proposal'){      
+      if(!sessionProposal || !sessionEvent || !namespaces) {
+        setError({ message: 'missing session event metadata' });
+        console.log('session proposal', sessionProposal)
+        console.log('session event', sessionEvent)
+        console.log('namespaces', namespaces);
+        console.error('missing session event metadata')
+        setIsProcessing(false);
+        walletStateResetter('proposal');
+        return
+    }} else {
+      if(!sessionRequest || !sessionEvent) {
+        setError({ message: 'missing session event metadata' });
+        console.error('missing session event metadata')
+        setIsProcessing(false);
+        walletStateResetter('request');
+        return
+    }}
+    const { hash, error: err } = await resolveApprovalExternal(
+      sessionEvent,
+      eventType === 'proposal' ? { sessionProposal, namespaces} : sessionRequest,
+      walletStateResetter,
+      vennWallet,
+      vsaProvider
+    )
+    console.error(err);
+    setError(err);
+    setHash(hash);
+    setIsProcessing(false);
+    stateUpdater();
+  }
+
+  const onReject = async (eventType: 'proposal' | 'request') => {
+    setIsProcessing(true);
+    if(eventType === 'proposal') {
+      try {
+        await rejectSessionProposal(
+          { sessionProposal },
+          walletStateResetter,
+          vennWallet
+        )
+      } catch (err) {
+        setError(err)
+      }
+      setIsProcessing(false)
+      walletStateResetter('proposal')
+    } else {
+      try {
+        await rejectSessionRequest(
+          sessionRequest,
+          walletStateResetter,
+          vennWallet
+        )
+      } catch (err) {
+        setError(err)
+      }
+      setIsProcessing(false)
+      walletStateResetter('request');
+    }
+
+  }
+   
+
+  const walletStateResetter = (eventType: 'proposal' | 'request') => {
+    switch(eventType) {
+      case 'proposal':
+        setSessionProposal(undefined);
+        setNamespaces(undefined);
+        setSessionEvent(undefined);
+        setIsLoading(false);
+        break
+      case 'request':
+        setSessionRequest(undefined);
+        setSessionEvent(undefined);
+    }
   }
 
   useEffect(() => {
@@ -321,11 +303,11 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
       if(connector?.id === "web3auth")
         setVsaProvider(createAccountProvider(walletClient));
       else
-      setVsaProvider(undefined);  
+        setVsaProvider(undefined);  
     }
     else
       setVsaProvider(undefined);
-  }, [walletClient, updater]);
+  }, [walletClient, stateUpdate]);
 
   useEffect(() => {
     // let isCancelled = false;
@@ -368,7 +350,7 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
 
   useEffect(() => {
     setActiveSessions(vennWallet?.getActiveSessions())
-  }, [vennWallet, newPairingTopic, updater])
+  }, [vennWallet, newPairingTopic, stateUpdate])
 
   useEffect(() => {
     if(!activeSessions)
@@ -387,7 +369,7 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
   
   
   return (
-    <SmartAccount.Provider value={{vsaProvider, accountAddress, triggerVsaUpdate}}>
+    <SmartAccount.Provider value={{vsaProvider, accountAddress, stateUpdater}}>
         <Wallet.Provider 
         value={{
             vennWallet, setVennWallet,
@@ -395,10 +377,22 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
             sessionRequest, setSessionRequest,
             namespaces, setNamespaces,
             sessionEvent, setSessionEvent,
-            setNewPairingTopic, updater,
-            isLoading, setIsLoading
+            setNewPairingTopic, stateUpdate,
+            isLoading, setIsLoading,
+            setOpenConnect,
+            activeSessions
         }}>
+            <>
+            {openConnect && <ConnectDialog
+              sessionProposal={sessionProposal}
+              close={() => setOpenConnect(false)}
+              isLoading={isLoading}
+              onConnect={onConnect}
+              onApprove={() => onApprove('proposal')}
+              onReject={() => onReject('proposal')}
+              />}
             {children}
+            </>
         </Wallet.Provider>
     </SmartAccount.Provider>
   )
@@ -447,7 +441,7 @@ export function useSmartAccountAddress () {
 
 export function useVsaUpdate () {
   const context = useContext(SmartAccount);
-  return context?.triggerVsaUpdate;
+  return context?.stateUpdater;
 }
 
 // export function useSigner () {
@@ -460,10 +454,26 @@ export function useVsaUpdate () {
 //   return context?.setSigner;
 // }
 
+export function useOpenConnect () {
+  const context = useContext(Wallet);
+  return context?.setOpenConnect
+}
+
+export function useActiveSessions () {
+  const context = useContext(Wallet);
+  const updater = useVsaUpdate();
+  const disconnect = async (topic: any) => {
+    await disconnectSession(topic, context?.vennWallet);
+    if(updater) updater();
+  }
+  const activeSessions = context?.activeSessions;
+  return { activeSessions, disconnect }
+}
+
 export function useVennWallet () {
   const context = useContext(Wallet);
   const wallet = context?.vennWallet
-  const updater = context?.updater
+  const updater = context?.stateUpdate
   const stateResetter = useWalletStateResetter();
   return { wallet, updater, stateResetter }
 }

@@ -198,7 +198,7 @@ export default function NewDashboardLayout ({ address } : DashboardLayoutProps) 
             address={address}
             />
         }
-        {(event || approveData || error || txResolved) && 
+        {/* {(event || approveData || error || txResolved) && 
             <ApproveDialog 
             approveData={approveData? approveData : event? {type: event, data} : undefined}
             onApprove={onApprove}
@@ -208,7 +208,7 @@ export default function NewDashboardLayout ({ address } : DashboardLayoutProps) 
             error={error}
             txResolved={txResolved}
             />
-        }
+        } */}
         <div style={{ display: 'flex', justifyContent: 'center' }}>
             <div className={styles.body}>
                 <NavBar currentPage='dashboard' />
@@ -216,9 +216,11 @@ export default function NewDashboardLayout ({ address } : DashboardLayoutProps) 
                 {(eoa || address)
                     ? <div className={styles.main}>
                         <Profile
+                        setApproveData={setApproveData}
                         isConnecting={isConnecting}
                         address={resolveDashBoardAccountAddress()}
                         isSigner={resolveIsSigner()}
+                        isVsa={connector?.id === 'web3auth'}
                         />
                         <div className={styles.divider}></div>
                         <NftArea
