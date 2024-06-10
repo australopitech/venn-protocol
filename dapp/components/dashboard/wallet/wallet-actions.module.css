@@ -1,0 +1,225 @@
+.buttons {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+.buttonContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 48px;
+    height: 48px;
+    border: 2px solid #000000;
+    border-radius: 50%;
+    gap: 6px;
+    transition: all 0.125s ease-in-out;
+    cursor: pointer;
+}
+.button:hover {
+    background-color: #d9d9d9;
+}
+.button:active {
+    transform: scale(0.95);
+
+}
+.icon {
+    width: 24px;
+    height: auto;
+}
+.buttonDescription {
+    color: #a5a5a5;
+    font-size: var(--step--2);
+}
+.buttonText {
+    display: none;
+    font-size: var(--step-0);
+    font-weight: 500;
+    text-transform: uppercase;
+}
+.disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+.disabled:hover {
+    background-color: initial;
+}
+
+@media (min-width: 542px) {
+    .buttonDescription {
+        display: none;
+    }
+    .button {
+        width: 100%;
+        height: fit-content;
+        padding-block: 8px;
+        border-radius: 30px;
+    }
+    .buttonContainer {
+        width: 30%;
+        max-width: 225px;
+    }
+    .buttonText {
+        display: block;
+    }
+}
+@media (min-width: 1024px) {
+    .buttons {
+        justify-content: center;
+        gap: 110px;
+    }
+}
+
+@media (min-width: 1280px) {
+
+    .buttons {
+        flex-direction: column;
+        gap: 24px;
+    }
+    .buttonContainer {
+        width: 100%;
+        max-width: none;
+    }
+}
+
+.dialogBackdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+    text-align: center;
+    padding: 0px 16px;
+}
+
+.dialog {
+    width: 100%;
+    height: auto;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    /* padding-top: 15%; */
+    
+    border: none;
+    background: transparent;
+}
+
+.dialogContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    max-width: 400px;
+    gap: 24px;
+    padding: 32px 16px;
+    color: #585858;
+    position: relative;
+    background-color: #ffffff;
+    border-radius: 30px;
+    font-size: var(--step-0);
+}
+.closeIcon {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    cursor: pointer;
+    padding: 6px;
+    border-radius: 50%;
+}
+.closeIcon:hover {
+    background-color: #d9d9d9;
+}
+.closeIcon:active {
+    transform: scale(0.95);
+}
+
+
+.title {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    padding: 16px;
+    font-size: var(--step-5);
+    font-weight: 700;
+    color: #1e1e1e;
+}
+
+.inputContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    width: 100%;
+}
+.inputGroup {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 6px;
+    color: #a5a5a5;
+}
+.inputGroup:focus {
+    color: #585858;
+}
+.inputBox {
+    width: 100%;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.input {
+    border: 2px solid #a5a5a5;
+    border-radius: 30px;
+    padding: 16px;
+    width: 100%;
+}
+.input:focus {
+    /* border-color: #585858; */
+}
+.unit {
+    position: absolute;
+    top: 50%;
+    right: 9%;
+    transform: translateY(-50%);
+}
+.dialogButton {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    font-size: var(--step-1);
+    text-transform: uppercase;
+    font-weight: 700;
+    background-color: #1e1e1e;
+    color: #d9d9d9;
+    transition: all .125s ease-in-out;
+    padding: 12px;
+    border-radius: 30px;
+    cursor: pointer;
+}
+.dialogButton:hover {
+    background-color: #a5a5a5;
+    color: #1e1e1e;
+}
+.dialogButton:active {
+    transform: scale(0.95);
+}
+.dialogDisabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+.dialogDisabled:hover {
+    background-color: #1e1e1e;
+    color: #d9d9d9;
+}

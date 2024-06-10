@@ -8,13 +8,17 @@ import { Tooltip } from '@/components/common/tooltip/tooltip';
 import { LoadingDots } from '../dashboard-layout/dashboard-layout';
 import { AnimatePresence, motion } from 'framer-motion';
 import { LoadingContent } from '@/components/common/loading/loading';
+import WalletActions from '../wallet/wallet-actions';
+import { useBalance } from 'wagmi';
+import { formatEther, getAddress } from 'viem';
 
 export interface ProfileProps {
     address?: string;
     isConnecting?: boolean;
     isSigner: boolean;
+    isVsa: boolean;
     // nftsContext: nftViewContext;
-    // setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>;
+    setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>;
     // openTransfer?: boolean,
     // setOpenTransfer: any
     // openConnect: boolean,
@@ -24,9 +28,11 @@ export interface ProfileProps {
 export default function Profile ({
     address,
     isConnecting,
-    isSigner
+    isSigner,
+    isVsa,
+    setApproveData
 } : ProfileProps) {
-    
+    const { data: bal } = useBalance({ address: address as `0x${string}`, watch: true });
 
     return (
         <div className={styles.profile}>
@@ -42,31 +48,13 @@ export default function Profile ({
                 <span className={styles.yourBalance}>your balance</span>
                 {isConnecting
                  ? <div style={{height: 'var(--step-5)', width: '60%'}}><LoadingContent/></div>
-                 : <span className={styles.info}>1.000 ETH</span>}
+                 : <span className={styles.info}>{bal ? parseFloat(formatEther(bal.value)).toFixed(4) + " ETH" : ""}</span>}
                 {isSigner &&
-                    <div className={styles.buttons}>
-                        <div className={styles.buttonContainer}>
-                            <div className={styles.button}>
-                                <span className={styles.buttonText}>send</span>
-                                <div className={styles.icon}><SendIcon/></div>
-                            </div>
-                            <span className={styles.buttonDescription}>send</span>                    
-                        </div>
-                        <div className={styles.buttonContainer}>
-                            <div className={styles.button}>
-                                <span className={styles.buttonText}>connect</span>
-                                <div className={styles.icon}><ConnectIcon/></div>
-                            </div>
-                            <span className={styles.buttonDescription}>connect</span>
-                        </div>
-                        <div className={styles.buttonContainer}>
-                            <div className={styles.button}>
-                                <span className={styles.buttonText}>faucet</span>
-                                <div className={styles.icon}><FaucetIcon/></div>
-                            </div>
-                            <span className={styles.buttonDescription}>faucet</span>                    
-                        </div>
-                    </div>
+                    <WalletActions
+                    isVsa={isVsa}
+                    balance={bal?.value}
+                    setApproveData={setApproveData}
+                    />
                 }
                 </>
             }
