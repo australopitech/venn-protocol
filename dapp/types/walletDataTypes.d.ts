@@ -1,8 +1,9 @@
 import { Web3WalletTypes } from '@walletconnect/web3wallet';
 import { SessionTypes } from "@walletconnect/types";
 
-export type SessionEventType = 'Connection' | 'Transaction' | 'Signature';
+export type WalletDialogType = 'connect' | 'error' | 'txResolved';
 
+export type SessionEventType = 'Connection' | 'Transaction' | 'Signature';
 
 type SessionRequest = Web3WalletTypes.SessionRequest
 

@@ -14,11 +14,34 @@ import { WalletClient } from "viem";
 import { useAccount, useNetwork, useWalletClient } from "wagmi";
 import { getDefaultEntryPointAddress } from "@alchemy/aa-core";
 import { resolveProviderKey } from "../chain-provider";
-import { SessionEventType } from "@/types";
+import { SessionEventType, TxResolved, WalletDialogType } from "@/types";
 import ApproveDialog from "@/components/common/approve-dialog/approve-dialog";
-import { ConnectDialog } from "@/components/common/wallet-action-dialogs/connect";
+import { ConnectDialog } from "@/components/common/wallet-action-dialog/connect";
 import { disconnectSession, rejectSessionProposal, rejectSessionRequest, resolveApprovalExternal } from "./wallet";
+import WalletActionDialog from "@/components/common/wallet-action-dialog/wallet-action-dialog";
 
+const mockRequest = {
+  id: 1718045834967356,
+  params: {
+      chainId: "eip155:11155111",
+      request: {
+          method: "eth_sendTransaction",
+          params: [{
+              data: "0xd0e30db0",
+              from: "0xb0a2ddf528718f22258839dba892a0828c6705a0",
+              gas: "0xb16a",
+              value: "0x38d7ea4c68000"
+          }]
+      },
+  },
+  topic: "47ac37eb5430a5eef9dfdbbd6f0167640c322a93fc94507165fdbadf254e1e7d",
+  verifyContext: {
+      verified: {
+          origin: "https://app.uniswap.org",
+          validation: "UNKNOWN"
+      }
+  }
+}
 
 type SmartAccountContextType = {
   vsaProvider?: AlchemyProvider;
@@ -367,6 +390,19 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
   // console.log('accountAddress', accountAddress);
   // console.log('eoa', walletClient?.account.address);
   
+  const onCloseDialog = (type: WalletDialogType) => {
+    switch(type) {
+      case 'connect':
+        setOpenConnect(false);
+        break;
+      case 'error':
+        setError(undefined);
+        break;
+      case 'txResolved':
+        setHash(undefined);
+        break;      
+    }
+  }
   
   return (
     <SmartAccount.Provider value={{vsaProvider, accountAddress, stateUpdater}}>
@@ -383,14 +419,23 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
             activeSessions
         }}>
             <>
-            {openConnect && <ConnectDialog
-              sessionProposal={sessionProposal}
-              close={() => setOpenConnect(false)}
-              isLoading={isLoading}
-              onConnect={onConnect}
-              onApprove={() => onApprove('proposal')}
-              onReject={() => onReject('proposal')}
-              />}
+            {(openConnect || sessionEvent || error || hash || isProcessing) &&
+            <WalletActionDialog
+            address={accountAddress}
+            close={onCloseDialog}
+            isProcessing={isProcessing}
+            error={error}
+            hash={hash}
+            openConnect={openConnect}
+            isLoading={isLoading}
+            sessionProposal={sessionProposal}
+            sessionRequest={sessionRequest}
+            sessionEvent={sessionEvent}
+            onConnect={onConnect}
+            onApprove={onApprove}
+            onReject={onReject}
+            />
+            }
             {children}
             </>
         </Wallet.Provider>

@@ -2,7 +2,7 @@
 import classNames from 'classnames';
 import { LoadingDots } from '../loading/loading';
 import { CloseIcon, TurnOffIcon } from './graphics';
-import styles from './wallet-action-dialogs.module.css';
+import styles from './wallet-action-dialog.module.css';
 import { useState, useEffect } from 'react';
 import { Web3WalletTypes } from '@walletconnect/web3wallet';
 import { useActiveSessions } from '@/app/account/venn-provider';
