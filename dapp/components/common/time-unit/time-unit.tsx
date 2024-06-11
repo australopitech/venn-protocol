@@ -2,6 +2,8 @@
 import React, { SetStateAction, useState } from "react";
 import styles from "./time-unit.module.css";
 import { TimeUnitType } from "@/types";
+import classNames from "classnames";
+import { source_code_pro } from "@/app/fonts";
 
 interface TimeUnitSelectProps {
   // isOpen: boolean;
@@ -38,7 +40,7 @@ export const TimeUnitSelect = ({ selected, setSelected, plural} : TimeUnitSelect
   }
 
   return (
-    <div className={styles.timeUnitSelector} onBlur={onBlur}>
+    <div className={classNames(styles.timeUnitSelector, source_code_pro.className)} onBlur={onBlur}>
         <button className={styles.timeUnitCurrentContainer} onClick={() => setIsOpen(!isOpen)} tabIndex={2}>
             <span className={styles.timeUnitCurrent}>
                 {selected === 'minute'

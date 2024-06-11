@@ -1,6 +1,7 @@
 'use client'
 import React, { useEffect, useState } from 'react';
-import styles from './nft-dialog.module.css';
+// import styles from './nft-dialog.module.css';
+import styles from './new-nft-dialog.module.css';
 import { DialogNotOwnedBorrowedDescription } from '../dialog-not-owned-borrowed-description/dialog-not-owned-borrowed-description';
 import { DialogNotOwnedListedDescription } from '../dialog-not-owned-listed-description/dialog-not-owned-listed-description';
 import { DialogOwnedListedDescription } from '../dialog-owned-listed-description/dialog-owned-listed-description';
@@ -16,6 +17,7 @@ import { useSmartAccount } from '@/app/account/venn-provider';
 import { compactString, copyAddress } from '@/utils/utils';
 import { Tooltip, HelpTooltip } from '../tooltip/tooltip';
 import { useRealNft } from '@/hooks/nft-data';
+import { DownArrow, UpArrow } from './graphics';
 
 function GetNftImage (nftItem: VennNftItem) {
   return nftItem.imageCached ? nftItem.imageCached : nftItem.image;
@@ -105,6 +107,7 @@ export const NFTDialog = ({
     const [isRented_Out, setIsRented_Out] = useState<boolean>()
     const [receiptsTooltipMessage, setReceiptsTooltipMessage] = useState(tooltipDefaultMessage);
     const [contractTooltipMessage, setContractTooltipMessage] = useState(tooltipDefaultMessage);
+    const [openInfo, setOpenInfo] = useState(false);
     // 
     const [isReceipt, setIsReceipt] = useState<boolean>();
     const [loading, setLoading] = useState<boolean>(true);
@@ -270,7 +273,7 @@ export const NFTDialog = ({
     
     return (
         <div className={styles.nftDialogBackdrop} onClick={onCloseDialog}>
-          <dialog className={styles.nftDialog} open>
+          <div className={styles.nftDialog} >
             <div className={styles.nftDialogContent}>
               <div className={styles.nftImageContainer} onClick={stopPropagation}>
                 <div className={styles.nftImagePreview}>
@@ -286,14 +289,41 @@ export const NFTDialog = ({
                   {description}
                 </p>
                 {nft.data &&
-                <div style={{display: "flex", paddingTop: "12px", gap: "16px", alignItems: "center"}}>
-                  <p className={styles.nftInfo}><b>Contract:</b> <span className={styles.contract} onClick={() => onCopy('contract')}><Tooltip text={contractTooltipMessage}>{compactString(nft.data?.contract)}</Tooltip></span></p>
+                <div className={styles.infoDrop} >
+                  <div className={styles.infoHeader} onClick={() => setOpenInfo(!openInfo)}>
+                    info
+                    {openInfo
+                     ? <UpArrow/>
+                     : <DownArrow/>}
+                  </div>
+                  {openInfo &&
+                  <div className={styles.infoContainer}>
+                    <div className={styles.infoRow}>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'start'}}>
+                        Contract:
+                        <span className={styles.info} onClick={() => onCopy('contract')}><Tooltip text={contractTooltipMessage}>{compactString(nft.data?.contract)}</Tooltip></span>
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'start'}}>
+                        Id:
+                        <span className={styles.info}>{nft.data?.tokenId.toString()}</span>
+                      </div>
+                      {isReceipt && 
+                      <>
+                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'start'}}>
+                        <span className={styles.receipts} onClick={() => onCopy('receipts')}><Tooltip text={receiptsTooltipMessage}>Receipt</Tooltip>:</span>
+                        <span className={styles.info}>{tokenId?.toString()}</span>
+                      </div>
+                      </>}
+                    </div>
+                  </div>}
+
+                  {/* <p className={styles.nftInfo}><b>Contract:</b> <span className={styles.contract} onClick={() => onCopy('contract')}><Tooltip text={contractTooltipMessage}>{compactString(nft.data?.contract)}</Tooltip></span></p>
                   <p className={styles.nftInfo}><b>Id:</b> {nft.data?.tokenId.toString()}</p>
                   {isReceipt && 
                     <div style={{display: "flex", alignItems: "center", gap: "4px", color: "#e48e9a"}}>
                       <HelpIcon/><p className={styles.nftInfo}><b><span className={styles.receipts} onClick={() => onCopy('receipts')}><Tooltip text={receiptsTooltipMessage}>Receipts</Tooltip></span>:</b> {tokenId?.toString()}</p>
                     </div>
-                  }
+                  } */}
                 </div>}
                 {loading && <h1>Loading...</h1>}
                 {!loading && !isOwned && isRental_signer &&
@@ -335,7 +365,7 @@ export const NFTDialog = ({
                   <DialogOwnedRentedDescription />} receipt held by 3rd party; NFT available */}
               </div>
             </div>
-          </dialog>
+          </div>
           <div onClick={() => onCloseDialog()} className={styles.closeButton}>
             <div>
               <CloseButton />

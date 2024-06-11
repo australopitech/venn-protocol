@@ -157,7 +157,7 @@ export const DialogNotOwnedListedDescription = ({
     if(loadingInfo)
       return (
         <div className={styles.bodyLoadingContainer}>
-          <div className={styles.divider}></div>
+          {/* <div className={styles.divider}></div> */}
           <div className={styles.loadingContainer}>
             <LoadingComponent />
           </div>

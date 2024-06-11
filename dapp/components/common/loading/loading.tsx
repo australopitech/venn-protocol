@@ -34,7 +34,7 @@ export function LoadingComponent () {
             height: '100%',
             width: '100%',
         }}>
-            <TranslatingCircles />
+            <LoadingDots />
         </div>
     )
 }

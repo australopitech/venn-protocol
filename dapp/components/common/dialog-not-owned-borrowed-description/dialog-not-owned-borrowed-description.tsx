@@ -20,9 +20,6 @@ export interface DialogNotOwnedBorrowedDescriptionProps {
   isRental?: boolean;
 }
 
-const dayCutOff = 82800; // 23 h;
-const hourCutOff = 3540 // 59 min;
-
 
 export const DialogNotOwnedBorrowedDescription = ({ 
   address,

@@ -1,0 +1,221 @@
+.nftDialogBackdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    display: flex;
+    justify-content: center;
+    align-items: start;
+    z-index: 999;
+    overflow-y: auto;
+}
+
+.nftDialog {
+    /* width: 800px; */
+    width: 100%;
+    height: auto;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    /* padding: 15%; */
+    
+    border: none;
+    background: transparent;
+  
+    color: #a5a5a5;
+    padding: 24px 16px;
+}
+
+.nftDialogContent {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: clamp(1rem, 0.7143rem + 1.4286vi, 2rem); /*16 32px*/
+}
+
+@media (min-width: 1024px) {
+    .nftDialogContent{
+        flex-direction: row;
+    }
+}
+
+.closeButton {
+    position: absolute; /* Position it absolutely... */
+    top: 0; /* ...at the top... */
+    right: 0; /* ...and right of the dialog */
+    padding: 30px;
+    cursor: pointer;
+    transition: all 0.125s ease 0s;
+    z-index: 1002;;
+  }
+  
+.closeButton:hover {
+    transform: scale(1.1);
+}
+  
+.closeButton:active {
+    transform: scale(0.9);
+}
+
+.nftImageContainer {
+    background: rgb(9, 9, 10);
+    border-radius: 25px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 10px 30px;
+    cursor: zoom-in;
+    /* max-height: calc(100vh - 100px); */
+    overflow: hidden;
+    pointer-events: auto;
+    position: relative;
+    transition: all 0.125s ease 0s;
+    z-index: 50;
+  
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    flex-direction: column;
+    max-width: 500px;
+}
+
+@media (min-width: 1024px) {
+    .nftImageContainer {
+        max-width: 650px;
+        max-height: calc(100vh - 100px);
+    }
+}
+
+
+.nftImagePreview {
+    height: 100%;
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    padding: 0px;
+    align-items: center;
+}
+  
+.image {
+    color: rgba(0, 0, 0, 0);
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    overflow-clip-margin: content-box;
+    overflow: clip;
+}
+
+.nftDescriptionContainer {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(1rem, 0.7143rem + 1.4286vi, 2rem); /*16 32px*/
+    align-items: start;
+    padding: 16px;
+    background-color: #ffffff;
+    border-radius: 25px;
+    box-shadow: rgba(0, 0, 0, 0.4) 0px 10px 30px;
+    text-overflow: ellipsis;
+    text-align: left;
+    font-size: var(--step-0);
+    font-weight: 600;
+    max-width: 450px;
+}
+@media (min-width: 430px) {
+    .nftDescriptionContainer{
+        padding: 24px;
+    }
+}
+
+.header {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: start;
+}
+
+.status {
+    font-size: var(--step--2);
+    font-weight: 700;
+}
+.title {
+    font-size: var(--step-3);
+    font-weight: 700;
+    color: #1e1e1e;
+    max-width: 100%;
+    white-space: nowrap;
+}
+.nftDescription {
+    color: #585858;
+    width: 100%;
+    overflow-y: auto;
+    max-height: 100px;
+    scrollbar-width: thin;
+    scrollbar-color: rgb(211, 199, 208, 0.6) rgb(240, 230, 239, 0.6);
+}
+
+.nftDescription::-webkit-scrollbar {
+    width: 12px;  
+}
+  
+.nftDescription::-webkit-scrollbar-thumb {
+    background-color: rgb(211, 199, 208, 0.6);  
+    border-radius: 6px;  
+}
+  
+.nftDescription::-webkit-scrollbar-track {
+    background: rgb(240, 230, 239, 0.6);  
+    border-radius: 6px;
+    /* margin-left: 8px; */
+}
+
+.infoDrop {
+    width: 100%;
+    /* padding: 4px 8px; */
+    border: solid 1px #d9d9d9;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: var(--step--1);
+    /* overflow: hidden; */
+}
+.infoHeader {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    cursor: pointer;
+    transition: all 0.125s ease-in-out;
+    /* border-radius: 8px; */
+    color: #585858;
+    font-size: var(--step--1);
+    padding: 4px 8px;
+}
+.infoHeader:hover {
+    background-color: #d9d9d9;
+}
+.infoContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    padding: 0 8px;
+}
+.infoRow {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+}
+.infoLabel {
+    font-size: var(--step--2);
+}
+.info {
+    color: #1e1e1e;
+    font-size: var(--step-0);
+}

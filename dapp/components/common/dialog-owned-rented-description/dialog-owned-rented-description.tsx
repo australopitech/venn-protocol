@@ -191,7 +191,7 @@ export const DialogOwnedRentedDescription = ({
         }
         {isListed &&
           <div>
-            <button className={styles.unlistButton} onClick={() => handleButtonClick('delist')}> {(isLoading || txLoading)? <LoadingDots /> : 'Unlist NFT'} </button>
+            <button className={styles.unlistButton} onClick={() => handleButtonClick('delist')}> {(isLoading || txLoading)? <LoadingDots /> : 'Delist NFT'} </button>
             <div className={styles.warning}>
               <WarningIcon /><span className={styles.warningText}>{
               timeLeft.data

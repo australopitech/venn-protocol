@@ -208,7 +208,7 @@ export const DialogOwnedNotListedDescription = ({
 
   return (
     <div className={styles['bodyDescriptionContainer']}>
-      <div className={styles.divider}></div>
+            <div className={styles.divider}></div>
       <div className={styles['bodyDescription']}>
         <span className={styles.bodyText}>Fill out the fields below to <span className={styles.textHilight}>list your NFT</span>:</span>
         

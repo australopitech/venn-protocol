@@ -3,24 +3,24 @@
   font-size: inherit;
   font-weight: inherit;
   color: inherit;
-  font-style: inherit;
+  /* font-style: inherit; */
 }
 
 .timeUnitCurrent {
   font-size: inherit;
   font-weight: inherit;
   color: inherit;
-  font-style: inherit;
+  /* font-style: inherit; */
   padding-right: 4px;
   background-color: transparent;
 }
 
 .timeUnitOption {
-  padding: 2px;
-  font-size: 16px;
+  padding: 0px 8px;
+  font-size: var(--step--1);
   font-weight: 500;
-  color: rgba(8, 8, 10, 0.8);
-  font-style: normal;
+  color: #585858;
+  /* font-style: normal; */
 }
 
 .timeUnitCurrentContainer {
@@ -33,7 +33,7 @@
   font-size: inherit;
   font-weight: inherit;
   color: inherit;
-  font-style: inherit;  
+  /* font-style: inherit;   */
 }
 
 .dropdownWrapper {
@@ -42,8 +42,8 @@
 
 .dropdown {
   flex-direction: column;
-  max-width: 80px;
-  min-width: 80px;
+  max-width: 100px;
+  min-width: 100px;
   /* padding: 2px; */
   border-radius: 10px;
   border: 2px solid;
@@ -55,10 +55,11 @@
   position: absolute;
   z-index: 6;
   width: 100%;
+  overflow: hidden;
 }
 
 .optionsContainer {
-  margin-block: 4px;
+  /* margin-block: 4px; */
   z-index: 6;
   cursor: pointer;
 }

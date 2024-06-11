@@ -12,8 +12,8 @@
   background-color: rgba(60, 66, 82, 0.08);
   border-radius: 1px;
   height: 2px;
-  margin-bottom: 24px;
-  margin-top: 24px;
+  margin-bottom: 8px;
+  margin-top: 8px;
   width: 100%;
 }
 
@@ -21,8 +21,8 @@
 }
 
 .bodyDescription {
-  color: rgb(37, 41, 46);
-  font-size: 22px;
+  color: #585858;
+  font-size: var(--step-2);
   font-style: normal;
   font-weight: 700;
   /* padding: 0px 0px 12px; */
@@ -32,10 +32,10 @@
 }
 
 .priceDescription {
-  color: rgb(84, 91, 100);
-  font-size: 20px;
+  /* color: rgb(84, 91, 100); */
+  font-size: var(--step-0);
   font-style: normal;
-  font-weight: 700;
+  font-weight: 600;
   padding: 0px 0px 12px;
   text-align: left;
   text-overflow: ellipsis;
@@ -43,14 +43,14 @@
 
 .priceInputLabel {
   display: flex;
-  color: #5D5D5D;
-  font-size: 18px;
+  color: #a5a5a5;
+  font-size: var(--step--1);
   margin: 18px 0px 4px 0px;
   width: 100%;
 }
 
 .priceCurrency {
-  color: rgba(84, 91, 100);
+  color: #585858
 }
 
 .priceInputContainer {
@@ -60,7 +60,7 @@
     rgba(240, 166, 202, 0.2) 100%
   ); */
   position: relative;
-  border: 2px solid rgba(240, 166, 202, 0.5);
+  border: 2px solid #d9d9d9;
   border-radius: 25px;
   /* margin: 0px 10px 10px 0px; */
   padding: 8px 20px;
@@ -82,19 +82,19 @@
 }
 
 .priceInput {
-  color: rgba(8, 8, 10, 0.8);
+  color: #1e1e1e;
   font-style: normal;
   font-weight: 500;
   width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  margin-top: 10px;
-  margin-bottom: 10px;
+  margin-top: 8px;
+  margin-bottom: 8px;
   outline: none;
   border: none;
   background-color: transparent;
-  font-size: 28px;
+  font-size: var(--step-1);
   appearance: textfield;
   text-align: left;
   display: flex;
@@ -102,7 +102,7 @@
 
 .invalidValue {
   color:#D52941;
-  font-size: 16px;
+  font-size: var(--step--1);
   margin-left: 20px;
 }
 
@@ -113,10 +113,10 @@
 }
 
 .eth {
-  font-size: 24px;
+  font-size: var(--step-1);
   font-weight: 500;
   color: rgba(8, 8, 10, 0.8);
-  font-style: normal;
+  /* font-style: normal; */
 }
 
 .listButtonNoHover {
