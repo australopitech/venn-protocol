@@ -55,6 +55,8 @@ export default function WalletActions ({ address, isVsa, balance, setApproveData
            :''
         }
         <div className={styles.buttons}>
+            {isVsa &&
+            <>
             <div className={styles.buttonContainer}>
                 <div className={styles.button} onClick={() => setOpenSend(true)}>
                     <span className={styles.buttonText}>send</span>
@@ -63,6 +65,14 @@ export default function WalletActions ({ address, isVsa, balance, setApproveData
                 <span className={styles.buttonDescription}>send</span>                    
             </div>
             <div className={styles.buttonContainer}>
+                <div className={classNames(styles.button, !isVsa ? styles.disabled : '')} onClick={onOpenActionDialog}>
+                    <span className={styles.buttonText}>connect</span>
+                    <div className={styles.icon}><ConnectIcon/></div>
+                </div>
+                <span className={styles.buttonDescription}>connect</span>
+            </div>
+            </>}
+            <div className={styles.buttonContainer}>
                 <a href='https://www.alchemy.com/faucets/ethereum-sepolia' target='_blank' style={{ width: '100%'}}>
                     <div className={styles.button}>
                         <span className={styles.buttonText}>faucet</span>
@@ -70,13 +80,6 @@ export default function WalletActions ({ address, isVsa, balance, setApproveData
                     </div>
                 </a>
                 <span className={styles.buttonDescription}>faucet</span>                    
-            </div>
-            <div className={styles.buttonContainer}>
-                <div className={classNames(styles.button, !isVsa ? styles.disabled : '')} onClick={onOpenActionDialog}>
-                    <span className={styles.buttonText}>connect</span>
-                    <div className={styles.icon}><ConnectIcon/></div>
-                </div>
-                <span className={styles.buttonDescription}>connect</span>
             </div>
         </div>
         </>
