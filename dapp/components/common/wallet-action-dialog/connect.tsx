@@ -127,9 +127,9 @@ const ActiveSessions = ({ activeSessions, disconnect } : { activeSessions?: any,
             <div className={styles.inputGroup}>
                 Active Sessions:
                 <div className={styles.sessionsContainer}>
-                    {Object.keys(activeSessions).map((key) => {
+                    {Object.keys(activeSessions).map((key, i) => {
                         return (
-                            <div className={styles.session} onClick={() => onClick(key)}>
+                            <div key={key + i.toString()} className={styles.session} onClick={() => onClick(key)}>
                                 {(selected === key) ? "Disconnect" : activeSessions[key].peer.metadata.name}
                                 <TurnOffIcon/>
                             </div>
