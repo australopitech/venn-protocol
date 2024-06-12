@@ -1,4 +1,4 @@
-import { SessionEventType, TxResolved } from "@/types";
+import { ApproveData, OnApproveArgs, SessionEventType, TxResolved } from "@/types";
 import { Web3WalletTypes } from "@walletconnect/web3wallet";
 import ProcessingDialog from "./processing";
 import ErrorDialog from "./error";
@@ -6,20 +6,19 @@ import { TxRequestDialog, TxSuccess } from "./tx";
 import { ConnectDialog } from "./connect";
 import SignatureDialog from "./signature";
 import { WalletDialogType } from "@/types";
+import InternalTxDialog from "./internal";
 
 interface WalletActionDialogProps {
     address?: string,
-    close: (type: WalletDialogType) => void;
+    close: (type?: WalletDialogType) => void;
     isProcessing: boolean;
     error?: any;
     hash?: string;
     openConnect: boolean;
     isLoading: boolean;
-    sessionProposal?: Web3WalletTypes.SessionProposal;
-    sessionRequest?: Web3WalletTypes.SessionRequest;
-    sessionEvent?: SessionEventType;
+    approveData?: ApproveData;
     onConnect: (uri: string) => Promise<void>;
-    onApprove: (eventType: 'proposal' | 'request') => Promise<void>
+    onApprove: (args: OnApproveArgs) => Promise<void>
     onReject: (eventType: 'proposal' | 'request') => Promise<void>
 }
 
@@ -32,9 +31,7 @@ export default function WalletActionDialog ({
     hash,
     openConnect,
     isLoading,
-    sessionProposal,
-    sessionRequest,
-    sessionEvent,
+    approveData,
     onConnect,
     onApprove,
     onReject
@@ -48,26 +45,33 @@ export default function WalletActionDialog ({
           ? <ErrorDialog close={() => close('error')} message={error.message}/>
           : hash
            ? <TxSuccess close={() => close('txResolved')} hash={hash} address={address}/>
-           : (sessionRequest && sessionEvent)
+           : (approveData?.type === 'Transaction' || approveData?.type === 'Signature')
              ? <RequestDialog
                 close={() => {}}
-                sessionRequest={sessionRequest}
-                sessionEvent={sessionEvent}
-                onApprove={() => onApprove('request')}
-                onReject={() => onApprove('request')}
+                approveData={approveData}
+                onApprove={() => onApprove({ type: 'exteral', eventType: 'request'})}
+                onReject={() => onReject('request')}
                />
-             : openConnect
-              ? <ConnectDialog
-                close={() => close('connect')}
-                sessionProposal={sessionProposal}
-                isLoading={isLoading}
-                onConnect={onConnect}
-                onApprove={() => onApprove('proposal')}
-                onReject={() => onReject('proposal')}
+             : approveData?.type === 'Internal'
+              ? <InternalTxDialog
+                close={close}
+                approveData={approveData}
+                onConfirm={() => onApprove({ type: 'internal' })}
                 />
-             : <div>
-                    Unexpected Error
-                </div>
+              : openConnect
+                ? <ConnectDialog
+                    close={() => close('connect')}
+                    sessionProposal={
+                        approveData?.type === 'Connection' ? approveData.data.sessionProposal : undefined
+                    }
+                    isLoading={isLoading}
+                    onConnect={onConnect}
+                    onApprove={() => onApprove({ type: 'exteral', eventType: 'proposal'})}
+                    onReject={() => onReject('proposal')}
+                    />
+                : <div>
+                        Unexpected Error
+                    </div>
         }
         </>
     )
@@ -75,33 +79,31 @@ export default function WalletActionDialog ({
 
 interface RequestDialogProps {
     close: any;
-    sessionRequest: Web3WalletTypes.SessionRequest;
-    sessionEvent: SessionEventType;
-    onApprove: () => Promise<void>
-    onReject: () => Promise<void>
+    approveData: ApproveData;
+    onApprove: () => Promise<void>;
+    onReject: () => Promise<void>;
 }
 
 function RequestDialog ({
-    sessionRequest,
-    sessionEvent,
+    approveData,
     onApprove,
     onReject
 } : RequestDialogProps) {
 
-    if(sessionEvent === 'Transaction') {
+    if(approveData.type === 'Transaction') {
         return (
             <TxRequestDialog
             close={close}
-            sessionRequest={sessionRequest}
+            sessionRequest={approveData.data}
             onApprove={onApprove}
             onReject={onReject}
             />
         )
-    } else if(sessionEvent === 'Signature') {
+    } else if(approveData.type === 'Signature') {
         return (
             <SignatureDialog
             close={close}
-            sessionRequest={sessionRequest}
+            sessionRequest={approveData.data}
             onApprove={onApprove}
             onReject={onReject}
             />

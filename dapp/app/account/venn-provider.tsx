@@ -14,10 +14,10 @@ import { WalletClient } from "viem";
 import { useAccount, useNetwork, useWalletClient } from "wagmi";
 import { getDefaultEntryPointAddress } from "@alchemy/aa-core";
 import { resolveProviderKey } from "../chain-provider";
-import { SessionEventType, TxResolved, WalletDialogType } from "@/types";
+import { ApproveData, OnApproveArgs, SessionEventType, TxResolved, WalletDialogType } from "@/types";
 import ApproveDialog from "@/components/common/approve-dialog/approve-dialog";
 import { ConnectDialog } from "@/components/common/wallet-action-dialog/connect";
-import { disconnectSession, rejectSessionProposal, rejectSessionRequest, resolveApprovalExternal } from "./wallet";
+import { disconnectSession, rejectSessionProposal, rejectSessionRequest, resolveApprovalExternal, resolveApprovalInternal } from "./wallet";
 import WalletActionDialog from "@/components/common/wallet-action-dialog/wallet-action-dialog";
 
 const mockRequest = {
@@ -67,6 +67,8 @@ type WalletContextType = {
   setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
   setOpenConnect: React.Dispatch<React.SetStateAction<boolean>>;
   activeSessions?: any;
+  approveData?: ApproveData;
+  setApproveData: React.Dispatch<React.SetStateAction<ApproveData | undefined>>;
 }
 // test
 const entryPointAddr = getDefaultEntryPointAddress(baseGoerli);
@@ -166,6 +168,7 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
   const [namespaces, setNamespaces] = useState<SessionTypes.Namespaces>();
   const [stateUpdate, setStateUpdate] = useState(false);
   const [sessionEvent, setSessionEvent] = useState<SessionEventType>();
+  const [approveData, setApproveData] = useState<ApproveData>();
   const [newPairingTopic, setNewPairingTopic] = useState<any>();
   const [activeSessions, setActiveSessions] = useState<any>();
   const [isLoading, setIsLoading] = useState(false);
@@ -236,7 +239,7 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
     }
   }
 
-  const onApprove = async (eventType: 'proposal' | 'request') => {
+  const onApproveExternal = async (eventType: 'proposal' | 'request') => {
     setIsProcessing(true);
     if(!vennWallet) {
       setError({ message: 'no wallet found'});
@@ -247,9 +250,6 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
     if(eventType === 'proposal'){      
       if(!sessionProposal || !sessionEvent || !namespaces) {
         setError({ message: 'missing session event metadata' });
-        console.log('session proposal', sessionProposal)
-        console.log('session event', sessionEvent)
-        console.log('namespaces', namespaces);
         console.error('missing session event metadata')
         setIsProcessing(false);
         walletStateResetter('proposal');
@@ -274,6 +274,33 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
     setHash(hash);
     setIsProcessing(false);
     stateUpdater();
+  }
+
+  const onApproveInternal = async () => {
+    setIsProcessing(true);
+    if(!vsaProvider) {
+      console.error('missing provider');
+      setError({ message: 'missing provider' });
+      walletStateResetter();
+      return
+    }
+    if(!approveData) {
+      console.error('missing transaction metadata');
+      setError({ message: 'missing transaction metadata' });
+      walletStateResetter();
+      return
+    }
+    const { hash, error } = await resolveApprovalInternal(approveData.data, vsaProvider)
+    setError(error);
+    setHash(hash);
+    walletStateResetter();
+    setIsProcessing(false);
+  }
+
+  const onApprove = async (args: OnApproveArgs) => {
+    args.type === 'internal'
+     ? await onApproveInternal()
+     : await onApproveExternal(args.eventType)
   }
 
   const onReject = async (eventType: 'proposal' | 'request') => {
@@ -307,17 +334,21 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
   }
    
 
-  const walletStateResetter = (eventType: 'proposal' | 'request') => {
+  const walletStateResetter = (eventType?: 'proposal' | 'request') => {
     switch(eventType) {
       case 'proposal':
         setSessionProposal(undefined);
         setNamespaces(undefined);
         setSessionEvent(undefined);
+        setApproveData(undefined);
         setIsLoading(false);
         break
       case 'request':
         setSessionRequest(undefined);
         setSessionEvent(undefined);
+        setApproveData(undefined)
+      default:
+        setApproveData(undefined);
     }
   }
 
@@ -390,7 +421,7 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
   // console.log('accountAddress', accountAddress);
   // console.log('eoa', walletClient?.account.address);
   
-  const onCloseDialog = (type: WalletDialogType) => {
+  const onCloseDialog = (type?: WalletDialogType) => {
     switch(type) {
       case 'connect':
         setOpenConnect(false);
@@ -400,7 +431,9 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
         break;
       case 'txResolved':
         setHash(undefined);
-        break;      
+        break;
+      default:
+        setApproveData(undefined);
     }
   }
   
@@ -416,7 +449,8 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
             setNewPairingTopic, stateUpdate,
             isLoading, setIsLoading,
             setOpenConnect,
-            activeSessions
+            activeSessions,
+            approveData, setApproveData
         }}>
             <>
             {(openConnect || sessionEvent || error || hash || isProcessing) &&
@@ -428,9 +462,7 @@ export function VennAccountProvider ({children} : {children : React.ReactNode}) 
             hash={hash}
             openConnect={openConnect}
             isLoading={isLoading}
-            sessionProposal={sessionProposal}
-            sessionRequest={sessionRequest}
-            sessionEvent={sessionEvent}
+            approveData={approveData}
             onConnect={onConnect}
             onApprove={onApprove}
             onReject={onReject}
@@ -521,6 +553,14 @@ export function useVennWallet () {
   const updater = context?.stateUpdate
   const stateResetter = useWalletStateResetter();
   return { wallet, updater, stateResetter }
+}
+
+
+export function useApproveData () {
+  const context = useContext(Wallet);
+  const data = context?.approveData;
+  const setApproveData = context?.setApproveData;
+  return { data, setApproveData }
 }
 
 export function useSessionProposal () {

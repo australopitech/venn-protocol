@@ -15,7 +15,8 @@ type SessionProposal = {
 type TxInputs = {
     targetAddress: `0x${string}`,
     value?: bigint,
-    calldata?: `0x${string}`
+    calldata?: `0x${string}`,
+    method?: string
 }
 
 export type ApproveData = {
@@ -32,4 +33,11 @@ export type ApproveData = {
 export interface TxResolved {
     success: boolean;
     hash?: string;
+}
+
+export type OnApproveArgs = {
+    type: 'internal'
+} | {
+    type: 'exteral',
+    eventType: 'proposal' | 'request'
 }
