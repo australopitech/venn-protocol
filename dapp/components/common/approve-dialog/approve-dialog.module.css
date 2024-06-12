@@ -64,7 +64,7 @@
 
 .approveType {
   color: rgb(67, 74, 79);
-  font-size: 22px;
+  font-size: var(--step-1);
   font-style: normal;
   font-weight: 500;
   /* margin-bottom: 24px; */
@@ -79,7 +79,7 @@
 
 .approveDescription {
   color: rgb(67, 74, 79);
-  font-size: 20px;
+  font-size: var(--step-0);
   font-style: normal;
   font-weight: 500;
   /* margin-bottom: 24px; */
@@ -109,7 +109,7 @@
 
 .approveDescriptionMeta {
   color:darkgray;
-  font-size: 16px;
+  font-size: var(--step--1);
   font-style: italic;
   font-weight: 400;
 }
@@ -121,9 +121,9 @@
   gap: 4px;
   max-width: 100%;
   color: rgb(37, 41, 46);
-  font-size: 36px;
+  font-size: var(--step-5);
   font-weight: 800;
-  white-space: nowrap;
+  /* white-space: nowrap; */
   overflow: hidden;
   text-align: left;
   text-overflow: ellipsis;
@@ -195,11 +195,11 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  font-size: 30px;
+  font-size: var(--step-4);
   padding-bottom: 20px;
 }
 .loadingDescription {
-  font-size: 20px;
+  font-size: var(--step-0);
   padding: 15px;
 }
 .loadingDots {
@@ -209,7 +209,7 @@
 }
 
 .errorTitle {
-  font-size: 30px;
+  font-size: var(--step-4);
   color: rgb(37, 41, 46);
   padding-bottom: 20px;
   gap: 4px;
@@ -217,14 +217,14 @@
   align-items: center;
 }
 .errorDescription {
-  font-size: 20px;
+  font-size: var(--step-0);
   color: rgb(37, 41, 46);
   padding-block: 15px;
 }
 
 .errorMessage {
   color: tomato;
-  font-size: 20px;
+  font-size: var(--step-0);
   font-style: normal;
   font-weight: 500;
   /* margin-bottom: 24px; */
@@ -261,14 +261,14 @@
 }
 
 .txTitle {
-  font-size: 30px;
+  font-size: var(--step-4);
   color: rgb(37, 41, 46);
   padding-bottom: 20px;
   align-items: center;
   display: flex;
 }
 .txDescription {
-  font-size: 20px;
+  font-size: var(--step-0);
   color: rgb(37, 41, 46);
   padding: 15px;
 }
@@ -281,7 +281,7 @@
 
 .txLink {
   margin-block: 8px;
-  font-size: 22px;
+  font-size: var(--step-1);
   color: rgb(237, 149, 192);
   border-bottom: 2px solid transparent;
   cursor: pointer;
