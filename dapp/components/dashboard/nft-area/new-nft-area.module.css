@@ -129,6 +129,7 @@
         scrollbar-width: thin;
         scrollbar-color: rgb(217, 217, 217) rgba(217, 217, 217, 0.6);
         padding-right: 24px;
+        padding-top: 10px;
         grid-template-columns: repeat(3,  260px);
         grid-template-rows: repeat(3, calc(260px + 6px + var(--step-1)) );
         grid-auto-flow: row;
