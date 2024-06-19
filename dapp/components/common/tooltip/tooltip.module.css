@@ -135,9 +135,9 @@
     position: absolute;
     z-index: 1;
     
-    /*top*/
+    /*bottom*/
     width: 120px;
-    bottom: 100%;
+    top: 100%;
     left: 50%;
     margin-left: -60px;
 

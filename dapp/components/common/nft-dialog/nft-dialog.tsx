@@ -299,18 +299,27 @@ export const NFTDialog = ({
                   {openInfo &&
                   <div className={styles.infoContainer}>
                     <div className={styles.infoRow}>
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'start'}}>
+                      <div style={{ display: 'flex', gap: '6px', alignItems: 'baseline'}}>
                         Contract:
-                        <span className={styles.info} onClick={() => onCopy('contract')}><Tooltip text={contractTooltipMessage}>{compactString(nft.data?.contract)}</Tooltip></span>
+                        <span className={styles.info} onClick={() => onCopy('contract')} style={{ cursor: 'pointer' }}>
+                          <Tooltip text={contractTooltipMessage}>{compactString(nft.data?.contract)}</Tooltip>
+                        </span>
                       </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'start'}}>
+                    </div>
+                    <div className={styles.infoRow}>
+                      <div style={{ display: 'flex', gap: '6px', alignItems: 'baseline', width: '50%'}}>
                         Id:
                         <span className={styles.info}>{nft.data?.tokenId.toString()}</span>
                       </div>
                       {isReceipt && 
                       <>
-                      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'start'}}>
-                        <span className={styles.receipts} onClick={() => onCopy('receipts')}><Tooltip text={receiptsTooltipMessage}>Receipt</Tooltip>:</span>
+                      <div style={{ display: 'flex', gap: '6px', alignItems: 'baseline', width: '50%'}}>
+                        <div style={{ display: 'flex', alignItems: 'center'}}>
+                          <HelpIcon/>
+                          <span className={styles.receipts} onClick={() => onCopy('receipts')} style={{ cursor: 'pointer'}}>
+                            <Tooltip text={receiptsTooltipMessage}>Receipt</Tooltip>:
+                          </span>
+                        </div>
                         <span className={styles.info}>{tokenId?.toString()}</span>
                       </div>
                       </>}

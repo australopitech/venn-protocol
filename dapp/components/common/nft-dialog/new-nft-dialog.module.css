@@ -11,6 +11,7 @@
     align-items: start;
     z-index: 999;
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .nftDialog {
@@ -42,6 +43,9 @@
 }
 
 @media (min-width: 1024px) {
+    .nftDialogBackdrop {
+        align-items: center;
+    }
     .nftDialogContent{
         flex-direction: row;
     }
@@ -204,13 +208,13 @@
     flex-direction: column;
     gap: 8px;
     width: 100%;
-    padding: 0 8px;
+    padding: 0 8px 8px 8px;
 }
 .infoRow {
     display: flex;
     align-items: center;
     width: 100%;
-    justify-content: space-between;
+    /* justify-content: space-between; */
 }
 .infoLabel {
     font-size: var(--step--2);
